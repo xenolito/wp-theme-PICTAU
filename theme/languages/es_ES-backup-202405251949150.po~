@@ -1,0 +1,336 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PICTAU THEME\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-05-25 19:17+0000\n"
+"PO-Revision-Date: 2024-05-25 19:45+0000\n"
+"Last-Translator: \n"
+"Language-Team: Español\n"
+"Language: es_ES\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.6.9; wp-6.5\n"
+"X-Domain: pictau"
+
+#. 1: Comment date, 2: Comment time.
+#: inc/template-functions.php:194
+#, php-format
+msgid "%1$s at %2$s"
+msgstr ""
+
+#. %s: Comment author link.
+#: inc/template-functions.php:179
+#, php-format
+msgid "%s <span class=\"says\">says:</span>"
+msgstr ""
+
+#. %s: Post type singular name
+#. %s: Taxonomy singular name
+#: inc/template-functions.php:81 inc/template-functions.php:88
+#, php-format
+msgid "%s Archives"
+msgstr ""
+
+#. used between list items, there is a space after the comma.
+#: inc/template-tags.php:80 inc/template-tags.php:91 inc/template-tags.php:141
+#: inc/template-tags.php:152
+msgid ", "
+msgstr ""
+
+#: inc/template-functions.php:438
+msgid "]"
+msgstr ""
+
+#. 1: link to WP admin new post page.
+#: template-parts/content/content-none.php:48
+msgid "Add or publish posts"
+msgstr ""
+
+#: inc/template-functions.php:92
+msgid "Archives:"
+msgstr ""
+
+#: inc/template-functions.php:70
+msgid "Author Archives: "
+msgstr ""
+
+#: functions.php:177
+msgid "back"
+msgstr ""
+
+#: inc/template-functions.php:66
+msgid "Category Archives: "
+msgstr ""
+
+#: inc/template-functions.php:410
+msgid "Centered"
+msgstr ""
+
+#: theme.json:1
+msgctxt "Color name"
+msgid "Background"
+msgstr ""
+
+#: theme.json:1
+msgctxt "Color name"
+msgid "Foreground"
+msgstr ""
+
+#: theme.json:1
+msgctxt "Color name"
+msgid "Primary"
+msgstr ""
+
+#: theme.json:1
+msgctxt "Color name"
+msgid "Secondary"
+msgstr ""
+
+#: theme.json:1
+msgctxt "Color name"
+msgid "Tertiary"
+msgstr ""
+
+#: comments.php:72
+msgid "Comments are closed."
+msgstr ""
+
+#. 1: comment count number, 2: title.
+#: comments.php:42
+#, php-format
+msgctxt "comments title"
+msgid "%1$s comment on &ldquo;%2$s&rdquo;"
+msgid_plural "%1$s comments on &ldquo;%2$s&rdquo;"
+msgstr[0] ""
+msgstr[1] ""
+
+#. %s: Name of current post.
+#: inc/template-functions.php:122
+#, php-format
+msgid "Continue reading %s"
+msgstr "Seguir leyendo %s"
+
+#. %s: Name of current post. Only visible to screen readers.
+#: template-parts/content/content-single-area.php:64
+#, php-format
+msgid "Continue reading<span class=\"sr-only\"> \"%s\"</span>"
+msgstr "Seguir leyendo<span class=\"sr-only\"> \"%s\"</span>"
+
+#: inc/template-functions.php:76
+msgid "Daily Archives: "
+msgstr ""
+
+#: inc/template-functions.php:201
+msgid "Edit"
+msgstr ""
+
+#. %s: Name of current post. Only visible to screen readers.
+#: inc/template-tags.php:112 inc/template-tags.php:173
+#, php-format
+msgid "Edit <span class=\"sr-only\">%s</span>"
+msgstr ""
+
+#: inc/template-functions.php:385
+msgid "fixed"
+msgstr ""
+
+#: inc/template-functions.php:386
+msgid "fixed autohide"
+msgstr ""
+
+#: functions.php:103
+msgid "Footer Menu"
+msgstr ""
+
+#: inc/template-functions.php:409
+msgid "Full width"
+msgstr ""
+
+#: inc/template-functions.php:380
+msgid "Header Behavior"
+msgstr ""
+
+#: inc/template-functions.php:403
+msgid "Header Width"
+msgstr ""
+
+#: inc/template-functions.php:408
+msgid "Layout constrained"
+msgstr ""
+
+#. %s: Name of current post. Only visible to screen readers.
+#: inc/template-tags.php:58
+#, php-format
+msgid "Leave a comment<span class=\"sr-only\"> on %s</span>"
+msgstr ""
+
+#: functions.php:155
+msgid "Main Sidebar"
+msgstr ""
+
+#. Name of the template
+#: maintenance_mode.php:2
+msgid "MAINTENANCE MODE"
+msgstr ""
+
+#: functions.php:101
+msgid "Mobile"
+msgstr ""
+
+#: inc/template-functions.php:74
+msgctxt "monthly archives date format"
+msgid "F Y"
+msgstr ""
+
+#: inc/template-functions.php:74
+msgid "Monthly Archives: "
+msgstr ""
+
+#: inc/template-tags.php:265
+msgid "Newer posts"
+msgstr "Más recientes"
+
+#: single.php:25 single-area.php:26
+msgid "Next Post"
+msgstr ""
+
+#: single.php:26 single-area.php:27
+msgid "Next post:"
+msgstr ""
+
+#: template-parts/content/content-none.php:67
+msgid "No content matched your request."
+msgstr ""
+
+#. Name of the template
+#: page-no-header.php:2
+msgid "NO page header"
+msgstr ""
+
+#: inc/template-functions.php:387
+msgid "normal"
+msgstr ""
+
+#: template-parts/content/content-none.php:30
+msgid "Nothing Found"
+msgstr ""
+
+#: inc/template-tags.php:266
+msgid "Older posts"
+msgstr "Anteriores"
+
+#. 1: title.
+#: comments.php:34
+#, php-format
+msgid "One comment on &ldquo;%1$s&rdquo;"
+msgstr ""
+
+#: template-parts/content/content-single.php:76
+#: template-parts/content/content-single-area.php:77
+#: template-parts/content/content-page.php:74
+#: template-parts/content/content.php:35
+#: template-parts/content/content-page-noheader.php:20
+msgid "Pages:"
+msgstr ""
+
+#: inc/template-functions.php:460
+msgid "Pictau Block shortcode Footer"
+msgstr ""
+
+#. Name of the theme
+msgid "pictau/pictau/theme"
+msgstr ""
+
+#: template-parts/content/content-excerpt.php:17
+#: template-parts/content/content.php:17
+msgctxt "post"
+msgid "Featured"
+msgstr ""
+
+#. 1: posted by label, only visible to screen readers. 2: author link. 3: post author.
+#: inc/template-tags.php:44
+msgid "Posted by"
+msgstr ""
+
+#. 1: posted in label, only visible to screen readers. 2: list of categories.
+#: inc/template-tags.php:85 inc/template-tags.php:146
+msgid "Posted in"
+msgstr ""
+
+#: single.php:28 single-area.php:29
+msgid "Previous Post"
+msgstr ""
+
+#: single.php:29 single-area.php:30
+msgid "Previous post:"
+msgstr ""
+
+#: functions.php:100
+msgid "Primary"
+msgstr ""
+
+#: functions.php:154
+msgid "Primary Sidebar"
+msgstr ""
+
+#: 404.php:28
+msgid "Prueba otro contenido por favor."
+msgstr ""
+
+#. 1: search result title. 2: search term.
+#: search.php:23 template-parts/content/content-none.php:22
+msgid "Search results for:"
+msgstr ""
+
+#: inc/template-functions.php:68
+msgid "Tag Archives: "
+msgstr ""
+
+#. 1: tags label, only visible to screen readers. 2: list of tags.
+#: inc/template-tags.php:96 inc/template-tags.php:157
+msgid "Tags:"
+msgstr ""
+
+#: inc/template-functions.php:363
+msgid "THEME CUSTOMIZER"
+msgstr ""
+
+#: functions.php:102
+msgid "Top Menu"
+msgstr ""
+
+#: 404.php:36
+msgid "Vover a Inicio"
+msgstr ""
+
+#: inc/template-functions.php:72
+msgctxt "yearly archives date format"
+msgid "Y"
+msgstr ""
+
+#: inc/template-functions.php:72
+msgid "Yearly Archives: "
+msgstr ""
+
+#: inc/template-functions.php:156
+msgid "Your comment is awaiting moderation."
+msgstr ""
+
+#: inc/template-functions.php:158
+msgid ""
+"Your comment is awaiting moderation. This is a preview; your comment will be "
+"visible after it has been approved."
+msgstr ""
+
+#: template-parts/content/content-none.php:58
+msgid "Your search generated no results. Please try a different search."
+msgstr ""
+
+#: template-parts/content/content-none.php:41
+msgid ""
+"Your site is set to show the most recent posts on your homepage, but you "
+"haven&rsquo;t published any posts."
+msgstr ""

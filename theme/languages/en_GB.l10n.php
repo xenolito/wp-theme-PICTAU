@@ -1,0 +1,2 @@
+<?php
+return ['project-id-version'=>'PICTAU THEME','report-msgid-bugs-to'=>'','pot-creation-date'=>'2024-05-25 19:17+0000','po-revision-date'=>'2024-05-25 19:53+0000','last-translator'=>'','language-team'=>'English (UK)','language'=>'en_GB','plural-forms'=>'nplurals=2; plural=n != 1;','mime-version'=>'1.0','content-type'=>'text/plain; charset=UTF-8','content-transfer-encoding'=>'8bit','x-generator'=>'Loco https://localise.biz/','x-loco-version'=>'2.6.9; wp-6.5','x-domain'=>'pictau','messages'=>['Continue reading %s'=>'Continue reading %s']];

@@ -1,0 +1,37 @@
+/*
+  You need the following blocks structure @ WP editor
+    --- Group @class: pct-ul , @variants:
+        --- Group (li)
+            --- image (svg)
+            --- paragraph
+*/
+
+.pct-ul {
+	--li-icon-dim: 40px;
+	--li-gap: 1.5rem;
+	--li-icon-color: var(currentColor, var(--main-color));
+
+	display: grid;
+	gap: var(--li-gap);
+
+	> * {
+		display: grid;
+		grid-template-columns: min-content auto;
+		gap: calc(var(--li-gap) * 0.5);
+
+		> * {
+			align-items: flex-start;
+			margin: 0;
+		}
+
+		svg {
+			color: var(--li-icon-color);
+			width: var(--li-icon-dim);
+			height: var(--li-icon-dim);
+		}
+	}
+
+	&.pct-2cols {
+		gap: var(--li-gap);
+	}
+}

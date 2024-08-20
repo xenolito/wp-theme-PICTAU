@@ -1,0 +1,264 @@
+/**
+ * Custom `@font-face` rules
+ *
+ * These will be added immediately before Tailwind’s `base` layer.
+ */
+
+/* montserrat-600 - latin */
+/* @font-face {
+	font-display: swap;
+	font-family: "Montserrat";
+	font-style: normal;
+	font-weight: 600;
+	src: url("./fonts/montserrat-v26-latin-600.woff2") format("woff2");
+} */
+/* montserrat-700 - latin */
+@font-face {
+	font-display: swap;
+	font-family: "Montserrat";
+	font-style: normal;
+	font-weight: 700;
+	src: url("./fonts/montserrat-v26-latin-700.woff2") format("woff2");
+}
+
+/* quicksand-regular - latin */
+@font-face {
+	font-display: swap;
+	font-family: "Quicksand";
+	font-style: normal;
+	font-weight: 400;
+	src: url("./fonts/quicksand-v31-latin-regular.woff2") format("woff2");
+}
+
+/* quicksand-500 - latin */
+@font-face {
+	font-display: swap;
+	font-family: "Quicksand";
+	font-style: normal;
+	font-weight: 500;
+	src: url("./fonts/quicksand-v31-latin-500.woff2") format("woff2");
+}
+
+/* quicksand-600 - latin */
+@font-face {
+	font-display: swap;
+	font-family: "Quicksand";
+	font-style: normal;
+	font-weight: 600;
+	src: url("./fonts/quicksand-v31-latin-600.woff2") format("woff2");
+}
+/* quicksand-700 - latin */
+@font-face {
+	font-display: swap;
+	font-family: "Quicksand";
+	font-style: normal;
+	font-weight: 700;
+	src: url("./fonts/quicksand-v31-latin-700.woff2") format("woff2");
+}
+
+/* outfit-300 - latin */
+@font-face {
+	font-display: swap;
+	font-family: "Outfit";
+	font-style: normal;
+	font-weight: 300;
+	src: url("./fonts/outfit-v11-latin-300.woff2") format("woff2");
+}
+
+/*! DEFAULT PICTAU ICONS */
+
+@font-face {
+	font-family: "pictauicons";
+	/* font-display: swap; */
+	font-display: optional;
+	src: url("./fonts/pictauicons.woff2") format("woff2");
+	font-weight: normal;
+	font-style: normal;
+	font-display: block;
+}
+
+[class^="pcticon-"],
+[class*=" pcticon-"] {
+	/* use !important to prevent issues with browser extensions that change fonts */
+	font-family: "pictauicons" !important;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.pcticon-star:before {
+	content: "\f005";
+}
+.pcticon-star-o:before {
+	content: "\f006";
+}
+.pcticon-angle-left:before {
+	content: "\f104";
+}
+.pcticon-angle-right:before {
+	content: "\f105";
+}
+.pcticon-angle-up:before {
+	content: "\f108";
+}
+.pcticon-angle-down:before {
+	content: "\f109";
+}
+.pcticon-angle-left1:before {
+	content: "\f10a";
+}
+.pcticon-angle-right1:before {
+	content: "\f10b";
+}
+.pcticon-angle-up1:before {
+	content: "\f106";
+}
+.pcticon-angle-down1:before {
+	content: "\f107";
+}
+.pcticon-instagram:before {
+	content: "\f16e";
+}
+.pcticon-globe:before {
+	content: "\f0ac";
+}
+.pcticon-youtube:before {
+	content: "\f16a";
+}
+.pcticon-user-circle:before {
+	content: "\f2bd";
+}
+.pcticon-user-circle-o:before {
+	content: "\f2be";
+}
+.pcticon-user:before {
+	content: "\f007";
+}
+.pcticon-clock-o:before {
+	content: "\f017";
+}
+.pcticon-tag:before {
+	content: "\f02b";
+}
+.pcticon-bookmark:before {
+	content: "\f02e";
+}
+.pcticon-map-marker:before {
+	content: "\f041";
+}
+.pcticon-check-circle:before {
+	content: "\f058";
+}
+.pcticon-question-circle:before {
+	content: "\f059";
+}
+.pcticon-info-circle:before {
+	content: "\f05a";
+}
+.pcticon-exclamation-triangle:before {
+	content: "\f071";
+}
+.pcticon-warning:before {
+	content: "\f071";
+}
+.pcticon-calendar:before {
+	content: "\f073";
+}
+.pcticon-comment:before {
+	content: "\f075";
+}
+.pcticon-shopping-bag:before {
+	content: "\f290";
+}
+.pcticon-pictau-logo .path1:before {
+	--def-color: rgb(61, 57, 55);
+	content: "\e927";
+	color: var(--def-color);
+}
+.pcticon-pictau-logo .path2:before {
+	--def-color: rgb(83, 182, 141);
+	content: "\e92a";
+	margin-left: -0.8798828125em;
+	color: var(--def-color);
+}
+.pcticon-pictau-logo .path3:before {
+	--def-color: rgb(83, 182, 141);
+	content: "\e92b";
+	margin-left: -0.8798828125em;
+	color: var(--def-color);
+}
+.pcticon-twitter-x:before {
+	content: "\e928";
+}
+.pcticon-engranaje:before {
+	content: "\e929";
+}
+.pcticon-search:before {
+	content: "\f002";
+}
+.pcticon-heart:before {
+	content: "\f004";
+}
+.pcticon-ok:before {
+	content: "\f00c";
+}
+.pcticon-cog:before {
+	content: "\f013";
+}
+.pcticon-download_alt:before {
+	content: "\f019";
+}
+.pcticon-chevron_left:before {
+	content: "\f053";
+}
+.pcticon-chevron_right:before {
+	content: "\f054";
+}
+.pcticon-ok_sign:before {
+	content: "\f05b";
+}
+.pcticon-question_sign:before {
+	content: "\f05c";
+}
+.pcticon-exclamation_sign:before {
+	content: "\f06a";
+}
+.pcticon-magnet:before {
+	content: "\f076";
+}
+.pcticon-chevron_up:before {
+	content: "\f077";
+}
+.pcticon-chevron_down:before {
+	content: "\f078";
+}
+.pcticon-comments:before {
+	content: "\f086";
+}
+.pcticon-thumbs_up_alt:before {
+	content: "\f087";
+}
+.pcticon-phone1:before {
+	content: "\f095";
+}
+.pcticon-facebook:before {
+	content: "\f09a";
+}
+.pcticon-envelope_alt:before {
+	content: "\f0e0";
+}
+.pcticon-linkedin:before {
+	content: "\f0e1";
+}
+.pcticon-circle:before {
+	content: "\f111";
+}
+.pcticon-exclamation:before {
+	content: "\f12a";
+}

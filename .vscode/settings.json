@@ -1,0 +1,8 @@
+{
+  "css.customData": [".vscode/tailwind.json"],
+  "javascript.format.semicolons": "remove",
+  "prettier.eslintIntegration": true,
+  "intelephense.environment.includePaths": [
+    "/Volumes/KRAKEN/HTDOCS/sensormatic/app/public"
+  ]
+}

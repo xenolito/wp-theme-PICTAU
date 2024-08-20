@@ -1,0 +1,514 @@
+/**
+ * Custom styles to immediately follow Tailwind’s `components` layer
+ *
+ * “Add more opinionated, complex classes like buttons, form controls, alerts,
+ * etc; the sort of pre-built components you often see in other frameworks that
+ * you might need to override with utility classes.”
+ *
+ * — from https://tailwindcss.com/docs/plugins#adding-components
+ */
+
+/**
+* Global classes
+*/
+
+:root {
+	/* ! SHAPES */
+	--def-border-radius: 1.5rem;
+	/* --button-border-radius: 999px; */
+	--button-border-radius: var(--def-border-radius);
+	--box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.04), 0px 6px 12px rgba(0, 0, 0, 0.02);
+
+	--tw-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+	--tw-ring-offset-shadow: 0 0 #0000;
+	--tw-ring-shadow: 0 0 #0000;
+	--box-shadow-big: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+
+	--box-shadow-md: 0 4px 26px -3px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+	--box-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+	/* ! COLORS DEFAULT */
+	/* --main-color: rgb(196, 228, 86); */
+	/* --main-color: #c3ff00; */
+	--main-color: #fc1a57;
+	--main-color-darker: #7a9913;
+	--bg-light: rgb(246, 243, 239);
+
+	--bg-dark: rgb(3, 18, 39);
+	--bg-layer2-dark: #051a36;
+	/* --bg-dark: #24262b; */
+
+	--bg-card-light: white;
+	--bg-card-dark: #1d2a3d;
+	--bg-card-light: white;
+	--bg-sec-dark: rgba(255, 255, 255, 0.1);
+
+	/*! COLOR THEMES */
+
+	/* --bg-color-theme-A: rgb(0 0 0 / 10%);
+	--bg-color-theme-A: #e6ded2; */
+	/* --bg-color-theme-A: rgb(210 181 138 / 20%); */
+	/* --bg-color-theme-A: rgb(0 0 0 / 5%); */
+	/* --bg-color-theme-A: rgb(111 127 17 / 10%); */
+	--bg-color-theme-A: linear-gradient(to top, rgb(252, 0, 141), rgb(252, 91, 42) 100%);
+
+	--bg-color-theme-A-dark: rgb(255 255 255 / 10%);
+	--heading-color-theme-A: white;
+	--heading-color-theme-A-dark: var(--main-color);
+	--txt-color-theme-A: white;
+	--txt-color-theme-A-dark: white;
+
+	--bg-color-theme-B: #1d2a3d;
+	--bg-color-theme-B-dark: #233652;
+	--heading-color-theme-B: white;
+	--heading-color-theme-B-dark: var(--main-color);
+	--txt-color-theme-B: white;
+	--txt-color-theme-B-dark: white;
+
+	--bg-color-theme-white: white;
+	--bg-color-theme-white-dark: rgb(255 255 255 / 10%);
+	--heading-color-theme-white: rgb(87 60 20 / 100%);
+	--heading-color-theme-white-dark: var(--main-color);
+	--txt-color-theme-white: black;
+	--txt-color-theme-white-dark: white;
+
+	--bg-color-theme-Blue: #0056c7;
+	--bg-color-theme-Blue-dark: #0056c7;
+	--heading-color-theme-Blue: white;
+	--heading-color-theme-Blue-dark: white;
+	--txt-color-theme-Blue: white;
+	--txt-color-theme-Blue-dark: white;
+
+	--bg-color-theme-Red: #d92727;
+	--bg-color-theme-Red-dark: #d92727;
+	--heading-color-theme-Red: white;
+	--heading-color-theme-Red-dark: white;
+	--txt-color-theme-Red: white;
+	--txt-color-theme-Red-dark: white;
+
+	--bg-color-theme-Orange: #e18800;
+	--bg-color-theme-Orange-dark: #e18800;
+	--heading-color-theme-Orange: white;
+	--heading-color-theme-Orange-dark: white;
+	--txt-color-theme-Orange: white;
+	--txt-color-theme-Orange-dark: white;
+
+	/*! END COLOR THEMES */
+
+	--card-border-color-light: rgba(85, 60, 27, 0.5);
+	--card-border-color-dark: rgb(255, 255, 255, 0.15);
+	/* --card-border-color-dark: rgb(196, 228, 86, 0.5); */
+
+	--cta-color: #343434;
+	/* --cta-color: #c3ff00; */
+	/* --cta-color: var(--main-color); */
+	--cta-color-dark: var(--main-color);
+	--link-underline-color: var(--cta-color);
+	--link-color: var(--main-color);
+	--link-color-dark: var(--link-color);
+	--txt-color: hsl(0deg 0% 19%);
+	--txt-color: #343434;
+	--txt-color-dark: white;
+
+	/* --heading-color: rgb(85, 60, 27); */
+	--heading-color: var(--main-color);
+	--heading-color-dark: var(--main-color);
+	--line-color: var(--heading-color);
+	--line-color-dark: var(--heading-color-dark);
+
+	/* --highlightColor: var(--main-color); */
+	--highlightColor: var(--cta-color);
+	--bg-white-semi-transp: hsl(0deg 0% 100% / 69%);
+	--main-grad: linear-gradient(108deg, #008dff 24%, #00d39a 80%);
+	--main-grad-rev: linear-gradient(108deg, #00f6ff 24%, #008dff 80%);
+	--grad-2: linear-gradient(108deg, #008dff 70%, #00f6ff 100%);
+	--menu-txt-color: var(--main-color-second);
+	--scrolled-menu-txt-color: var(--main-color-second);
+	--scrollbar-handle-color: rgba(0, 0, 0, 0.3);
+	--mmenu-card-color: #f5f9fd;
+
+	--footer-gradient: linear-gradient(
+		130deg,
+		hsl(0deg 0% 21%) 0%,
+		hsl(240deg 2% 21%) 11%,
+		hsl(230deg 6% 20%) 22%,
+		hsl(233deg 8% 20%) 33%,
+		hsl(228deg 10% 20%) 44%,
+		hsl(226deg 13% 19%) 56%,
+		hsl(228deg 16% 19%) 67%,
+		hsl(229deg 18% 18%) 78%,
+		hsl(227deg 21% 18%) 89%,
+		hsl(229deg 24% 17%) 100%
+	);
+
+	--footer-gradient: linear-gradient(to top, rgb(252, 0, 141), rgb(252, 91, 42) 100%);
+
+	--footer-gradient-dark: linear-gradient(
+		180deg,
+		hsl(0deg 0% 0%) 0%,
+		hsl(210deg 100% 1%) 11%,
+		hsl(218deg 85% 3%) 22%,
+		hsl(214deg 89% 4%) 33%,
+		hsl(214deg 84% 5%) 44%,
+		hsl(216deg 87% 6%) 56%,
+		hsl(216deg 84% 7%) 67%,
+		hsl(214deg 86% 8%) 78%,
+		hsl(216deg 84% 10%) 89%,
+		hsl(215deg 86% 11%) 100%
+	);
+
+	--card-gradient: linear-gradient(
+		155deg,
+		hsl(215deg 86% 8%) 0%,
+		hsl(215deg 79% 11%) 11%,
+		hsl(215deg 74% 14%) 22%,
+		hsl(216deg 66% 16%) 33%,
+		hsl(216deg 60% 19%) 44%,
+		hsl(217deg 54% 21%) 56%,
+		hsl(217deg 46% 24%) 67%,
+		hsl(216deg 41% 27%) 78%,
+		hsl(216deg 34% 29%) 89%,
+		hsl(217deg 28% 32%) 100%
+	);
+
+	/* --mmenu-card-color: #f5f9fd; */
+
+	/* ? THEME COLOR SCHEME DEFAULT */
+	--gradient-primary: linear-gradient(
+		200deg,
+		hsl(211deg 100% 88%) 0%,
+		hsl(211deg 96% 89%) 22%,
+		hsl(212deg 92% 90%) 33%,
+		hsl(212deg 87% 91%) 41%,
+		hsl(213deg 80% 92%) 48%,
+		hsl(214deg 78% 93%) 54%,
+		hsl(213deg 69% 94%) 60%,
+		hsl(215deg 63% 95%) 66%,
+		hsl(219deg 64% 96%) 75%,
+		hsl(216deg 56% 96%) 99%
+	);
+
+	--gradient-second-base: linear-gradient(
+		125deg,
+		hsl(207deg 100% 58%) 0%,
+		hsl(208deg 94% 57%) 11%,
+		hsl(210deg 88% 55%) 22%,
+		hsl(211deg 83% 53%) 33%,
+		hsl(213deg 77% 51%) 44%,
+		hsl(215deg 77% 49%) 56%,
+		hsl(218deg 79% 46%) 67%,
+		hsl(222deg 82% 44%) 78%,
+		hsl(227deg 86% 41%) 89%,
+		hsl(241deg 100% 36%) 100%
+	);
+
+	/* ? custom secon grad bg */
+	--gradient-highlight-primary: radial-gradient(50vw 100% at calc(80% - 5vw) 100%, hsl(25deg 100% 93% / 93%) 25%, hsl(57deg 98% 100% / 0%) 120%);
+
+	--gradient-highlight-second: radial-gradient(50vw 50% at calc(100% - 5vw) 100%, hsla(225, 100%, 50%, 0.23) 25%, hsl(57deg 98% 100% / 0%) 120%);
+
+	--header-default-grad-bg: linear-gradient(
+		15deg,
+		hsl(207deg 98% 19%) 0%,
+		hsl(207deg 98% 22%) 11%,
+		hsl(207deg 98% 25%) 22%,
+		hsl(207deg 99% 29%) 33%,
+		hsl(207deg 99% 33%) 44%,
+		hsl(207deg 99% 36%) 56%,
+		hsl(207deg 99% 40%) 67%,
+		hsl(207deg 99% 43%) 78%,
+		hsl(207deg 100% 46%) 89%,
+		hsl(207deg 100% 50%) 100%
+	);
+
+	--header-scrolled-color: rgba(255, 255, 255, 0.65);
+	--header-scrolled-border-color: var(--main-color-second);
+
+	--header-scrolled-color-dark: rgba(0, 0, 0, 0.45);
+	--header-scrolled-border-color-dark: var(--main-color-second);
+
+	/* --heading-highlight-grad: linear-gradient(
+		45deg,
+		hsl(76deg 48% 43%) 0%,
+		hsl(73deg 52% 44%) 11%,
+		hsl(70deg 55% 45%) 22%,
+		hsl(68deg 59% 46%) 33%,
+		hsl(65deg 63% 47%) 44%,
+		hsl(63deg 67% 48%) 56%,
+		hsl(61deg 72% 48%) 67%,
+		hsl(58deg 79% 49%) 78%,
+		hsl(57deg 87% 50%) 89%,
+		hsl(55deg 100% 50%) 100%
+	); */
+
+	--heading-highlight-grad: linear-gradient(
+		45deg,
+		hsl(76deg 48% 43%) 0%,
+		hsl(76deg 52% 44%) 11%,
+		hsl(76deg 55% 45%) 22%,
+		hsl(76deg 59% 46%) 33%,
+		hsl(76deg 63% 47%) 44%,
+		hsl(76deg 67% 48%) 56%,
+		hsl(76deg 72% 49%) 67%,
+		hsl(75deg 77% 49%) 78%,
+		hsl(75deg 85% 49%) 89%,
+		hsl(74deg 100% 47%) 100%
+	);
+
+	--heading-highlight-grad-dark: linear-gradient(
+		140deg,
+		hsl(0deg 0% 100%) 0%,
+		hsl(223deg 100% 95%) 40%,
+		hsl(223deg 100% 90%) 56%,
+		hsl(223deg 100% 85%) 67%,
+		hsl(223deg 100% 80%) 76%,
+		hsl(223deg 100% 75%) 82%,
+		hsl(223deg 100% 71%) 88%,
+		hsl(223deg 100% 66%) 93%,
+		hsl(223deg 100% 61%) 97%,
+		hsl(223deg 100% 56%) 100%
+	);
+
+	--heading-default-grad-mz: var(--footer-gradient);
+
+	--heading-default-grad-bg: linear-gradient(
+		270deg,
+		hsl(207deg 98% 19%) 0%,
+		hsl(207deg 98% 22%) 11%,
+		hsl(207deg 98% 25%) 22%,
+		hsl(207deg 99% 29%) 33%,
+		hsl(207deg 99% 33%) 44%,
+		hsl(207deg 99% 36%) 56%,
+		hsl(207deg 99% 40%) 67%,
+		hsl(207deg 99% 43%) 78%,
+		hsl(207deg 100% 46%) 89%,
+		hsl(207deg 100% 50%) 100%
+	);
+
+	--heading-default-grad-bg: linear-gradient(to top, rgb(252, 0, 141), rgb(252, 91, 42) 100%);
+
+	/* ? THEME COLOR SCHEME RED */
+	--header-red-grad-bg: linear-gradient(
+		0deg,
+		hsl(0deg 100% 33%) 0%,
+		hsl(8deg 98% 35%) 24%,
+		hsl(13deg 96% 38%) 62%,
+		hsl(16deg 94% 40%) 78%,
+		hsl(18deg 91% 43%) 87%,
+		hsl(20deg 88% 45%) 93%,
+		hsl(22deg 85% 48%) 96%,
+		hsl(23deg 85% 51%) 99%,
+		hsl(25deg 92% 54%) 100%,
+		hsl(26deg 100% 56%) 100%
+	);
+
+	--heading-red-grad-bg: linear-gradient(
+		270deg,
+		hsl(0deg 100% 33%) 0%,
+		hsl(8deg 98% 35%) 24%,
+		hsl(13deg 96% 38%) 62%,
+		hsl(16deg 94% 40%) 78%,
+		hsl(18deg 91% 43%) 87%,
+		hsl(20deg 88% 45%) 93%,
+		hsl(22deg 85% 48%) 96%,
+		hsl(23deg 85% 51%) 99%,
+		hsl(25deg 92% 54%) 100%,
+		hsl(26deg 100% 56%) 100%
+	);
+
+	--header-scrolled-color-red: #a80000;
+	--header-scrolled-border-color-red: #650707;
+	/* --button-color-red: #b51f03; */
+	--button-color-red: #b82403;
+	--cta-color-red: var(--main-color);
+
+	/* ? THEME COLOR SCHEME GREEEN */
+	--header-green-grad-bg: linear-gradient(
+		15deg,
+		hsl(124deg 100% 25%) 0%,
+		hsl(130deg 100% 26%) 9%,
+		hsl(137deg 100% 28%) 25%,
+		hsl(143deg 100% 29%) 40%,
+		hsl(150deg 100% 31%) 52%,
+		hsl(157deg 100% 32%) 63%,
+		hsl(163deg 100% 34%) 73%,
+		hsl(170deg 100% 35%) 83%,
+		hsl(176deg 100% 36%) 91%,
+		hsl(183deg 100% 38%) 100%
+	);
+
+	--header-scrolled-color-green: #008008;
+	--header-scrolled-border-color-green: #035610;
+
+	--grad-bg: linear-gradient(117deg, var(--main-color) 50%, var(--secondary-color));
+
+	/* ? DEFINED BG COLOR LIST */
+	--bgcolor-dark-1: #191308;
+	--bgcolor-dark-2: #5b5bf1;
+	--bgcolor-dark-3: #454b66;
+	--bgcolor-dark-4: #2d0605;
+	--bgcolor-dark-5: #4c0827;
+
+	/* ? green custom secon grad bg */
+	--header-custom-grad-bg-green: radial-gradient(50vw 100% at calc(110% - 5vw) 100%, hsl(114deg 98% 65% / 80%) 25%, hsl(57deg 98% 100% / 0%) 120%);
+	/* ? yellow custom secon grad bg */
+	--header-custom-grad-bg-yellow: radial-gradient(50vw 100% at calc(110% - 5vw) 100%, hsl(56deg 100% 56% / 80%) 25%, hsl(9deg 98% 36% / 0%) 120%);
+	--header-custom-grad-bg-orange: radial-gradient(50vw 100% at calc(110% - 5vw) 100%, hsl(35deg 100% 56% / 80%) 25%, hsl(9deg 98% 36% / 0%) 120%);
+	--header-custom-grad-bg: none;
+
+	/* --transparent-header-bg-color: rgba(0,0,0,0.16); */
+	--transparent-header-bg-color: rgba(255, 255, 255, 0.08);
+	--transparent-header-bg-color-light: rgba(255, 255, 255, 0);
+	
+	--menu-item-hover-bg-color: rgba(255, 255, 255, 0.18);
+	--menu-item-hover-bg-color-scrolled: rgba(0, 0, 0, 0.1);
+	--menu-item-hover-bg-color-dark: rgba(255, 255, 255, 0.18);
+	--menu-item-hover-bg-color-scrolled-dark: rgba(255, 255, 255, 0.18);
+	/* --footer-bg-color: #363636; */
+	--footer-bg-color: transparent;
+
+	--ui-color: #eaeaea;
+	--ui-color-subdarker: #ccc;
+	--ui-color-darker: #767676;
+
+	--second-color: #7f93c8;
+	--third-color: #a8d4ff;
+
+	--section-color: #fbf8f9;
+
+	/* ! FONTS & TYPOGRAPHY */
+	/* --def-font-family: "Outfit", Helvetica, Arial, sans-serif;
+	--def-heading-font-family: "Outfit", Helvetica, Arial, sans-serif; */
+	--def-font-family: "Quicksand", Helvetica, Arial, sans-serif;
+	--def-heading-font-family: "Quicksand", Helvetica, Arial, sans-serif;
+	--txt-slider-heading: "Montserrat", Helvetica, Arial, sans-serif;
+	--def-txt-color: #404040;
+	--txt-heading-color: #3a3a3a;
+	--light-grey-color: #ddd;
+	--light-light-grey-color: #f5f5f5;
+	--ui-font-size: 0.7rem;
+	--ui-mm-font-size: 0.8rem;
+
+	/* ! DIMENSIONS CONSTANTS */
+	--layout-max-width: 1280px;
+	--def-layout-x-padding: clamp(1.3rem, 3vw, 2rem);
+
+	--card-padding: clamp(2rem, 5vw, 3rem);
+	--card-border-radius: var(--def-border-radius);
+	--card-media-left-img-width: 33%;
+	--card-icon-dim: 60px;
+
+	--mobile-switcher-dim: 13px;
+	--mobile-switcher-borderDim: 6px;
+
+	--desktop-space-top: 1rem;
+	&:has(.above-header-wrap) {
+		--desktop-space-top: 0px;
+	}
+
+	--mobile-header-height: 45px;
+	--desktop-header-height: 60px;
+
+	--desktop-above-header-height: 0px;
+	&:has(.above-header-wrap) {
+		--desktop-above-header-height: 46px;
+	}
+
+	--mobile-above-header-height: 0px;
+	--whole-header-height: calc(var(--desktop-header-height) + var(--desktop-above-header-height) + var(--desktop-space-top));
+	/* --whole-header-height: calc(var(--desktop-header-height) + var(--desktop-above-header-height)); */
+	@media only screen and (max-width: 1024px) {
+		--whole-header-height: calc(var(--mobile-header-height) + var(--mobile-above-header-height));
+	}
+	--mobile-breakpoint: 1023px;
+	--default-section-vert-padding: clamp(4.5rem, 10vw, 6rem);
+	--header-min-height: 250px;
+	@media only screen and (max-width: 921px) {
+		--header-min-height: 200px;
+	}
+	@media only screen and (max-width: 544px) {
+		--header-min-height: 160px;
+	}
+
+	/* --sticky-header-trigger-height: 350px; */
+	--desktop-submenu-width: 260px;
+	--header-sub-line-height: 4px;
+
+	--svg-default-h: 80px;
+	--svg-default-w: 80px;
+
+	--form-max-width: 320px;
+
+	/* ! LOGO HEADER DIMENSIONS */
+	--desktop-logo-brand-width: 85px;
+	--mobile-logo-brand-width: 60px;
+	--logo-brand-width: var(--desktop-logo-brand-width);
+	@media only screen and (max-width: 1023px) {
+		--logo-brand-width: var(--mobile-logo-brand-width);
+	}
+	--logo-brand-height: auto;
+
+	/* ! MOBILE MENU DIMENSIONS */
+	--mm-width: 360px;
+	--mm-nav-header-height: calc(1ch * 4.8);
+
+	/* ! SINGLE PAGE HEADER */
+	--page-header-min-height: 250px;
+	--page-header-blog-min-height: 550px;
+	--content-max-width: 1240px;
+
+	--border-def: 1px solid var(--ui-color);
+	--border-def-dark: 1px solid white;
+
+	/* ! scroller handler settings for "overlayscrollbars" module */
+	--scroll-handler-bg: red;
+
+	/* ! SLIDER DIMENSIONS */
+	--slider-min-height-base: 500px;
+	@media only screen and (max-width: 980px) {
+		--slider-min-height-base: 1px;
+	}
+	--slider-min-height: clamp(460px, var(--slider-min-height-base) + 10vw, 890px);
+	--slider-height: 100vh;
+
+	/*! SECTIONS OVERLAP */
+	--section-overlap-y: 200px;
+
+	/* * Animated border tiles */
+	--anim-border-width: 2px;
+	--anim-border-radius: var(--def-border-radius);
+	/* --bright-color: #3ac47e; */
+	--bright-color: white;
+	/* --bright-color: red; */
+	/* --border-color: #b2c6d7; */
+	--border-color: #c1cdd5;
+}
+
+body {
+	-webkit-font-smoothing: antialiased !important;
+	-moz-osx-font-smoothing: grayscale !important;
+}
+
+/*! THEMES  */
+
+.theme-default {
+	--color-header: var(--heading-color);
+	--color-content: var(--txt-color);
+}
+
+.theme-dark-2 {
+	/* --color-header: var(--main-color); */
+	--color-header: white;
+	--color-content: rgba(255, 255, 255, 0.75);
+}
+
+/*
+.theme-second {
+	--color-primary: #991b1b;
+	--color-secondary: #fecaca;
+}
+
+.theme-third {
+	--color-primary: #166534;
+	--color-secondary: #bbf7d0;
+} */

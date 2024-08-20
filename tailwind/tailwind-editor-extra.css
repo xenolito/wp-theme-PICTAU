@@ -1,0 +1,103 @@
+/**
+ * Additional styles applied only to the WordPress editor
+ *
+ * It is sometimes necessary to add additional styles for the WordPress block
+ * editor, generally to improve the editor experience. For example, you may
+ * want to tweak the appearance of the title area to better match your site’s
+ * front end, or you may need to change the appearance of a block to better
+ * distinguish between its fields while editing.
+ *
+ * Those styles should be added in this file, and they will be added only to
+ * the block editor.
+ */
+
+.editor-styles-wrapper.block-editor-writing-flow {
+	@apply px-[1.5rem];
+}
+
+.entry-header,
+.entry-content {
+	@apply px-8;
+}
+
+.is-root-container,
+.entry-header {
+	> * {
+		max-width: 100% !important;
+	}
+}
+
+.editor-styles-wrapper .is-layout-constrained > * {
+	max-width: 100% !important;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+}
+
+.editor-styles-wrapper * {
+	opacity: 1 !important;
+}
+
+.full-vh,
+.full-height {
+	height: auto !important;
+}
+
+.full-width {
+	left: auto;
+}
+
+.is-bg {
+	position: relative;
+	img {
+		width: 100%;
+		height: auto;
+	}
+}
+
+.editor-styles-wrapper ::after {
+	display: none !important;
+}
+
+.bg-dark {
+	h1,
+	h2,
+	h3,
+	p {
+		color: white !important;
+	}
+}
+
+.popup {
+	background-color: rgb(100 149 237 / 33%);
+	padding: 3rem;
+}
+
+.has-background {
+	padding: 2rem;
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6,
+	p {
+		color: white !important;
+	}
+}
+
+.card.cta {
+	h3,
+	p {
+		color: white !important;
+	}
+}
+
+.theme-color-B {
+	h2,
+	h1,
+	h3,
+	h4,
+	p {
+		color: white !important;
+	}
+}

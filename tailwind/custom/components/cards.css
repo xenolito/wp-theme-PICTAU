@@ -1,0 +1,619 @@
+/* !ALL CARDS STYLES AND LAYOUTS */
+/*  @ CSS classes for variants
+    @ transparent       Card background transparent
+    @ shadow            Box shadow
+    @ only-media        Just contains an img full cover
+    @ media-left       Icon/img on the left
+    @ media-img         No icon, sprite img full-width / full-height
+    @ bg-dark           Card background color dark --> text white and button inverted!
+		@ v-align-center		Align card vertically center (align-self: center)
+
+
+  You need the following blocks structure @ WP editor
+    --- Group @class: card , @variants: content-x-center, transparent, shadow, media-img, media-left, bg-dark...
+        --- Group ( card container)
+            --- Image / svg
+            --- Group
+                --- Heading + content
+
+*/
+.card {
+	border-radius: var(--card-border-radius);
+	overflow: hidden;
+	padding: var(--card-padding);
+	container-type: inline-size;
+	container-name: pctcard;
+
+	@apply bg-white dark:bg-white/20 my-[var(--def-layout-x-padding)];
+
+	&:last-child {
+		margin-bottom: 0 !important;
+	}
+
+	p:first-of-type {
+		margin-top: 0;
+	}
+
+	h2,
+	h3,
+	h4 {
+		padding-top: 0;
+		margin-top: 0;
+		/* color: currentColor; */
+	}
+
+	/* .wp-block-button {
+		@apply mt-[var(--def-layout-x-padding)] !important;
+	} */
+
+	p:last-of-type {
+		margin-bottom: 0;
+	}
+
+	&.bg-dark {
+		color: white !important;
+	}
+
+	&.v-align-center {
+		align-self: center;
+	}
+
+	/*? variants */
+
+	&.border {
+		border-width: 2px;
+		@apply border-[#573c14]/30 dark:border-white/30;
+	}
+
+	&.transparent {
+		background-color: transparent !important;
+		border: 0;
+	}
+
+	&.shadow {
+		@apply shadow-2xl shadow-black/15 dark:shadow-white/15;
+		/* box-shadow: var(--card-shadow); */
+	}
+
+	&.stretch-h-full {
+		width: calc(100vw * 0.5) !important;
+	}
+
+	&.media-left {
+		padding: 0;
+		> div {
+			display: grid;
+			grid-template-columns: auto 1fr;
+			/* gap: var(--def-layout-x-padding); */
+
+			@media only screen and (max-width: 768px) {
+				grid-template-columns: 1fr;
+			}
+
+			> figure {
+				width: auto !important;
+				justify-content: center;
+			}
+
+			figure + * {
+				padding: var(--card-padding);
+			}
+
+			> figure {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				padding: var(--card-padding);
+				padding-right: 0;
+			}
+		}
+
+		&.media-img {
+			> div {
+				> figure {
+					padding: 0;
+				}
+			}
+		}
+	}
+
+	&.full-width {
+		> figure.alignfull {
+			width: 100%;
+			max-width: unset !important;
+		}
+	}
+}
+
+/* @container pctcard (width < 440px) {
+	div:first-child {
+		flex-flow: column !important;
+	}
+}
+*/
+
+/* @container pctcard (width < 640px) {
+	div:first-child {
+		&:first-child:has(img) {
+			display: grid;
+			grid-template-columns: 1fr !important;
+
+			figure {
+				padding-bottom: 0;
+			}
+
+			> *:last-child:not(:first-child) {
+				padding-left: var(--card-padding) !important;
+				padding-top: var(--card-padding);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+			flex-flow: column !important;
+		}
+	}
+} */
+
+/*! CARDS AREA OVERLAP ANIMATION HOME */
+
+.pct-section.cards-overlap {
+	margin-bottom: var(--default-section-vert-padding);
+}
+
+/* section:has(> .card-area-overlap) {
+	@apply shadow-2xl !pt-0;
+} */
+
+[data-scrolloverlapvertical] > * {
+	&:nth-child(odd) {
+		.card-area-overlap.glass {
+			> div {
+				order: 2;
+				overflow: hidden;
+				border-top-right-radius: var(--def-border-radius);
+				border-bottom-right-radius: var(--def-border-radius);
+			}
+		}
+	}
+}
+
+.card-area-overlap.glass {
+	background: var(--footer-gradient);
+	/* @apply shadow-2xl shadow-slate-700/30 dark:shadow-2xl dark:shadow-green-300/30; */
+	display: grid !important;
+	grid-template-columns: 1fr 1fr;
+	@media only screen and (max-width: 768px) {
+		grid-template-columns: 1fr;
+
+		> div {
+			order: 2;
+		}
+
+		&::after {
+			aspect-ratio: 1.8/1;
+		}
+	}
+	border-radius: var(--def-border-radius);
+	overflow: hidden;
+
+	> figure {
+		position: absolute;
+		inset: 0;
+		img {
+			height: 100%;
+			width: 100%;
+			object-fit: cover;
+		}
+	}
+
+	&::after {
+		content: "";
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+
+	@media only screen and (max-width: 768px) {
+		grid-template-columns: 1fr;
+		figure {
+			position: relative;
+			img {
+				width: 100%;
+				height: auto;
+			}
+		}
+		&::after {
+			display: none;
+		}
+	}
+
+	/* &.content-right {
+		> div {
+			order: 2;
+		}
+	} */
+
+	> div {
+		color: white;
+		padding: calc(var(--def-layout-x-padding) * 1.5);
+		background-color: rgba(255, 255, 255, 0.01);
+		background-color: rgba(0, 0, 0, 0.3);
+		backdrop-filter: blur(40.5px);
+		h3 {
+			font-size: clamp(2.2rem, 7vw, 4rem);
+			color: white;
+		}
+	}
+
+	h3 {
+		padding-top: 0 !important;
+
+		@media only screen and (max-width: 950px) {
+			font-size: clamp(2rem, 5vw, 2.5rem) !important;
+		}
+
+		/* padding-bottom: 2rem;
+		color: white; */
+	}
+	p {
+		&:not(.subheader) {
+			font-size: 1.1em;
+		}
+
+		@media only screen and (max-width: 525px) {
+			font-size: 1rem;
+		}
+		color: white;
+		font-weight: 300;
+	}
+}
+
+/*! Cards with ordered numbers */
+
+.ordered-counter {
+	--numSize: 1.5rem;
+	/* --numberedColor: var(--heading-color); */
+	--numberedColor: var(--main-color-darker);
+	--numberedBgColor: var(--main-color);
+	--numberedBorderColor: var(--numberedColor);
+	--numberedBorderSize: 4px;
+	--dim: 2rem;
+	--padding: 1.5em;
+	counter-reset: xx;
+}
+
+.card-ordered-num {
+	display: flex;
+	flex-flow: column;
+	/* gap: calc(var(--card-padding) * 0.7); */
+	/* border-radius: var(--card-border-radius); */
+
+	border-top: 1px solid black;
+	@apply border-t-[var(--line-color)] dark:border-t-white/50;
+	overflow: hidden;
+	padding: var(--card-padding);
+	/* container-type: inline-size;
+	container-name: pctcard; */
+
+	h3 {
+		padding-top: 0;
+	}
+
+	&:nth-child(-n + 9) {
+		&::before {
+			content: "0" counter(xx);
+		}
+	}
+
+	/* &:first-of-type {
+		padding-top: 0.5em;
+	} */
+
+	&:last-of-type {
+		padding-bottom: 0;
+	}
+
+	/* h3 {
+		text-wrap: pretty;
+	} */
+
+	p:first-of-type {
+		margin-top: 0;
+	}
+
+	&::before {
+		content: counter(xx);
+		counter-increment: xx;
+		border-radius: 50%;
+		border: var(--numberedBorderSize) solid var(--numberedBorderColor);
+		background-color: var(--numberedBgColor, red);
+		color: var(--numberedColor, currentColor);
+		width: var(--dim);
+		height: var(--dim);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-weight: bold;
+		font-size: var(--numSize);
+		padding: var(--padding);
+		margin-bottom: calc(var(--card-padding) * 0.85);
+	}
+}
+
+.base-card {
+	border-radius: var(--card-border-radius);
+	overflow: hidden;
+	padding: var(--def-layout-x-padding);
+
+	p:first-of-type {
+		margin-top: 0;
+	}
+
+	h2,
+	h3,
+	h4 {
+		margin-top: 0;
+	}
+
+	.wp-block-button {
+		@apply mt-[var(--def-layout-x-padding)] !important;
+	}
+
+	p:last-of-type {
+		margin-bottom: 0;
+	}
+}
+
+.address-card {
+	--icon-dim: 46px;
+	--icon-item-dim: 22px;
+	display: grid;
+	grid-template-columns: min-content 1fr;
+	align-items: center;
+	align-self: flex-start;
+	gap: 0.5rem;
+
+	&:first-of-type {
+		margin-top: 3rem !important;
+	}
+	/* grid-row: 1 / 3; */
+
+	> *:first-child {
+		align-self: flex-start;
+		padding-right: 1rem;
+	}
+	> *:last-child {
+		border-left-width: 1px;
+		@apply border-l-black dark:border-l-white;
+
+		display: flex;
+		flex-flow: column;
+		padding-left: 1rem;
+		margin-left: 1rem;
+	}
+
+	.icon-big {
+		display: grid;
+		align-items: center;
+		justify-content: center;
+		color: black;
+		width: var(--icon-dim) !important;
+		aspect-ratio: 1/1;
+
+		svg {
+			width: 100%;
+			height: auto;
+			padding: calc(var(--icon-dim) * 0.25);
+		}
+
+		> * {
+			grid-area: 1 / 1;
+		}
+
+		&::before {
+			grid-area: 1 / 1;
+			content: "";
+			display: block;
+			width: var(--icon-dim);
+			height: var(--icon-dim);
+			/* border: var(--numberedBorderSize) solid var(--numberedBorderColor); */
+			background-color: var(--main-color);
+			border-radius: 50%;
+			/* color: var(--numberedColor, currentColor); */
+		}
+	}
+
+	h3,
+	.title {
+		font-size: clamp(1.4rem, 5vw, 1.8rem);
+		margin-bottom: 0 !important;
+		padding-top: 0;
+		font-weight: 500;
+		line-height: var(--icon-dim);
+		span {
+			font-weight: 100;
+			font-size: 0.6em;
+		}
+	}
+
+	.item {
+		display: grid;
+		grid-template-columns: min-content 1fr;
+		align-items: center;
+		gap: 0.5ch;
+		figure {
+			align-self: flex-start;
+			width: var(--icon-item-dim) !important;
+			aspect-ratio: 1;
+			margin-top: 2px !important;
+		}
+		p {
+			font-size: 1rem;
+		}
+
+		&:first-of-type {
+			margin-top: 0.5rem;
+		}
+
+		&:not(:last-of-type) {
+			margin-bottom: 0.8rem;
+		}
+	}
+}
+
+/*! CARD AGENDA FOR EVENTS */
+.card.agenda {
+	display: flex;
+	gap: 1rem;
+
+	h2,
+	h3 {
+		text-align: center;
+	}
+
+	.sesion {
+		display: grid;
+		grid-template-columns: 62% 1fr;
+		gap: 2rem;
+
+		@media only screen and (max-width: 545px) {
+			grid-template-columns: 1fr;
+		}
+		/* background: red; */
+		padding: 1rem 0;
+
+		&:not(:last-of-type) {
+			border-bottom-width: 1px;
+			@apply border-b-black dark:border-b-white/50;
+			margin-bottom: 1rem;
+		}
+
+		.contenido {
+			display: flex;
+			gap: 0.2rem;
+			.hora {
+				font-size: 0.9em;
+			}
+			/* .descripcion {
+				font-weight: bold;
+			} */
+		}
+
+		.ponentes {
+			display: flex;
+			gap: 0.5rem;
+			/* padding-top: 1.6rem; */
+
+			.ponente {
+				display: flex;
+				gap: 0.1rem;
+				@apply bg-slate-700/5 dark:bg-white/10 rounded-[var(--def-border-radius)];
+				/* display: flex;
+				flex-flow: row;
+				gap: 4px;
+				align-items: center;
+				justify-content: center; */
+				padding: 0.4rem 0.6rem;
+
+				* {
+					font-size: 1em;
+					line-height: 1;
+					width: fit-content;
+					margin: 0;
+					/* @apply !text-black; */
+				}
+
+				/* .nombre {
+					opacity: 0.6;
+				} */
+				.empresa {
+					opacity: 0.45;
+					font-size: 0.8em;
+				}
+			}
+
+			@media only screen and (max-width: 545px) {
+				flex-flow: row;
+				flex-wrap: wrap;
+
+				.ponente {
+					width: fit-content;
+				}
+			}
+		}
+	}
+}
+
+.card.ponentes {
+	h2,
+	h3 {
+		text-align: center;
+		padding-bottom: 2rem;
+	}
+
+	.grid {
+		display: flex;
+		flex-flow: row;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 2rem;
+
+		figure {
+			/* width: fit-content !important; */
+			display: inline-flex;
+			width: auto;
+			img {
+				/* width: 195px; */
+				height: auto;
+				object-fit: contain;
+				object-position: top;
+			}
+		}
+	}
+}
+
+.card.cta {
+	@apply text-white dark:text-black bg-slate-800 dark:bg-white;
+	--decorator-padding: 1rem;
+
+	&::after {
+		content: "";
+		display: block;
+		background-color: var(--main-color);
+		max-width: 100px;
+		width: 15%;
+		aspect-ratio: 1;
+		position: absolute;
+		right: 1rem;
+		bottom: 1rem;
+		translate: calc(-var(--decorator-padding)) 0;
+		border-bottom-right-radius: var(--def-border-radius);
+		clip-path: polygon(100% 0%, 100% 100%, 0% 100%);
+	}
+
+	h2,
+	h3 {
+		padding-top: 0;
+		@apply text-white dark:text-slate-700 pb-2;
+		text-wrap: wrap !important;
+		line-height: 1.2;
+
+		em {
+			display: inline-flex;
+		}
+	}
+}
+
+:root.dark {
+	.card.cta {
+		h2 em,
+		h3 em {
+			/* @apply text-[var(--main-color)]; */
+			@apply text-[var(--main-color)];
+			background-image: unset;
+			background-clip: unset;
+			-webkit-text-fill-color: unset;
+			font-size: 1.5em;
+		}
+	}
+}

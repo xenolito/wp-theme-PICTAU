@@ -1,0 +1,42 @@
+/* For plugin Cookie Notice: GDPR Cookie Compliance Plugin (CCPA ready) https://es.wordpress.org/plugins/gdpr-cookie-compliance/ */
+
+/* Cookie notice info bar */
+
+/* All buttons on GDPR COOKIE PLUGIN */
+#moove_gdpr_cookie_info_bar,
+.gdpr_lightbox {
+	.mgbutton {
+		border-radius: var(--def-border-radius) !important;
+		box-shadow: none !important;
+
+		&.moove-gdpr-infobar-reject-btn,
+		&.moove-gdpr-modal-reject-all {
+			background-color: #686868 !important;
+			&:hover {
+				background-color: black !important;
+			}
+		}
+	}
+
+	#strict-necessary-cookies,
+	#third_party_cookies {
+		.tab-title {
+			pointer-events: none;
+		}
+		.moove-gdpr-tab-main-content {
+			display: block !important;
+		}
+	}
+
+	#privacy_overview .tab-title {
+		font-size: 22px !important;
+		font-weight: bold !important;
+	}
+
+	#strict-necessary-cookies,
+	#third_party_cookies {
+		.tab-title {
+			font-weight: bold !important;
+		}
+	}
+}
