@@ -53,7 +53,7 @@ I also encourage you to change your database prefix for security reasons, you ca
 2. Edit `package.json` and update `"config": { "domain": [your-local-domain]}` for browsersync to setup.
 3. Run `npm install && npm run watch` in this folder
 4. In Theme folder, setup the customer email `company name` and `email from address` at `[your-theme]/inc/template-functions.php`.
-5. In Theme folder, customize the child theme name at `[your-theme]/style.css`.
+5. Customize the child theme name at `[your-theme]/tailwind/custom/file-header.css`.
 6. In Wordpress, add at least a Desktop (Primary) and Mobile menu
 7. Activate this theme in WordPress
 

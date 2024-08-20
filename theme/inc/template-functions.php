@@ -464,6 +464,9 @@ function customize_theme_header_behavior( $wp_customize ) {
 	// $default_lang = function_exists('pll_the_languages') ? pll_default_language('locale') : '';
 
 	if (function_exists('pll_the_languages')) {
+		/**
+		* @disregard P1009 Undefined type
+		*/
 		$languages = pll_languages_list(array(
 			'fields'	=> 'locale'
 		));
@@ -1266,6 +1269,10 @@ function preload_videos() {
 //! POLYLANG UTILS: get the provided slug for the current language
 function getLocalizedSlug($slug) {
 	if ( function_exists('pll_the_languages') ) {
+		/**
+		* @disregard P1009 Undefined type
+		*/
+
 		$localizedSlug = get_the_permalink(pll_get_post(get_page_by_path( $slug )->ID));
 		return $localizedSlug;
 	}
@@ -1290,6 +1297,9 @@ function language_switcher( $atts = [], $content = '' ) {
 		$output .= '		<span class="switch-head"></span>';
 		$output .= '		<div class="lang-list">';
 
+		/**
+		* @disregard P1009 Undefined type
+		*/
 		$languages = pll_the_languages( array( 'raw' => 1 ) );
 
 		$numItems = count($languages);
@@ -1473,6 +1483,9 @@ add_shortcode( 'svg-inline', 'img_to_svg' );
 
 add_action('init', function() {
 	if ( function_exists( 'pll_the_languages' ) ) {
+		/**
+		* @disregard P1009 Undefined type
+		*/
 		pll_register_string('button_info', 'Solicita información');
 	}
 });
