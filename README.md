@@ -1,4 +1,4 @@
-# SENSORMATIC HONDURAS
+# WORDPRESS THEME TEMPLATE
 
 Pictau WordPress theme with [tailwindcss](https://tailwindcss.com/docs/installation), based on [www.underscoretw.com](https://underscoretw.com).
 Any question and contributions are welcome: [@xenolito](mailto:orey@pictau.com)
