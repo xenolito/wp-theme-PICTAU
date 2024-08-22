@@ -10,7 +10,7 @@
  */
 
 import isTouch from './modules/isTouchDevice'
-import './modules/avif-webp'
+// import './modules/avif-webp'
 import signature from '@xenolito/console-signature'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -37,7 +37,7 @@ import './modules/animation_any'
 // import './modules/swiper-product-showcase'
 // import './modules/swiper-webinars'
 // import './modules/swiper-backgrounds'
-import './modules/faqs'
+// import './modules/faqs'
 // import './modules/mouse_pointer'
 // import './modules/parallax_header'
 // import './modules/parallax_footer'
@@ -47,10 +47,11 @@ import './modules/faqs'
 // import './modules/logosGridFilter'
 import './modules/slider_videoBg_trigger_anim'
 // import './modules/video_play_scrolltriggered'
-import './modules/navigation_dot'
-import './modules/scrollToAName'
+// import './modules/navigation_dot'
+// import './modules/scrollToAName'
 
 document.addEventListener('DOMContentLoaded', () => {
+	console.clear()
 	checkIfTouchDevice()
 	signature()
 	setScrollBars()

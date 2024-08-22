@@ -23,7 +23,7 @@
 	--border-color: var(--heading-color-theme-A);
 	--border-color-dark: var(--heading-color-theme-A-dark);
 
-	@apply bg-gradient-A dark:bg-[var(--bg-color-theme-A-dark)];
+	@apply bg-[var(--main-color)];
 
 	* {
 		color: var(--txt-color-theme-A);
@@ -70,7 +70,7 @@
 		.menu-item {
 			a {
 				text-transform: uppercase;
-				font-size: 0.9rem;
+				font-size: 1.25rem;
 			}
 		}
 	}
@@ -78,6 +78,42 @@
 	.main-nav-mobile {
 		.menu-bt {
 			margin-top: 1rem;
+		}
+	}
+}
+
+#masthead {
+	> div {
+		/* padding-top: 2.5rem !important; */
+		@apply !pt-0 lg:!pt-[2.5rem];
+	}
+
+	/* &.scrolledHeader {
+		.main-header-wrap {
+			color: white !important;
+		}
+	} */
+
+	.menu-item {
+		a {
+			font-weight: 700;
+		}
+	}
+}
+
+.main-header-wrap {
+	border: 0;
+	background: var(--transparent-header-bg-color-light);
+	.main-header-content {
+		padding-left: 0 !important;
+		@apply lg:!pr-[3.37rem];
+		/* height: auto !important; */
+		.logo-brand {
+			@apply px-[1.5rem] lg:pl-[3.37rem] bg-[var(--main-color)] text-white;
+			filter: none;
+			svg {
+				@apply lg:py-[1.75rem];
+			}
 		}
 	}
 }
@@ -376,73 +412,16 @@ canvas.anim-bg {
 	/* z-index: -1; */
 }
 
-/*! SLIDER MERCANZA MAY 2024 */
-
-.slider.mercanza-may-24 {
-	.has-pinned-sections {
-		min-height: 100vh;
-	}
-	.scene:not(.block-editor-block-list__block) {
-		position: absolute;
-		opacity: 0;
-
-		> * {
-			padding-top: var(--whole-header-height);
-		}
-
-		h1 {
-			margin-top: 0;
-			margin-bottom: 0;
-			color: white;
-		}
-		p {
-			color: white;
-			text-align: center;
-		}
-
-		*:has(.cosa) {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-		}
-
-		.cosa {
-			display: flex;
-			/* width: 150px; */
-			aspect-ratio: 1/1;
-			border-radius: 50%;
-			justify-content: center;
-			align-items: center;
-			position: fixed;
-			/* inset: 50%; */
-			transform-origin: center;
-			justify-self: center;
-
-			> * {
-				width: fit-content;
-				color: white !important;
-			}
-
-			figure > * {
-				width: 620px;
-				height: auto;
-			}
-		}
-
-		/* margin-bottom: 100%; */
-	}
-}
-
 /*! SLIDER VIDEO BACKGROUND */
 
 .slider.has-video-bg {
 	position: relative;
 	color: white;
 	h1 {
-		font-size: clamp(4.2rem, 10vw, 9rem);
+		font-size: clamp(3.2rem, 10vw, 9rem);
 		color: white;
 		text-align: center;
-		margin-bottom: 0.5ch;
+		margin-bottom: 0.2ch;
 		opacity: 0;
 	}
 
@@ -1233,7 +1212,7 @@ body.home .sections .pct-section#contacto {
 	padding-top: 3rem;
 	/* margin-top: 3rem; */
 	/* @apply bg-gradient-footer-3; */
-	background: #f5350f;
+	background: var(--main-color);
 	.pct-copyright {
 		a {
 			color: white !important;

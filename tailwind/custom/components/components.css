@@ -14,7 +14,7 @@
 
 :root {
 	/* ! SHAPES */
-	--def-border-radius: 1.5rem;
+	--def-border-radius: 10px;
 	/* --button-border-radius: 999px; */
 	--button-border-radius: var(--def-border-radius);
 	--box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.04), 0px 6px 12px rgba(0, 0, 0, 0.02);
@@ -30,7 +30,7 @@
 	/* ! COLORS DEFAULT */
 	/* --main-color: rgb(196, 228, 86); */
 	/* --main-color: #c3ff00; */
-	--main-color: #fc1a57;
+	--main-color: #0b3b6c;
 	--main-color-darker: #7a9913;
 	--bg-light: rgb(246, 243, 239);
 
@@ -221,72 +221,6 @@
 		hsl(207deg 100% 50%) 100%
 	);
 
-	--header-scrolled-color: rgba(255, 255, 255, 0.65);
-	--header-scrolled-border-color: var(--main-color-second);
-
-	--header-scrolled-color-dark: rgba(0, 0, 0, 0.45);
-	--header-scrolled-border-color-dark: var(--main-color-second);
-
-	/* --heading-highlight-grad: linear-gradient(
-		45deg,
-		hsl(76deg 48% 43%) 0%,
-		hsl(73deg 52% 44%) 11%,
-		hsl(70deg 55% 45%) 22%,
-		hsl(68deg 59% 46%) 33%,
-		hsl(65deg 63% 47%) 44%,
-		hsl(63deg 67% 48%) 56%,
-		hsl(61deg 72% 48%) 67%,
-		hsl(58deg 79% 49%) 78%,
-		hsl(57deg 87% 50%) 89%,
-		hsl(55deg 100% 50%) 100%
-	); */
-
-	--heading-highlight-grad: linear-gradient(
-		45deg,
-		hsl(76deg 48% 43%) 0%,
-		hsl(76deg 52% 44%) 11%,
-		hsl(76deg 55% 45%) 22%,
-		hsl(76deg 59% 46%) 33%,
-		hsl(76deg 63% 47%) 44%,
-		hsl(76deg 67% 48%) 56%,
-		hsl(76deg 72% 49%) 67%,
-		hsl(75deg 77% 49%) 78%,
-		hsl(75deg 85% 49%) 89%,
-		hsl(74deg 100% 47%) 100%
-	);
-
-	--heading-highlight-grad-dark: linear-gradient(
-		140deg,
-		hsl(0deg 0% 100%) 0%,
-		hsl(223deg 100% 95%) 40%,
-		hsl(223deg 100% 90%) 56%,
-		hsl(223deg 100% 85%) 67%,
-		hsl(223deg 100% 80%) 76%,
-		hsl(223deg 100% 75%) 82%,
-		hsl(223deg 100% 71%) 88%,
-		hsl(223deg 100% 66%) 93%,
-		hsl(223deg 100% 61%) 97%,
-		hsl(223deg 100% 56%) 100%
-	);
-
-	--heading-default-grad-mz: var(--footer-gradient);
-
-	--heading-default-grad-bg: linear-gradient(
-		270deg,
-		hsl(207deg 98% 19%) 0%,
-		hsl(207deg 98% 22%) 11%,
-		hsl(207deg 98% 25%) 22%,
-		hsl(207deg 99% 29%) 33%,
-		hsl(207deg 99% 33%) 44%,
-		hsl(207deg 99% 36%) 56%,
-		hsl(207deg 99% 40%) 67%,
-		hsl(207deg 99% 43%) 78%,
-		hsl(207deg 100% 46%) 89%,
-		hsl(207deg 100% 50%) 100%
-	);
-
-	--heading-default-grad-bg: linear-gradient(to top, rgb(252, 0, 141), rgb(252, 91, 42) 100%);
-
 	/* ? THEME COLOR SCHEME RED */
 	--header-red-grad-bg: linear-gradient(
 		0deg,
@@ -349,17 +283,21 @@
 	--bgcolor-dark-4: #2d0605;
 	--bgcolor-dark-5: #4c0827;
 
-	/* ? green custom secon grad bg */
-	--header-custom-grad-bg-green: radial-gradient(50vw 100% at calc(110% - 5vw) 100%, hsl(114deg 98% 65% / 80%) 25%, hsl(57deg 98% 100% / 0%) 120%);
-	/* ? yellow custom secon grad bg */
-	--header-custom-grad-bg-yellow: radial-gradient(50vw 100% at calc(110% - 5vw) 100%, hsl(56deg 100% 56% / 80%) 25%, hsl(9deg 98% 36% / 0%) 120%);
-	--header-custom-grad-bg-orange: radial-gradient(50vw 100% at calc(110% - 5vw) 100%, hsl(35deg 100% 56% / 80%) 25%, hsl(9deg 98% 36% / 0%) 120%);
-	--header-custom-grad-bg: none;
-
 	/* --transparent-header-bg-color: rgba(0,0,0,0.16); */
-	--transparent-header-bg-color: rgba(255, 255, 255, 0.08);
+	--header-colorA: rgba(255, 0, 0, 0.5);
+
+	--header-scrolled-color: rgba(255, 255, 255, 0.5);
+	--header-scrolled-border-color: var(--main-color-second);
+
+	--header-scrolled-color-dark: rgba(0, 0, 0, 0.45);
+	--header-scrolled-border-color-dark: var(--main-color-second);
+
+	--heading-default-grad-bg: linear-gradient(to top, rgb(252, 0, 141), rgb(252, 91, 42) 100%);
+
+	--transparent-header-bg-color: rgba(255, 0, 0, 0.08);
 	--transparent-header-bg-color-light: rgba(255, 255, 255, 0);
-	
+	--transparent-header-bg-color-light: linear-gradient(to right, rgba(14, 59, 108, 50%) 0%, rgba(255, 255, 255, 0%) 100%);
+
 	--menu-item-hover-bg-color: rgba(255, 255, 255, 0.18);
 	--menu-item-hover-bg-color-scrolled: rgba(0, 0, 0, 0.1);
 	--menu-item-hover-bg-color-dark: rgba(255, 255, 255, 0.18);
@@ -379,9 +317,12 @@
 	/* ! FONTS & TYPOGRAPHY */
 	/* --def-font-family: "Outfit", Helvetica, Arial, sans-serif;
 	--def-heading-font-family: "Outfit", Helvetica, Arial, sans-serif; */
-	--def-font-family: "Quicksand", Helvetica, Arial, sans-serif;
-	--def-heading-font-family: "Quicksand", Helvetica, Arial, sans-serif;
-	--txt-slider-heading: "Montserrat", Helvetica, Arial, sans-serif;
+	--def-font-family: "Gotham", Helvetica, Arial, sans-serif;
+	--def-heading-font-family: "Gotham", Helvetica, Arial, sans-serif;
+	--def-alternative-font-family: "Miriam Libre", Helvetica, Arial, sans-serif;
+	--def-heading-alternative-font-family: "Miriam Libre", Helvetica, Arial, sans-serif;
+
+	--txt-slider-heading: "Gotham", Helvetica, Arial, sans-serif;
 	--def-txt-color: #404040;
 	--txt-heading-color: #3a3a3a;
 	--light-grey-color: #ddd;
@@ -406,8 +347,8 @@
 		--desktop-space-top: 0px;
 	}
 
-	--mobile-header-height: 45px;
-	--desktop-header-height: 60px;
+	--mobile-header-height: 60px;
+	--desktop-header-height: 115px;
 
 	--desktop-above-header-height: 0px;
 	&:has(.above-header-wrap) {
@@ -440,8 +381,8 @@
 	--form-max-width: 320px;
 
 	/* ! LOGO HEADER DIMENSIONS */
-	--desktop-logo-brand-width: 85px;
-	--mobile-logo-brand-width: 60px;
+	--desktop-logo-brand-width: 210px;
+	--mobile-logo-brand-width: 100px;
 	--logo-brand-width: var(--desktop-logo-brand-width);
 	@media only screen and (max-width: 1023px) {
 		--logo-brand-width: var(--mobile-logo-brand-width);

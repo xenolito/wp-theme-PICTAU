@@ -4,65 +4,48 @@
  * These will be added immediately before Tailwind’s `base` layer.
  */
 
-/* montserrat-600 - latin */
-/* @font-face {
-	font-display: swap;
-	font-family: "Montserrat";
-	font-style: normal;
-	font-weight: 600;
-	src: url("./fonts/montserrat-v26-latin-600.woff2") format("woff2");
-} */
-/* montserrat-700 - latin */
+/* Gotham Bold - latin */
 @font-face {
 	font-display: swap;
-	font-family: "Montserrat";
+	font-family: "Gotham";
 	font-style: normal;
-	font-weight: 700;
-	src: url("./fonts/montserrat-v26-latin-700.woff2") format("woff2");
+	font-weight: 900;
+	src: url("./fonts/Gotham-Bold.woff2") format("woff2");
 }
 
-/* quicksand-regular - latin */
+/* Gotham Book - latin */
 @font-face {
 	font-display: swap;
-	font-family: "Quicksand";
+	font-family: "Gotham";
 	font-style: normal;
 	font-weight: 400;
-	src: url("./fonts/quicksand-v31-latin-regular.woff2") format("woff2");
+	src: url("./fonts/Gotham-Book.woff2") format("woff2");
 }
 
-/* quicksand-500 - latin */
+/* Gotham Medium - latin */
 @font-face {
 	font-display: swap;
-	font-family: "Quicksand";
-	font-style: normal;
-	font-weight: 500;
-	src: url("./fonts/quicksand-v31-latin-500.woff2") format("woff2");
-}
-
-/* quicksand-600 - latin */
-@font-face {
-	font-display: swap;
-	font-family: "Quicksand";
-	font-style: normal;
-	font-weight: 600;
-	src: url("./fonts/quicksand-v31-latin-600.woff2") format("woff2");
-}
-/* quicksand-700 - latin */
-@font-face {
-	font-display: swap;
-	font-family: "Quicksand";
+	font-family: "Gotham";
 	font-style: normal;
 	font-weight: 700;
-	src: url("./fonts/quicksand-v31-latin-700.woff2") format("woff2");
+	src: url("./fonts/Gotham-Medium.woff2") format("woff2");
 }
 
-/* outfit-300 - latin */
+/* Miriam Libre Regular - latin */
 @font-face {
 	font-display: swap;
-	font-family: "Outfit";
+	font-family: "Miriam Libre";
 	font-style: normal;
-	font-weight: 300;
-	src: url("./fonts/outfit-v11-latin-300.woff2") format("woff2");
+	font-weight: 400;
+	src: url("./fonts/MiriamLibre-Regular.woff2") format("woff2");
+}
+/* Miriam Libre Bold - latin */
+@font-face {
+	font-display: swap;
+	font-family: "Miriam Libre";
+	font-style: normal;
+	font-weight: 900;
+	src: url("./fonts/MiriamLibre-Bold.woff2") format("woff2");
 }
 
 /*! DEFAULT PICTAU ICONS */

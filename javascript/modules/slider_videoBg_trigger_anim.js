@@ -20,7 +20,8 @@ window.addEventListener('load', () => {
 		paused: true,
 	})
 
-	const h1 = slider.querySelector('h1')
+	const firstHeader = slider.querySelector('h1:first-of-type')
+	const headersToAnim = slider.querySelectorAll('h1')
 
 	const cover = slider.querySelector('.slider-cover')
 	const video = slider.querySelector('.video-bg')
@@ -37,7 +38,10 @@ window.addEventListener('load', () => {
 		ease: 'power2.out',
 		onUpdate: function () {
 			if (this.progress() > 0.3 && !headerAnimLaunched) {
-				h1.headerAnimation.play()
+				headersToAnim.forEach(header => {
+					header.headerAnimation.play()
+				})
+				// h1.headerAnimation.play()
 				headerAnimLaunched = true
 			}
 		},
@@ -47,7 +51,7 @@ window.addEventListener('load', () => {
 		// },
 	})
 
-	window.introTween.add(h1.headerAnimation, '>-75%')
+	window.introTween.add(firstHeader.headerAnimation, '>-75%')
 
 	const loader = cover.querySelector('.loader')
 	if (loader) {
@@ -70,10 +74,10 @@ window.addEventListener('load', () => {
 		trigger: nextSection,
 		start: 'top bottom-=5%',
 		onEnter: self => {
-			h1.headerAnimation.timeLine.reverse()
+			// h1.headerAnimation.timeLine.reverse()
 		},
 		onLeaveBack: () => {
-			h1.headerAnimation.timeLine.play()
+			// h1.headerAnimation.timeLine.play()
 		},
 		scrub: 1,
 		// markers: true,

@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.setupAnimation()
 		}
 
-		play = () => {
+		play = (delay = 0) => {
 			this.timeLine.play()
 		}
 
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		setupChainedAnimations = () => {
 			const chainedAnimations = Array.from(this.chainanim.split(','))
 
-			// console.log(this.header, 'chained to animation: ', chainedAnimations)
+			console.log(this.header, 'chained to animation: ', chainedAnimations)
 
 			chainedAnimations.forEach(targetEl => {
 				let elementAnimToChain = this.header.parentElement.parentElement.querySelector(targetEl)
@@ -420,6 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				scale: 1,
 				opacity: 1,
 				duration: this.duration,
+				delay: this.delay,
 				// ease: 'expo.out',
 				ease: CustomEase.create('custom', 'M0,0 C0.104,0.204 -0.267,1.054 1,1 '),
 			})
@@ -433,7 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
 						// scale: 1,
 						duration: this.duration * 1.5,
 						ease: 'expo.out',
-						// delay: getRandom(0, 1),
+						delay: this.delay,
 						onUpdate: () => {
 							elem.blur.target.style.filter = `blur(${elem.blur.amount}px)`
 						},
