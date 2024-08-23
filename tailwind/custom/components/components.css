@@ -342,7 +342,8 @@
 	--mobile-switcher-dim: 13px;
 	--mobile-switcher-borderDim: 6px;
 
-	--desktop-space-top: 1rem;
+	--desktop-space-top: 2.5rem;
+
 	&:has(.above-header-wrap) {
 		--desktop-space-top: 0px;
 	}

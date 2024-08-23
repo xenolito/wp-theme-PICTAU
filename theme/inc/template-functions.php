@@ -569,15 +569,10 @@ function pictau_social($atts){
 
 	$output = '<div class="social-icons">';
 
+	$output .= '<a class="social-item" href="https://www.instagram.com/exsel_uwa" aria-label="instagram" target="_blank"><i class="pcticon-instagram"></i></a>';
+
 	$output .= '<a class="social-item" href="https://www.facebook.com/exselUnderwriting" aria-label="facebook" target="_blank"><i class="pcticon-facebook"></i></a>';
 
-	$output .= '<a class="social-item" href="https://twitter.com/exsel_uwa" aria-label="twitter/X" target="_blank"><i class="pcticon-twitter-x"></i></a>';
-
-	$output .= '<a class="social-item" href="https://www.linkedin.com/company/10506418" aria-label="linkedin" target="_blank"><i class="pcticon-linkedin"></i></a>';
-
-	$output .= '<a class="social-item" href="https://www.youtube.com/channel/UCVhiaOSryo-UaWD8-x8waAg" aria-label="facebook" target="_blank"><i class="pcticon-youtube"></i></a>';
-
-	$output .= '<a class="social-item" href="https://www.instagram.com/exsel_uwa" aria-label="instagram" target="_blank"><i class="pcticon-instagram"></i></a>';
 
 	$output .= '</div>';
 
