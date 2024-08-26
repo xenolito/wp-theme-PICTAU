@@ -36,11 +36,17 @@
 
 			if ( function_exists('pll_the_languages')) {
 				$str = '';
+				/**
+				* @disregard P1009 Undefined type
+				*/
 				$curr_lang = pll_current_language('locale');
 				$str .= do_shortcode( get_theme_mod('pictau_block_footer_'.$curr_lang) );
 
 				//if current language missing, use the default language setting for this customizer shortcode...
 				if ( !strlen($str) ) {
+					/**
+					* @disregard P1009 Undefined type
+					*/
 					$str .= do_shortcode( get_theme_mod('pictau_block_footer_'. pll_default_language('locale')) );
 				}
 			}

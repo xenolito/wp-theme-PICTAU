@@ -831,6 +831,12 @@ body.single-evento {
 
 	.pct-copyright {
 		display: flex;
+
+		max-width: calc(var(--layout-max-width) - 2 * var(--def-layout-x-padding));
+		margin-right: auto;
+		margin-left: auto;
+		width: calc(100% - 2 * var(--def-layout-x-padding));
+
 		flex-flow: column;
 		gap: 0.5rem;
 		> * {

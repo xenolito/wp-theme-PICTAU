@@ -58,7 +58,8 @@
 	display: none !important;
 }
 
-.bg-dark {
+.bg-dark,
+[class*="theme-color-"] {
 	h1,
 	h2,
 	h3,

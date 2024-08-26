@@ -594,15 +594,15 @@ function pictau_copyright($atts){
 
 	$output = '<div class="pct-copyright">';
 
-	$output .= do_shortcode('[social]');
+	// $output .= do_shortcode('[social]');
 
 	$output .= '	<div class="copy">
 									<ul>';
-	$output .= '			<li>© '. apply_shortcodes('[myYear]') . ' EXSEL</li>';
+	$output .= '			<li>© '. apply_shortcodes('[myYear]') . ' Sensormatic Honduras</li>';
 	// $output .= '			<li>' . strtoupper(get_bloginfo( 'name' )) . '</li>';
-	$output .= '			<li><a href="/aviso-legal">Aviso legal</a></li>';
-	$output .= '			<li><a href="#gdpr_cookie_modal">Privacidad y Cookies</a></li>';
-	$output .= '			<li><a class="pictau-logo" href="https://www.pictau.com" target="_blank">' . __('Powered by','pictau') . ' PICTAU &nbsp;<span class="pcticon-pictau-logo"><span class="path1"></span><span class="path2"></span><span class="path3"></span></span></a></li>';
+	// $output .= '			<li><a href="/aviso-legal">Aviso legal</a></li>';
+	// $output .= '			<li><a href="#gdpr_cookie_modal">Privacidad y Cookies</a></li>';
+	// $output .= '			<li><a class="pictau-logo" href="https://www.pictau.com" target="_blank">' . __('Powered by','pictau') . ' PICTAU &nbsp;<span class="pcticon-pictau-logo"><span class="path1"></span><span class="path2"></span><span class="path3"></span></span></a></li>';
 	$output .= '		</ul>
 								</div>';
 

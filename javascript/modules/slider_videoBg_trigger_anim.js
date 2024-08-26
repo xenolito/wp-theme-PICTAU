@@ -74,10 +74,15 @@ window.addEventListener('load', () => {
 		trigger: nextSection,
 		start: 'top bottom-=5%',
 		onEnter: self => {
+			headersToAnim.forEach(header => {
+				header.headerAnimation.timeLine.reverse()
+			})
 			// h1.headerAnimation.timeLine.reverse()
 		},
 		onLeaveBack: () => {
-			// h1.headerAnimation.timeLine.play()
+			headersToAnim.forEach(header => {
+				header.headerAnimation.timeLine.play()
+			})
 		},
 		scrub: 1,
 		// markers: true,

@@ -14,7 +14,7 @@
 
 :root {
 	/* ! SHAPES */
-	--def-border-radius: 10px;
+	--def-border-radius: 0px;
 	/* --button-border-radius: 999px; */
 	--button-border-radius: var(--def-border-radius);
 	--box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.04), 0px 6px 12px rgba(0, 0, 0, 0.02);
