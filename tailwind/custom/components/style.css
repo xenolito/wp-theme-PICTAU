@@ -1315,15 +1315,6 @@ body.single-evento {
 	}
 }
 
-.social-icons {
-	.social-item {
-		padding: 0 0.3rem;
-		i {
-			font-size: 0.9rem;
-		}
-	}
-}
-
 #top-menu {
 	.social-icons {
 		.social-item {
@@ -1384,6 +1375,16 @@ body.single-evento {
 					width: 100%;
 					filter: contrast(0) brightness(10.5);
 				}
+			}
+		}
+	}
+
+	.social-icons {
+		padding-top: 0.75rem;
+		.social-item {
+			padding: 0 0.3rem;
+			i {
+				font-size: 2em;
 			}
 		}
 	}
