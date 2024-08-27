@@ -1631,3 +1631,78 @@ body.home .sections .pct-section#contacto {
 		font-size: clamp(1.1rem, 5vw, 1.4rem);
 	}
 }
+
+body.solar-sense {
+	--desktop-space-top: 0px;
+	@media only screen and (min-width: 1024px) {
+		--logo-brand-width: 256px;
+	}
+	--desktop-header-height: 144px;
+	--mobile-header-height: 66px;
+
+	#masthead,
+	#content {
+		--main-color: #033046;
+		--heading-color: var(--main-color);
+		--transparent-header-bg-color-light: var(--main-color);
+		--header-scrolled-color: var(--main-color);
+		--def-font-family: var(--def-alternative-font-family) important;
+		--def-heading-font-family: var(--def-heading-alternative-font-family) important;
+
+		--whole-header-height: calc(var(--desktop-header-height) + var(--desktop-above-header-height) + var(--desktop-space-top));
+		/* --whole-header-height: calc(var(--desktop-header-height) + var(--desktop-above-header-height)); */
+		@media only screen and (max-width: 1024px) {
+			--whole-header-height: calc(var(--mobile-header-height) + var(--mobile-above-header-height));
+		}
+
+		font-family: var(--def-alternative-font-family);
+
+		h1,
+		h2,
+		h3 {
+			font-family: var(--def-heading-alternative-font-family);
+		}
+	}
+
+	.main-header-content {
+		.logo-brand {
+			@apply !px-[1.5rem];
+		}
+
+		.main-nav-desktop {
+			padding-left: 130px;
+		}
+	}
+
+	#masthead {
+		#menu-switcher {
+			span {
+				background: white !important;
+			}
+		}
+
+		&.scrolledHeader {
+			--hover-bg-color: rgba(255, 255, 255, 0.18);
+			.menu-item {
+				a {
+					color: white !important;
+				}
+			}
+		}
+	}
+
+	.slider {
+		.is-bg {
+			padding-top: var(--whole-header-height);
+		}
+
+		h1 {
+			color: white;
+			font-size: clamp(1.5rem, 8vw, 4rem);
+			text-align: center;
+			font-weight: 400;
+			max-width: 735px;
+			line-height: 1.1;
+		}
+	}
+}

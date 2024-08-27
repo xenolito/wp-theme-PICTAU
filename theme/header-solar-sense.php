@@ -19,7 +19,7 @@
 	<?php wp_head(); ?>
 </head>
 
-<body <?php body_class('solar-sense'); ?> data-overlayscrollbars-initialize>
+<body <?php body_class('solar-sense header-width-centered'); ?> data-overlayscrollbars-initialize>
 <?php wp_body_open(); ?>
 <div id="page" class="theme-first">
 	<?php get_template_part( 'template-parts/layout/header', 'content-solar-sense' ); ?>

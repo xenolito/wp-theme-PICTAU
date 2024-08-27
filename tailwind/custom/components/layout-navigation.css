@@ -123,9 +123,9 @@ body.header-width-constrained {
 
 body.header-width-centered {
 	@media only screen and (min-width: 1024px) {
-		#masthead {
+		/* #masthead {
 			width: unset;
-		}
+		} */
 
 		.main-header-content,
 		.above-header-content {
