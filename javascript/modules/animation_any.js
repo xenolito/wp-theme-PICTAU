@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			gsap.set(this.header, { opacity: 1 })
 
 			this.typeSplit.lines.forEach(line => {
-				line.style.clipPath = `polygon(0 -10px, 100% -10px, 125% 100%, 0% 125%)`
+				line.style.clipPath = `polygon(0 -10px, 100% -10px, 110% 100%, 0% 110%)`
 				line.style.userSelect = 'none'
 			})
 

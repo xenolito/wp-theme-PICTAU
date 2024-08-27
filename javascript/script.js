@@ -48,7 +48,7 @@ import './modules/animation_any'
 import './modules/slider_videoBg_trigger_anim'
 // import './modules/video_play_scrolltriggered'
 // import './modules/navigation_dot'
-// import './modules/scrollToAName'
+import './modules/scrollToAName'
 import './modules/style-header-by-section'
 
 document.addEventListener('DOMContentLoaded', () => {
