@@ -1637,7 +1637,7 @@ body.solar-sense {
 	@media only screen and (min-width: 1024px) {
 		--logo-brand-width: 256px;
 	}
-	--desktop-header-height: 144px;
+	--desktop-header-height: 180px;
 	--mobile-header-height: 66px;
 
 	#masthead,
@@ -1683,11 +1683,26 @@ body.solar-sense {
 
 		&.scrolledHeader {
 			--hover-bg-color: rgba(255, 255, 255, 0.18);
-			.menu-item {
+
+			.main-nav-desktop {
+				.menu-item {
+					a {
+						color: white !important;
+					}
+				}
+			}
+
+			.main-nav-mobile {
+				.primary-menu-wrapper {
+					background-color: white;
+				}
+			}
+
+			/* .menu-item {
 				a {
 					color: white !important;
 				}
-			}
+			} */
 		}
 	}
 
@@ -1702,7 +1717,7 @@ body.solar-sense {
 
 		h1 {
 			color: white;
-			font-size: clamp(1.5rem, 8vw, 4rem);
+			font-size: clamp(1.5rem, 8vw, 4.2rem);
 			text-align: center;
 			font-weight: 400;
 			max-width: 735px;
@@ -1711,15 +1726,49 @@ body.solar-sense {
 
 		.horiz-separator {
 			display: block;
-			width: 200px;
+			width: clamp(100px, 20vw, 200px);
 			height: 2px;
 			background-color: #fff;
 			margin-right: 0;
 			transform-origin: "left";
+			margin: clamp(1rem, 5vw, 2.5rem) 0;
 		}
 
 		p {
 			font-size: clamp(1rem, 3vw, 1.4rem);
+		}
+	}
+
+	.slider-footer {
+		position: absolute;
+		bottom: 0;
+		max-width: unset !important;
+		width: 100vw !important;
+		display: flex;
+		flex-flow: column;
+		/* background: white; */
+		align-items: center;
+		gap: 1.15rem;
+
+		.triangle-down {
+			width: 34px;
+			height: 22px;
+			background-color: white;
+			clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+		}
+
+		.green-rainbow {
+			--dir: 180deg;
+
+			width: 100vw;
+			max-width: unset !important;
+			height: 2.38rem;
+
+			&.up-dir {
+				--dir: 0deg;
+			}
+
+			background: linear-gradient(var(--dir), #7ba953, #7ba953 33.33%, #cbdb2a 33.33%, #cbdb2a 66.66%, #fff200 66.66%, #fff200);
 		}
 	}
 }
