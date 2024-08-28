@@ -1697,6 +1697,9 @@ body.solar-sense {
 			padding-top: var(--whole-header-height);
 		}
 
+		color: white;
+		text-align: center;
+
 		h1 {
 			color: white;
 			font-size: clamp(1.5rem, 8vw, 4rem);
@@ -1704,6 +1707,19 @@ body.solar-sense {
 			font-weight: 400;
 			max-width: 735px;
 			line-height: 1.1;
+		}
+
+		.horiz-separator {
+			display: block;
+			width: 200px;
+			height: 2px;
+			background-color: #fff;
+			margin-right: 0;
+			transform-origin: "left";
+		}
+
+		p {
+			font-size: clamp(1rem, 3vw, 1.4rem);
 		}
 	}
 }
