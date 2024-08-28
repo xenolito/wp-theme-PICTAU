@@ -1693,6 +1693,7 @@ body.solar-sense {
 
 	.slider {
 		.is-bg {
+			background-color: var(--transparent-header-bg-color-light) !important;
 			padding-top: var(--whole-header-height);
 		}
 
