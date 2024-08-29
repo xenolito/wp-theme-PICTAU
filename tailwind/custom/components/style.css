@@ -1330,11 +1330,11 @@ body.single-evento {
 	/* background: rgb(255, 0, 0); */
 	.footer-container .pct-section {
 		padding-bottom: 0;
-		padding-top: 0;
+		/* padding-top: 0; */
 	}
 
 	.footer-content {
-		@apply !pt-[var(--default-section-vert-padding)];
+		/* @apply !pt-[var(--default-section-vert-padding)]; */
 
 		a {
 			color: white !important;
@@ -1631,6 +1631,38 @@ body.home .sections .pct-section#contacto {
 		font-size: clamp(1.1rem, 5vw, 1.4rem);
 	}
 }
+
+:root {
+}
+
+.header-default-bg {
+	--heading-default-grad-bg: var(--main-color);
+}
+
+.entry-header {
+	align-items: flex-start !important;
+	min-height: unset !important;
+	&.has-bg-img {
+		padding-bottom: 0 !important;
+		.entry-header-content {
+			max-width: unset;
+			width: 100vw;
+			padding: 0;
+			.header-hero {
+				width: 100vw;
+				left: calc(50% - 100vw * 0.5);
+				padding-top: var(--desktop-space-top);
+				img {
+					object-fit: cover;
+					width: 100%;
+					max-height: var(--page-header-min-height);
+				}
+			}
+		}
+	}
+}
+
+/* ! SOLAR SENSE LANDING SPECIFIC STYLES ------------------------------------------------------------------------------   */
 
 body.solar-sense {
 	--desktop-space-top: 0px;

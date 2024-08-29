@@ -397,6 +397,7 @@
 	/* ! SINGLE PAGE HEADER */
 	--page-header-min-height: 250px;
 	--page-header-blog-min-height: 550px;
+	--page-header-min-height: 475px;
 	--content-max-width: 1240px;
 
 	--border-def: 1px solid var(--ui-color);

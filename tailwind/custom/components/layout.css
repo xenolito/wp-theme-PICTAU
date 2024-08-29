@@ -106,11 +106,13 @@ figure.full-width {
 	padding: var(--def-layout-x-padding) 0;
 }
 
-figure.alignfull {
-	img,
-	svg {
-		width: 100%;
-		height: auto;
+figure {
+	&.alignfull {
+		img,
+		svg {
+			width: 100%;
+			height: auto;
+		}
 	}
 }
 
@@ -542,7 +544,17 @@ body .is-layout-constrained > :where(:not(.alignleft):not(.alignright):not(.alig
 		&.no-bg-img {
 			min-height: unset;
 			.entry-header-content {
-				padding-top: var(--whole-header-height);
+				justify-content: center;
+				align-items: center;
+
+				h1.entry-title {
+					padding-top: var(--paddV);
+					font-size: clamp(2rem, 8vw, 3rem);
+					text-transform: uppercase;
+					font-weight: 700;
+				}
+				/* padding-top: var(--paddV); */
+				/* padding-top: var(--whole-header-height); */
 			}
 		}
 	}
@@ -580,7 +592,14 @@ body .is-layout-constrained > :where(:not(.alignleft):not(.alignright):not(.alig
 					&:not(:has(.pct-section)) {
 						padding: var(--default-section-vert-padding) 0;
 					}
-					min-height: calc(100vh - var(--page-header-min-height));
+				}
+			}
+			.entry-content {
+				min-height: calc(100vh - var(--page-header-min-height));
+				section {
+					p:last-of-type {
+						margin-bottom: 0;
+					}
 				}
 			}
 		}
@@ -600,6 +619,17 @@ body.fixed-header {
 
 		.full-height {
 			height: calc(100vh - var(--whole-header-height));
+		}
+	}
+}
+
+body.page-template-page-no-header {
+	#main {
+		.entry-content {
+			> section:first-of-type {
+				padding-top: calc(var(--whole-header-height) + var(--default-section-vert-padding));
+				padding-bottom: var(--default-section-vert-padding);
+			}
 		}
 	}
 }
@@ -678,6 +708,9 @@ section:not(.block-editor-block-list__block) {
 
 		> .is-bg {
 			max-width: unset;
+			img {
+				height: 100%;
+			}
 		}
 	}
 
@@ -793,7 +826,6 @@ body.single-evento {
 	/* left: 50%; */
 	left: calc(50% - 100vw * 0.5);
 	/* translate: -50% 0; */
-	padding-top: var(--default-section-vert-padding);
 	color: white;
 	/* @apply bg-gradient-footer; */
 
@@ -807,6 +839,10 @@ body.single-evento {
 			}
 			height: calc(var(--section-overlap-y) * var(--treshold));
 		}
+	}
+
+	.footer-content {
+		padding-top: var(--default-section-vert-padding);
 	}
 
 	/* background-color: var(--footer-bg-color);
