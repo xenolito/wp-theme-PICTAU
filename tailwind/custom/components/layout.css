@@ -133,6 +133,10 @@ figure {
 	color: white !important;
 }
 
+.lh-1 {
+	line-height: 1;
+}
+
 .no-pt {
 	@apply !pt-0;
 }
@@ -176,6 +180,10 @@ figure {
 .border-t {
 	border-top-width: 1px;
 	@apply border-t-black dark:border-t-white/50;
+}
+
+.is-bg {
+	z-index: -1;
 }
 
 .stroke-width-thin:has(svg) {
@@ -233,6 +241,10 @@ h6 {
 figure {
 	@apply !my-0;
 	height: auto !important;
+}
+
+.no-bg-color {
+	background-color: transparent !important;
 }
 
 .pct-2cols {

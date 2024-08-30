@@ -46,7 +46,7 @@ if (function_exists( 'pods')) {
 				pictau_post_thumbnail('header-hero');
 			}
 			else if (!is_front_page()) {
-				the_title( '<h1 class="entry-title" data-anim_any data-anim_any_whattoanim="chars" data-anim_any_animation="clippedFromBottom" data-anim_any_waitpageload="true" data-anim_any_duration="1" data-anim_any_stagger="0.05" >', '</h1>' );
+				the_title( '<h1 class="entry-title" data-anim_any data-anim_any_whattoanim="chars" data-anim_any_animation="clippedFromBottom" data-anim_any_waitpageload="true" data-anim_any_duration="1" data-anim_any_stagger="0.035" >', '</h1>' );
 			}
 
 			if ($subheader) {
