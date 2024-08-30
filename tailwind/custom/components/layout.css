@@ -626,7 +626,7 @@ body.fixed-header {
 body.page-template-page-no-header {
 	#main {
 		.entry-content {
-			> section:first-of-type {
+			> section:not(.slider):first-of-type {
 				padding-top: calc(var(--whole-header-height) + var(--default-section-vert-padding));
 				padding-bottom: var(--default-section-vert-padding);
 			}
