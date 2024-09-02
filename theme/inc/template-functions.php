@@ -569,9 +569,9 @@ function pictau_social($atts){
 
 	$output = '<div class="social-icons">';
 
-	$output .= '<a class="social-item" href="https://www.instagram.com/exsel_uwa" aria-label="instagram" target="_blank"><i class="pcticon-instagram"></i></a>';
+	$output .= '<a class="social-item" href="https://www.instagram.com/sensormatic.hn/" aria-label="instagram" target="_blank"><i class="pcticon-instagram"></i></a>';
 
-	$output .= '<a class="social-item" href="https://www.facebook.com/exselUnderwriting" aria-label="facebook" target="_blank"><i class="pcticon-facebook"></i></a>';
+	$output .= '<a class="social-item" href="https://www.facebook.com/sensormatichn" aria-label="facebook" target="_blank"><i class="pcticon-facebook"></i></a>';
 
 
 	$output .= '</div>';

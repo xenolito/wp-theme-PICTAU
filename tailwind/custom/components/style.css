@@ -13,6 +13,10 @@
 	}
 } */
 
+.max-w-980 {
+	max-width: 980px !important;
+}
+
 .slider h1 {
 	font-family: var(--txt-slider-heading);
 	font-weight: 700;
@@ -117,6 +121,14 @@
 	h1,
 	h2 {
 		@apply text-[var(--heading-color-theme-white)] dark:text-[var(--heading-color-theme-white-dark)];
+	}
+}
+
+.pct-2cols-60-40 {
+	--col-padding: 4.3rem;
+	@apply !grid grid-cols-1 lg:grid-cols-[60%_1fr] gap-[var(--col-padding)];
+	> * {
+		width: 100% !important;
 	}
 }
 
@@ -511,6 +523,8 @@ canvas.anim-bg {
 		text-align: center;
 		margin-bottom: 0.2ch;
 		opacity: 0;
+		padding-bottom: 0;
+		text-transform: none;
 	}
 
 	p {
@@ -574,7 +588,15 @@ canvas.anim-bg {
 }
 
 .wpcf7 {
-	padding-top: calc(var(--def-layout-x-padding) * 0.5);
+	padding-top: 0;
+	.pct-form-pasti {
+		max-width: unset;
+		width: 100%;
+
+		textarea {
+			min-height: 260px !important;
+		}
+	}
 }
 
 /*! SINGLE POSTS STYLES */
@@ -1295,6 +1317,64 @@ body.home .sections .pct-section#contacto {
 		font-size: clamp(1.2rem, 8vw, 2.75rem);
 		scale: 1;
 		transition: all 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+	}
+}
+
+.bt-only-text {
+	text-align: center;
+	margin-top: 3.5rem;
+	a {
+		font-weight: 700;
+		font-size: clamp(1.2rem, 8vw, 2rem);
+		text-transform: uppercase;
+		margin-top: 3rem;
+		line-height: 1.6ch;
+	}
+}
+
+.contact-card {
+	display: flex;
+	flex-flow: column;
+	gap: var(--def-layout-x-padding);
+	.section {
+		color: var(--main-color);
+		h3 {
+			padding-top: 0;
+			font-size: clamp(1.2rem, 8vw, 1.4rem);
+			font-weight: 900;
+			text-transform: uppercase;
+		}
+
+		p {
+			font-size: clamp(1rem, 5vw, 1.2rem);
+			margin-bottom: 0;
+		}
+
+		.tel-multiple {
+			display: grid;
+			grid-template-columns: min-content 1fr;
+			column-gap: 0.5ch;
+
+			p:first-child {
+				grid-row: 1 / 3;
+			}
+		}
+
+		.social-icons {
+			padding-top: 1rem;
+			/* gap: 1rem; */
+			a {
+				width: 76px;
+				aspect-ratio: 1;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				background: var(--main-color);
+				i {
+					font-size: 3.5em;
+				}
+			}
+		}
 	}
 }
 

@@ -19,7 +19,7 @@
 .wpcf7 form {
 	--form-input-border-width: 2px;
 	/* --form-field-border-color: #808080; */
-	--form-field-border-color: var(--main-colorthird);
+	--form-field-border-color: #767a7f;
 	--form-field-focus-border-color: var(--link-color);
 	--form-field-bg-color: white;
 	--form-error-validation-icon-filter: brightness(0);
@@ -27,6 +27,8 @@
 	--form-submit-bg-color: green;
 	--msg-sent-ok-bg-color: #575757;
 	--form-placeholder-color: #9ca3af;
+	--form-input-padding-x: 1.25rem;
+	--form-input-padding-y: 0.5rem;
 
 	input[type="email"],
 	input[type="number"],
@@ -42,7 +44,7 @@
 
 		border-color: var(--form-field-border-color);
 		border-width: var(--form-input-border-width);
-		padding: 0.35rem !important;
+		padding: var(--form-input-padding-y) var(--form-input-padding-x);
 		color: var(--def-txt-color) !important;
 		border-radius: var(--def-border-radius);
 		background-color: var(--form-field-bg-color) !important;
@@ -110,6 +112,15 @@
 			scale: 0;
 		}
 	}
+
+	.ico-unchecked {
+		svg {
+			.bg {
+				fill: var(--form-field-bg-color);
+				/* fill: red !important; */
+			}
+		}
+	}
 }
 
 [id*="legalinput"]:checked + label {
@@ -119,7 +130,6 @@
 			opacity: 1;
 		}
 	}
-
 	/* .ico-unchecked {
 		svg {
 			opacity: 0;

@@ -169,6 +169,10 @@ figure {
 	@apply !mt-[var(--def-layout-x-padding)];
 }
 
+.margin-t-small {
+	padding-top: calc(var(--def-layout-x-padding) * 0.7) !important;
+}
+
 .padding-b {
 	@apply !pb-[var(--def-layout-x-padding)];
 }
@@ -263,6 +267,13 @@ figure {
 
 .pct-2cols-60-40 {
 	@apply !grid grid-cols-1 lg:grid-cols-[60%_1fr] gap-[var(--card-padding)];
+	> * {
+		width: 100% !important;
+	}
+}
+
+.pct-2cols-70-30 {
+	@apply !grid grid-cols-1 lg:grid-cols-[70%_1fr] gap-[var(--card-padding)];
 	> * {
 		width: 100% !important;
 	}
@@ -607,7 +618,7 @@ body .is-layout-constrained > :where(:not(.alignleft):not(.alignright):not(.alig
 				}
 			}
 			.entry-content {
-				min-height: calc(100vh - var(--page-header-min-height));
+				min-height: calc(100vh - var(--page-header-min-height) - 385px);
 				section {
 					p:last-of-type {
 						margin-bottom: 0;
