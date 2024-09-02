@@ -77,6 +77,13 @@
 	@apply mt-[var(--vertSpacing)];
 }
 
+ol {
+	--padd-bottom: calc(var(--def-layout-x-padding) * 2);
+	list-style: decimal;
+	padding-left: calc(var(--def-layout-x-padding) * 2);
+	@apply pt-[var(--def-layout-x-padding)] pb-[var(--padd-bottom)];
+}
+
 .theme-color-A {
 	--border-color: var(--heading-color-theme-A);
 	--border-color-dark: var(--heading-color-theme-A-dark);

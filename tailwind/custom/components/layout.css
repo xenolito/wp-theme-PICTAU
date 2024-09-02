@@ -575,6 +575,7 @@ body .is-layout-constrained > :where(:not(.alignleft):not(.alignright):not(.alig
 					font-size: clamp(2rem, 8vw, 3rem);
 					text-transform: uppercase;
 					font-weight: 700;
+					text-align: center;
 				}
 				/* padding-top: var(--paddV); */
 				/* padding-top: var(--whole-header-height); */
