@@ -113,7 +113,7 @@ const setScrollBars = () => {
 			dragScroll: true,
 			clickScroll: false,
 			// pointers: ['mouse', 'touch', 'pen'],
-			pointers: ['mouse'],
+			pointers: ['mouse', 'touch'],
 		},
 		overflow: {
 			x: 'hidden',

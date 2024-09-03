@@ -584,6 +584,7 @@ function pictau_social($atts){
 add_shortcode('social', 'pictau_social');
 
 
+
 //! Copyright FOOTER inc. PICTAU logo
 
 function pictau_copyright($atts){

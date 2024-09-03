@@ -604,15 +604,24 @@ body > .os-scrollbar {
 }
 
 body::-webkit-scrollbar {
-	display: none;
+	display: none !important;
 }
 
-.os-scrollbar-handle {
-	opacity: 0;
-	@media (any-hover: hover) {
+.os-scrollbar {
+	.os-scrollbar-handle {
 		background: var(--os-handle-bg-hover);
-		opacity: 0.4;
+		opacity: 0.4 !important;
 		backdrop-filter: invert(1) !important;
+	}
+}
+
+@supports (hanging-punctuation: first) and (font: -apple-system-body) and (-webkit-appearance: none) {
+	@media (hover: none) {
+		.os-scrollbar {
+			.os-scrollbar-handle {
+				opacity: 0 !important;
+			}
+		}
 	}
 }
 

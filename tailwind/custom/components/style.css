@@ -17,6 +17,10 @@
 	max-width: 980px !important;
 }
 
+.max-w-726 {
+	max-width: 726px !important;
+}
+
 .slider h1 {
 	font-family: var(--txt-slider-heading);
 	font-weight: 700;
@@ -136,6 +140,38 @@ ol {
 	@apply !grid grid-cols-1 lg:grid-cols-[60%_1fr] gap-[var(--col-padding)];
 	> * {
 		width: 100% !important;
+	}
+}
+
+.pct-2cols-40-60 {
+	--col-padding: clamp(2rem, 8vw, 4.3rem);
+	@apply !grid grid-cols-1 lg:grid-cols-[40%_1fr] gap-[var(--col-padding)];
+	> * {
+		width: 100% !important;
+	}
+}
+
+[class*="pct-2cols-"] {
+	&.img-left-full {
+		> .wp-block-group:first-child {
+			figure,
+			img {
+				height: 100% !important;
+				width: 100% !important;
+				object-fit: cover;
+			}
+		}
+
+		@media only screen and (max-width: 1023px) {
+			> .wp-block-group:first-child {
+				figure,
+				img {
+					width: 100% !important;
+					aspect-ratio: 16 / 9;
+					object-fit: cover;
+				}
+			}
+		}
 	}
 }
 
@@ -613,50 +649,6 @@ body.single-post {
 		.entry-content {
 			padding: var(--default-section-vert-padding) 0;
 		}
-	}
-}
-
-body.single-webinar-ondemand,
-body.single-ebook {
-	.entry-header-content:has(.above-header) {
-		display: flex;
-		flex-flow: column;
-	}
-
-	.above-header {
-		z-index: 5;
-
-		figure {
-			max-width: 150px;
-		}
-	}
-
-	.above-header:not(:has(figure)) {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: fit-content;
-		text-transform: uppercase;
-
-		border: 1px solid white;
-
-		@apply rounded-[999px] px-[1.3rem] py-[6px] border-white text-white mb-2;
-	}
-
-	.pct-2cols.has-webinar-request-form {
-		> *:first-child {
-			grid-row: 1 / 3;
-		}
-
-		> *:nth-child(2) {
-			h3 {
-				padding-top: 0;
-			}
-		}
-	}
-
-	.restricted-video {
-		padding-top: calc(var(--default-section-vert-padding) * 0.5);
 	}
 }
 
@@ -1252,43 +1244,6 @@ body.home .sections .pct-section#contacto {
 	justify-content: center;
 	gap: 4rem;
 
-	.solution-tile {
-		display: flex;
-		flex-flow: column;
-		figure {
-			overflow: hidden;
-			border: solid 5.5px white;
-			img {
-				aspect-ratio: 1;
-				object-fit: cover;
-				scale: 1;
-				transition: all 0.6s cubic-bezier(0.2, 1, 0.3, 1);
-			}
-		}
-		h3 {
-			text-align: center;
-			font-weight: 700;
-			font-size: clamp(1.2rem, 3.5vw, 1.9rem);
-			padding-top: clamp(1rem, 5vw, 1.5rem);
-		}
-
-		&:hover {
-			img {
-				scale: 1.2;
-			}
-		}
-
-		a {
-			background-image: none !important;
-			opacity: 1 !important;
-
-			/* &:hover {
-				background-image: none !important;
-				opacity: 1 !important;
-			} */
-		}
-	}
-
 	@media only screen and (max-width: 700px) {
 		grid-template-columns: repeat(2, 1fr);
 	}
@@ -1298,6 +1253,43 @@ body.home .sections .pct-section#contacto {
 		h3 {
 			font-size: 2rem !important;
 		}
+	}
+}
+
+.solution-tile {
+	display: flex;
+	flex-flow: column;
+	figure {
+		overflow: hidden;
+		border: solid 5.5px white;
+		img {
+			aspect-ratio: 1;
+			object-fit: cover;
+			scale: 1;
+			transition: all 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+		}
+	}
+	h3 {
+		text-align: center;
+		font-weight: 700;
+		font-size: clamp(1.2rem, 3.5vw, 1.9rem);
+		padding-top: clamp(1rem, 5vw, 1.5rem);
+	}
+
+	&:hover {
+		img {
+			scale: 1.2;
+		}
+	}
+
+	a {
+		background-image: none !important;
+		opacity: 1 !important;
+
+		/* &:hover {
+				background-image: none !important;
+				opacity: 1 !important;
+			} */
 	}
 }
 
@@ -1416,6 +1408,11 @@ body.solar-sense {
 		h2,
 		h3 {
 			font-family: var(--def-heading-alternative-font-family);
+			line-height: 1.1 !important;
+		}
+
+		p {
+			margin-bottom: 2.5ch;
 		}
 	}
 
@@ -1477,6 +1474,8 @@ body.solar-sense {
 			font-weight: 400;
 			max-width: 735px;
 			line-height: 1.1;
+			text-transform: none;
+			padding-bottom: 0;
 		}
 
 		.horiz-separator {
@@ -1511,19 +1510,132 @@ body.solar-sense {
 			background-color: white;
 			clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
 		}
+	}
 
-		.green-rainbow {
-			--dir: 180deg;
+	.green-rainbow {
+		--dir: 180deg;
 
-			width: 100vw;
-			max-width: unset !important;
-			height: 2.38rem;
+		width: 100vw !important;
+		max-width: unset !important;
+		height: 2.38rem;
 
-			&.up-dir {
-				--dir: 0deg;
+		&.up-dir {
+			--dir: 0deg;
+		}
+
+		&.border-top {
+			position: absolute;
+			top: 0;
+		}
+
+		background: linear-gradient(var(--dir), #7ba953, #7ba953 33.33%, #cbdb2a 33.33%, #cbdb2a 66.66%, #fff200 66.66%, #fff200);
+	}
+
+	.solutions-grid {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 2.5rem;
+
+		@media only screen and (max-width: 860px) {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	.solution-tile {
+		.content {
+			padding: 2rem clamp(1.5rem, 8vw, 3rem);
+			text-align: left;
+			h3 {
+				font-family: "Raleway", Arial, Helvetica, sans-serif !important;
+				font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+				text-align: left;
+			}
+		}
+
+		figure {
+			img {
+				aspect-ratio: 16/7;
+			}
+		}
+	}
+
+	.contacto {
+		padding-top: calc(38px + var(--default-section-vert-padding)) !important;
+	}
+
+	.address {
+		padding-top: 1.2rem;
+	}
+
+	.logo-brand-inner {
+		width: 330px;
+		margin-left: 0 !important;
+		padding-bottom: 1.7rem;
+	}
+
+	.social {
+		display: flex;
+		flex-flow: row;
+		flex-wrap: nowrap;
+		width: fit-content;
+		gap: 1rem;
+		margin-left: unset !important;
+		margin-right: unset !important;
+		@apply py-8;
+
+		figure {
+			width: fit-content;
+			img {
+				max-width: 64px;
+				scale: 1;
+				transition: scale 0.3s cubic-bezier(0.2, 1, 0.3, 1);
 			}
 
-			background: linear-gradient(var(--dir), #7ba953, #7ba953 33.33%, #cbdb2a 33.33%, #cbdb2a 66.66%, #fff200 66.66%, #fff200);
+			&:hover {
+				img {
+					scale: 1.12;
+				}
+			}
+		}
+	}
+
+	.wpcf7 form {
+		--form-input-border-width: 2px;
+		/* --form-field-border-color: #808080; */
+		--form-field-border-color: var(--main-color);
+		--form-field-focus-border-color: #7ba953;
+		--form-field-bg-color: white;
+		--form-field-txt-color: var(--main-color);
+		--form-error-validation-icon-filter: brightness(1);
+		--form-legal-txt-color: blue;
+		--form-submit-bg-color: green;
+		--msg-sent-ok-bg-color: #575757;
+		--form-placeholder-color: #9ca3af;
+		--form-input-padding-x: 1.25rem;
+		--form-input-padding-y: 0.5rem;
+
+		textarea {
+			min-height: 200px !important;
+		}
+
+		.checkIcon,
+		.wpcf7-checkbox {
+			svg * {
+				color: var(--form-field-txt-color) !important;
+			}
+		}
+
+		button#submit {
+			background-color: white;
+			* {
+				color: var(--main-color);
+			}
+
+			&:hover {
+				background-color: var(--main-color);
+				* {
+					color: white;
+				}
+			}
 		}
 	}
 }

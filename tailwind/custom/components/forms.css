@@ -23,6 +23,7 @@
 	--form-field-focus-border-color: var(--link-color);
 	--form-field-bg-color: white;
 	--form-error-validation-icon-filter: brightness(0);
+	--form-field-txt-color: var(--main-color);
 	--form-legal-txt-color: var(--def-txt-color);
 	--form-submit-bg-color: green;
 	--msg-sent-ok-bg-color: #575757;
@@ -45,7 +46,7 @@
 		border-color: var(--form-field-border-color);
 		border-width: var(--form-input-border-width);
 		padding: var(--form-input-padding-y) var(--form-input-padding-x);
-		color: var(--def-txt-color) !important;
+		color: var(--form-field-txt-color);
 		border-radius: var(--def-border-radius);
 		background-color: var(--form-field-bg-color) !important;
 		&::placeholder {
@@ -91,13 +92,16 @@
 	}
 }
 
-.wpcf7 i[class*="ico-"] {
-	color: var(--form-field-border-color);
-	svg {
-		width: 30px;
-		height: 30px;
-		/* fill: white; */
-		stroke-width: var(--form-input-border-width);
+.wpcf7 {
+	i[class*="ico-"],
+	.wpcf7-checkbox {
+		svg {
+			color: var(--form-field-border-color);
+			width: 30px;
+			height: 30px;
+			/* fill: white; */
+			stroke-width: var(--form-input-border-width);
+		}
 	}
 }
 
@@ -112,13 +116,14 @@
 			scale: 0;
 		}
 	}
+}
 
-	.ico-unchecked {
-		svg {
-			.bg {
-				fill: var(--form-field-bg-color);
-				/* fill: red !important; */
-			}
+.ico-unchecked,
+.wpcf7-checkbox {
+	svg {
+		.bg {
+			fill: var(--form-field-bg-color);
+			/* fill: red !important; */
 		}
 	}
 }
@@ -530,11 +535,13 @@ form.placeholder_as_label textarea.placeholder-to-label {
 				grid-area: 1 / 1;
 				transition: all 0.3s ease;
 
-				&.icon-tabler-circle {
+				&.icon-tabler-circle,
+				&.icon-tabler-square {
 					/* opacity: 1; */
 					scale: 1;
 				}
-				&.icon-tabler-circle-check {
+				&.icon-tabler-circle-check,
+				&.icon-tabler-square-check {
 					/* opacity: 0; */
 					scale: 0;
 				}
@@ -546,7 +553,8 @@ form.placeholder_as_label textarea.placeholder-to-label {
 				/* .icon-tabler-circle {
 					scale: 0;
 				} */
-				.icon-tabler-circle-check {
+				.icon-tabler-circle-check,
+				.icon-tabler-square-check {
 					scale: 1;
 				}
 			}
