@@ -1463,6 +1463,51 @@ function show_customer_logos( $atts = [], $content = '' ) {
 add_shortcode( 'logos-clientes', 'show_customer_logos' );
 
 
+//! SOLAR SENSE NOTICIAS BREVES FOR HOME PAGE base on "noticia_solar_sense" CPT
+function output_solar_sense_noticias( $atts = [], $content = '' ) {
+
+	extract(shortcode_atts(array(
+		"limit" 	=> 0,
+	), $atts));
+
+	$output = '<div class="noticias-breves-grid">';
+	// $output .= '<h2>AREAS FEATURED</h2><br>';
+
+	$params = array(
+		'limit' => $limit,
+	);
+
+	$pods = pods('noticia_solar_sense', $params);
+
+	if ( $pods->total() > 0 ) {
+		while ($pods->fetch()) {
+			$nombre = $pods->field('post_title');
+			$medio = $pods->field('fuente');
+			$medio_link = $pods->field('fuente_url');
+			$featured_img = $pods->field('post_thumbnail_url.full');
+			$featured_img_width = $pods->field('post_thumbnail.width');
+			$featured_img_height = $pods->field('post_thumbnail.height');
+
+			$output .= '<div class="noticia-breve-item">';
+			$output .= '	<figure>';
+			$output .= '		<img width="'. $featured_img_width .'" height="'. $featured_img_height .'" src="'. $featured_img .'" alt="'. $nombre .'">';
+			$output .= '	</figure>';
+			$output .= '	<div class="content">';
+			$output .= '		<h2 class="title">'. $nombre .'</h2>';
+			$output .= '		<h3 class="fuente"> Fuente: '. $medio .'</h3>';
+			$output .= 				$pods->field('post_content');
+			$output .= '		<a href="https://'. $medio_link .'" class="noticia-link" target="_blank" rel="nofollow"> >>¿quieres saber más?</a>';
+			$output .= '	</div>';
+
+			$output .= '</div>';
+		}
+	}
+	$output .= '</div>';
+	return $output;
+}
+add_shortcode( 'noticias-solar-sense', 'output_solar_sense_noticias' );
+
+
 //! INLINE SVG WHEN TAG "<img>" found with attribute "src" containing any reference to a .svg source. Depends on "wp_svg_inline_filter()" function.
 function img_to_svg( $atts = [], $content = '' ) {
 
