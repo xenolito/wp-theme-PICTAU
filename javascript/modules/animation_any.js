@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				markers = false,
 				chainanim = false,
 				// slideamount = 100,
-				slideamount = targetDOMElement.getBoundingClientRect().height > 100 ? 100 : targetDOMElement.getBoundingClientRect().height,
+				slideamount = targetDOMElement.getBoundingClientRect().height > 100 ? 100 : targetDOMElement.getBoundingClientRect().height + 50,
 				log = false,
 			} = config
 
