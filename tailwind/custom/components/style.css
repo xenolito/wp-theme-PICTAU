@@ -1538,6 +1538,12 @@ body.solar-sense {
 		@media only screen and (max-width: 860px) {
 			grid-template-columns: 1fr;
 		}
+
+		@media only screen and (max-width: 525px) {
+			h3 {
+				font-size: clamp(1.2rem, 3.5vw, 1.6rem) !important;
+			}
+		}
 	}
 
 	.solution-tile {

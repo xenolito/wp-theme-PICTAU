@@ -1471,7 +1471,6 @@ function output_solar_sense_noticias( $atts = [], $content = '' ) {
 	), $atts));
 
 	$output = '<div class="noticias-breves-grid">';
-	// $output .= '<h2>AREAS FEATURED</h2><br>';
 
 	$params = array(
 		'limit' => $limit,
@@ -1494,9 +1493,13 @@ function output_solar_sense_noticias( $atts = [], $content = '' ) {
 			$output .= '	</figure>';
 			$output .= '	<div class="content">';
 			$output .= '		<h2 class="title">'. $nombre .'</h2>';
-			$output .= '		<h3 class="fuente"> Fuente: '. $medio .'</h3>';
+			if ($medio) {
+				$output .= '		<h3 class="fuente"> Fuente: '. $medio .'</h3>';
+			}
 			$output .= 				$pods->field('post_content');
-			$output .= '		<a href="https://'. $medio_link .'" class="noticia-link" target="_blank" rel="nofollow"> >>¿quieres saber más?</a>';
+			if ($medio_link) {
+				$output .= '		<a href="https://'. $medio_link .'" class="noticia-link" target="_blank" rel="nofollow"> >>¿quieres saber más?</a>';
+			}
 			$output .= '	</div>';
 
 			$output .= '</div>';
