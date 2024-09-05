@@ -1487,7 +1487,7 @@ function output_solar_sense_noticias( $atts = [], $content = '' ) {
 			$featured_img_width = $pods->field('post_thumbnail.width');
 			$featured_img_height = $pods->field('post_thumbnail.height');
 
-			$output .= '<div class="noticia-breve-item">';
+			$output .= '<div class="noticia-breve-item" data-anim_any data-anim_any_duration="1" data-anim_any_delay="0.3">';
 			$output .= '	<figure>';
 			$output .= '		<img width="'. $featured_img_width .'" height="'. $featured_img_height .'" src="'. $featured_img .'" alt="'. $nombre .'">';
 			$output .= '	</figure>';
