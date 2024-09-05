@@ -191,6 +191,7 @@ figure {
 		z-index: 1;
 	}
 	.is-bg {
+		pointer-events: none;
 		z-index: -1;
 	}
 }
