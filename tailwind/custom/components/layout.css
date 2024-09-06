@@ -651,7 +651,7 @@ body.fixed-header {
 		@apply pt-[var(--whole-header-height)];
 
 		.full-height {
-			height: calc(100vh - var(--whole-header-height));
+			height: calc(100svh - var(--whole-header-height));
 		}
 	}
 }
