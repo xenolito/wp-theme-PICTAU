@@ -28,24 +28,26 @@ document.addEventListener('DOMContentLoaded', () => {
 			// onEnter: obj => {
 			// 	console.log('entered', colision)
 			// },
-			onLeave: obj => {
-				header.classList.remove('styled-by-section')
-				colision = false
-				console.log('onLeave', colision)
-			},
+			// onLeave: obj => {
+			// 	header.classList.remove('styled-by-section')
+			// 	colision = false
+			// 	// console.log('onLeave', colision)
+			// },
 			onUpdate: obj => {
+				console.log(colision)
 				headerBottomTriggerCoord = header.getBoundingClientRect().y + header.getBoundingClientRect().height
 				headerTopTriggerCoord = header.getBoundingClientRect().y
 				sectionTopTrigger = obj.trigger.getBoundingClientRect().y
 				sectionBottomTrigger = obj.trigger.getBoundingClientRect().y + obj.trigger.getBoundingClientRect().height
 
 				if (sectionTopTrigger <= headerBottomTriggerCoord) {
-					colision = true
 					header.classList.add('styled-by-section')
+					colision = true
 				}
 				if (sectionBottomTrigger <= headerTopTriggerCoord || sectionTopTrigger > headerBottomTriggerCoord) {
 					if (colision) {
 						header.classList.remove('styled-by-section')
+						colision = false
 					}
 				}
 			},
