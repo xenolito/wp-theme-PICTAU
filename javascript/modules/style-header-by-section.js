@@ -19,13 +19,19 @@ document.addEventListener('DOMContentLoaded', () => {
 		let headerTopTriggerCoord
 		let sectionTopTrigger
 		let sectionBottomTrigger
+		let colision = false
 
 		const sT = ScrollTrigger.create({
 			trigger: section,
 			start: () => `top bottom`,
 			end: () => `bottom ${header.getBoundingClientRect().y}px `,
+			// onEnter: obj => {
+			// 	console.log('entered', colision)
+			// },
 			onLeave: obj => {
 				header.classList.remove('styled-by-section')
+				colision = false
+				console.log('onLeave', colision)
 			},
 			onUpdate: obj => {
 				headerBottomTriggerCoord = header.getBoundingClientRect().y + header.getBoundingClientRect().height
@@ -34,10 +40,13 @@ document.addEventListener('DOMContentLoaded', () => {
 				sectionBottomTrigger = obj.trigger.getBoundingClientRect().y + obj.trigger.getBoundingClientRect().height
 
 				if (sectionTopTrigger <= headerBottomTriggerCoord) {
+					colision = true
 					header.classList.add('styled-by-section')
 				}
 				if (sectionBottomTrigger <= headerTopTriggerCoord || sectionTopTrigger > headerBottomTriggerCoord) {
-					header.classList.remove('styled-by-section')
+					if (colision) {
+						header.classList.remove('styled-by-section')
+					}
 				}
 			},
 			// scrub: true,
