@@ -34,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
 			// 	// console.log('onLeave', colision)
 			// },
 			onUpdate: obj => {
-				console.log(colision)
 				headerBottomTriggerCoord = header.getBoundingClientRect().y + header.getBoundingClientRect().height
 				headerTopTriggerCoord = header.getBoundingClientRect().y
 				sectionTopTrigger = obj.trigger.getBoundingClientRect().y
