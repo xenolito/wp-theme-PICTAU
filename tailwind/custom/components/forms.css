@@ -659,6 +659,10 @@ RADIO BUTTONS CUSTOM ICONS STYLES
 	max-width: var(--form-max-width);
 	margin: auto;
 
+	p {
+		margin-bottom: 0 !important;
+	}
+
 	@media only screen and (max-width: 475px) {
 		padding: 0 var(--padding);
 		/* padding-right: calc(2 * var(--padding)); */

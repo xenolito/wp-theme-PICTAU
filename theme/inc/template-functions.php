@@ -1764,3 +1764,6 @@ function custom_paywallpdf_form_tag_handler( $tag ) {
 		return '#';
 	}
 }
+
+//! CONTACT FORM 7 TO API (Campaing Monitor add to subscribers list): in development...
+// require get_template_directory() . '/inc/cf7-to-API.php';
