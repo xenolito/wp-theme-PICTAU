@@ -1190,6 +1190,7 @@ body.home .sections .pct-section#contacto {
 				width: 100vw;
 				left: calc(50% - 100vw * 0.5);
 				padding-top: var(--desktop-space-top);
+				pointer-events: none;
 				img {
 					object-fit: cover;
 					width: 100%;
