@@ -610,7 +610,7 @@ body::-webkit-scrollbar {
 .os-scrollbar {
 	.os-scrollbar-handle {
 		background: var(--os-handle-bg-hover);
-		opacity: 0.4 !important;
+		opacity: 0.4;
 		backdrop-filter: invert(1) !important;
 	}
 }
