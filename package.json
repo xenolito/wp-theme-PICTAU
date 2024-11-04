@@ -1,7 +1,7 @@
 {
 	"private": true,
 	"config": {
-		"domain": "https://sensormatic.dev/"
+		"domain": "https://bankinplay.dev/"
 	},
 	"devDependencies": {
 		"@_tw/themejson": "^0.2.0",

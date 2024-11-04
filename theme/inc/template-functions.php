@@ -8,8 +8,8 @@
 /*------------------------------------------------------------------------------------------------------*\
 						//!WP MAIL FROM CUSTOMIZATION AND MAINTENANCE PAGE INFO
 \*------------------------------------------------------------------------------------------------------*/
-function custom_wp_mail_from_name() {return 'SENSORMATIC Honduras';}
-function custom_wp_mail_address() { return 'info@sensormatic.hn'; }
+function custom_wp_mail_from_name() {return 'BANKINPLAY';}
+function custom_wp_mail_address() { return 'info@bankinplay.com'; }
 add_filter( 'wp_mail_from', 'custom_wp_mail_address' );
 add_filter( 'wp_mail_from_name', 'custom_wp_mail_from_name' );
 

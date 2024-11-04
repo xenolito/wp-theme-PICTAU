@@ -64,10 +64,19 @@ I also encourage you to change your database prefix for security reasons, you ca
 
 ### Deployment
 
-6. Run `npm run production` to build the production.
-7. Run `npm run deploy` to git add and commit, and push to the remote repo.
-8. Or `npm run bundle` for .zip the theme (OPTIONAL)
-9. Upload the resulting zip file to your site using the “Upload Theme” button on the “Add Themes” administration page (OPTIONAL)
+6. Add your new remote repo for this.project:
+   ```
+   git remote add production git@github.com:xenolito/bankinplay.git
+   ```
+    And set your default push to this repo:
+    ```
+    git push -u production main
+    ```
+
+7. Run `npm run production` to build the production.
+8. Run `npm run deploy` to git add and commit, and push to the remote repo.
+9.  Or `npm run bundle` for .zip the theme (OPTIONAL)
+10. Upload the resulting zip file to your site using the “Upload Theme” button on the “Add Themes” administration page (OPTIONAL)
 
 Or [deploy with the tool of your choice](https://underscoretw.com/docs/deployment/#h-other-deployment-options)!
 
