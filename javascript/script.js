@@ -45,11 +45,13 @@ import './modules/swiper-images'
 // import './modules/bg_body_color_change'
 // import './modules/webgl_animBg'
 // import './modules/logosGridFilter'
-import './modules/slider_videoBg_trigger_anim'
+// import './modules/slider_videoBg_trigger_anim'
 // import './modules/video_play_scrolltriggered'
 // import './modules/navigation_dot'
 import './modules/scrollToAName'
 import './modules/style-header-by-section'
+import './modules/video-trigger'
+import './modules/lang_switcher'
 
 document.addEventListener('DOMContentLoaded', () => {
 	// console.clear()

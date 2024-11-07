@@ -599,7 +599,7 @@ function pictau_copyright($atts){
 
 	$output .= '	<div class="copy">
 									<ul>';
-	$output .= '			<li>© '. apply_shortcodes('[myYear]') . ' Sensormatic Honduras</li>';
+	$output .= '			<li>© '. apply_shortcodes('[myYear]') . ' Bankinplay</li>';
 	// $output .= '			<li>' . strtoupper(get_bloginfo( 'name' )) . '</li>';
 	// $output .= '			<li><a href="/aviso-legal">Aviso legal</a></li>';
 	// $output .= '			<li><a href="#gdpr_cookie_modal">Privacidad y Cookies</a></li>';
@@ -1276,6 +1276,29 @@ function getLocalizedSlug($slug) {
 }
 
 //! LANGUAGE SWITCHER
+function pl_get_current_lang () {
+	if ( function_exists( 'pll_current_language' ) ) {
+		return pll_current_language();
+	}
+	return null;
+}
+
+function get_lang_flag_src( $lang ) {
+
+	return wp_upload_dir()['baseurl'] . '/flag-' . $lang . '.svg';
+
+
+	if ( function_exists( 'pll_the_languages' ) ) {
+		$languages = pll_the_languages( array( 'raw' => 1 ) );
+		foreach ( $languages as $key=>$value ) {
+			if ( $value['slug'] === $lang ) {
+				return $value['flag'];
+			}
+		}
+		// return '🇪🇸';
+	}
+
+}
 
 function language_switcher( $atts = [], $content = '' ) {
 
@@ -1283,46 +1306,59 @@ function language_switcher( $atts = [], $content = '' ) {
 		"flag" 	=> false,
 	), $atts));
 
-	$output = '<div class="lang_switcher">';
+	$output = '<div class="lang-switcher">';
 
 	if ( function_exists( 'pll_the_languages' ) ) {
 
-		$output .= '<label class="relative">';
-		$output .= '	<input type="checkbox" name="lang-switch" class="lang-switch sr-only">';
-		$output .= '	<div class="switcher-container">';
-		$output .= '		<span class="switch-head"></span>';
-		$output .= '		<div class="lang-list">';
+		// $output .= '<div class="current-lang">'. pl_get_current_lang() . ' --- <img width="30" height="30" src="' . get_lang_flag_src(pl_get_current_lang()) . '" /></div>';
 
-		/**
-		* @disregard P1009 Undefined type
-		*/
+		$output .= '<div class="current-lang"><img class="lang-flag" width="30" height="30" src="' . get_lang_flag_src(pl_get_current_lang()) . '" /></div>';
+
+		// $output .= '<label class="relative">';
+		// $output .= '	<input type="checkbox" name="lang-switch" class="lang-switch sr-only">';
+		// $output .= '	<div class="switcher-container">';
+		// $output .= '		<span class="switch-head"></span>';
+		// $output .= '		<div class="lang-list">';
+
 		$languages = pll_the_languages( array( 'raw' => 1 ) );
 
 		$numItems = count($languages);
 		$i = 0;
 
-		foreach ( $languages as $key=>$value ) {
-			$current_lang = $value['current_lang'] ? 'current' : '';
-			$output .= '<div class="lang-code '. $current_lang  .'"><a href="'. $value['url'] .'">';
-			$output .= $value['slug'];
-			$output .= '</a></div>';
+		if ($numItems > 1) {
+			$output .= '<div class="lang-list"><ul>';
 
-			// if( ++$i === $numItems) {
-			// 	$output .= '<-- last one';
-			// }
-			// else {
-			// 	$output .= '<-- no last one';
-			// }
+			foreach ( $languages as $key=>$value ) {
+				// $current_lang = $value['current_lang'] ? 'current' : '';
+				$current_lang = $value['current_lang'] ? true : false;
+
+				// print_r($value);
+
+				if (! $current_lang) {
+					$output .= '<li class="lang-item lang-code-'. $value['slug'] .'">';
+					$output .= '	<a  href="'. $value['url'] .'">';
+					$output .= '		<img class="lang-flag" width="30" height="30" src="' . get_lang_flag_src($value['slug']) . '" />';
+					$output .= '		<div class="lang-name">' . $value['name'] . '</div>';
+					// $output .= ' (' . $value['slug'] . ')';
+					$output .= '	</a>';
+					$output .= '</li>';
+				}
+			}
+
+			$output .= '</ul></div>';
 		}
 
-		// $output .= '<span class="switch-head"></span>';
 
-		$output .= '		</div>';
-		$output .= '	</div>';
-		$output .= '<span class="sr-only">Switch language to ES / EN</span>';
-		$output .= '</label>';
-		$output .= '</div>';
+
+
+		// $output .= '		</div>';
+		// $output .= '	</div>';
+		// $output .= '<span class="sr-only">Switch language to ES / EN</span>';
+		// $output .= '</label>';
+
 	}
+
+	$output .= '</div>';
 	// Output shortcode.
 	return $output;
 }
@@ -1343,7 +1379,11 @@ function show_areas_featured( $atts = [], $content = '' ) {
 		'limit' => $limit,
 	);
 
-	$pods = pods('area', $params);
+	if ( function_exists('pods') ) {
+		$pods = pods('area', $params);
+	}
+
+	// $pods = pods('area', $params);
 
 	if ( $pods->total() > 0 ) {
 		while ($pods->fetch()) {
@@ -1764,6 +1804,3 @@ function custom_paywallpdf_form_tag_handler( $tag ) {
 		return '#';
 	}
 }
-
-//! CONTACT FORM 7 TO API (Campaing Monitor add to subscribers list): in development...
-// require get_template_directory() . '/inc/cf7-to-API.php';

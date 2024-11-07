@@ -776,11 +776,6 @@ section:not(.block-editor-block-list__block) {
 	}
 }
 
-/*! ELEMENTS WITH SLIDER BACKGROUNDS */
-section:has(.slider-bg) {
-	color: white;
-}
-
 /*! ELEMENTS WITH BACKGROUNDS */
 .has-bg {
 	position: relative;

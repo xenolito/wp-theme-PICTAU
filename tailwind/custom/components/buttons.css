@@ -13,7 +13,7 @@ button#submit {
 	letter-spacing: 0px;
 	/* text-transform: capitalize; */
 	@apply !no-underline text-white py-[0.7ch] px-[2.5ch] shadow shadow-black/40 hover:shadow-lg hover:shadow-slate-700/40 rounded-[var(--button-border-radius)];
-	font-size: clamp(1.1rem, 4vw, 1.3rem);
+	font-size: clamp(0.9rem, 4vw, 1.1rem);
 	/* text-transform: uppercase; */
 	will-change: auto;
 	transition: all 0.3s cubic-bezier(0.2, 1, 0.3, 1);
@@ -89,10 +89,16 @@ button#submit {
 .above-header-wrap {
 	.menu-bt {
 		a {
-			@apply text-white hover:!text-slate-800;
+			@apply !text-black/50 hover:!text-white min-w-[120px] justify-center;
 			&::before {
-				@apply hover:!bg-white;
-				/* @apply !bg-[var(--menu-item-hover-bg-color)] hover:!bg-white rounded-[var(--def-border-radius)] py-[.5rem] px-[3px]; */
+				@apply !bg-white/20 hover:!bg-white border border-black/50;
+				backdrop-filter: blur(7.5px);
+			}
+
+			&:hover {
+				&::before {
+					@apply !border-slate-800 !bg-slate-800;
+				}
 			}
 		}
 	}
@@ -103,10 +109,10 @@ button#submit {
 	.main-nav-mobile {
 		.menu-bt {
 			a {
-				@apply text-white;
+				@apply !text-white !py-[0.6rem] !px-[0.5rem];
 				&::before {
-					@apply !bg-[var(--main-color)] hover:!bg-slate-700;
-					/* @apply !bg-[var(--menu-item-hover-bg-color)] hover:!bg-white rounded-[var(--def-border-radius)] py-[.5rem] px-[3px]; */
+					/* @apply !bg-[var(--main-color)] hover:!bg-slate-700; */
+					@apply !bg-[var(--main-color)]  hover:!bg-slate-700;
 				}
 			}
 		}

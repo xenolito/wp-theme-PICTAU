@@ -40,6 +40,15 @@
 	--ease-squish-3: var(--ease-elastic-in-out-3);
 }
 
+@keyframes intro-gradient {
+	0% {
+		background-position: 300% 100%;
+	}
+	100% {
+		background-position: 0% 100%;
+	}
+}
+
 @keyframes ping {
 	75%,
 	100% {

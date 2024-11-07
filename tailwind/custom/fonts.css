@@ -4,48 +4,29 @@
  * These will be added immediately before Tailwind’s `base` layer.
  */
 
-/* Gotham Bold - latin */
+/* inter-regular - latin */
 @font-face {
 	font-display: swap;
-	font-family: "Gotham";
-	font-style: normal;
-	font-weight: 900;
-	src: url("./fonts/Gotham-Bold.woff2") format("woff2");
-}
-
-/* Gotham Book - latin */
-@font-face {
-	font-display: swap;
-	font-family: "Gotham";
+	font-family: "Inter";
 	font-style: normal;
 	font-weight: 400;
-	src: url("./fonts/Gotham-Book.woff2") format("woff2");
+	src: url("./fonts/inter-v18-latin-regular.woff2") format("woff2");
 }
-
-/* Gotham Medium - latin */
+/* inter-600 - latin */
 @font-face {
 	font-display: swap;
-	font-family: "Gotham";
+	font-family: "Inter";
+	font-style: normal;
+	font-weight: 600;
+	src: url("./fonts/inter-v18-latin-600.woff2") format("woff2");
+}
+/* inter-700 - latin */
+@font-face {
+	font-display: swap;
+	font-family: "Inter";
 	font-style: normal;
 	font-weight: 700;
-	src: url("./fonts/Gotham-Medium.woff2") format("woff2");
-}
-
-/* Miriam Libre Regular - latin */
-@font-face {
-	font-display: swap;
-	font-family: "Miriam Libre";
-	font-style: normal;
-	font-weight: 400;
-	src: url("./fonts/MiriamLibre-Regular.woff2") format("woff2");
-}
-/* Miriam Libre Bold - latin */
-@font-face {
-	font-display: swap;
-	font-family: "Miriam Libre";
-	font-style: normal;
-	font-weight: 900;
-	src: url("./fonts/MiriamLibre-Bold.woff2") format("woff2");
+	src: url("./fonts/inter-v18-latin-700.woff2") format("woff2");
 }
 
 /*! DEFAULT PICTAU ICONS */

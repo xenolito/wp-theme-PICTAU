@@ -27,7 +27,7 @@ body.fixed-header {
 
 		.above-header-wrap {
 			.menu-item a {
-				color: white;
+				color: black;
 			}
 		}
 
@@ -115,7 +115,8 @@ body.header-width-constrained {
 		--max-w: clamp(100px, calc(100% - (1 * var(--def-layout-x-padding))), calc(var(--layout-max-width) - (1 * var(--def-layout-x-padding))));
 
 		--pad-x: calc(var(--def-layout-x-padding) * 0.5);
-		@apply px-[var(--pad-x)] lg:pr-[.5rem];
+		/* @apply px-[var(--pad-x)] lg:pr-[.5rem]; */
+		@apply px-[var(--pad-x)];
 
 		max-width: var(--max-w);
 	}
@@ -123,9 +124,9 @@ body.header-width-constrained {
 
 body.header-width-centered {
 	@media only screen and (min-width: 1024px) {
-		/* #masthead {
+		#masthead {
 			width: unset;
-		} */
+		}
 
 		.main-header-content,
 		.above-header-content {

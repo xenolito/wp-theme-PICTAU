@@ -3,6 +3,7 @@
   "javascript.format.semicolons": "remove",
   "prettier.eslintIntegration": true,
   "intelephense.environment.includePaths": [
-    "/Volumes/KRAKEN/HTDOCS/sensormatic/app/public"
+    "/Volumes/KRAKEN/HTDOCS/bankinplay/app/public",
+    "/Volumes/KRAKEN/HTDOCS/mercanza-2024/app/public"
   ]
 }

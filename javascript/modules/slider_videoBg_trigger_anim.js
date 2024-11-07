@@ -25,7 +25,7 @@ window.addEventListener('load', () => {
 
 	const cover = slider.querySelector('.slider-cover')
 	const video = slider.querySelector('.video-bg')
-	window.video_intro = video
+	if (video) window.video_intro = video
 
 	// console.log(video)
 
@@ -62,7 +62,7 @@ window.addEventListener('load', () => {
 
 	setTimeout(() => {
 		window.introTween.play()
-		window.video_intro.play()
+		if (video) window.video_intro.play()
 	}, 50)
 
 	// window.introTween.play()

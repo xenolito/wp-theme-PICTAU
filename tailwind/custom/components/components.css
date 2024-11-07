@@ -14,10 +14,14 @@
 
 :root {
 	/* ! SHAPES */
-	--def-border-radius: 0px;
+	--def-border-radius: 1.5rem;
 	/* --button-border-radius: 999px; */
 	--button-border-radius: var(--def-border-radius);
 	--box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.04), 0px 6px 12px rgba(0, 0, 0, 0.02);
+	--box-shadow-pop: 0px 51px 78px rgba(17, 7, 53, 0.05), 0px 21.3066px 35.4944px rgba(17, 7, 53, 0.0359427), 0px 11.3915px 18.9418px rgba(17, 7, 53, 0.0298054),
+		0px 6.38599px 9.8801px rgba(17, 7, 53, 0.025), 0px 3.39155px 4.58665px rgba(17, 7, 53, 0.0201946), 0px 1.4113px 1.55262px rgba(17, 7, 53, 0.0140573), inset 0px 1px 0px rgba(41, 56, 78, 0.05);
+	--navigation-box-shadow: 0px 51px 80px rgba(22, 26, 41, 0.0154121), 0px 15.375px 24.1177px rgba(22, 26, 41, 0.0270905), 0px 6.38599px 10.0172px rgba(22, 26, 41, 0.0409122),
+		0px 0.5px 3.62304px rgba(22, 26, 41, 0.07);
 
 	--tw-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 	--tw-ring-offset-shadow: 0 0 #0000;
@@ -30,13 +34,13 @@
 	/* ! COLORS DEFAULT */
 	/* --main-color: rgb(196, 228, 86); */
 	/* --main-color: #c3ff00; */
-	--main-color: #0b3b6c;
-	--secondary-color: #27aae1;
+	/* --main-color: #1100ff; */
+	--main-color: #27b294;
 	--main-color-darker: #7a9913;
-	/* --bg-light: rgb(246, 243, 239); */
-	--bg-light: white;
 
-	--bg-dark: rgb(3, 18, 39);
+	--bg-main: white;
+	--bg-secondary: #f9fbfa;
+
 	--bg-layer2-dark: #051a36;
 	/* --bg-dark: #24262b; */
 
@@ -60,7 +64,8 @@
 	--txt-color-theme-A: white;
 	--txt-color-theme-A-dark: white;
 
-	--bg-color-theme-B: #1d2a3d;
+	--bg-color-theme-B: var(--bg-secondary);
+
 	--bg-color-theme-B-dark: #233652;
 	--heading-color-theme-B: white;
 	--heading-color-theme-B-dark: var(--main-color);
@@ -101,9 +106,9 @@
 	--card-border-color-dark: rgb(255, 255, 255, 0.15);
 	/* --card-border-color-dark: rgb(196, 228, 86, 0.5); */
 
-	--cta-color: #343434;
-	/* --cta-color: #c3ff00; */
-	/* --cta-color: var(--main-color); */
+	--cta-color: #334155;
+
+	/* --cta-color: #c3ff00; */ /* --cta-color: var(--main-color); */
 	--cta-color-dark: var(--main-color);
 	--link-underline-color: var(--cta-color);
 	--link-color: var(--main-color);
@@ -121,6 +126,9 @@
 	/* --highlightColor: var(--main-color); */
 	--highlightColor: var(--cta-color);
 	--bg-white-semi-transp: hsl(0deg 0% 100% / 69%);
+
+	/*! GRADIENTS */
+
 	--main-grad: linear-gradient(108deg, #008dff 24%, #00d39a 80%);
 	--main-grad-rev: linear-gradient(108deg, #00f6ff 24%, #008dff 80%);
 	--grad-2: linear-gradient(108deg, #008dff 70%, #00f6ff 100%);
@@ -128,6 +136,8 @@
 	--scrolled-menu-txt-color: var(--main-color-second);
 	--scrollbar-handle-color: rgba(0, 0, 0, 0.3);
 	--mmenu-card-color: #f5f9fd;
+
+	--intro-gradient: linear-gradient(45deg, #a163f1, #6363f1 22%, #3498ea 40%, #40dfa3 67%, rgba(64, 223, 163, 0));
 
 	--footer-gradient: linear-gradient(
 		130deg,
@@ -223,6 +233,72 @@
 		hsl(207deg 100% 50%) 100%
 	);
 
+	--header-scrolled-color: rgba(255, 255, 255, 0.65);
+	--header-scrolled-border-color: var(--main-color-second);
+
+	--header-scrolled-color-dark: rgba(0, 0, 0, 0.45);
+	--header-scrolled-border-color-dark: var(--main-color-second);
+
+	/* --heading-highlight-grad: linear-gradient(
+		45deg,
+		hsl(76deg 48% 43%) 0%,
+		hsl(73deg 52% 44%) 11%,
+		hsl(70deg 55% 45%) 22%,
+		hsl(68deg 59% 46%) 33%,
+		hsl(65deg 63% 47%) 44%,
+		hsl(63deg 67% 48%) 56%,
+		hsl(61deg 72% 48%) 67%,
+		hsl(58deg 79% 49%) 78%,
+		hsl(57deg 87% 50%) 89%,
+		hsl(55deg 100% 50%) 100%
+	); */
+
+	--heading-highlight-grad: linear-gradient(
+		45deg,
+		hsl(76deg 48% 43%) 0%,
+		hsl(76deg 52% 44%) 11%,
+		hsl(76deg 55% 45%) 22%,
+		hsl(76deg 59% 46%) 33%,
+		hsl(76deg 63% 47%) 44%,
+		hsl(76deg 67% 48%) 56%,
+		hsl(76deg 72% 49%) 67%,
+		hsl(75deg 77% 49%) 78%,
+		hsl(75deg 85% 49%) 89%,
+		hsl(74deg 100% 47%) 100%
+	);
+
+	--heading-highlight-grad-dark: linear-gradient(
+		140deg,
+		hsl(0deg 0% 100%) 0%,
+		hsl(223deg 100% 95%) 40%,
+		hsl(223deg 100% 90%) 56%,
+		hsl(223deg 100% 85%) 67%,
+		hsl(223deg 100% 80%) 76%,
+		hsl(223deg 100% 75%) 82%,
+		hsl(223deg 100% 71%) 88%,
+		hsl(223deg 100% 66%) 93%,
+		hsl(223deg 100% 61%) 97%,
+		hsl(223deg 100% 56%) 100%
+	);
+
+	--heading-default-grad-mz: var(--footer-gradient);
+
+	--heading-default-grad-bg: linear-gradient(
+		270deg,
+		hsl(207deg 98% 19%) 0%,
+		hsl(207deg 98% 22%) 11%,
+		hsl(207deg 98% 25%) 22%,
+		hsl(207deg 99% 29%) 33%,
+		hsl(207deg 99% 33%) 44%,
+		hsl(207deg 99% 36%) 56%,
+		hsl(207deg 99% 40%) 67%,
+		hsl(207deg 99% 43%) 78%,
+		hsl(207deg 100% 46%) 89%,
+		hsl(207deg 100% 50%) 100%
+	);
+
+	--heading-default-grad-bg: linear-gradient(to top, rgb(252, 0, 141), rgb(252, 91, 42) 100%);
+
 	/* ? THEME COLOR SCHEME RED */
 	--header-red-grad-bg: linear-gradient(
 		0deg,
@@ -285,22 +361,18 @@
 	--bgcolor-dark-4: #2d0605;
 	--bgcolor-dark-5: #4c0827;
 
+	/* ? green custom secon grad bg */
+	--header-custom-grad-bg-green: radial-gradient(50vw 100% at calc(110% - 5vw) 100%, hsl(114deg 98% 65% / 80%) 25%, hsl(57deg 98% 100% / 0%) 120%);
+	/* ? yellow custom secon grad bg */
+	--header-custom-grad-bg-yellow: radial-gradient(50vw 100% at calc(110% - 5vw) 100%, hsl(56deg 100% 56% / 80%) 25%, hsl(9deg 98% 36% / 0%) 120%);
+	--header-custom-grad-bg-orange: radial-gradient(50vw 100% at calc(110% - 5vw) 100%, hsl(35deg 100% 56% / 80%) 25%, hsl(9deg 98% 36% / 0%) 120%);
+	--header-custom-grad-bg: none;
+
 	/* --transparent-header-bg-color: rgba(0,0,0,0.16); */
-	--header-colorA: rgba(255, 0, 0, 0.5);
-
-	--header-scrolled-color: rgba(255, 255, 255, 0.5);
-	--header-scrolled-border-color: var(--main-color-second);
-
-	--header-scrolled-color-dark: rgba(0, 0, 0, 0.45);
-	--header-scrolled-border-color-dark: var(--main-color-second);
-
-	--heading-default-grad-bg: linear-gradient(to top, rgb(252, 0, 141), rgb(252, 91, 42) 100%);
-
-	--transparent-header-bg-color: rgba(255, 0, 0, 0.08);
+	--transparent-header-bg-color: rgba(255, 255, 255, 0.08);
 	--transparent-header-bg-color-light: rgba(255, 255, 255, 0);
-	--transparent-header-bg-color-light: linear-gradient(to right, rgba(14, 59, 108, 50%) 0%, rgba(255, 255, 255, 0%) 100%);
 
-	--menu-item-hover-bg-color: rgba(255, 255, 255, 0.18);
+	--menu-item-hover-bg-color: rgba(0, 0, 0, 0.04);
 	--menu-item-hover-bg-color-scrolled: rgba(0, 0, 0, 0.1);
 	--menu-item-hover-bg-color-dark: rgba(255, 255, 255, 0.18);
 	--menu-item-hover-bg-color-scrolled-dark: rgba(255, 255, 255, 0.18);
@@ -319,12 +391,9 @@
 	/* ! FONTS & TYPOGRAPHY */
 	/* --def-font-family: "Outfit", Helvetica, Arial, sans-serif;
 	--def-heading-font-family: "Outfit", Helvetica, Arial, sans-serif; */
-	--def-font-family: "Gotham", Helvetica, Arial, sans-serif;
-	--def-heading-font-family: "Gotham", Helvetica, Arial, sans-serif;
-	--def-alternative-font-family: "Raleway", Helvetica, Arial, sans-serif;
-	--def-heading-alternative-font-family: "Miriam Libre", Helvetica, Arial, sans-serif;
-
-	--txt-slider-heading: "Gotham", Helvetica, Arial, sans-serif;
+	--def-font-family: "Inter", Helvetica, Arial, sans-serif;
+	--def-heading-font-family: "Inter", Helvetica, Arial, sans-serif;
+	--txt-slider-heading: "Inter", Helvetica, Arial, sans-serif;
 	--def-txt-color: #404040;
 	--txt-heading-color: #3a3a3a;
 	--light-grey-color: #ddd;
@@ -333,7 +402,7 @@
 	--ui-mm-font-size: 0.8rem;
 
 	/* ! DIMENSIONS CONSTANTS */
-	--layout-max-width: 1280px;
+	--layout-max-width: 1500px;
 	--def-layout-x-padding: clamp(1.3rem, 3vw, 2rem);
 
 	--card-padding: clamp(2rem, 5vw, 3rem);
@@ -344,14 +413,13 @@
 	--mobile-switcher-dim: 13px;
 	--mobile-switcher-borderDim: 6px;
 
-	--desktop-space-top: 2.5rem;
-
+	--desktop-space-top: 1rem;
 	&:has(.above-header-wrap) {
 		--desktop-space-top: 0px;
 	}
 
-	--mobile-header-height: 60px;
-	--desktop-header-height: 115px;
+	--mobile-header-height: 45px;
+	--desktop-header-height: 60px;
 
 	--desktop-above-header-height: 0px;
 	&:has(.above-header-wrap) {
@@ -384,8 +452,8 @@
 	--form-max-width: 320px;
 
 	/* ! LOGO HEADER DIMENSIONS */
-	--desktop-logo-brand-width: 210px;
-	--mobile-logo-brand-width: 100px;
+	--desktop-logo-brand-width: 200px;
+	--mobile-logo-brand-width: 200px;
 	--logo-brand-width: var(--desktop-logo-brand-width);
 	@media only screen and (max-width: 1023px) {
 		--logo-brand-width: var(--mobile-logo-brand-width);
@@ -399,7 +467,6 @@
 	/* ! SINGLE PAGE HEADER */
 	--page-header-min-height: 250px;
 	--page-header-blog-min-height: 550px;
-	--page-header-min-height: 475px;
 	--content-max-width: 1240px;
 
 	--border-def: 1px solid var(--ui-color);
