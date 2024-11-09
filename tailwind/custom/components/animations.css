@@ -64,6 +64,23 @@
 		opacity: 0;
 	}
 }
+
+@keyframes ping-filled {
+	75%,
+	100% {
+		scale: 1.5;
+		opacity: 0;
+	}
+	0% {
+		scale: 1;
+		opacity: 1;
+	}
+	100% {
+		scale: 3;
+		opacity: 0;
+	}
+}
+
 @keyframes pulse {
 	50% {
 		opacity: 0.5;
@@ -297,5 +314,49 @@
 	}
 	100% {
 		transform: none;
+	}
+}
+
+.mz-dot-char {
+	--dot-color: var(--main-color);
+	--dot-wave-width: 1px;
+	position: relative;
+	z-index: 3;
+	display: inline-block;
+	width: calc(1ch * 0.3);
+	aspect-ratio: 1;
+	margin-left: 0.1ch;
+
+	/* background-color: currentColor; */
+	background-color: var(--dot-color);
+	border-radius: 9999px;
+
+	&::before {
+		content: "";
+		position: absolute;
+		display: block;
+		width: calc(1ch * 0.3);
+		aspect-ratio: 1;
+		border: var(--dot-wave-width) solid var(--dot-color);
+		border-radius: 9999px;
+		animation: ping 2s ease-out infinite;
+	}
+
+	&::after {
+		content: "";
+		position: absolute;
+		display: block;
+		width: calc(1ch * 0.3);
+		aspect-ratio: 1;
+		border: var(--dot-wave-width) solid var(--dot-color);
+		border-radius: 9999px;
+		animation: ping 2s ease-out infinite 0.5s;
+	}
+
+	&.filled {
+		&::before,
+		&::after {
+			background-color: var(--dot-color);
+		}
 	}
 }

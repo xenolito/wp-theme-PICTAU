@@ -36,7 +36,7 @@ h1 {
 }
 
 h2 {
-	@apply text-[var(--heading-color)] dark:text-[var(--heading-color-dark)] !mt-0 !mb-[.7ch];
+	@apply text-[var(--heading-color)] !mt-0 !mb-[.7ch];
 	font-size: clamp(2.2rem, 8vw, 3.5rem);
 	text-wrap: pretty;
 
@@ -51,8 +51,9 @@ h2 {
 }
 
 h3 {
-	@apply text-[var(--heading-color)] dark:text-[var(--heading-color-dark)] !mt-0 !mb-[.5ch];
+	@apply text-black dark:text-[var(--heading-color-dark)] !mt-0 !mb-[.5ch];
 	font-size: clamp(1.6rem, 5vw, 2.5rem);
+	font-weight: 600;
 }
 
 h4 {
@@ -80,6 +81,12 @@ p {
 
 li {
 	font-size: clamp(1rem, 5vw, 1.1rem);
+}
+
+.menu-item {
+	font-family: var(--nav-font-family);
+	font-size: var(--nav-text-size);
+	color: var(--nav-text-color);
 }
 
 body .is-layout-constrained > :where(.alignleft, .has-text-align-left, ) {

@@ -56,7 +56,7 @@ $brandLogo = ( has_custom_logo() ) ? '<img src="' . esc_url( $logo[0] ) . '" alt
 					'container_class'	=> 'flex w-[100%] justify-center',
 					'theme_location'	=> 'top_menu',
 					'menu_id'        	=> 'top-menu',
-					'menu_class'			=> 'top-nav-container flex items-center w-[100%] justify-end gap-[1.2rem]',
+					'menu_class'			=> 'top-nav-container flex items-center w-[100%] justify-end gap-[var(--menu-items-gap)]',
 					'items_wrap'			=> '<ul id="%1$s" class="%2$s" aria-label="submenu">%3$s</ul>',
 					'walker'					=> new Main_Nav_Walker
 					)

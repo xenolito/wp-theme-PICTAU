@@ -288,6 +288,27 @@ figure {
 	}
 }
 
+.pct-2cols-70-30 {
+	@apply !grid grid-cols-1 lg:grid-cols-[70%_1fr] gap-[var(--card-padding)];
+	> * {
+		width: 100% !important;
+	}
+}
+
+.pct-2cols-45-auto {
+	@apply !grid grid-cols-1 lg:grid-cols-[45%_1fr] gap-[var(--card-padding)];
+	> * {
+		width: 100% !important;
+	}
+}
+
+.pct-2cols-auto-45 {
+	@apply !grid grid-cols-1 lg:grid-cols-[55%_1fr] gap-[var(--card-padding)];
+	> * {
+		width: 100% !important;
+	}
+}
+
 .rtl-mobile {
 	@media only screen and (max-width: 768px) {
 		> *:nth-child(2) {
@@ -1514,11 +1535,6 @@ HTML or WP Block STRUCTURE NEEDED
 	.switcher-container {
 		--lang-gap: 0.2rem;
 		--lang-width: 26px;
-		/* display: grid;
-		position: relative;
-		grid-template-columns: repeat(2, 1fr);
-		align-items: center;
-		gap: var(--lang-gap); */
 
 		.lang-list {
 			display: grid;
@@ -1527,53 +1543,6 @@ HTML or WP Block STRUCTURE NEEDED
 			align-items: center;
 			gap: var(--lang-gap);
 			z-index: 50;
-		}
-
-		&:has(.lang-code:nth-of-type(1) a:hover) {
-			.switch-head {
-				translate: 0%;
-			}
-		}
-
-		&:has(.lang-code:nth-of-type(2) a:hover) {
-			.switch-head {
-				translate: calc(100% + var(--lang-gap));
-			}
-		}
-
-		&:has(.lang-code.current:nth-of-type(1)) {
-			.switch-head {
-				translate: 0%;
-			}
-		}
-
-		&:has(.lang-code.current:nth-of-type(2)) {
-			.switch-head {
-				translate: calc(100% + var(--lang-gap));
-			}
-		}
-
-		.lang-code {
-			position: relative;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-
-			&.current {
-				a {
-					pointer-events: none;
-					cursor: none;
-				}
-			}
-
-			a {
-				height: var(--lang-width);
-				aspect-ratio: 1.2/1;
-				text-transform: uppercase;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-			}
 		}
 
 		.switch-head {
