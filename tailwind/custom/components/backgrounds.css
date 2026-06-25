@@ -1,0 +1,236 @@
+/**
+ * BACKGROUNDS FOR ELEMENTS AND LINEAL GRADIENTS FOR LINES
+ *
+ *
+**/
+
+:root {
+	--line-grad-color-rgb: 0 119 211;
+	--line-grad-color-rgb: 214 214 214;
+
+	--horiz-line-gradient: linear-gradient(
+		90deg,
+		rgb(var(--line-grad-color-rgb) / 0%),
+		rgb(var(--line-grad-color-rgb) / 23%) 20%,
+		rgb(var(--line-grad-color-rgb) / 45%) 50%,
+		rgb(var(--line-grad-color-rgb) / 23%) 80%,
+		rgb(var(--line-grad-color-rgb) / 0%)
+	);
+
+	/*! BACKGROUND PATTERNS SVG */
+	--bg-pattern-cross: url('data:image/svg+xml,<svg version="1.1" id="rect" xmlns="http://www.w3.org/2000/svg" width="30" height="30" x="0px" y="0px" viewBox="0 0 30 30" enable-background="new 0 0 30 30" xml:space="preserve"><g><line opacity="1" fill="none" stroke="%23343434" stroke-miterlimit="10" x1="0" y1="5" x2="10" y2="5"/><line opacity="1" fill="none" stroke="%23343434" stroke-miterlimit="10" x1="5" y1="10" x2="5" y2="0"/></g></svg>');
+
+	--bg-pattern-dot: url('data:image/svg+xml,<svg version="1.1" id="rect" xmlns="http://www.w3.org/2000/svg" width="30" height="30" x="0px" y="0px" viewBox="0 0 30 30" enable-background="new 0 0 30 30" xml:space="preserve"><circle cx="3.5" cy="3.5" r="1.5"/></svg>');
+
+	--bg-pattern-dot-light: url('data:image/svg+xml,<svg version="1.1" id="rect" xmlns="http://www.w3.org/2000/svg" width="15" height="15" x="0px" y="0px" viewBox="0 0 30 30" enable-background="new 0 0 30 30" xml:space="preserve"><circle fill="%23626262" cx="3.5" cy="3.5" r="2"/></svg>');
+
+	/* --pepe: #626262; */
+
+	--bg-pattern-dot-square: url('data:image/svg+xml,<svg version="1.1" id="rect" xmlns="http://www.w3.org/2000/svg" width="30" height="30" x="0px" y="0px" viewBox="0 0 30 30" enable-background="new 0 0 30 30" xml:space="preserve"><line fill="none" stroke="%23000000" stroke-width="3" stroke-miterlimit="10" x1="2" y1="3" x2="5" y2="3"/></svg>');
+
+	--bg-pattern-grid: url('data:image/svg+xml,<svg version="1.1" id="rect" xmlns="http://www.w3.org/2000/svg" width="30" height="30" x="0px" y="0px" viewBox="0 0 30 30" enable-background="new 0 0 30 30" xml:space="preserve"><path fill="none" stroke="%23000000" stroke-width="0.5" d="M0 0h30v30H0z" /></svg>');
+
+	--bg-pattern-cross-dark: url('data:image/svg+xml,<svg version="1.1" id="rect" xmlns="http://www.w3.org/2000/svg" width="30" height="30" x="0px" y="0px" viewBox="0 0 30 30" enable-background="new 0 0 30 30" xml:space="preserve"><g><line opacity="1" fill="none" stroke="%23ffffff" stroke-miterlimit="10" x1="0" y1="5" x2="10" y2="5"/><line opacity="1" fill="none" stroke="%23ffffff" stroke-miterlimit="10" x1="5" y1="10" x2="5" y2="0"/></g></svg>');
+
+	--bg-pattern-footer: url('data:image/svg+xml,<svg version="1.1" id="rect" xmlns="http://www.w3.org/2000/svg" width="30" height="30" x="0px" y="0px" viewBox="0 0 40 40" enable-background="new 0 0 30 30" xml:space="preserve"><g><line opacity="0.5" fill="none" stroke="%23ffffff" stroke-miterlimit="10" x1="0" y1="5" x2="10" y2="5"/><line opacity="0.5" fill="none" stroke="%23ffffff" stroke-miterlimit="10" x1="5" y1="10" x2="5" y2="0"/></g></svg>');
+
+	--bg-pattern-footer: url('data:image/svg+xml,<svg version="1.1" id="rect" xmlns="http://www.w3.org/2000/svg" width="30" height="30" x="0px" y="0px" viewBox="0 0 30 30" enable-background="new 0 0 30 30" xml:space="preserve"><line fill="none" opacity="0.5" stroke="%23ffffff" stroke-width="2" stroke-miterlimit="10" x1="2" y1="3" x2="4" y2="3"/></svg>');
+
+	--line-gradient: linear-gradient(
+		90deg,
+		rgb(var(--line-grad-color-rgb) / 0%),
+		rgb(var(--line-grad-color-rgb) / 0%) 25%,
+		rgb(var(--line-grad-color-rgb) / 45%) 50%,
+		rgb(var(--line-grad-color-rgb) / 0%) 75%,
+		rgb(var(--line-grad-color-rgb) / 0%)
+	);
+
+	--line-gradient-dch: linear-gradient(
+		90deg,
+		rgb(var(--line-grad-color-rgb) / 0%),
+		rgb(var(--line-grad-color-rgb) / 45%) 20%,
+		rgb(var(--line-grad-color-rgb) / 0%) 75%,
+		rgb(var(--line-grad-color-rgb) / 0%)
+	);
+}
+
+:has(> [class*="bg-pattern"]) {
+	position: relative !important;
+}
+
+:has(> .webgl-dots) {
+	> * {
+		position: relative;
+	}
+}
+
+.bg-glow {
+	background: linear-gradient(90deg, rgb(29, 221, 253) 0%, rgb(51, 124, 255) 25%, rgb(160, 85, 252) 50%, rgb(243, 75, 187) 75.5%, rgb(253, 140, 61) 100%);
+	width: 100%;
+	height: 100%;
+	filter: blur(177px);
+	right: 0px;
+	left: 0px;
+	/* bottom: -350px; */
+	position: absolute;
+}
+
+[class*="bg-pattern-"] {
+	/* background-color: blue; */
+	--bg-opacity: 0.25;
+	--tile-dim: 20px;
+
+	position: absolute;
+	inset: 0;
+	width: 100% !important;
+	height: 100% !important;
+	margin: 0;
+	max-width: unset !important;
+	opacity: var(--bg-opacity);
+	background-image: var(--bg-pattern-cross);
+	pointer-events: none;
+
+	&.bg-pattern-dot {
+		background-image: var(--bg-pattern-dot);
+	}
+
+	&.bg-pattern-dot-square {
+		background-image: var(--bg-pattern-dot-square);
+	}
+
+	&.bg-pattern-grid {
+		background-image: var(--bg-pattern-grid);
+	}
+
+	&.bg-pattern-footer {
+		/* background-image: var(--bg-pattern-footer); */
+		/* background-image: var(--bg-pattern-cross);
+		background-image: var(--bg-pattern-dot-square); */
+		background-image: var(--bg-pattern-dot-light);
+	}
+
+	&.bg-theme-light {
+		opacity: 0.6;
+	}
+
+	&.fixed {
+		position: fixed;
+	}
+
+	svg {
+		#plus {
+			width: var(--tile-dim);
+			height: var(--tile-dim);
+		}
+	}
+}
+
+[class*="masked-"] {
+	--mask-y-dim: 50%;
+
+	&.landscape {
+		--mask-y-dim: 18%;
+	}
+}
+
+.masked-center {
+	mask-image: radial-gradient(33% calc(var(--mask-y-dim) * 0.66) at 50% 50%, black, transparent), radial-gradient(60% var(--mask-y-dim) at 50% 50%, black, transparent);
+}
+
+/* .masked-center {
+	background: red;
+	mask-image: radial-gradient(90% 80%, white 0%, transparent 60%, transparent 100%);
+} */
+
+.masked-center-top {
+	mask-image: radial-gradient(45% var(--mask-y-dim) at 50% 0%, black, transparent), radial-gradient(33% var(--mask-y-dim) at 50% 0%, black, transparent);
+}
+
+.masked-center-bottom {
+	mask-image: radial-gradient(45% var(--mask-y-dim) at 50% 100%, black, transparent), radial-gradient(33% var(--mask-y-dim) at 50% 100%, black, transparent);
+}
+
+.masked-left {
+	/* background-color: blue; */
+	mask-image: radial-gradient(50% calc(var(--mask-y-dim) * 0.66) at 0% 50%, black, transparent), radial-gradient(80% var(--mask-y-dim) at 0% 50%, black, transparent);
+}
+
+.masked-right {
+	/* background-color: blue; */
+	mask-image: radial-gradient(50% calc(var(--mask-y-dim) * 0.66) at 100% 50%, black, transparent), radial-gradient(80% var(--mask-y-dim) at 100% 50%, black, transparent);
+}
+
+[class*="bg-masked-image"] {
+	/* background-color: blue; */
+	--bg-opacity: 0.3;
+	--tile-dim: 20px;
+	--mask-y-dim: 50%;
+
+	&.landscape {
+		--mask-y-dim: 18%;
+	}
+
+	display: flex;
+	position: absolute;
+	inset: 0;
+	width: 100% !important;
+	height: 100% !important;
+	margin: 0;
+	max-width: unset !important;
+	opacity: var(--bg-opacity);
+	margin: 0 !important;
+	/* background-image: var(--bg-pattern-cross); */
+
+	/* &.bg-left-bottom {
+		left: -50%;
+	} */
+
+	&.bg-scale-50 {
+		figure,
+		svg {
+			width: 50%;
+			&:has(svg) {
+				width: 100%;
+			}
+		}
+	}
+}
+
+[class*="isometric"] {
+	img,
+	svg {
+		width: 300px;
+		transform: skewX(-30deg) rotateZ(-45deg) scaleY(0.6);
+		transform-origin: bottom center;
+
+		/* transform: rotateX(35.264deg) rotateY(45deg);
+		transform-style: preserve-3d;
+		transform-origin: center; */
+	}
+
+	&.plane-right {
+		transform: rotateX(35.264deg) rotateY(45deg);
+		transform-style: preserve-3d;
+		transform-origin: center;
+	}
+
+	&.plane-horizontal {
+	}
+}
+
+[class*="perspective-rotate"] {
+	perspective: 800px;
+
+	&.perspective-rotate-x {
+		img,
+		svg {
+			transform: rotateX(45deg); /* ángulo de inclinación en eje X */
+			transform-style: preserve-3d;
+			transform-origin: center;
+		}
+	}
+}
+
+.color-brand {
+	color: var(--logo-brand-color);
+}

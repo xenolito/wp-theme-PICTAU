@@ -1,0 +1,584 @@
+:root {
+	--animation-fade-in: fade-in 0.5s var(--ease-3);
+	--animation-fade-in-bloom: fade-in-bloom 2s var(--ease-3);
+	--animation-fade-out: fade-out 0.5s var(--ease-3);
+	--animation-fade-out-bloom: fade-out-bloom 2s var(--ease-3);
+	--animation-scale-up: scale-up 0.5s var(--ease-3);
+	--animation-scale-down: scale-down 0.5s var(--ease-3);
+	--animation-slide-out-up: slide-out-up 0.5s var(--ease-3);
+	--animation-slide-out-down: slide-out-down 0.5s var(--ease-3);
+	--animation-slide-out-right: slide-out-right 0.5s var(--ease-3);
+	--animation-slide-out-left: slide-out-left 0.5s var(--ease-3);
+	--animation-slide-in-up: slide-in-up 0.5s var(--ease-3);
+	--animation-slide-in-down: slide-in-down 0.5s var(--ease-3);
+	--animation-slide-in-right: slide-in-right 0.5s var(--ease-3);
+	--animation-slide-in-left: slide-in-left 0.5s var(--ease-3);
+	--animation-shake-x: shake-x 0.75s var(--ease-out-5);
+	--animation-shake-y: shake-y 0.75s var(--ease-out-5);
+	--animation-shake-z: shake-z 1s var(--ease-in-out-3);
+	--animation-spin: spin 2s linear infinite;
+	--animation-ping: ping 5s var(--ease-out-3) infinite;
+	--animation-blink: blink 1s var(--ease-out-3) infinite;
+	--animation-float: float 3s var(--ease-in-out-3) infinite;
+	--animation-bounce: bounce 2s var(--ease-squish-2) infinite;
+
+	--ease-1: cubic-bezier(0.25, 0, 0.5, 1);
+	--ease-2: cubic-bezier(0.25, 0, 0.4, 1);
+	--ease-3: cubic-bezier(0.25, 0, 0.3, 1);
+	--ease-out-1: cubic-bezier(0, 0, 0.75, 1);
+	--ease-out-2: cubic-bezier(0, 0, 0.5, 1);
+	--ease-out-3: cubic-bezier(0, 0, 0.3, 1);
+	--ease-out-4: cubic-bezier(0, 0, 0.1, 1);
+	--ease-out-5: cubic-bezier(0, 0, 0, 1);
+	--ease-in-out-1: cubic-bezier(0.1, 0, 0.9, 1);
+	--ease-in-out-2: cubic-bezier(0.3, 0, 0.7, 1);
+	--ease-in-out-3: cubic-bezier(0.5, 0, 0.5, 1);
+	--ease-in-out-4: cubic-bezier(0.7, 0, 0.3, 1);
+	--ease-in-out-5: cubic-bezier(0.9, 0, 0.1, 1);
+	--ease-squish-1: var(--ease-elastic-in-out-1);
+	--ease-squish-2: var(--ease-elastic-in-out-2);
+	--ease-squish-3: var(--ease-elastic-in-out-3);
+}
+
+/* image_mask_animated: hide before JS applies clip-path to prevent flash of unmasked image */
+[data-animask] {
+	visibility: hidden;
+}
+
+@keyframes intro-gradient {
+	0% {
+		background-position: 300% 100%;
+	}
+	100% {
+		background-position: 0% 100%;
+	}
+}
+
+@keyframes ping {
+	75%,
+	100% {
+		scale: 3;
+		opacity: 0;
+	}
+	0% {
+		scale: 1;
+		opacity: 1;
+	}
+	100% {
+		scale: 7;
+		opacity: 0;
+	}
+}
+
+@keyframes ping-filled {
+	75%,
+	100% {
+		scale: 1.5;
+		opacity: 0;
+	}
+	0% {
+		scale: 1;
+		opacity: 1;
+	}
+	100% {
+		scale: 3;
+		opacity: 0;
+	}
+}
+
+@keyframes pulse {
+	50% {
+		opacity: 0.5;
+	}
+}
+
+@keyframes fade-in-bloom {
+	0% {
+		filter: brightness(1) blur(20px);
+		opacity: 0;
+	}
+
+	10% {
+		filter: brightness(2) blur(10px);
+		opacity: 1;
+	}
+
+	to {
+		filter: brightness(1) blur(0);
+		opacity: 1;
+	}
+}
+
+@keyframes fade-out {
+	to {
+		opacity: 0;
+	}
+}
+
+.fade-out {
+	animation: fade-out 1s var(--ease-3) forwards;
+}
+
+@keyframes fade-out-bloom {
+	to {
+		filter: brightness(1) blur(20px);
+		opacity: 0;
+	}
+
+	10% {
+		filter: brightness(2) blur(10px);
+		opacity: 1;
+	}
+
+	0% {
+		filter: brightness(1) blur(0);
+		opacity: 1;
+	}
+}
+
+@keyframes scale-up {
+	to {
+		transform: scale(1.25);
+	}
+}
+
+@keyframes scale-down {
+	to {
+		transform: scale(0.75);
+	}
+}
+
+@keyframes slide-out-up {
+	to {
+		transform: translateY(-100%);
+	}
+}
+
+@keyframes slide-out-down {
+	to {
+		transform: translateY(100%);
+	}
+}
+
+@keyframes slide-out-right {
+	to {
+		transform: translateX(100%);
+	}
+}
+
+@keyframes slide-out-left {
+	to {
+		transform: translateX(-100%);
+	}
+}
+
+@keyframes slide-in-up {
+	0% {
+		transform: translateY(100%);
+	}
+}
+
+@keyframes slide-in-down {
+	0% {
+		transform: translateY(-100%);
+	}
+}
+
+@keyframes slide-in-right {
+	0% {
+		transform: translateX(-100%);
+	}
+}
+
+@keyframes slide-in-left {
+	0% {
+		transform: translateX(100%);
+	}
+}
+
+@keyframes shake-x {
+	0%,
+	to {
+		transform: translateX(0);
+	}
+
+	20% {
+		transform: translateX(-5%);
+	}
+
+	40% {
+		transform: translateX(5%);
+	}
+
+	60% {
+		transform: translateX(-5%);
+	}
+
+	80% {
+		transform: translateX(5%);
+	}
+}
+
+@keyframes shake-y {
+	0%,
+	to {
+		transform: translateY(0);
+	}
+
+	20% {
+		transform: translateY(-5%);
+	}
+
+	40% {
+		transform: translateY(5%);
+	}
+
+	60% {
+		transform: translateY(-5%);
+	}
+
+	80% {
+		transform: translateY(5%);
+	}
+}
+
+@keyframes shake-z {
+	0%,
+	to {
+		transform: rotate(0deg);
+	}
+
+	20% {
+		transform: rotate(-2deg);
+	}
+
+	40% {
+		transform: rotate(2deg);
+	}
+
+	60% {
+		transform: rotate(-2deg);
+	}
+
+	80% {
+		transform: rotate(2deg);
+	}
+}
+
+@keyframes spin {
+	to {
+		transform: rotate(1turn);
+	}
+}
+
+@keyframes blink {
+	0%,
+	to {
+		opacity: 1;
+	}
+
+	50% {
+		opacity: 0.5;
+	}
+}
+
+@keyframes float {
+	50% {
+		transform: translateY(-25%);
+	}
+}
+
+@keyframes bounce {
+	25% {
+		transform: translateY(-20%);
+	}
+
+	40% {
+		transform: translateY(-3%);
+	}
+
+	0%,
+	60%,
+	to {
+		transform: translateY(0);
+	}
+}
+
+@keyframes pulse {
+	50% {
+		transform: scale(0.9);
+	}
+}
+
+@keyframes slide-right {
+	0% {
+		transform: none;
+	}
+	50% {
+		transform: translateX(100%);
+	}
+
+	50.1% {
+		transform: translateX(-100%);
+	}
+	100% {
+		transform: none;
+	}
+}
+
+@keyframes marquee-slide {
+	from {
+		translate: 0;
+	}
+	to {
+		translate: -100%;
+	}
+}
+
+@keyframes marquee-slide-reverse {
+	from {
+		translate: -100%;
+	}
+	to {
+		translate: 0;
+	}
+}
+
+@keyframes scroll-up-icon {
+	100% {
+		opacity: 0;
+		transform: translate3d(0, 5%, 0);
+	}
+
+	90% {
+		opacity: 1;
+	}
+
+	25% {
+		opacity: 1;
+	}
+
+	0% {
+		transform: translate3d(0, 50%, 0);
+		opacity: 0;
+	}
+}
+
+/* --- Zoom pulse (Ken Burns) --- */
+/* Variables configurables en el <figure>:
+   --zoom-scale     → escala máxima del zoom (default 1.3)
+   --zoom-duration  → duración de un ciclo completo (default 8s)
+   --zoom-ease      → easing (default ease-in-out)
+   --zoom-origin-x  → punto X del zoom (default 70%)
+   --zoom-origin-y  → punto Y del zoom (default 30%)
+*/
+.ken-burns {
+	--zoom-scale: 1.25;
+	--zoom-duration: 40s;
+	--zoom-ease: ease-in-out;
+	--zoom-origin-x: 30%;
+	--zoom-origin-y: 70%;
+	overflow: clip;
+}
+
+.ken-burns img {
+	transform-origin: var(--zoom-origin-x) var(--zoom-origin-y);
+	animation: zoom-pulse var(--zoom-duration) var(--zoom-ease) infinite;
+}
+
+@keyframes zoom-pulse {
+	0%,
+	100% {
+		scale: 1;
+	}
+
+	50% {
+		scale: var(--zoom-scale);
+	}
+}
+
+/* ==========================================================================
+   SVG Downloading loop — .svg-downloading
+   El icono se muestra completo desde el inicio.
+   En hover, el anillo discontinuo anima su dash.
+
+   Uso (inline SVG):
+   <svg class="svg-downloading" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+     <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.1">
+       <path d="M12 21c-4.97 0-9-4.03-9-9c0-4.97 4.03-9 9-9"/>
+       <path class="svg-dl-ring" stroke-dasharray="2 4" stroke-dashoffset="6"
+             d="M12 3c4.97 0 9 4.03 9 9c0 4.97-4.03 9-9 9"/>
+       <path d="M12 8v7.5"/>
+       <path d="M12 15.5l3.5-3.5M12 15.5l-3.5-3.5"/>
+     </g>
+   </svg>
+   ========================================================================== */
+
+/* Anillo discontinuo: loop pausado por defecto */
+.svg-dl-ring {
+	animation: svg-dl-ring-loop 0.6s linear infinite;
+	animation-play-state: paused;
+}
+
+/* Hover: lanza el loop del dash */
+.svg-downloading:hover .svg-dl-ring {
+	animation-play-state: running;
+}
+
+@keyframes svg-dl-ring-loop {
+	from {
+		stroke-dashoffset: 6;
+	}
+	to {
+		stroke-dashoffset: 0;
+	}
+}
+
+/*! stickysection: scroll-driven sticky animation */
+[data-stickysection] {
+	position: relative;
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+
+[data-stickysection].is-ready {
+	opacity: 1;
+}
+
+.sticky-scene {
+	position: sticky;
+	top: 0;
+	height: 100vh;
+	width: 100%;
+	overflow: hidden;
+}
+
+[data-stickysection] .is-layer {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	will-change: transform, opacity;
+	/* Per-layer scroll & animation control (override via inline style or [data-st-index] rule).
+	   Timing — --st-size: slot weight (flex-grow); --st-in/out: transition fraction; --st-gap-after: blank scroll.
+	   Animation values (numeric, unitless) — passed directly to GSAP:
+	   --st-initial-scale/opacity: hidden start state. --st-in/out-scale/opacity: transition targets.
+	   Easing — GSAP ease string; supports any GSAP ease e.g. power3.in, back.out(1.7), none. */
+	--st-in: 0.5;
+	--st-out: 0.5;
+	--st-initial-scale: 0.92;
+	--st-initial-opacity: 0;
+	--st-in-scale: 1;
+	--st-in-opacity: 1;
+	--st-out-scale: 0.95;
+	--st-out-opacity: 0;
+	--st-in-ease: power1.out;
+	--st-out-ease: power1.inOut;
+}
+
+[data-stickysection] .is-layer[data-st-index="1"] {
+	/* Timing */
+	--st-size: 1;
+	--st-in: 0.5;
+	--st-out: 0.5;
+	--st-gap-after: 0.2;
+
+	/* Estado inicial (capa oculta antes de entrar) */
+	--st-initial-scale: 0.92;
+	--st-initial-opacity: 0;
+
+	/* Fade-in */
+	--st-in-scale: 1;
+	--st-in-opacity: 1;
+	--st-in-ease: power1.out;
+
+	/* Fade-out */
+	--st-out-scale: 5; /* ← zoom-out grande */
+	--st-out-opacity: 0;
+	--st-out-ease: power3.in;
+}
+
+[data-stickysection] .is-layer[data-st-index="2"] {
+	--st-size: 2;
+	--st-in: 0.1; /* entra rápido */
+	--st-out: 0.2; /* sale rápido */
+	/* 80% del slot en hold */
+}
+
+/*! PULSING DOT */
+.pulsing-dot {
+	--dot-color: var(--main-color);
+	--dot-dim: 40px;
+	--dot-wave-width: 1px;
+	--dot-wave-distance: 1.5;
+	--dot-padding: 0.5rem;
+
+	position: relative;
+	z-index: 3;
+	display: grid;
+	place-content: center;
+	width: var(--dot-dim) !important;
+	height: var(--dot-dim) !important;
+	aspect-ratio: 1 / 1;
+	max-width: unset !important;
+
+	/* background-color: currentColor; */
+	background-color: var(--dot-color);
+	border-radius: 9999px;
+
+	> * {
+		padding: 0 !important;
+		margin: 0 !important;
+		grid-area: 1 / 1;
+		line-height: 1;
+	}
+
+	&::before {
+		content: "";
+		display: block;
+		grid-area: 1 / 1;
+		width: var(--dot-dim) !important;
+		height: var(--dot-dim) !important;
+		aspect-ratio: 1;
+		border: var(--dot-wave-width) solid var(--dot-color);
+		background-color: transparent;
+		border-radius: 9999px;
+		animation: dot-wave 2s ease-out infinite;
+	}
+
+	&::after {
+		content: "";
+		display: block;
+		grid-area: 1 / 1;
+		width: var(--dot-dim) !important;
+		height: var(--dot-dim) !important;
+		aspect-ratio: 1;
+		border: var(--dot-wave-width) solid var(--dot-color);
+		border-radius: 9999px;
+		animation: dot-wave 2s ease-out infinite 0.5s;
+	}
+
+	&.filled {
+		&::before,
+		&::after {
+			background-color: var(--dot-color);
+		}
+	}
+}
+
+@keyframes dot-wave {
+	75%,
+	100% {
+		scale: calc(var(--dot-wave-distance, 1) * 3);
+		opacity: 0;
+	}
+	0% {
+		scale: 1;
+		opacity: 1;
+	}
+	100% {
+		scale: calc(var(--dot-wave-distance, 1) * 7);
+		opacity: 0;
+	}
+}

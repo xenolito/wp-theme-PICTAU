@@ -1,0 +1,38 @@
+{
+  "css.customData": [".vscode/tailwind.json"],
+  "javascript.format.semicolons": "remove",
+  "prettier.eslintIntegration": true,
+  "intelephense.environment.includePaths": [
+    "/Volumes/KRAKEN/HTDOCS/eqm/app/public"
+  ],
+  "intelephense.files.associations": {
+    "*.php": "php",
+    "*.html": "html",
+    "*.js": "javascriptreact",
+    "*.jsx": "javascriptreact",
+    "*.ts": "typescriptreact",
+    "*.tsx": "typescriptreact"
+  },
+  "intelephense.files.exclude": [
+    "**/.git/**",
+    "**/node_modules/**",
+    "**/vendor/**",
+    "**/storage/**",
+    "**/public/**",
+    "**/bootstrap/cache/**"
+  ],
+  "mcp": {
+    "servers": {
+      "github": {
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-github"
+        ],
+        "env": {
+          "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+        }
+      }
+    }
+  }
+}

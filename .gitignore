@@ -1,0 +1,24 @@
+# Ignore dependencies from npm and Composer:
+node_modules/
+node_scripts/
+vendor/
+.git
+*.code-workspace
+
+
+# Ignore generated JavaScript files:
+# *.min.js
+
+# Ignore generated CSS files:
+# style.css
+# style-editor.css
+# style-editor-extra.css
+
+# Ignore the generated zip file:
+*.zip
+
+# Ignore .DS_Store files from macOS:
+.DS_Store
+
+# Playwright MCP output (screenshots y logs de debug):
+.playwright-mcp/

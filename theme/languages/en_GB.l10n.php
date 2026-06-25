@@ -1,0 +1,2 @@
+<?php
+return ['project-id-version'=>'EQM by PICTAU','report-msgid-bugs-to'=>'','pot-creation-date'=>'2025-09-27 11:35+0000','po-revision-date'=>'2026-04-27 08:55+0000','last-translator'=>'','language-team'=>'English (UK)','language'=>'en_GB','plural-forms'=>'nplurals=2; plural=n != 1;','mime-version'=>'1.0','content-type'=>'text/plain; charset=UTF-8','content-transfer-encoding'=>'8bit','x-generator'=>'Loco https://localise.biz/','x-loco-version'=>'2.8.0; wp-6.8.1; php-8.3.17','x-domain'=>'pictau','messages'=>['contacta'=>'Contact','Ver Caso de Éxito'=>'See Success Story']];

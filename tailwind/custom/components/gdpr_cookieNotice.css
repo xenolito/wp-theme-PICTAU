@@ -1,0 +1,96 @@
+/* For plugin Cookie Notice: GDPR Cookie Compliance Plugin (CCPA ready) https://es.wordpress.org/plugins/gdpr-cookie-compliance/ */
+
+/* Cookie notice info bar */
+
+/* All buttons on GDPR COOKIE PLUGIN */
+#moove_gdpr_cookie_info_bar,
+.gdpr_lightbox {
+	.mgbutton {
+		border-radius: var(--def-border-radius) !important;
+		box-shadow: none !important;
+
+		&.moove-gdpr-infobar-reject-btn,
+		&.moove-gdpr-modal-reject-all {
+			background-color: #686868 !important;
+			&:hover {
+				background-color: black !important;
+			}
+		}
+	}
+
+	#strict-necessary-cookies,
+	#third_party_cookies {
+		.tab-title {
+			pointer-events: none;
+		}
+		.moove-gdpr-tab-main-content {
+			display: block !important;
+		}
+	}
+
+	#privacy_overview .tab-title {
+		font-size: 22px !important;
+		font-weight: bold !important;
+	}
+
+	#strict-necessary-cookies,
+	#third_party_cookies {
+		.tab-title {
+			font-weight: bold !important;
+		}
+	}
+}
+
+#moove_gdpr_cookie_modal {
+	--dim: 30px;
+	.moove-gdpr-modal-content {
+		.moove-gdpr-modal-close {
+			display: flex !important;
+			justify-content: center;
+			align-items: center;
+			top: calc(var(--dim) * -0.5) !important;
+			right: calc(var(--dim) * -0.5) !important;
+
+			width: var(--dim) !important;
+			height: var(--dim) !important;
+			.gdpr-icon {
+				display: flex !important;
+				justify-content: center;
+				align-items: center;
+				width: var(--dim) !important;
+				height: var(--dim) !important;
+				&::before,
+				&::after {
+					top: inherit !important;
+					height: calc(var(--dim) * 0.45) !important;
+					width: 1px !important;
+				}
+			}
+		}
+	}
+}
+
+#moove_gdpr_cookie_info_bar {
+	width: 300px !important;
+	.moove-gdpr-info-bar-content {
+		flex-flow: column !important;
+		row-gap: 1.5rem;
+		.moove-gdpr-button-holder {
+			justify-content: center !important;
+			flex-direction: column-reverse !important;
+			width: 100% !important;
+			padding-left: 0 !important;
+		}
+
+		@media only screen and (max-width: 767px) {
+			display: flex !important;
+			flex-flow: column !important;
+			row-gap: 1rem;
+
+			.mgbutton {
+				font-size: inherit !important;
+				width: 100% !important;
+			}
+		}
+	}
+}

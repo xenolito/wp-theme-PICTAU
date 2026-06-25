@@ -1,0 +1,262 @@
+/**
+ * Additional styles applied only to the WordPress editor
+ *
+ * It is sometimes necessary to add additional styles for the WordPress block
+ * editor, generally to improve the editor experience. For example, you may
+ * want to tweak the appearance of the title area to better match your site’s
+ * front end, or you may need to change the appearance of a block to better
+ * distinguish between its fields while editing.
+ *
+ * Those styles should be added in this file, and they will be added only to
+ * the block editor.
+ */
+
+body {
+  background-color: white !important;
+}
+
+.editor-styles-wrapper .wp-block.has-child-selected .is-selected {
+  z-index: 999 !important;
+}
+
+.editor-styles-wrapper.block-editor-writing-flow {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.entry-header,
+.entry-content {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.is-root-container > *, .entry-header > * {
+  max-width: 100% !important;
+}
+
+.editor-styles-wrapper .is-layout-constrained > * {
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.editor-styles-wrapper * {
+  opacity: 1 !important;
+}
+
+.full-vh,
+.full-height {
+  height: auto !important;
+}
+
+.full-width {
+  left: auto;
+}
+
+.is-bg {
+  position: relative;
+}
+
+.is-bg * {
+  pointer-events: initial !important;
+}
+
+.is-bg img {
+  width: 100%;
+  height: auto !important;
+}
+
+:where(.editor-styles-wrapper) .is-bg {
+  height: auto !important;
+}
+
+.editor-styles-wrapper ::after {
+  display: none !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-transform: none !important;
+}
+
+h1.screen-reader-text {
+  font-size: clamp(1.5rem, 4vw, 2.5rem) !important;
+}
+
+.bg-dark h1,
+	.bg-dark h2,
+	.bg-dark h3,
+	.bg-dark p,
+	[class*="theme-color-"] h1,
+	[class*="theme-color-"] h2,
+	[class*="theme-color-"] h3,
+	[class*="theme-color-"] p {
+  color: white !important;
+}
+
+.popup {
+  background-color: rgb(100 149 237 / 33%);
+  padding: 3rem;
+}
+
+.has-background {
+  padding: 2rem;
+}
+
+.has-background h1,
+	.has-background h2,
+	.has-background h3,
+	.has-background h4,
+	.has-background h5,
+	.has-background h6,
+	.has-background p {
+  color: black !important;
+}
+
+.card.cta h3,
+	.card.cta p {
+  color: black !important;
+}
+
+.theme-color-light h2,
+	.theme-color-light h1,
+	.theme-color-light h3,
+	.theme-color-light h4,
+	.theme-color-light p {
+  color: black !important;
+}
+
+.slider-logos .swiper-wrapper {
+  flex-flow: column;
+}
+
+.mask-faded-down {
+  -webkit-mask-image: none !important;
+          mask-image: none !important;
+}
+
+.intro-mask {
+  mix-blend-mode: unset !important;
+}
+
+.outline.white .wp-element-button {
+  border-color: black;
+  color: black !important;
+}
+
+.outline.white .wp-element-button:hover {
+  color: white !important;
+}
+
+.bg-dark h1,
+.bg-dark h2,
+.bg-dark h3,
+.bg-dark p,
+[class*="theme-color-"] h1,
+[class*="theme-color-"] h2,
+[class*="theme-color-"] h3,
+[class*="theme-color-"] p,
+.header-tag.glassy {
+  color: black !important;
+}
+
+.theme-color-dark h1,
+	.theme-color-dark h2,
+	.theme-color-dark h3,
+	.theme-color-dark p,
+	.theme-color-dark .header-tag.glassy {
+  color: rgb(169, 169, 169) !important;
+}
+
+.theme-color-dark {
+  background: #505050 !important;
+}
+
+/*!! THEME SPECIFIC CUSTOM EDITOR FIXES (REMOVE IF NOT NEEDED) */
+
+.slider * {
+  position: relative !important;
+}
+
+.hidden,
+.screen-reader-text {
+  display: flex !important;
+  opacity: 0.5 !important;
+  clip-path: none;
+  height: initial;
+  margin: initial;
+  overflow: initial;
+  padding: initial;
+  position: relative;
+  width: unset;
+  padding-bottom: 2ch !important;
+}
+
+/* === imgcompare: preview visual en el editor de bloques === */
+
+/* Requiere clase CSS adicional "imgcompare" en el bloque grupo (la clase sí aparece en el DOM del editor; data-imgcompare solo en el frontend) */
+
+/* El overlay solo se activa cuando no hay ningún bloque hijo seleccionado, para que ambas imágenes sean editables */
+
+.editor-styles-wrapper .wp-block-group.imgcompare:not(:has(.is-selected)) {
+  position: relative;
+  overflow: hidden;
+}
+
+/* La segunda figura se superpone a la primera, recortada al 50% desde la izquierda */
+
+.editor-styles-wrapper .wp-block-group.imgcompare:not(:has(.is-selected)) > figure:nth-of-type(2) {
+  position: absolute !important;
+  inset: 0 !important;
+  clip-path: inset(0 0 0 50%) !important;
+  margin: 0 !important;
+}
+
+.editor-styles-wrapper .wp-block-group.imgcompare:not(:has(.is-selected)) > figure:nth-of-type(2) img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  -o-object-fit: cover !important;
+     object-fit: cover !important;
+}
+
+/* Línea separadora vertical centrada */
+
+.editor-styles-wrapper .wp-block-group.imgcompare:not(:has(.is-selected))::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Botón circular del handler — override de la regla global que oculta ::after en el editor */
+
+.editor-styles-wrapper .wp-block-group.imgcompare:not(:has(.is-selected))::after {
+  content: "↔" !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #555;
+  position: absolute !important;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 2px 10px hsl(0 0% 0% / 0.3);
+  pointer-events: none;
+  z-index: 11;
+}
