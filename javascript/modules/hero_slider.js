@@ -19,27 +19,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	const HeroSlider = class {
 		constructor(container, config = {}) {
-			const {
-				delay          = '5000',
-				draggable      = 'yes',
-				arrows         = 'no',
-				bullets        = 'yes',
-				customarrows   = false,
-				callback       = false,
-				transition     = 'slide',
-				fadespeed      = '0.8',
-				pauseonfocus   = 'no',
-			} = config
+			const { delay = '5000', draggable = 'yes', arrows = 'no', bullets = 'yes', customarrows = false, callback = false, transition = 'slide', fadespeed = '0.8', pauseonfocus = 'no' } = config
 
-			this.container    = container
-			this.delay        = Math.round(Number(delay) * 1000) // segundos → ms
-			this.draggable    = draggable === 'yes' || draggable === 'true' || draggable === '1'
-			this.arrows       = arrows === 'yes' || arrows === 'true' || arrows === '1'
-			this.bullets      = bullets === 'yes' || bullets === 'true' || bullets === '1'
+			this.container = container
+			this.delay = Math.round(Number(delay) * 1000) // segundos → ms
+			this.draggable = draggable === 'yes' || draggable === 'true' || draggable === '1'
+			this.arrows = arrows === 'yes' || arrows === 'true' || arrows === '1'
+			this.bullets = bullets === 'yes' || bullets === 'true' || bullets === '1'
 			this.customarrows = customarrows ? (document.querySelector(customarrows) ?? false) : false
-			this.callbackFn   = callback || false
-			this.transition   = transition === 'fade' ? 'fade' : 'slide'
-			this.fadeSpeed    = Math.round(Number(fadespeed) * 1000) // segundos → ms
+			this.callbackFn = callback || false
+			this.transition = transition === 'fade' ? 'fade' : 'slide'
+			this.fadeSpeed = Math.round(Number(fadespeed) * 1000) // segundos → ms
 			this.pauseOnFocus = pauseonfocus === 'yes' || pauseonfocus === 'true' || pauseonfocus === '1'
 
 			this.init()
@@ -87,26 +77,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		initSplide = () => {
 			const isSingle = this.slideCount <= 1
-			const useFade  = !isSingle && this.transition === 'fade'
+			const useFade = !isSingle && this.transition === 'fade'
 
 			this.splide = new Splide(this.container, {
-				type:         isSingle ? 'slide' : (useFade ? 'fade' : 'loop'),
-				rewind:       useFade,
-				speed:        useFade ? this.fadeSpeed : 400,
-				perPage:      1,
-				perMove:      1,
-				gap:          0,
-				padding:      0,
-				arrows:       isSingle ? false : this.arrows,
-				pagination:   isSingle ? false : this.bullets,
-				drag:         isSingle ? false : this.draggable,
-				autoplay:      !isSingle,
-				interval:      this.delay,
-				pauseOnHover:  this.pauseOnFocus,
-				pauseOnFocus:  this.pauseOnFocus,
+				type: isSingle ? 'slide' : useFade ? 'fade' : 'loop',
+				rewind: useFade,
+				speed: useFade ? this.fadeSpeed : 400,
+				perPage: 1,
+				perMove: 1,
+				gap: 0,
+				padding: 0,
+				arrows: isSingle ? false : this.arrows,
+				pagination: isSingle ? false : this.bullets,
+				drag: isSingle ? false : this.draggable,
+				autoplay: !isSingle,
+				interval: this.delay,
+				pauseOnHover: this.pauseOnFocus,
+				pauseOnFocus: this.pauseOnFocus,
 			})
 
-			const fireCallbacks = (index) => {
+			const fireCallbacks = index => {
 				if (this.callbackFn && typeof window[this.callbackFn] === 'function') {
 					window[this.callbackFn](index, this.splide)
 				}
@@ -153,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				if (firstImg.complete && firstImg.naturalWidth > 0) {
 					requestAnimationFrame(() => requestAnimationFrame(revealSlider))
 				} else {
-					firstImg.addEventListener('load',  revealSlider, { once: true })
+					firstImg.addEventListener('load', revealSlider, { once: true })
 					firstImg.addEventListener('error', revealSlider, { once: true })
 				}
 			} else {

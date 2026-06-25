@@ -142,46 +142,57 @@ const StickySection = class {
 
 		layers.forEach((layer, i) => {
 			const segStart = segStarts[i]
-			const segSize  = slotSizes[i]
+			const segSize = slotSizes[i]
 
-			const cs  = getComputedStyle(layer)
-			const num = (prop, def) => { const v = parseFloat(cs.getPropertyValue(prop).trim()); return isNaN(v) ? def : v }
+			const cs = getComputedStyle(layer)
+			const num = (prop, def) => {
+				const v = parseFloat(cs.getPropertyValue(prop).trim())
+				return isNaN(v) ? def : v
+			}
 
-			const inFrac  = Math.min(1, Math.max(0, num('--st-in',  0.5)))
+			const inFrac = Math.min(1, Math.max(0, num('--st-in', 0.5)))
 			const outFrac = Math.min(1, Math.max(0, num('--st-out', 0.5)))
-			const inDur   = segSize * inFrac
-			const outDur  = segSize * outFrac
+			const inDur = segSize * inFrac
+			const outDur = segSize * outFrac
 
-			const str     = prop => cs.getPropertyValue(prop).trim()
-			const inEase  = str('--st-in-ease')  || 'power1.out'
+			const str = prop => cs.getPropertyValue(prop).trim()
+			const inEase = str('--st-in-ease') || 'power1.out'
 			const outEase = str('--st-out-ease') || 'power1.inOut'
 
 			const isFirst = i === 0
-			const isLast  = i === n - 1
+			const isLast = i === n - 1
 
 			if (!isFirst) {
 				gsap.set(layer, {
 					opacity: num('--st-initial-opacity', 0),
-					scale:   num('--st-initial-scale',   0.92),
+					scale: num('--st-initial-scale', 0.92),
 				})
 
-				this.timeline.to(layer, {
-					opacity:  num('--st-in-opacity', 1),
-					scale:    num('--st-in-scale',   1),
-					ease:     inEase,
-					duration: inDur,
-				}, segStart)
+				this.timeline.to(
+					layer,
+					{
+						opacity: num('--st-in-opacity', 1),
+						scale: num('--st-in-scale', 1),
+						ease: inEase,
+						duration: inDur,
+					},
+					segStart
+				)
 			}
 
 			if (!isLast) {
-				const afterIn      = isFirst ? segStart : segStart + inDur
+				const afterIn = isFirst ? segStart : segStart + inDur
 				const fadeOutStart = Math.max(afterIn, segStart + segSize - outDur)
-				this.timeline.to(layer, {
-					opacity:  num('--st-out-opacity', 0),
-					scale:    num('--st-out-scale',   0.95),
-					ease:     outEase,
-					duration: outDur,
-				}, fadeOutStart)
+				this.timeline.to(
+					layer,
+					{
+						opacity: num('--st-out-opacity', 0),
+						scale: num('--st-out-scale', 0.95),
+						ease: outEase,
+						duration: outDur,
+					},
+					fadeOutStart
+				)
 			}
 		})
 

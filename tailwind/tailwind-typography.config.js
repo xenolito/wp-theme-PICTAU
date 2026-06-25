@@ -1,21 +1,21 @@
 // Copied from Tailwind Typography.
-const hexToRgb = (hex) => {
+const hexToRgb = hex => {
 	if (typeof hex !== 'string' || hex.length === 0) {
-		return hex;
+		return hex
 	}
 
-	hex = hex.replace('#', '');
-	hex = hex.length === 3 ? hex.replace(/./g, '$&$&') : hex;
-	const r = parseInt(hex.substring(0, 2), 16);
-	const g = parseInt(hex.substring(2, 4), 16);
-	const b = parseInt(hex.substring(4, 6), 16);
-	return `${r} ${g} ${b}`;
-};
+	hex = hex.replace('#', '')
+	hex = hex.length === 3 ? hex.replace(/./g, '$&$&') : hex
+	const r = parseInt(hex.substring(0, 2), 16)
+	const g = parseInt(hex.substring(2, 4), 16)
+	const b = parseInt(hex.substring(4, 6), 16)
+	return `${r} ${g} ${b}`
+}
 
 module.exports = {
 	theme: {
 		extend: {
-			typography: (theme) => ({
+			typography: theme => ({
 				/**
 				 * Tailwind Typography’s default styles are opinionated, and
 				 * you may need to override them if you have mockups to
@@ -118,17 +118,14 @@ module.exports = {
 						'--tw-prose-quote-borders': theme('colors.primary'),
 						'--tw-prose-captions': theme('colors.foreground'),
 						'--tw-prose-kbd': theme('colors.foreground'),
-						'--tw-prose-kbd-shadows': hexToRgb(
-							theme('colors.foreground')
-						),
+						'--tw-prose-kbd-shadows': hexToRgb(theme('colors.foreground')),
 						'--tw-prose-code': theme('colors.foreground'),
 						'--tw-prose-pre-code': theme('colors.background'),
 						'--tw-prose-pre-bg': theme('colors.foreground'),
 						'--tw-prose-th-borders': theme('colors.foreground'),
 						'--tw-prose-td-borders': theme('colors.foreground'),
 						'--tw-prose-invert-body': theme('colors.background'),
-						'--tw-prose-invert-headings':
-							theme('colors.background'),
+						'--tw-prose-invert-headings': theme('colors.background'),
 						'--tw-prose-invert-lead': theme('colors.background'),
 						'--tw-prose-invert-links': theme('colors.primary'),
 						'--tw-prose-invert-bold': theme('colors.background'),
@@ -136,25 +133,18 @@ module.exports = {
 						'--tw-prose-invert-bullets': theme('colors.primary'),
 						'--tw-prose-invert-hr': theme('colors.background'),
 						'--tw-prose-invert-quotes': theme('colors.background'),
-						'--tw-prose-invert-quote-borders':
-							theme('colors.primary'),
-						'--tw-prose-invert-captions':
-							theme('colors.background'),
+						'--tw-prose-invert-quote-borders': theme('colors.primary'),
+						'--tw-prose-invert-captions': theme('colors.background'),
 						'--tw-prose-invert-kbd': theme('colors.background'),
-						'--tw-prose-invert-kbd-shadows': hexToRgb(
-							theme('colors.background')
-						),
+						'--tw-prose-invert-kbd-shadows': hexToRgb(theme('colors.background')),
 						'--tw-prose-invert-code': theme('colors.foreground'),
-						'--tw-prose-invert-pre-code':
-							theme('colors.background'),
+						'--tw-prose-invert-pre-code': theme('colors.background'),
 						'--tw-prose-invert-pre-bg': 'rgb(0 0 0 / 50%)',
-						'--tw-prose-invert-th-borders':
-							theme('colors.background'),
-						'--tw-prose-invert-td-borders':
-							theme('colors.background'),
+						'--tw-prose-invert-th-borders': theme('colors.background'),
+						'--tw-prose-invert-td-borders': theme('colors.background'),
 					},
 				},
 			}),
 		},
 	},
-};
+}

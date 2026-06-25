@@ -1,88 +1,78 @@
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import SplitType from 'split-type';
-import debounce from 'lodash/debounce';
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import SplitType from 'split-type'
+import debounce from 'lodash/debounce'
 
 document.addEventListener('DOMContentLoaded', () => {
-	const target = document.querySelectorAll('[data-blur_chars]');
+	const target = document.querySelectorAll('[data-blur_chars]')
 
-	if (!target.length) return;
+	if (!target.length) return
 
-	target.forEach((el) => {
-		const fadeOut =
-			el.dataset.blur_chars === 'out' || el.dataset.blur_chars === ''
-				? true
-				: false;
+	target.forEach(el => {
+		const fadeOut = el.dataset.blur_chars === 'out' || el.dataset.blur_chars === '' ? true : false
 
-		const customTrigger =
-			el.dataset.blur_chars_trigger &&
-			el.dataset.blur_chars_trigger !== ''
-				? document.querySelector(el.dataset.blur_chars_trigger)
-				: false;
+		const customTrigger = el.dataset.blur_chars_trigger && el.dataset.blur_chars_trigger !== '' ? document.querySelector(el.dataset.blur_chars_trigger) : false
 
-		const pin =
-			el.dataset.blur_chars_pinsection === ''
-				? el.closest('section')
-				: false;
+		const pin = el.dataset.blur_chars_pinsection === '' ? el.closest('section') : false
 
-		gsap.set(el, { opacity: fadeOut ? 1 : 0 });
+		gsap.set(el, { opacity: fadeOut ? 1 : 0 })
 
-		el.style.fontKerning = 'none';
-		el.style.userSelect = 'none';
+		el.style.fontKerning = 'none'
+		el.style.userSelect = 'none'
 
 		let typeSplit = new SplitType(el, {
 			types: 'lines, chars',
 			tagName: 'span',
-		});
+		})
 
-		const letters = el.querySelectorAll('.char');
+		const letters = el.querySelectorAll('.char')
 
 		gsap.set(letters, {
 			willChange: 'auto',
-		});
+		})
 
 		const getRandom = (min, max) => {
-			return Math.random() * (max - min) + min;
-		};
+			return Math.random() * (max - min) + min
+		}
 
 		const getTriggerStart = () => {
 			if (fadeOut) {
 				if (customTrigger) {
-					return `top bottom`;
+					return `top bottom`
 				} else {
-					return `top center`;
+					return `top center`
 				}
 			} else {
 				// fadeIn
 				if (customTrigger) {
-					return `top bottom`;
+					return `top bottom`
 				} else {
-					return `top center`;
+					return `top center`
 				}
 			}
-		};
+		}
 
 		const getTriggerEnd = () => {
 			if (fadeOut) {
 				if (customTrigger) {
-					return `top+=100px bottom`;
+					return `top+=100px bottom`
 				} else {
-					return `bottom center`;
+					return `bottom center`
 				}
 			} else {
 				// fadeIn
 				if (customTrigger) {
-					return `top+=20% bottom`;
+					return `top+=20% bottom`
 				} else {
-					return `top center-=20%`;
+					return `top center-=20%`
 				}
 			}
-		};
+		}
 
 		let triggerDimSetup = {
 			start: getTriggerStart(),
 			end: getTriggerEnd(),
-		};
+		}
 
 		// console.log(
 		// 	'fadeOut',
@@ -95,8 +85,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		// console.log('pin', pin);
 
 		letters.forEach((letter, index) => {
-			const randomBlurPx = getRandom(0, 50);
-			const blur = { amount: randomBlurPx, target: letter };
+			const randomBlurPx = getRandom(0, 50)
+			const blur = { amount: randomBlurPx, target: letter }
 
 			const animBlur = gsap.fromTo(
 				blur,
@@ -108,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					amount: fadeOut ? randomBlurPx : 0,
 					// ease: 'expo.in',
 					onUpdate: () => {
-						blur.target.style.filter = `blur(${blur.amount}px)`;
+						blur.target.style.filter = `blur(${blur.amount}px)`
 					},
 					scrollTrigger: {
 						trigger: pin ? pin : customTrigger ? customTrigger : el,
@@ -119,8 +109,8 @@ document.addEventListener('DOMContentLoaded', () => {
 						// markers: true,
 					},
 				}
-			);
-		});
+			)
+		})
 
 		//? Auto add margin-bottom for next sections to catch up
 		// pin.style.marginBottom = `${pin.offsetHeight}px`;
@@ -146,8 +136,8 @@ document.addEventListener('DOMContentLoaded', () => {
 					// pinSpacing: false,
 				},
 			}
-		);
+		)
 
 		// console.log('trigger start', pin ? 'top top' : triggerDimSetup.start);
-	});
-});
+	})
+})

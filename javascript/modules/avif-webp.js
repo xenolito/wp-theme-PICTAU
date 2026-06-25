@@ -1,23 +1,21 @@
-(function (document) {
-	'use strict';
+;(function (document) {
+	'use strict'
 
-	var webpImage =
-		'data:image/webp;base64,UklGRi4AAABXRUJQVlA4TCEAAAAvAUAAEB8wA' +
-		'iMwAgSSNtse/cXjxyCCmrYNWPwmHRH9jwMA';
+	var webpImage = 'data:image/webp;base64,UklGRi4AAABXRUJQVlA4TCEAAAAvAUAAEB8wA' + 'iMwAgSSNtse/cXjxyCCmrYNWPwmHRH9jwMA'
 	var avifImage =
-		'data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUEAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAF0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgS0AAAAAABNjb2xybmNseAACAAIAAIAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAAGVtZGF0EgAKBzgAPtAgIAkyUBAAAPWc41TP///4gHBX9H8XVK7gGeDllq8TYARA+8Tfsv7L+zPE24eIoIzE0WhHbrqcrTK9VEgEG/hwgB5rdCbvP8g3KYPdV88CvPJnptgQ';
+		'data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUEAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAF0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgS0AAAAAABNjb2xybmNseAACAAIAAIAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAAGVtZGF0EgAKBzgAPtAgIAkyUBAAAPWc41TP///4gHBX9H8XVK7gGeDllq8TYARA+8Tfsv7L+zPE24eIoIzE0WhHbrqcrTK9VEgEG/hwgB5rdCbvP8g3KYPdV88CvPJnptgQ'
 
-	var webpClass = 'webp';
-	var avifClass = 'avif';
+	var webpClass = 'webp'
+	var avifClass = 'avif'
 
 	function alreadyTested(format) {
 		if (!window.sessionStorage) {
-			var test = window.sessionStorage.getItem(format + 'Support');
+			var test = window.sessionStorage.getItem(format + 'Support')
 			if (test === 'false' || test === 'true') {
-				return test === 'true';
+				return test === 'true'
 			}
 		}
-		return null;
+		return null
 	}
 
 	/**
@@ -27,18 +25,18 @@
 	 * @param {Function} callback - Callback function.
 	 */
 	function testFormat(format, imageSrc, callback) {
-		var tested = alreadyTested(format);
+		var tested = alreadyTested(format)
 
 		if (tested === null) {
-			var image = new Image();
+			var image = new Image()
 
 			image.onload = image.onerror = function () {
-				callback(format, image.height === 2);
-			};
-			image.src = imageSrc;
-			return;
+				callback(format, image.height === 2)
+			}
+			image.src = imageSrc
+			return
 		}
-		addClass(format, tested);
+		addClass(format, tested)
 	}
 
 	/**
@@ -47,18 +45,18 @@
 	 */
 	function addClass(format, support) {
 		if (support) {
-			var el = document.documentElement;
+			var el = document.documentElement
 			if (el.classList) {
-				el.classList.add(format === 'webp' ? webpClass : avifClass);
+				el.classList.add(format === 'webp' ? webpClass : avifClass)
 			} else {
-				el.className += ' ' + format === 'webp' ? webpClass : avifClass;
+				el.className += ' ' + format === 'webp' ? webpClass : avifClass
 			}
-			window.sessionStorage.setItem(format + 'Support', true);
+			window.sessionStorage.setItem(format + 'Support', true)
 		} else {
-			window.sessionStorage.setItem(format + 'Support', false);
+			window.sessionStorage.setItem(format + 'Support', false)
 		}
 	}
 
-	testFormat('webp', webpImage, addClass);
-	testFormat('avif', avifImage, addClass);
-})(document);
+	testFormat('webp', webpImage, addClass)
+	testFormat('avif', avifImage, addClass)
+})(document)
