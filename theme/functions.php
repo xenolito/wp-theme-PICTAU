@@ -167,6 +167,13 @@ function pictau_widgets_init()
 add_action('widgets_init', 'pictau_widgets_init');
 
 
+// Set the upload directory to xen_media on theme activation.
+add_action('after_switch_theme', function () {
+	update_option('upload_path', 'xen_media');
+	update_option('upload_url_path', set_url_scheme(get_option('siteurl'), 'https') . '/xen_media');
+});
+
+
 /**
  * Enqueue scripts and styles.
  */
