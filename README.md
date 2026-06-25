@@ -1,4 +1,4 @@
-# Tema pictau
+# Tema PICTAU para WordPress 7.x
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
