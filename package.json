@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "pictau_wordpress_theme",
-  "version": "2.2.0",
+  "version": "6.1.0",
   "description": "An advanced WordPress theme template and framework with advanced utilities and features. Includes tailwindcss, esbuild, and more.",
   "author": "Balanzia",
   "keywords": [

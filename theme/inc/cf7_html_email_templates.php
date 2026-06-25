@@ -48,8 +48,8 @@ function add_custom_content_to_cf7_email($contact_form)
 
 
 $logo = get_theme_mod('custom_logo');
-$image = wp_get_attachment_image_src($logo, 'full');
-$image_url = $image[0];
+$image = $logo ? wp_get_attachment_image_src($logo, 'full') : false;
+$image_url = $image ? $image[0] : '';
 
 
 $brandColor = get_theme_mod('colorThemeMobile', '#19222a');
