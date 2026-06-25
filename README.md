@@ -17,6 +17,7 @@ Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida c
 ## Plugins recomendados
 
 - [Contact Form 7](https://es.wordpress.org/plugins/contact-form-7/)
+- [Contact Form 7 Registro de envios + GDPR](https://github.com/xenolito/WordPress-Plugin-Contact-Form-7_Registro-envios-GDPR)
 - [Contact Form CFDB7](https://es.wordpress.org/plugins/contact-form-cfdb7/)
 - [Polylang](https://es.wordpress.org/plugins/polylang/)
 - [CPT i18n slugs – Slugs traducibles para CPT (Polylang + Pods)](https://github.com/xenolito/WordPress-Plugin-Polylang-Addon-CPT-i18n-slugs)
