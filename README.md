@@ -1,10 +1,9 @@
-# Tema pictau — Prefabricados Duero
+# Tema pictau
 
-Tema WordPress personalizado para el sitio de Prefabricados Duero.
+Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
 - **Versión:** 1.1.0
 - **Text domain:** `pictau`
-- **URL local:** `https://prefabricadosduero.dev/`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
 ---
@@ -17,6 +16,7 @@ Tema WordPress personalizado para el sitio de Prefabricados Duero.
 - Plugin [Pods](https://wordpress.org/plugins/pods/) activo
 - Plugin [Yoast SEO](https://wordpress.org/plugins/wordpress-seo/) activo (v27.6+)
 - Plugin [Polylang](https://wordpress.org/plugins/polylang/) (opcional, para i18n)
+
 ---
 
 ## Instalación y build
@@ -51,19 +51,18 @@ pictau/
 │   ├── js/                          # JS compilado
 │   ├── template-parts/
 │   │   ├── layout/
-│   │   └── content/                 # content-single-producto.php, etc.
+│   │   └── content/
 │   ├── taxonomy-product_category.php
 │   ├── single-producto.php
 │   └── style.css                    # CSS compilado
 ├── javascript/
 │   ├── script.js                    # Entry point JS
-│   └── modules/                     # 50+ módulos
+│   └── modules/                     # 60+ módulos
 ├── tailwind/
 │   ├── style.css                    # Entry point CSS
-│   └── custom/components/           # catalog-menu.css, etc.
+│   └── custom/components/
 ├── .claude/
-│   ├── pods-playbook.json           # Historial de operaciones Pods
-│   └── product-categories.md       # Árbol de categorías
+│   └── pods-playbook.json           # Historial de operaciones Pods
 ├── CLAUDE.md
 └── package.json
 ```
@@ -72,18 +71,16 @@ pictau/
 
 ## Custom Post Types y taxonomías (Pods)
 
+Los CPTs y taxonomías se crean y gestionan mediante el plugin Pods. Las operaciones se documentan en `.claude/pods-playbook.json` y se ejecutan via WP-CLI.
+
+El tema incluye soporte nativo para el catálogo de productos:
+
 | Slug | Tipo | Descripción |
 |------|------|-------------|
 | `producto` | CPT | Productos del catálogo |
-| `ebook` | CPT | eBooks |
-| `evento` | CPT | Eventos |
-| `caso-exito` | CPT | Casos de éxito |
-| `necesidad` | CPT | Necesidades |
-| `sector` | CPT | Sectores |
-| `servicio` | CPT | Servicios |
-| `solucion` | CPT | Soluciones |
 | `product_category` | Taxonomía | Categorías de producto (jerárquica) |
-| `event_category` | Taxonomía | Categorías de evento |
+
+El resto de CPTs del proyecto se definen según las necesidades de cada cliente.
 
 ### Campos del CPT `producto`
 
@@ -92,7 +89,7 @@ pictau/
 | `subtitulo` | text | Subtítulo corto |
 | `ficha_tecnica` | file (any, single) | PDF de ficha técnica |
 | `galeria` | file (images, multi) | Galería de imágenes |
-| `visualizer_model_id` | text | ID del modelo 3D |
+| `visualizer_model_id` | text | ID del modelo 3D (requiere plugin `pd3d-visualizer`) |
 | `orden` | number | Orden de aparición dentro de la categoría (menor = primero; vacío = al final, ordenado por título) |
 | `productos_relacionados` | relationship | Productos relacionados (hasta 10) |
 
@@ -148,7 +145,7 @@ wp-content/plugins/pd3d-visualizer/dist/models/{model_id}/config.json
 - La sección solo aparece si la taxonomía `product_category` existe (`taxonomy_exists()`).
 - En PHP: `max( 1, (int) get_theme_mod('catalog_swatches_limit', 10) )`
 
-> **Mejora pendiente:** actualmente se hace `file_exists()` + `file_get_contents()` + `json_decode()` por cada producto con `visualizer_model_id` en cada carga de página. Si el catálogo crece, añadir caché con `wp_cache_get/set` por `model_id` para evitar releer el mismo `config.json` varias veces en una misma request (o entre requests si se usa un object cache persistente como Redis/Memcached).
+> **Mejora pendiente:** actualmente se hace `file_exists()` + `file_get_contents()` + `json_decode()` por cada producto con `visualizer_model_id` en cada carga de página. Si el catálogo crece, añadir caché con `wp_cache_get/set` por `model_id` para evitar releer el mismo `config.json` varias veces en una misma request.
 
 ### `single-producto.php`
 
@@ -190,7 +187,7 @@ Las fichas de producto emiten un nodo `schema.org/Product` en el grafo JSON-LD d
 | `category` | Términos de `product_category` (`padre > hijo`) |
 | `offers` | `Offer` con `price: 0` (workaround B2B), `InStock`, `priceCurrency: EUR`, `seller` → `Organization` |
 | `additionalProperty` | Norma UNE (`norma_une`) · EPD/DAP (`declaracion_ambiental` → URL del PDF) |
-| `hasCertification` | Nodo `Certification` con PDF, imagen y `issuedBy: AENOR` (`certificado` + `certificado_nombre` + `certificado_imagen`) |
+| `hasCertification` | Nodo `Certification` con PDF, imagen y `issuedBy` (`certificado` + `certificado_nombre` + `certificado_imagen`) |
 | `isRelatedTo` | Productos relacionados (`productos_relacionados`): nodos `Product` mínimos |
 | `mainEntityOfPage` | Referencia al nodo `WebPage` de Yoast |
 | `inLanguage` | BCP-47 vía Polylang (`pll_current_language`) o `get_bloginfo('language')` |
@@ -210,7 +207,7 @@ El filtro respeta el **término primario de Yoast** si está definido (`WPSEO_Pr
 | Sección | Ajuste | Valor |
 |---|---|---|
 | **Representación del sitio** | Tipo de entidad | Organización |
-| | Nombre y logo | Prefabricados Duero + logotipo |
+| | Nombre y logo | Nombre del sitio + logotipo |
 | **Tipos de contenido › Producto** | Tipo de esquema | `ItemPage` |
 | | Tipo de artículo | Ninguno |
 | **Breadcrumbs › Tipos de contenido** | Taxonomía para `producto` | Categorías de producto |
@@ -231,8 +228,8 @@ Cuando la categoría tiene padre, el nombre del padre se antepone al nombre del 
 
 | URL | Título generado |
 |-----|-----------------|
-| `/productos/baldosa-hidraulica/` | `Baldosa Hidráulica - Prefabricados Duero` |
-| `/productos/baldosa-hidraulica/30x30-cm/` | `Baldosa Hidráulica / 30x30 - Prefabricados Duero` |
+| `/productos/categoria-padre/` | `Categoría Padre - Nombre Sitio` |
+| `/productos/categoria-padre/subcategoria/` | `Categoría Padre / Subcategoría - Nombre Sitio` |
 
 **Plantilla Yoast para `product_category`** (ajustada en WP Admin → Yoast SEO → Categorías de producto):
 ```
@@ -246,8 +243,7 @@ Construye la cadena completa de ancestros de la categoría primaria (Yoast) o pr
 
 | Producto | Categoría asignada | Título generado |
 |----------|--------------------|-----------------|
-| Granitor | Baldosa Hidráulica › 20x20 | `Baldosa Hidráulica / 20x20 / Granitor - Prefabricados Duero` |
-| Pergamino | Baldosa Hidráulica › 30x30 | `Baldosa Hidráulica / 30x30 / Pergamino - Prefabricados Duero` |
+| Producto A | Categoría › Subcategoría | `Categoría / Subcategoría / Producto A - Nombre Sitio` |
 
 La jerarquía se construye recorriendo `WP_Term::parent` hacia arriba. Funciona con cualquier profundidad de anidamiento. Si Yoast tiene un título personalizado guardado para el término o el post, ese toma precedencia (Yoast ejecuta sus overrides antes del filtro).
 
@@ -409,8 +405,8 @@ Grid de productos de una categoría con filtro opcional por variante del visuali
 | Atributo | Requerido | Descripción |
 |----------|-----------|-------------|
 | `category` | Sí* | Slug o lista de slugs separados por coma de `product_category`. Cada slug puede ser categoría o subcategoría; los productos de subcategorías hijo se incluyen automáticamente (`include_children = true`). *Opcional si se usa `only`. |
-| `variant` | No | Nombre (o parte del nombre) del grupo de variante a filtrar. Insensible a tildes y caracteres especiales: `"fusion"` hace match con `"Fusión®"`. Si se omite, se muestran todos los productos de la categoría. |
-| `color` | No | Valor inicial del visualizador. Si se proporciona, se añade `?color=<valor>` a la URL de cada card (p. ej. `fusion_jupiter` → `producto-slug/?color=fusion_jupiter`). |
+| `variant` | No | Nombre (o parte del nombre) del grupo de variante a filtrar. Insensible a tildes y caracteres especiales. Si se omite, se muestran todos los productos de la categoría. |
+| `color` | No | Valor inicial del visualizador. Si se proporciona, se añade `?color=<valor>` a la URL de cada card. |
 | `wet` | No | Estado de visualización húmedo/seco. Si se proporciona (`true` o `false`), se añade `?wet=<valor>` a la URL de cada card. |
 | `only` | No | Lista de IDs de producto separados por coma. Cuando está presente, se ignora `category` y se devuelven únicamente esos productos (publicados), en el orden declarado. Compatible con `variant` y `color`. |
 | `class` | No | Clase o clases CSS adicionales (separadas por espacio) que se añaden al elemento `.catalog-grid`. |
@@ -423,12 +419,9 @@ Grid de productos de una categoría con filtro opcional por variante del visuali
 
 **Ejemplos:**
 ```
-[product-grid category="adoquines-y-baldosas" variant="fusion"]
-[product-grid category="adoquines,baldosas" variant="fusion"]
-[product-grid category="adoquines-y-baldosas,baldosa-hidraulica" variant="fusion" color="fusion_jupiter"]
-[product-grid category="baldosas"]
-[product-grid only="72777,72821,72826,72829,72712,72832,72835"]
-[product-grid only="72841,72844,72720" variant="fusion" color="fusion_jupiter"]
+[product-grid category="mi-categoria" variant="variante-a"]
+[product-grid category="categoria-a,categoria-b"]
+[product-grid only="101,102,103"]
 ```
 
 ### `[megamenu-cat-by-cpt cpt="..."]`
@@ -474,9 +467,9 @@ Slider full-width above-the-fold basado en Splide.js y el CPT `slide`. El conten
 | `transition` | slide/fade | `slide` | Transición entre slides. `slide` = desplazamiento lateral con loop infinito; `fade` = crossfade con rewind |
 | `fade_speed` | float (s) | `0.8` | Duración del crossfade en segundos. Solo aplica cuando `transition="fade"` |
 | `category` | string | `''` | Slug de `slide_category` para filtrar los slides mostrados. Sin valor = todos los slides |
-| `pauseonfocus` | yes/no | `no` | Pausar el autoplay al pasar el cursor encima o al recibir foco de teclado. `yes` = pausa al hacer hover o al recibir foco |
-| `random` | yes/no | `no` | Aleatoriza el orden de los slides en cada carga (ignora el campo `orden`). En lugar del preload del primer slide, emite un `<link rel="preload">` para la imagen de **todos** los slides (hasta `limit`), sin `fetchpriority`, para que el navegador los descargue en paralelo desde `<head>` y cualquier slide que aparezca primero ya esté en caché |
-| `loader` | true/false/no/0 | `true` | Muestra u oculta el spinner SVG de carga. Por defecto visible. Para ocultarlo: `loader="false"`, `loader="no"` o `loader="0"` |
+| `pauseonfocus` | yes/no | `no` | Pausar el autoplay al pasar el cursor encima o al recibir foco de teclado |
+| `random` | yes/no | `no` | Aleatoriza el orden de los slides en cada carga (ignora el campo `orden`) |
+| `loader` | true/false/no/0 | `true` | Muestra u oculta el spinner SVG de carga |
 
 **CPT `slide` — estructura:**
 
@@ -486,9 +479,9 @@ Campo Pods adicional y taxonomía:
 
 | Campo / Taxonomía | Tipo | Descripción |
 |---|---|---|
-| `orden` | Número | Orden de aparición (menor = primero). El slide con menor `orden` es el primero. |
+| `orden` | Número | Orden de aparición (menor = primero) |
 | `slide_category` | Taxonomía jerárquica | Categoría interna del slide (sólo visible en admin). Permite filtrar slides por contexto con el atributo `category` del shortcode. |
-| `slide_callback` | Texto | Nombre de función JS global (`window[fn]`) a ejecutar cuando este slide queda activo. Firma: `fn(newIndex, splideInstance)`. Dispara en el montaje inicial (evento `ready`) y en cada transición posterior (evento `moved`). Se ejecuta después del `callback` global si ambos están definidos. |
+| `slide_callback` | Texto | Nombre de función JS global (`window[fn]`) a ejecutar cuando este slide queda activo. |
 
 **Admin — Listado de slides:**
 
@@ -531,7 +524,7 @@ El shortcode emite un `.hero-slider-loader` (hermano del `[data-heroslider]`) co
 El reveal está ligado a la carga real de la imagen del primer slide, no a temporizadores arbitrarios:
 
 1. **HTML parseado** → `[data-heroslider]` a `opacity: 0`, loader visible y girando.
-2. **Primera imagen del primer slide carga** (`img.onload` o `img.complete` — cualquier `<img>` dentro del contenido del editor) → se añade la clase `splide-ready` al contenedor.
+2. **Primera imagen del primer slide carga** (`img.onload` o `img.complete`) → se añade la clase `splide-ready` al contenedor.
 3. **CSS transition** `opacity: 0 → 1` (2 s) en el slider; el loader desaparece con su propia transition (0.3 s).
 4. **`window.load`** → `splide.refresh()` para corregir dimensiones + `revealSlider()` como fallback idempotente.
 
@@ -540,15 +533,13 @@ El reveal está ligado a la carga real de la imagen del primer slide, no a tempo
 **CSS del componente** (en `tailwind/custom/components/layout.css`):
 
 ```css
-/* Reservar espacio — prevenir CLS */
 .hero-slider-container {
     aspect-ratio: 16 / 7;
     overflow: hidden;
     position: relative;
-    background: hsl(0, 0%, 47%); /* placeholder mientras carga */
+    background: hsl(0, 0%, 47%);
 }
 
-/* Ocultar hasta reveal; JS añade .splide-ready */
 [data-heroslider] {
     opacity: 0;
     transition: opacity 2s ease;
@@ -556,7 +547,6 @@ El reveal está ligado a la carga real de la imagen del primer slide, no a tempo
     &.splide-ready { opacity: 1; }
 }
 
-/* Loader: visible mientras [data-heroslider] no tenga .splide-ready */
 .hero-slider-loader {
     position: absolute;
     inset: 0;
@@ -574,7 +564,6 @@ El reveal está ligado a la carga real de la imagen del primer slide, no a tempo
 
 @keyframes hero-loader-spin { to { transform: rotate(360deg); } }
 
-/* Imagen full-bleed */
 .hero-slide-image { position: absolute; inset: 0; margin: 0; }
 .hero-slide-image img { width: 100%; height: 100%; object-fit: cover; }
 .splide__slide { position: relative; overflow: hidden; }
@@ -608,15 +597,7 @@ Renderiza una imagen aleatoria de una lista en un `<figure><img>`. Diseñado par
 **Comportamiento según `random`:**
 
 - `random=no` o lista de 1 imagen: PHP renderiza solo la primera; 1 `<link rel="preload" fetchpriority="high">` en `<head>`.
-- `random=yes` con ≥ 2 imágenes: PHP emite la primera como `src` inicial (cacheable); un `<script>` inline elige aleatoriamente en el cliente cada visita; se emite un `<link rel="preload">` para cada imagen de la lista (sin `fetchpriority`, ya que el orden es desconocido en el servidor).
-
-**HTML de salida (`random=yes`, 3 imágenes):**
-```html
-<figure class="hero-figure">
-  <img src="https://…/hero1.webp" loading="eager" fetchpriority="high" width="1920" height="1080" alt="">
-</figure>
-<script>(function(){var i=document.currentScript.previousElementSibling.querySelector('img');if(!i)return;var s=["…/hero1.webp","…/hero2.webp","…/hero3.avif"];i.src=s[Math.floor(Math.random()*s.length)];})();</script>
-```
+- `random=yes` con ≥ 2 imágenes: PHP emite la primera como `src` inicial (cacheable); un `<script>` inline elige aleatoriamente en el cliente cada visita; se emite un `<link rel="preload">` para cada imagen de la lista.
 
 **Ejemplos:**
 ```
@@ -626,9 +607,9 @@ Renderiza una imagen aleatoria de una lista en un `<figure><img>`. Diseñado par
 
 ---
 
-### `[pd_3d_viewer model="..." ui="1" screenshot="1" bgtext="0" leva="0" wet="0"]`
+### `[pd_3d_viewer]`
 
-Embebe el visualizador 3D React (plugin `pd3d-visualizer`).
+Embebe el visualizador 3D React (requiere el plugin `pd3d-visualizer`).
 
 | Atributo | Descripción |
 |----------|-------------|
@@ -638,7 +619,7 @@ Embebe el visualizador 3D React (plugin `pd3d-visualizer`).
 | `bgtext` | Nombre del color en el fondo |
 | `leva` | Panel debug Leva |
 | `wet` | Toggle vista húmeda/seca |
-| `ui-target` | Selector CSS del elemento externo para la UI (React portal). Ver README del plugin `pd3d-visualizer`. |
+| `ui-target` | Selector CSS del elemento externo para la UI (React portal) |
 
 ---
 
@@ -683,18 +664,6 @@ download-before
 </a>
 ```
 
-**Ejemplo con dos iconos:**
-```
-download-before pdf-after
-```
-```html
-<a class="wp-block-button__link wp-element-button">
-  <svg class="ico-download" ...></svg>
-  <span>Texto del botón</span>
-  <svg class="ico-pdf" ...></svg>
-</a>
-```
-
 > **Nota técnica:** el filtro solo se dispara si el bloque se renderiza mediante `do_blocks()`. El plugin `pictau-blocks-gutenberg` ejecuta `do_blocks()` antes de `apply_shortcodes()` para que el hook funcione en bloques reutilizables del CPT `pictau_blocks`.
 
 ---
@@ -732,7 +701,7 @@ Cualquier bloque de **Grupo** puede convertirse en un área clickable completa a
 - `groupLinkTarget` — `_blank` si está activo "Abrir en nueva pestaña", vacío en caso contrario.
 
 **Implementación:**
-- **JS** (`javascript/block-editor.js`): filtro `blocks.registerBlockType` registra `groupLink` y `groupLinkTarget` en `core/group`; filtro `editor.BlockEdit` añade `ToolbarButton` + `Popover` con `__experimentalLinkControl` (mismo componente que usa el bloque imagen de WP core).
+- **JS** (`javascript/block-editor.js`): filtro `blocks.registerBlockType` registra `groupLink` y `groupLinkTarget` en `core/group`; filtro `editor.BlockEdit` añade `ToolbarButton` + `Popover` con `__experimentalLinkControl`.
 - **PHP** (`theme/inc/utilities.php`): filtro `render_block_core/group` (priority 20) envuelve el bloque con `<a>` generando automáticamente `target` y `rel` si procede.
 - **CSS**: `.group-link-wrapper { display: block; color: inherit; text-decoration: none; }` — evita que Tailwind Typography aplique estilos de enlace al contenido interno.
 
@@ -801,7 +770,7 @@ El panel no aparece en los siguientes tipos de bloque:
 
 ### Migración desde el plugin `attributes-for-blocks`
 
-El contenido generado por el plugin `attributes-for-blocks` (skadev) almacena los atributos en la clave `attributesForBlocks` del comentario de bloque. El sistema nativo del tema usa `blockAttributes`. Para migrar posts existentes existe el skill de Claude Code `/wp-migrate-afb`, disponible tanto a nivel de proyecto (`.claude/skills/wp-migrate-afb/`, versionado en git) como global de usuario (`~/.claude/skills/wp-migrate-afb/`).
+El contenido generado por el plugin `attributes-for-blocks` (skadev) almacena los atributos en la clave `attributesForBlocks` del comentario de bloque. El sistema nativo del tema usa `blockAttributes`. Para migrar posts existentes existe el skill de Claude Code `/wp-migrate-afb`.
 
 **Uso:**
 
@@ -823,12 +792,12 @@ Aplica una máscara blob orgánica animada sobre imágenes, con dos rings de str
 
 ### Mecanismo
 
--   El módulo inyecta un SVG programáticamente dentro del contenedor. El SVG contiene un `<clipPath>` que enmascara la imagen y dos `<path>` de ring rendereados fuera del área recortada (`overflow: visible`).
--   Al inicializar aplica `user-select: none` y `pointer-events: none` al elemento `<picture>` o `<figure>` que envuelve la imagen (en bloques Gutenberg estándar será siempre `<figure>`).
--   El blob se genera paramétricamente cada frame: N puntos en círculo perturbados por ondas seno con fase propia → convertidos a curvas Bézier cúbicas mediante la fórmula Catmull-Rom. La perturbación es exclusivamente inward: `delta = -(intensity × baseR × amplitudes[i]) × (1 + sin(t)) / 2`. Cada punto tiene un multiplicador de amplitud aleatorio (`amplitudes[i] ∈ [0, 1]`) generado al inicializar la instancia, por lo que unos puntos apenas se mueven y otros alcanzan el máximo de `intensity`. El radio oscila entre `baseR` (sin contracción) y `baseR − intensity × baseR` (máxima contracción), nunca superando el límite de la imagen.
--   Los tres paths (clip + ring1 + ring2) comparten los mismos puntos base a radio distinto, garantizando que siempre sean paralelos.
--   Animación gestionada con `gsap.ticker`. Un `IntersectionObserver` pausa y reanuda el ticker cuando el elemento entra/sale del viewport. Un `ResizeObserver` recalcula las dimensiones del SVG al cambiar el layout.
--   Cada instancia recibe un `timeOffset` aleatorio para que múltiples burbujas en la misma página no queden sincronizadas.
+- El módulo inyecta un SVG programáticamente dentro del contenedor. El SVG contiene un `<clipPath>` que enmascara la imagen y dos `<path>` de ring rendereados fuera del área recortada (`overflow: visible`).
+- Al inicializar aplica `user-select: none` y `pointer-events: none` al elemento `<picture>` o `<figure>` que envuelve la imagen.
+- El blob se genera paramétricamente cada frame: N puntos en círculo perturbados por ondas seno con fase propia → convertidos a curvas Bézier cúbicas mediante la fórmula Catmull-Rom. La perturbación es exclusivamente inward: `delta = -(intensity × baseR × amplitudes[i]) × (1 + sin(t)) / 2`.
+- Los tres paths (clip + ring1 + ring2) comparten los mismos puntos base a radio distinto, garantizando que siempre sean paralelos.
+- Animación gestionada con `gsap.ticker`. Un `IntersectionObserver` pausa y reanuda el ticker cuando el elemento entra/sale del viewport. Un `ResizeObserver` recalcula las dimensiones del SVG al cambiar el layout.
+- Cada instancia recibe un `timeOffset` aleatorio para que múltiples burbujas en la misma página no queden sincronizadas.
 
 ### HTML requerido
 
@@ -840,46 +809,23 @@ Aplica una máscara blob orgánica animada sobre imágenes, con dos rings de str
 </div>
 ```
 
-El SVG y el clip-path se inyectan automáticamente. No se necesita ningún marcado adicional.
-
 ### Data-attributes
 
 | Atributo | Default | Descripción |
 |---|---|---|
 | `data-animask` | — | Activa el módulo en el elemento |
 | `data-animask_points` | `8` | Número de puntos del blob (3–20) |
-| `data-animask_intensity` | `0.12` | Profundidad de contracción inward como fracción del radio base — el blob nunca supera el límite de la imagen |
+| `data-animask_intensity` | `0.12` | Profundidad de contracción inward como fracción del radio base |
 | `data-animask_speed` | `1` | Velocidad de la animación (multiplicador en Hz) |
 | `data-animask_gap` | `20` | Separación en px entre el borde exterior de ring1 y el interior de ring2 |
-| `data-animask_ringcolor` | — | Color para ambos rings a la vez (sobreescribe `ring1color` y `ring2color` si está presente) |
-| `data-animask_ringopacity` | — | Opacidad para ambos rings a la vez (sobreescribe `ring1opacity` y `ring2opacity` si está presente) |
+| `data-animask_ringcolor` | — | Color para ambos rings a la vez (sobreescribe `ring1color` y `ring2color`) |
+| `data-animask_ringopacity` | — | Opacidad para ambos rings a la vez (sobreescribe `ring1opacity` y `ring2opacity`) |
 | `data-animask_ring1width` | `12` | Grosor del ring interior en px |
 | `data-animask_ring1color` | `#ffffff` | Color del ring interior |
 | `data-animask_ring1opacity` | `0.85` | Opacidad del ring interior (0–1) |
 | `data-animask_ring2width` | `2` | Grosor del ring exterior en px |
 | `data-animask_ring2color` | `#ffffff` | Color del ring exterior |
 | `data-animask_ring2opacity` | `0.85` | Opacidad del ring exterior (0–1) |
-
-
-### Ejemplo con config personalizada
-
-```html
-<div data-animask
-     data-animask_points="6"
-     data-animask_intensity="0.08"
-     data-animask_speed="0.6"
-     data-animask_ring1width="16"
-     data-animask_ring1color="#ffffff"
-     data-animask_ring1opacity="0.9"
-     data-animask_gap="15"
-     data-animask_ring2width="3"
-     data-animask_ring2color="#ffffff"
-     data-animask_ring2opacity="0.4">
-  <picture>
-    <img src="foto.jpg" alt="...">
-  </picture>
-</div>
-```
 
 La instancia queda accesible en `container.imageMask`. Expone `destroy()` para limpiar observers, ticker y clip-path.
 
@@ -899,8 +845,6 @@ En el panel **Atributos HTML** del bloque, añadir un único atributo con el val
 <div data-parallax="0.3">...</div>
 ```
 
-El valor (depth) controla la intensidad. El atributo vacío usa `0.5` por defecto.
-
 ### Parámetro de profundidad (`depth`)
 
 | Valor | Movimiento por px de scroll | Descripción |
@@ -912,24 +856,11 @@ El valor (depth) controla la intensidad. El atributo vacío usa `0.5` por defect
 
 **Fórmula:** `y = -(scroll - initialScroll) × depth`
 
-El desplazamiento es siempre relativo al scroll en el momento de carga de la página (`initialScroll`), por lo que `y = 0` al inicializar, independientemente de dónde esté el elemento. El signo negativo hace que el elemento suba cuando se hace scroll hacia abajo (efecto foreground).
-
-Acepta valores decimales.
-
-### Ejemplos
-
-```html
-data-parallax="0.2"  → mueve 0.2 px por cada px de scroll
-data-parallax="0.7"  → mueve 0.7 px por cada px de scroll
-data-parallax="0.35" → decimales OK
-data-parallax="0"    → sin movimiento
-data-parallax        → depth 0.5 por defecto
-```
+El desplazamiento es siempre relativo al scroll en el momento de carga de la página (`initialScroll`), por lo que `y = 0` al inicializar. Acepta valores decimales.
 
 ### Notas de implementación
 
 - Sin ScrollTrigger — el desplazamiento se aplica en cada evento `scroll` de Lenis vía `gsap.set`.
-- `y = 0` garantizado al cargar: el offset se acumula solo como delta desde `initialScroll`.
 - Fallback a `window.addEventListener('scroll', ...)` si Lenis no está disponible.
 - La instancia queda accesible en `element.parallax`. Expone `destroy()` para limpiar el listener y el transform.
 
@@ -952,48 +883,18 @@ Atributo `data-dotnav` en el **contenedor** que envuelve las secciones:
 | Atributo | Valor por defecto | Descripción |
 |---|---|---|
 | `data-dotnav` | `section` | Selector CSS de los hijos que se convierten en ítems de nav. Vacío → usa `section`. |
-| `data-position` | `right` | Posición de la barra: `right` o `left`. Añade clase `align-right` / `align-left` al `<nav>`. |
+| `data-position` | `right` | Posición de la barra: `right` o `left`. |
 
 ### Secciones hijas
 
 Cada sección que deba aparecer en la barra necesita:
 
 - Atributo `id` — se usa como destino del enlace (`href="#id"`).
-- Atributo `data-label` — texto de la etiqueta flotante que aparece al hacer hover sobre el punto. Si está vacío o ausente, la sección se omite del nav.
-
-```html
-<section id="intro" data-label="Introducción">...</section>
-<section id="proceso" data-label="Proceso">...</section>
-<section id="contacto" data-label="Contacto">...</section>
-```
-
-### HTML generado
-
-El módulo inserta un `<nav>` al principio del contenedor:
-
-```html
-<nav class="dot-navigation align-right">
-  <a class="nav-item showing" href="#intro" aria-label="#intro" role="navigation">
-    <div class="label">Introducción</div>
-  </a>
-  <a class="nav-item" href="#proceso" aria-label="#proceso" role="navigation">
-    <div class="label">Proceso</div>
-  </a>
-  ...
-</nav>
-```
-
-La clase `showing` se añade al punto activo y se retira cuando la sección sale del viewport.
+- Atributo `data-label` — texto de la etiqueta flotante al hacer hover. Si está vacío o ausente, la sección se omite del nav.
 
 ### Lógica de activación
 
-Usa ScrollTrigger con `start: 'top+=10% 50%'` / `end: 'bottom 50%'`. El punto se activa cuando el top de la sección cruza el centro del viewport y se desactiva cuando sale por arriba o por abajo. Solo un punto está activo a la vez.
-
-### Notas
-
-- La instancia queda en `element.dotNav`.
-- Requiere que cada sección tenga `id` y `data-label`; las secciones sin `data-label` se ignoran.
-- Compatible con Lenis (el ticker GSAP está conectado en `smooth_scroll.js`).
+Usa ScrollTrigger con `start: 'top+=10% 50%'` / `end: 'bottom 50%'`. El punto se activa cuando el top de la sección cruza el centro del viewport. Solo un punto está activo a la vez.
 
 ---
 
@@ -1004,8 +905,6 @@ Módulo de animaciones de entrada basado en GSAP + ScrollTrigger. Se incluye sie
 **Archivo:** `javascript/modules/animation_any.js`
 
 ### Activación
-
-Añadir el atributo `data-anim_any` al elemento. Sin parámetros adicionales, aplica la animación por defecto (`slideFromBottom` sobre el elemento completo).
 
 ```html
 <h2 data-anim_any>Título animado</h2>
@@ -1024,13 +923,13 @@ En el editor Gutenberg: panel **Atributos HTML** → preset **Anim Any**.
 | `data-anim_any_delay` | `0.33` | Retardo inicial antes de empezar (s) |
 | `data-anim_any_stagger` | `0.1` | Desfase entre chars/words/lines cuando `whattoanim` ≠ `self` (s) |
 | `data-anim_any_slideamount` | `100` | Distancia de desplazamiento en px para las animaciones de tipo `slide*` |
-| `data-anim_any_repeat` | `true` | Si `true`, la animación se revierte al hacer scroll hacia arriba (reverse). `false` o `0` para desactivar |
-| `data-anim_any_autoplay` | `true` | Si `true`, la animación arranca con ScrollTrigger al entrar en el viewport. Los elementos encadenados como target de `nextanim` reciben `autoplay=0` automáticamente — no hace falta declararlo en el HTML |
-| `data-anim_any_triggerstart` | — | Posición personalizada del ScrollTrigger (valor del parámetro `start` de GSAP ScrollTrigger, p.ej. `"center bottom"`) |
-| `data-anim_any_nextanim` | — | Encadena otro elemento al terminar esta animación. Ver sección **Encadenamiento** |
-| `data-anim_any_callback` | — | Función JS global a ejecutar al completar la animación. Ver sección **Callback** |
-| `data-anim_any_matchmedia` | — | Media query CSS (sin `@media`). Si no coincide, la animación se omite por completo. P.ej. `"min-width: 1024px"` solo anima en desktop |
-| `data-anim_any_markers` | `false` | `true` activa los marcadores de debug de ScrollTrigger en pantalla |
+| `data-anim_any_repeat` | `true` | Si `true`, la animación se revierte al hacer scroll hacia arriba. `false` o `0` para desactivar |
+| `data-anim_any_autoplay` | `true` | Si `true`, la animación arranca con ScrollTrigger al entrar en el viewport |
+| `data-anim_any_triggerstart` | — | Posición personalizada del ScrollTrigger (p.ej. `"center bottom"`) |
+| `data-anim_any_nextanim` | — | Encadena otro elemento al terminar esta animación |
+| `data-anim_any_callback` | — | Función JS global a ejecutar al completar la animación |
+| `data-anim_any_matchmedia` | — | Media query CSS (sin `@media`). P.ej. `"min-width: 1024px"` solo anima en desktop |
+| `data-anim_any_markers` | `false` | `true` activa los marcadores de debug de ScrollTrigger |
 | `data-anim_any_log` | `false` | `true` activa logging en consola |
 
 ### Tipos de animación
@@ -1048,8 +947,6 @@ En el editor Gutenberg: panel **Atributos HTML** → preset **Anim Any**.
 
 ### Encadenamiento (`nextanim`)
 
-Cuando una animación termina, puede disparar automáticamente la animación de otro elemento usando `data-anim_any_nextanim`. El valor es un selector CSS seguido opcionalmente de un tiempo en segundos relativo al final de la animación actual.
-
 ```
 data-anim_any_nextanim="<selector>[, <tiempo>]"
 ```
@@ -1061,28 +958,20 @@ data-anim_any_nextanim="<selector>[, <tiempo>]"
 | `".mi-subtitulo, 0"` | Arranca exactamente cuando termina la primera |
 | `".mi-subtitulo, 0.8"` | Arranca 0.8 s **después** de que termine la primera |
 
-El tiempo negativo (valor por defecto `-1.5`) permite solapar la transición cuando la primera animación usa easings suaves (`power4.out`, `expo.out`), logrando un encadenamiento fluido sin corte visual.
-
-**Encadenamiento infinito A → B → C → N:** cada elemento puede tener su propio `nextanim`, creando cadenas de cualquier longitud. Los targets de la cadena no necesitan `data-anim_any_autoplay="0"` — el módulo lo gestiona automáticamente en un pre-pass antes de instanciar.
+**Encadenamiento infinito A → B → C → N:** cada elemento puede tener su propio `nextanim`, creando cadenas de cualquier longitud.
 
 ```html
-<!-- Elemento A (autoplay por scroll) -->
-<h2 data-anim_any
-    data-anim_any_nextanim=".subtitulo, -0.5">
+<h2 data-anim_any data-anim_any_nextanim=".subtitulo, -0.5">
   Título principal
 </h2>
-
-<!-- Elemento B (arranca al ser llamado por A) -->
 <p class="subtitulo"
    data-anim_any
    data-anim_any_animation="slideFromLeft"
    data-anim_any_nextanim=".cta-btn">
   Subtítulo descriptivo
 </p>
-
-<!-- Elemento C (arranca al ser llamado por B, delay por defecto -1.5 s) -->
 <a class="cta-btn" data-anim_any data-anim_any_animation="slideFromBottom">
-  Llámanos
+  Acción
 </a>
 ```
 
@@ -1092,44 +981,7 @@ El tiempo negativo (valor por defecto `-1.5`) permite solapar la transición cua
 data-anim_any_callback="<nombre_función>[, <delay_ms>]"
 ```
 
-Llama a `window[nombre_función]()` al terminar la animación. El delay opcional es en **milisegundos** (a diferencia de `nextanim`, que usa segundos).
-
-```html
-<div data-anim_any data-anim_any_callback="onIntroComplete, 300">...</div>
-```
-
-```js
-function onIntroComplete() {
-  // se ejecuta 300 ms después de que termine la animación
-}
-```
-
-### Ejemplos
-
-```html
-<!-- Texto partido en palabras con stagger -->
-<h1 data-anim_any
-    data-anim_any_whattoanim="words"
-    data-anim_any_animation="clippedFromBottom"
-    data-anim_any_duration="1.2"
-    data-anim_any_stagger="0.08">
-  Soluciones prefabricadas
-</h1>
-
-<!-- Solo en desktop, sin reverse al hacer scroll up -->
-<div data-anim_any
-     data-anim_any_animation="slideFromLeft"
-     data-anim_any_matchmedia="min-width: 1024px"
-     data-anim_any_repeat="false">
-  ...
-</div>
-
-<!-- Elemento hijo encadenado (sin nextanim en el padre) -->
-<section>
-  <h2 data-anim_any data-anim_any_nextanim=".desc">Título</h2>
-  <p class="desc" data-anim_any data-anim_any_animation="slideFromLeft">Descripción</p>
-</section>
-```
+Llama a `window[nombre_función]()` al terminar la animación. El delay opcional es en **milisegundos**.
 
 ---
 
@@ -1137,9 +989,9 @@ function onIntroComplete() {
 
 El listado de WP Admin para el CPT `producto` incluye:
 
-- **Columna de imagen destacada** (primera columna, 60×60 px) — misma implementación genérica que `necesidad` y `ebook` (`theme/inc/utilities.php`, array `$cpts`).
-- **Filtro por categoría** — dropdown jerárquico de `product_category` sobre la tabla. Implementado con `restrict_manage_posts` (render) + `parse_query` (filtrado de query).
-- **Columna Categoría** — muestra las categorías asignadas como enlaces que activan el filtro al hacer clic (`manage_producto_posts_columns` + `manage_producto_posts_custom_column`).
+- **Columna de imagen destacada** (primera columna, 60×60 px).
+- **Filtro por categoría** — dropdown jerárquico de `product_category` sobre la tabla.
+- **Columna Categoría** — muestra las categorías asignadas como enlaces que activan el filtro al hacer clic.
 
 ---
 
@@ -1148,8 +1000,7 @@ El listado de WP Admin para el CPT `producto` incluye:
 Fuente en `tailwind/` → `theme/style.css`.
 
 - Dark mode: estrategia `class`
-- Colores: Primary `#b91c1c`, Secondary `#15803d`, Tertiary `#0369a1`
-- Componente principal: `tailwind/custom/components/catalog-menu.css`
+- Los colores de marca se definen por proyecto en `tailwind/custom/components/all-themes.css` via variables CSS (`--brand-color-rgb`, etc.)
 
 ---
 
@@ -1164,12 +1015,12 @@ Entry: `javascript/script.js` → `theme/js/script.min.js`
 | `mobileMenuNav.js` | Menú móvil |
 | `darkMode.js` | Toggle dark/light |
 | `faqs.js` | Acordeón de FAQs |
-| `hero_slider.js` | Slider full-width above-the-fold (Splide). Atributo: `data-heroslider`. Reveal ligado a carga de primera imagen. |
-| `imgcompare.js` | Comparador antes/después con slider. Atributo: `data-imgcompare`. Modo showoff animado con GSAP + IntersectionObserver. |
+| `hero_slider.js` | Slider full-width above-the-fold (Splide). Atributo: `data-heroslider`. |
+| `imgcompare.js` | Comparador antes/después con slider. Atributo: `data-imgcompare`. |
 | `testimonials-splide.js` | Slider de testimonios (Splide). Atributo: `data-testimonials`. |
-| `animation_any.js` | Animaciones de entrada con GSAP + ScrollTrigger. Atributo: `data-anim_any`. Siempre incluido. Ver sección **Animaciones con `data-anim_any`**. |
-| `parallax.js` | Efecto parallax vertical. Atributo: `data-parallax="<depth>"` (0–1, decimales OK). Desplazamiento = depth × scrollDelta. Sin salto al inicializar. Fallback nativo si no hay Lenis. |
-| `navigation_dot.js` | Navegación lateral por puntos para páginas one-page. Atributo: `data-dotnav="<selector>"` en el contenedor. Cada sección hija necesita `id` + `data-label`. Punto activo vía ScrollTrigger. |
+| `animation_any.js` | Animaciones de entrada con GSAP + ScrollTrigger. Atributo: `data-anim_any`. |
+| `parallax.js` | Efecto parallax vertical. Atributo: `data-parallax="<depth>"`. |
+| `navigation_dot.js` | Navegación lateral por puntos para páginas one-page. Atributo: `data-dotnav`. |
 
 Librerías: GSAP + ScrollTrigger, Splide, OverlayScrollbars, Split Type, CountUp.js
 
@@ -1177,11 +1028,10 @@ Librerías: GSAP + ScrollTrigger, Splide, OverlayScrollbars, Split Type, CountUp
 
 ## Pods playbook
 
-Operaciones Pods documentadas en `.claude/pods-playbook.json`, ejecutadas vía WP-CLI:
+Operaciones Pods documentadas en `.claude/pods-playbook.json`, ejecutadas vía `wp-local` (wrapper WP-CLI para Local by Flywheel):
 
 ```bash
-cd /Volumes/KRAKEN/HTDOCS/prefabricadosduero/app/public
-wp eval 'pods_api()->save_field([...])'
+wp-local eval 'pods_api()->save_field([...])'
 ```
 
 ---
@@ -1190,23 +1040,16 @@ wp eval 'pods_api()->save_field([...])'
 
 Panel **Apariencia → Personalizar → THEME CUSTOMIZER**.
 
-### Site Information (primera sección del panel, `priority: 10`)
+### Site Information (`priority: 10`)
 
 | Setting key | Control | Descripción |
 |---|---|---|
 | `pictau_site_name` | Text | Nombre del cliente. Usado como `wp_mail_from_name` si está relleno. |
 | `pictau_contact_email` | Email | Email de contacto global. Usado como `wp_mail_from` si está relleno. |
 
-Acceso desde cualquier parte del tema o plugins:
-
-```php
-get_theme_mod('pictau_site_name', '');
-get_theme_mod('pictau_contact_email', '');
-```
-
 Los filtros `wp_mail_from` y `wp_mail_from_name` **solo se registran** si el valor está guardado (no vacío). Si el campo está vacío, WordPress usa su comportamiento por defecto.
 
-El plugin **Maintenance Mode by PICTAU** consume `pictau_contact_email` directamente: lo usa como auto-relleno del campo "Email de contacto" cuando está vacío, y muestra una alerta si difiere del email configurado en el plugin.
+El plugin **Maintenance Mode by PICTAU** consume `pictau_contact_email` directamente.
 
 ---
 
