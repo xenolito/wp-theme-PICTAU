@@ -1,4 +1,4 @@
-# AGENTS.md — Tema pictau (Prefabricados Duero)
+# AGENTS.md — Tema pictau
 
 Instrucciones y contexto para Codex en este proyecto.
 
@@ -6,10 +6,10 @@ Instrucciones y contexto para Codex en este proyecto.
 
 ## Proyecto
 
-**Tema WordPress personalizado** para el sitio `prefabricadosduero`.
+**Tema WordPress personalizado** .
 - **Versión:** 0.1.0 | **Text domain:** `pictau`
-- **URL local:** `https://prefabricadosduero.dev/`
-- **Ruta:** `/Volumes/KRAKEN/HTDOCS/prefabricadosduero/app/public/wp-content/themes/pictau`
+- **URL local:** `https://balanzia.dev/`
+- **Ruta:** `/Volumes/KRAKEN/HTDOCS/balanzia/app/public/wp-content/themes/pictau`
 
 ---
 
