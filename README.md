@@ -18,6 +18,7 @@ Tema WordPress personalizado para el sitio de Prefabricados Duero.
 - Plugin [Yoast SEO](https://wordpress.org/plugins/wordpress-seo/) activo (v27.6+)
 - Plugin [Polylang](https://wordpress.org/plugins/polylang/) (opcional, para i18n)
 
+
 ---
 
 ## Instalación y build
