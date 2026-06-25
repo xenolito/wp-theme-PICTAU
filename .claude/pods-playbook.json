@@ -1,0 +1,691 @@
+[
+  {
+    "#": "1. Crear taxonomía product_category (jerárquica, slug: productos)",
+    "action": "save_pod",
+    "params": {
+      "name": "product_category",
+      "label": "Categorías de producto",
+      "label_singular": "Categoría de producto",
+      "type": "taxonomy",
+      "storage": "meta",
+      "public": "1",
+      "show_ui": "1",
+      "publicly_queryable": "1",
+      "hierarchical": "1",
+      "rewrite": "1",
+      "rewrite_custom_slug": "productos",
+      "rewrite_with_front": "0",
+      "rest_enable": "1",
+      "dynamic_features_allow": "inherit"
+    }
+  },
+  {
+    "#": "2. Crear CPT producto (slug: producto, sin archive)",
+    "action": "save_pod",
+    "params": {
+      "name": "producto",
+      "label": "Productos",
+      "label_singular": "Producto",
+      "type": "post_type",
+      "storage": "meta",
+      "public": "1",
+      "show_ui": "1",
+      "publicly_queryable": "1",
+      "has_archive": "0",
+      "rewrite": "1",
+      "rewrite_custom_slug": "producto",
+      "rewrite_with_front": "0",
+      "rewrite_pages": "1",
+      "supports_title": "1",
+      "supports_editor": "1",
+      "supports_thumbnail": "1",
+      "supports_revisions": "1",
+      "supports_page_attributes": "1",
+      "show_in_menu": "1",
+      "menu_name": "Productos",
+      "menu_position": "25",
+      "menu_icon": "dashicons-products",
+      "show_in_nav_menus": "1",
+      "show_in_admin_bar": "1",
+      "can_export": "1",
+      "rest_enable": "1",
+      "dynamic_features_allow": "inherit",
+      "capability_type": "page",
+      "read_all": "1",
+      "built_in_taxonomies_product_category": "1"
+    }
+  },
+  {
+    "#": "3. Crear grupo de campos para producto",
+    "action": "save_group",
+    "params": {
+      "pod": "producto",
+      "name": "datos_producto",
+      "label": "Datos del producto",
+      "weight": 0
+    }
+  },
+  {
+    "#": "0. Campo free_layout (boolean) en producto — modo layout libre",
+    "action": "save_field",
+    "params": {
+      "pod": "producto",
+      "group": "datos_producto",
+      "name": "free_layout",
+      "label": "Free Layout",
+      "description": "Si está activo, el viewer sólo muestra el título/subtítulo, sin imagen, sin breadcrumb y sin características técnicas.",
+      "type": "boolean",
+      "weight": 0
+    }
+  },
+  {
+    "#": "4. Campo subtitulo (text)",
+    "action": "save_field",
+    "params": {
+      "pod": "producto",
+      "group": "datos_producto",
+      "name": "subtitulo",
+      "label": "Subtítulo",
+      "type": "text",
+      "weight": 1,
+      "text_max_length": "255"
+    }
+  },
+  {
+    "#": "5. Campo ficha_tecnica (file/PDF)",
+    "action": "save_field",
+    "params": {
+      "pod": "producto",
+      "group": "datos_producto",
+      "name": "ficha_tecnica",
+      "label": "Ficha técnica (PDF)",
+      "type": "file",
+      "weight": 3,
+      "file_type": "any",
+      "file_format_type": "single"
+    }
+  },
+  {
+    "#": "19. Campo catalogo_producto (file/PDF) en producto — catálogo del producto",
+    "action": "save_field",
+    "params": {
+      "pod": "producto",
+      "group": "datos_producto",
+      "name": "catalogo_producto",
+      "label": "Catálogo de producto",
+      "type": "file",
+      "weight": 3.5,
+      "file_type": "any",
+      "file_format_type": "single"
+    }
+  },
+  {
+    "#": "20. Campo certificado (file/PDF) en producto — certificado del producto",
+    "action": "save_field",
+    "params": {
+      "pod": "producto",
+      "group": "datos_producto",
+      "name": "certificado",
+      "label": "Certificado",
+      "type": "file",
+      "weight": 3.6,
+      "file_type": "any",
+      "file_format_type": "single",
+      "file_uploader": "attachment"
+    }
+  },
+  {
+    "#": "22. Campo certificado_nombre (text) en producto — nombre visible del certificado",
+    "action": "save_field",
+    "params": {
+      "pod": "producto",
+      "group": "datos_producto",
+      "name": "certificado_nombre",
+      "label": "Nombre del certificado",
+      "type": "text",
+      "weight": 3.61,
+      "text_max_length": "255"
+    }
+  },
+  {
+    "#": "23. Campo certificado_imagen (file/image) en producto — imagen clicable del certificado",
+    "action": "save_field",
+    "params": {
+      "pod": "producto",
+      "group": "datos_producto",
+      "name": "certificado_imagen",
+      "label": "Imagen del certificado",
+      "type": "file",
+      "weight": 3.62,
+      "file_type": "images",
+      "file_format_type": "single",
+      "file_uploader": "attachment"
+    }
+  },
+  {
+    "#": "21. Campo declaracion_ambiental (file/PDF) en producto — declaración ambiental del producto",
+    "action": "save_field",
+    "params": {
+      "pod": "producto",
+      "group": "datos_producto",
+      "name": "declaracion_ambiental",
+      "label": "Declaración Ambiental",
+      "type": "file",
+      "weight": 3.65,
+      "file_type": "any",
+      "file_format_type": "single",
+      "file_uploader": "attachment"
+    }
+  },
+  {
+    "#": "6. Campo galeria (imágenes múltiples)",
+    "action": "save_field",
+    "params": {
+      "pod": "producto",
+      "group": "datos_producto",
+      "name": "galeria",
+      "label": "Galería de imágenes",
+      "type": "file",
+      "weight": 4,
+      "file_type": "images",
+      "file_format_type": "multi"
+    }
+  },
+  {
+    "#": "7. Campo visualizer_model_id (text - ID del modelo 3D)",
+    "action": "save_field",
+    "params": {
+      "pod": "producto",
+      "group": "datos_producto",
+      "name": "visualizer_model_id",
+      "label": "ID modelo 3D",
+      "description": "Identificador del modelo 3D (ej: baldosa_colegiata_40x20). Dejar vacío si no tiene visualizador.",
+      "type": "text",
+      "weight": 5,
+      "text_max_length": "255"
+    }
+  },
+  {
+    "#": "9. Crear grupo de campos para product_category",
+    "action": "save_group",
+    "params": {
+      "pod": "product_category",
+      "name": "datos_categoria",
+      "label": "Datos de categoría",
+      "weight": 0
+    }
+  },
+  {
+    "#": "10. Campo orden (number) en product_category — para ordenar el menú lateral",
+    "action": "save_field",
+    "params": {
+      "pod": "product_category",
+      "group": "datos_categoria",
+      "name": "orden",
+      "label": "Orden",
+      "description": "Orden de aparición en el menú lateral de productos (menor = primero). Dejar en 0 si no importa.",
+      "type": "number",
+      "weight": 0,
+      "number_format": "9999.99",
+      "number_decimals": "0"
+    }
+  },
+  {
+    "#": "11. Campo imagen_destacada (image single) en product_category — imagen de la categoría",
+    "action": "save_field",
+    "params": {
+      "pod": "product_category",
+      "group": "datos_categoria",
+      "name": "imagen_destacada",
+      "label": "Imagen destacada",
+      "description": "Imagen representativa de la categoría (se usa en el grid de subcategorías del catálogo).",
+      "type": "file",
+      "weight": 1,
+      "file_type": "images",
+      "file_format_type": "single"
+    }
+  },
+  {
+    "#": "15. Campo menu-desc (text) en product_category — descripción corta para megamenú",
+    "action": "save_field",
+    "params": {
+      "pod": "product_category",
+      "group": "datos_categoria",
+      "name": "menu_desc",
+      "label": "Descripción en menú",
+      "description": "Texto corto que se muestra dentro de cada ítem del shortcode [megamenu-cat-by-cpt].",
+      "type": "text",
+      "weight": 4,
+      "text_max_length": "255"
+    }
+  },
+  {
+    "#": "14. Campo icono (image single) en product_category — icono SVG de la categoría",
+    "action": "save_field",
+    "params": {
+      "pod": "product_category",
+      "group": "datos_categoria",
+      "name": "icono",
+      "label": "Icono",
+      "description": "Icono SVG representativo de la categoría.",
+      "type": "file",
+      "weight": 3,
+      "file_type": "images",
+      "file_format_type": "single"
+    }
+  },
+  {
+    "#": "12. Campo subtitulo (text) en product_category — subtítulo de la categoría",
+    "action": "save_field",
+    "params": {
+      "pod": "product_category",
+      "group": "datos_categoria",
+      "name": "subtitulo",
+      "label": "Subtítulo",
+      "description": "Texto corto descriptivo de la categoría (se mostrará bajo el título en el archive).",
+      "type": "text",
+      "weight": 2,
+      "text_max_length": "255"
+    }
+  },
+  {
+    "#": "13. Campo orden (number) en producto — para ordenar productos dentro de una categoría",
+    "action": "save_field",
+    "params": {
+      "pod": "producto",
+      "group": "datos_producto",
+      "name": "orden",
+      "label": "Orden",
+      "description": "Orden de aparición en la página de categoría (menor = primero). Dejar vacío para no forzar orden.",
+      "type": "number",
+      "weight": 7,
+      "number_format": "9999.99",
+      "number_decimals": "0"
+    }
+  },
+  {
+    "#": "8. Campo productos_relacionados (relationship → producto)",
+    "action": "save_field",
+    "params": {
+      "pod": "producto",
+      "group": "datos_producto",
+      "name": "productos_relacionados",
+      "label": "Productos relacionados",
+      "type": "pick",
+      "weight": 6,
+      "pick_object": "post_type",
+      "pick_val": "producto",
+      "pick_format_type": "multi",
+      "pick_format_multi": "list",
+      "pick_limit": "10"
+    }
+  },
+  {
+    "#": "17. Campo tabla_especificaciones (wysiwyg) en producto — tabla HTML de especificaciones técnicas",
+    "action": "save_field",
+    "params": {
+      "pod": "producto",
+      "group": "datos_producto",
+      "name": "tabla_especificaciones",
+      "label": "Tabla de especificaciones",
+      "type": "wysiwyg",
+      "weight": 8
+    }
+  },
+  {
+    "#": "18. Campo medidas_cotas (file single/image) en producto — imagen con plano de medidas y cotas",
+    "action": "save_field",
+    "params": {
+      "pod": "producto",
+      "group": "datos_producto",
+      "name": "medidas_cotas",
+      "label": "Medidas y cotas",
+      "type": "file",
+      "weight": 9,
+      "file_type": "images",
+      "file_format_type": "single"
+    }
+  },
+  {
+    "#": "25. Campo footer_tabla_adicional (wysiwyg) en producto — texto/HTML bajo la tabla de especificaciones",
+    "action": "save_field",
+    "params": {
+      "pod": "producto",
+      "group": "datos_producto",
+      "name": "footer_tabla_adicional",
+      "label": "Footer tabla adicional",
+      "type": "wysiwyg",
+      "weight": 8.6,
+      "default_value": "<p>*Todos los valores son orientativos</p>",
+      "wysiwyg_editor": "quill"
+    }
+  },
+  {
+    "#": "24. Campo norma_une (text) en producto — norma UNE que aparece en la tabla de especificaciones",
+    "action": "save_field",
+    "params": {
+      "pod": "producto",
+      "group": "datos_producto",
+      "name": "norma_une",
+      "label": "Norma UNE",
+      "type": "text",
+      "weight": 8.5,
+      "text_max_length": 100
+    }
+  },
+  {
+    "#": "26. Campo manual_colocacion (file/PDF) en producto — manual de colocación del producto",
+    "action": "save_field",
+    "params": {
+      "pod": "producto",
+      "group": "datos_producto",
+      "name": "manual_colocacion",
+      "label": "Manual de Colocación",
+      "type": "file",
+      "weight": 3.7,
+      "file_type": "any",
+      "file_format_type": "single",
+      "file_uploader": "attachment"
+    }
+  },
+  {
+    "#": "16. Campo caracteristicas_tecnicas (file multi/any) en producto — iconos/imágenes de características técnicas",
+    "action": "save_field",
+    "params": {
+      "pod": "producto",
+      "group": "datos_producto",
+      "name": "caracteristicas_tecnicas",
+      "label": "Características técnicas",
+      "type": "file",
+      "weight": 2,
+      "file_type": "any",
+      "file_format_type": "multi"
+    }
+  },
+  {
+    "#": "27. Campo faqs (wysiwyg/quill) en product_category — FAQs heredables de categoría padre",
+    "action": "save_field",
+    "params": {
+      "pod": "product_category",
+      "group": "datos_categoria",
+      "name": "faqs",
+      "label": "FAQs",
+      "description": "Preguntas frecuentes de la categoría. Si la subcategoría no tiene FAQs, se mostrarán las de la categoría padre.",
+      "type": "wysiwyg",
+      "weight": 5,
+      "wysiwyg_editor": "quill"
+    }
+  },
+  {
+    "#": "28. Campo faqs_collapsables (boolean) en product_category — convierte las FAQs al layout colapsable",
+    "action": "save_field",
+    "params": {
+      "pod": "product_category",
+      "group": "datos_categoria",
+      "name": "faqs_collapsables",
+      "label": "FAQs colapsables",
+      "description": "Si está activo, las FAQs se renderizarán como acordeón colapsable (patrón p>strong = pregunta, contenido siguiente = respuesta).",
+      "type": "boolean",
+      "weight": 5.1
+    }
+  },
+  {
+    "#": "29. Crear CPT slide (slider hero, con editor Gutenberg y thumbnail, sin archive ni frontend público)",
+    "action": "save_pod",
+    "params": {
+      "name": "slide",
+      "label": "Slides",
+      "label_singular": "Slide",
+      "type": "post_type",
+      "storage": "meta",
+      "public": "1",
+      "show_ui": "1",
+      "publicly_queryable": "0",
+      "has_archive": "0",
+      "rewrite": "0",
+      "supports_title": "1",
+      "supports_editor": "1",
+      "supports_thumbnail": "1",
+      "supports_revisions": "1",
+      "supports_page_attributes": "1",
+      "show_in_menu": "1",
+      "menu_name": "Slides",
+      "menu_position": "26",
+      "menu_icon": "dashicons-images-alt2",
+      "show_in_nav_menus": "0",
+      "show_in_admin_bar": "1",
+      "can_export": "1",
+      "rest_enable": "0",
+      "dynamic_features_allow": "inherit",
+      "capability_type": "page",
+      "read_all": "1"
+    }
+  },
+  {
+    "#": "30. Grupo de campos para slide",
+    "action": "save_group",
+    "params": {
+      "pod": "slide",
+      "name": "datos_slide",
+      "label": "Datos del slide",
+      "weight": 0
+    }
+  },
+  {
+    "#": "31. Campo orden (number) en slide — orden de aparición (menor = primero, LCP priority)",
+    "action": "save_field",
+    "params": {
+      "pod": "slide",
+      "group": "datos_slide",
+      "name": "orden",
+      "label": "Orden",
+      "type": "number",
+      "weight": 0,
+      "number_format": "9999.99",
+      "number_decimals": "0"
+    }
+  },
+  {
+    "#": "34. Crear taxonomía slide_category (jerárquica, con UI admin y REST, sin rewrite público)",
+    "action": "save_pod",
+    "params": {
+      "name": "slide_category",
+      "label": "Categorías de slide",
+      "label_singular": "Categoría de slide",
+      "type": "taxonomy",
+      "storage": "meta",
+      "public": "1",
+      "show_ui": "1",
+      "publicly_queryable": "0",
+      "hierarchical": "1",
+      "rewrite": "0",
+      "show_in_nav_menus": "0",
+      "rest_enable": "1",
+      "dynamic_features_allow": "inherit"
+    }
+  },
+  {
+    "#": "36. Campo slide_callback (text) en slide — nombre de función JS por slide",
+    "action": "save_field",
+    "params": {
+      "pod": "slide",
+      "group": "datos_slide",
+      "name": "slide_callback",
+      "label": "Callback JS",
+      "description": "Nombre de función JS global (window[fn]) a llamar cuando este slide queda activo. Misma firma que el callback global: fn(newIndex, splide).",
+      "type": "text",
+      "weight": 1,
+      "text_max_length": "255"
+    }
+  },
+  {
+    "#": "36. Campo faqs_intro (wysiwyg/quill) en product_category — introducción antes de las FAQs",
+    "action": "save_field",
+    "params": {
+      "pod": "product_category",
+      "group": "datos_categoria",
+      "name": "faqs_intro",
+      "label": "FAQs intro",
+      "description": "Texto introductorio que aparece entre el título 'Preguntas frecuentes' y el listado de FAQs.",
+      "type": "wysiwyg",
+      "weight": 4.9,
+      "wysiwyg_editor": "quill"
+    }
+  },
+  {
+    "#": "35. Vincular taxonomía slide_category al CPT slide",
+    "action": "save_pod",
+    "params": {
+      "name": "slide",
+      "built_in_taxonomies_slide_category": "1"
+    }
+  },
+  {
+    "#": "A1. Crear CPT ambiente (con archive, slug: ambiente)",
+    "action": "save_pod",
+    "params": {
+      "name": "ambiente",
+      "label": "Ambientes",
+      "label_singular": "Ambiente",
+      "type": "post_type",
+      "storage": "meta",
+      "public": "1",
+      "show_ui": "1",
+      "publicly_queryable": "1",
+      "has_archive": "1",
+      "rewrite": "1",
+      "rewrite_custom_slug": "ambiente",
+      "rewrite_with_front": "0",
+      "rewrite_pages": "1",
+      "supports_title": "1",
+      "supports_editor": "0",
+      "supports_thumbnail": "1",
+      "supports_revisions": "1",
+      "supports_page_attributes": "1",
+      "show_in_menu": "1",
+      "menu_name": "Ambientes",
+      "menu_position": "27",
+      "menu_icon": "dashicons-layout",
+      "show_in_nav_menus": "1",
+      "show_in_admin_bar": "1",
+      "can_export": "1",
+      "rest_enable": "1",
+      "dynamic_features_allow": "inherit",
+      "capability_type": "page",
+      "read_all": "1"
+    }
+  },
+  {
+    "#": "A2. Crear grupo de campos para ambiente",
+    "action": "save_group",
+    "params": {
+      "pod": "ambiente",
+      "name": "datos_ambiente",
+      "label": "Datos del ambiente",
+      "weight": 0
+    }
+  },
+  {
+    "#": "A3. Campo ambient_id (text) en ambiente — ID de la escena en PD-Moodboards",
+    "action": "save_field",
+    "params": {
+      "pod": "ambiente",
+      "group": "datos_ambiente",
+      "name": "ambient_id",
+      "label": "ID del ambiente",
+      "description": "Identificador de la escena en la app PD-Moodboards (ej: adoquines, muros).",
+      "type": "text",
+      "text_max_length": 100,
+      "weight": 0
+    }
+  },
+  {
+    "#": "A5. Campo orden (number) en ambiente — orden en el archive (nulls al final)",
+    "action": "save_field",
+    "params": {
+      "pod": "ambiente",
+      "group": "datos_ambiente",
+      "name": "orden",
+      "label": "Orden",
+      "description": "Orden de aparición en el archive (menor = primero). Dejar vacío para no forzar orden.",
+      "type": "number",
+      "weight": 5,
+      "number_format": "9999.99",
+      "number_decimals": "0"
+    }
+  },
+  {
+    "#": "A4. Campo back_url (text) en ambiente — URL del botón atrás en la app",
+    "action": "save_field",
+    "params": {
+      "pod": "ambiente",
+      "group": "datos_ambiente",
+      "name": "back_url",
+      "label": "URL de retorno",
+      "description": "URL del botón 'atrás' en la app (opcional). Ej: /productos/adoquines/",
+      "type": "text",
+      "text_max_length": 255,
+      "weight": 10
+    }
+  },
+  {
+    "#": "A6. Campo description (wysiwyg/quill) en ambiente — descripción editorial de la tarjeta de archivo",
+    "action": "save_field",
+    "params": {
+      "pod": "ambiente",
+      "group": "datos_ambiente",
+      "name": "description",
+      "label": "Descripción",
+      "description": "Texto/HTML editorial que se muestra en la tarjeta de archivo justo bajo el título.",
+      "type": "wysiwyg",
+      "weight": 1,
+      "wysiwyg_editor": "quill"
+    }
+  },
+  {
+    "#": "P1. Extender tipo nativo page — inserción directa en BD (save_pod() rechaza nombres reservados)",
+    "action": "raw_db_insert",
+    "note": "Pods bloquea page/post como nombres reservados en save_pod(). Hay que insertar el registro _pods_pod directamente en wp_posts + sus metas (type=post_type, object=page, storage=meta) y luego llamar cache_flush_pods().",
+    "params": {
+      "post_type": "_pods_pod",
+      "post_name": "page",
+      "metas": { "type": "post_type", "object": "page", "storage": "meta" }
+    }
+  },
+  {
+    "#": "P2. Grupo datos_pagina en page",
+    "action": "save_group",
+    "params": {
+      "pod": "page",
+      "name": "datos_pagina",
+      "label": "Datos de página",
+      "weight": 0
+    }
+  },
+  {
+    "#": "P3. Campo subheader (text) en page",
+    "action": "save_field",
+    "params": {
+      "pod": "page",
+      "group": "datos_pagina",
+      "name": "subheader",
+      "label": "Subheader",
+      "type": "text",
+      "weight": 0,
+      "text_max_length": 255
+    }
+  },
+  {
+    "#": "P4. Campo header_tag (text) en page — etiqueta sobre el h1 en la cabecera",
+    "action": "save_field",
+    "params": {
+      "pod": "page",
+      "group": "datos_pagina",
+      "name": "header_tag",
+      "label": "Header tag",
+      "type": "text",
+      "weight": 1,
+      "text_max_length": 255
+    }
+  }
+]

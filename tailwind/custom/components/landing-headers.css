@@ -1,0 +1,21 @@
+/**
+ * THEME CUSTOMIZATION
+ *
+ * This is for the different landing pages hero-headers / sliders.
+  * Any customer / theme customization should go here (leave layout.css alone)
+ *
+ */
+
+header.entry-header {
+	.entry-header-content {
+		.glassy-card {
+			backdrop-filter: blur(20px);
+			background-color: rgba(255, 255, 255, 0.03);
+
+			border-radius: var(--card-border-radius);
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			padding: var(--card-padding);
+			border: 1px solid rgba(255, 255, 255, 0.05);
+		}
+	}
+}

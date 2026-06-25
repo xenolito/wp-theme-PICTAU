@@ -1,0 +1,573 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: EQM by PICTAU\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-27 11:35+0000\n"
+"PO-Revision-Date: 2026-04-27 08:55+0000\n"
+"Last-Translator: \n"
+"Language-Team: English (UK)\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.8.0; wp-6.8.1; php-8.3.17\n"
+"X-Domain: pictau"
+
+#. 1: Comment date, 2: Comment time.
+#: inc/template-functions.php:297
+#, php-format
+msgid "%1$s at %2$s"
+msgstr ""
+
+#. %s: Comment author link.
+#: inc/template-functions.php:282
+#, php-format
+msgid "%s <span class=\"says\">says:</span>"
+msgstr ""
+
+#. %s: Post type singular name
+#. %s: Taxonomy singular name
+#: inc/template-functions.php:180 inc/template-functions.php:187
+#, php-format
+msgid "%s Archives"
+msgstr ""
+
+#. used between list items, there is a space after the comma.
+#: inc/template-tags.php:85 inc/template-tags.php:96 inc/template-tags.php:147
+#: inc/template-tags.php:158
+msgid ", "
+msgstr ""
+
+#: 404.php:32
+msgid "404: Oh, oh..."
+msgstr ""
+
+#: inc/template-functions.php:550
+msgid "]"
+msgstr ""
+
+#. 1: link to WP admin new post page.
+#: template-parts/content/content-none.php:48
+msgid "Add or publish posts"
+msgstr ""
+
+#: template-parts/content/related_posts.php:59
+msgid "All about"
+msgstr ""
+
+#: inc/template-functions.php:191
+msgid "Archives:"
+msgstr ""
+
+#: inc/template-functions.php:169
+msgid "Author Archives: "
+msgstr ""
+
+#: functions.php:181
+msgid "back"
+msgstr ""
+
+#: template-parts/content/content-single-producto.php:116
+msgid "Breadcrumb"
+msgstr ""
+
+#: template-parts/content/content-single-producto.php:139
+msgid "Características técnicas"
+msgstr ""
+
+#: template-parts/content/content-single-caso-exito.php:41
+msgid "Casos de éxito EQM"
+msgstr ""
+
+#: inc/catalog.php:296
+msgid "Categoría"
+msgstr ""
+
+#: inc/template-functions.php:582
+#: template-parts/content/content-single-producto.php:164
+msgid "Catálogo"
+msgstr ""
+
+#: inc/template-functions.php:519
+msgid "Centered"
+msgstr ""
+
+#: template-parts/content/content-single-producto.php:182
+msgid "Certificaciones"
+msgstr ""
+
+#: theme.json:1
+msgctxt "Color name"
+msgid "Background"
+msgstr ""
+
+#: theme.json:1
+msgctxt "Color name"
+msgid "Foreground"
+msgstr ""
+
+#: theme.json:1
+msgctxt "Color name"
+msgid "Primary"
+msgstr ""
+
+#: theme.json:1
+msgctxt "Color name"
+msgid "Secondary"
+msgstr ""
+
+#: theme.json:1
+msgctxt "Color name"
+msgid "Tertiary"
+msgstr ""
+
+#: inc/template-functions.php:649
+msgid "Color Section Title"
+msgstr ""
+
+#: comments.php:72
+msgid "Comments are closed."
+msgstr ""
+
+#. 1: comment count number, 2: title.
+#: comments.php:42
+#, php-format
+msgctxt "comments title"
+msgid "%1$s comment on &ldquo;%2$s&rdquo;"
+msgid_plural "%1$s comments on &ldquo;%2$s&rdquo;"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/utilities.php:615
+msgid "contacta"
+msgstr "Contact"
+
+#. %s: Name of current post.
+#: inc/template-functions.php:224
+#, php-format
+msgid "Continue reading %s"
+msgstr ""
+
+#. %s: Name of current post. Only visible to screen readers.
+#: template-parts/content/content-single-necesidad.php:66
+#: template-parts/content/content-single-evento.php:28
+#: template-parts/content/content-single-servicio-no-header.php:29
+#: template-parts/content/content-single-solucion.php:70
+#: template-parts/content/content-single-sector-no-header.php:29
+#: template-parts/content/content-single-solucion-no-header.php:28
+#: template-parts/content/content-single-necesidad-no-header.php:28
+#, php-format
+msgid "Continue reading<span class=\"sr-only\"> \"%s\"</span>"
+msgstr ""
+
+#: inc/template-functions.php:175
+msgid "Daily Archives: "
+msgstr ""
+
+#: archive-ebook.php:41
+msgid ""
+"Descubre a través de estos e-books la información más actualizada que te "
+"permita sacar el mayor beneficio para tu empresa"
+msgstr ""
+
+#: template-parts/content/content-single-ebook.php:40
+msgid "e-book"
+msgstr ""
+
+#: archive-ebook.php:37
+msgid "e-books"
+msgstr ""
+
+#: inc/template-functions.php:304
+msgid "Edit"
+msgstr ""
+
+#. %s: Name of current post. Only visible to screen readers.
+#: inc/template-tags.php:117 inc/template-tags.php:179
+#, php-format
+msgid "Edit <span class=\"sr-only\">%s</span>"
+msgstr ""
+
+#: inc/utilities.php:772
+msgid "Este post no tiene categorías asignadas."
+msgstr ""
+
+#: inc/catalog.php:169
+#, php-format
+msgid "Expandir %s"
+msgstr ""
+
+#: template-parts/content/content-single-producto.php:232
+msgid "Fabricados conforme a la norma "
+msgstr ""
+
+#: inc/template-functions.php:664
+msgid "Favicon SVG ⚠️"
+msgstr ""
+
+#: template-parts/content/content-single-producto.php:161
+msgid "Ficha técnica"
+msgstr ""
+
+#: inc/template-functions.php:492
+msgid "fixed"
+msgstr ""
+
+#: inc/template-functions.php:493
+msgid "fixed autohide"
+msgstr ""
+
+#: functions.php:105
+msgid "Footer Menu"
+msgstr ""
+
+#: inc/template-functions.php:518
+msgid "Full width"
+msgstr ""
+
+#: template-parts/content/content-single-producto.php:260
+msgid "Galería"
+msgstr ""
+
+#: inc/template-functions.php:613
+msgid "GTM ID"
+msgstr ""
+
+#: inc/template-functions.php:487
+msgid "Header Behavior"
+msgstr ""
+
+#: inc/template-functions.php:512
+msgid "Header Width"
+msgstr ""
+
+#: inc/events.php:712
+msgid "Inscríbete ahora"
+msgstr ""
+
+#. Name of the template
+#: landing.php:2
+msgid "LANDING"
+msgstr ""
+
+#: inc/template-functions.php:517
+msgid "Layout constrained"
+msgstr ""
+
+#. %s: Name of current post. Only visible to screen readers.
+#: inc/template-tags.php:62
+#, php-format
+msgid "Leave a comment<span class=\"sr-only\"> on %s</span>"
+msgstr ""
+
+#: functions.php:158
+msgid "Main Sidebar"
+msgstr ""
+
+#. Name of the template
+#: maintenance_mode.php:2
+msgid "MAINTENANCE MODE"
+msgstr ""
+
+#: template-parts/content/content-single-producto.php:167
+msgid "Manual técnico de colocación"
+msgstr ""
+
+#: template-parts/content/content-single-producto.php:247
+msgid "Medidas y cotas"
+msgstr ""
+
+#: inc/template-functions.php:2022
+msgid "minutes"
+msgstr ""
+
+#: functions.php:103
+msgid "Mobile"
+msgstr ""
+
+#: inc/template-functions.php:173
+msgctxt "monthly archives date format"
+msgid "F Y"
+msgstr ""
+
+#: inc/template-functions.php:173
+msgid "Monthly Archives: "
+msgstr ""
+
+#: home.php:184
+msgid "More about"
+msgstr ""
+
+#: template-parts/content/related_posts.php:45
+msgid "More posts about"
+msgstr ""
+
+#: inc/template-functions.php:592
+msgid "Máximo de swatches por card de producto"
+msgstr ""
+
+#. Name of the template
+#: single-necesidad-no-header.php:3
+msgid "Necesidad no header"
+msgstr ""
+
+#: inc/template-tags.php:268
+msgid "Newer posts"
+msgstr ""
+
+#: single-necesidad.php:27 single-necesidad-no-header.php:25
+#: single-servicio.php:27 single-servicio-no-header.php:25
+#: single-caso-exito.php:26 single-solucion-no-header.php:25
+#: single-sector.php:27 single-ebook.php:27 single-evento.php:27
+#: single-sector-no-header.php:25 single-solucion.php:27
+msgid "Next Post"
+msgstr ""
+
+#: single-necesidad.php:28 single-necesidad-no-header.php:26
+#: single-servicio.php:28 single-servicio-no-header.php:26
+#: single-caso-exito.php:27 single-solucion-no-header.php:26
+#: single-sector.php:28 single-ebook.php:28 single-evento.php:28
+#: single-sector-no-header.php:26 single-solucion.php:28
+msgid "Next post:"
+msgstr ""
+
+#: template-parts/content/content-none.php:67
+msgid "No content matched your request."
+msgstr ""
+
+#: taxonomy-product_category.php:303
+msgid "No hay productos en esta categoría todavía."
+msgstr ""
+
+#: 404.php:38
+msgid "No hemos encontrado eso ¯\\_(ツ)_/¯"
+msgstr ""
+
+#. Name of the template
+#: page-no-header.php:2
+msgid "NO page header"
+msgstr ""
+
+#: inc/template-functions.php:494
+msgid "normal"
+msgstr ""
+
+#: template-parts/content/content-none.php:30
+msgid "Nothing Found"
+msgstr ""
+
+#: inc/template-tags.php:269
+msgid "Older posts"
+msgstr ""
+
+#. 1: title.
+#: comments.php:34
+#, php-format
+msgid "One comment on &ldquo;%1$s&rdquo;"
+msgstr ""
+
+#: inc/catalog.php:17
+msgid "Orden"
+msgstr ""
+
+#: inc/catalog.php:297 inc/catalog.php:336
+msgid "Orden catálogo"
+msgstr ""
+
+#: template-parts/content/content-single-necesidad.php:79
+#: template-parts/content/content-single-evento.php:41
+#: template-parts/content/content-single-servicio-no-header.php:42
+#: template-parts/content/content-page.php:83
+#: template-parts/content/content.php:36
+#: template-parts/content/content-single-solucion.php:83
+#: template-parts/content/content-page-noheader.php:20
+#: template-parts/content/content-single-sector-no-header.php:42
+#: template-parts/content/content-single-solucion-no-header.php:41
+#: template-parts/content/content-single-necesidad-no-header.php:41
+msgid "Pages:"
+msgstr ""
+
+#: inc/template-functions.php:569
+msgid "Pictau Block shortcode Footer"
+msgstr ""
+
+#. Name of the theme
+msgid "pictau/pictau/theme"
+msgstr ""
+
+#: template-parts/content/content.php:18
+msgctxt "post"
+msgid "Featured"
+msgstr ""
+
+#. 1: posted by label, only visible to screen readers. 2: author link. 3: post author.
+#: inc/template-tags.php:47
+msgid "Posted by"
+msgstr ""
+
+#. 1: posted in label, only visible to screen readers. 2: list of categories.
+#: inc/template-tags.php:90 inc/template-tags.php:152
+msgid "Posted in"
+msgstr ""
+
+#: single-necesidad.php:30 single-necesidad-no-header.php:28
+#: single-servicio.php:30 single-servicio-no-header.php:28
+#: single-caso-exito.php:29 single-solucion-no-header.php:28
+#: single-sector.php:30 single-ebook.php:30 single-evento.php:30
+#: single-sector-no-header.php:28 single-solucion.php:30
+msgid "Previous Post"
+msgstr ""
+
+#: single-necesidad.php:31 single-necesidad-no-header.php:29
+#: single-servicio.php:31 single-servicio-no-header.php:29
+#: single-caso-exito.php:30 single-solucion-no-header.php:29
+#: single-sector.php:31 single-ebook.php:31 single-evento.php:31
+#: single-sector-no-header.php:29 single-solucion.php:31
+msgid "Previous post:"
+msgstr ""
+
+#: functions.php:102
+msgid "Primary"
+msgstr ""
+
+#: functions.php:157
+msgid "Primary Sidebar"
+msgstr ""
+
+#: inc/catalog.php:49
+msgid "Productos"
+msgstr ""
+
+#: template-parts/content/content-single-producto.php:277
+msgid "Productos relacionados"
+msgstr ""
+
+#: 404.php:52
+msgid "Prueba otro contenido por favor."
+msgstr ""
+
+#: archive.php:53
+msgid "Return to Blog"
+msgstr ""
+
+#. 1: search result title. 2: search term.
+#: search.php:23 template-parts/content/content-none.php:22
+msgid "Search results for:"
+msgstr ""
+
+#. Name of the template
+#: single-sector-no-header.php:3
+msgid "Sector no header"
+msgstr ""
+
+#: inc/template-functions.php:678
+msgid "Selecciona tu imagen"
+msgstr ""
+
+#: inc/utilities.php:776
+msgid "Selecciona una categoría principal:"
+msgstr ""
+
+#. Name of the template
+#: single-servicio-no-header.php:3
+msgid "Servicio no header"
+msgstr ""
+
+#: inc/template-functions.php:593
+msgid ""
+"Si hay más variantes de color, se muestra un indicador \"+N\". Mínimo 1."
+msgstr ""
+
+#: inc/catalog.php:423
+msgid "Solicitar presupuesto"
+msgstr ""
+
+#. Name of the template
+#: single-solucion-no-header.php:3
+msgid "Solucion no header"
+msgstr ""
+
+#: template-parts/content/content-single-producto.php:226
+msgid "Tabla de especificaciones"
+msgstr ""
+
+#: inc/template-functions.php:167
+msgid "Tag Archives: "
+msgstr ""
+
+#. 1: tags label, only visible to screen readers. 2: list of tags.
+#: inc/template-tags.php:101 inc/template-tags.php:163
+msgid "Tags:"
+msgstr ""
+
+#: inc/template-functions.php:470
+msgid "THEME CUSTOMIZER"
+msgstr ""
+
+#: inc/template-functions.php:630
+msgid ""
+"This color will be used for the mobile \"theme-color\" meta tag<br><strong>"
+"Note:</strong> This will only affect mobile browsers that support this "
+"feature.<br><br>If you're using Contact Form 7, this color will be used for "
+"the html email templates on the header and footer sections. 🙌"
+msgstr ""
+
+#: inc/template-functions.php:667
+msgid ""
+"This image will be used as favicon. It will be nice if you use \"@media "
+"(prefers-color-scheme: dark)\" to adjust the svg colors for dark mode.<br>"
+"<hr>⚠️ <strong>Beware!</strong> Safari does not support SVG favicons. I you "
+"use this feature, make sure to upload a .png version with the same filename "
+"for Safari Browsers.<br><br>It is also a good practice to use a \"favicon."
+"ico\" (32bit, transparent background) on the root of your WP folder for "
+"admin pages. <br><br>Check support at <a href=\"https://caniuse.com/link-"
+"icon-svg\" target=\"_blank\">https://caniuse.com/link-icon-svg</a>"
+msgstr ""
+
+#: inc/catalog.php:213
+msgid "Todas las categorías"
+msgstr ""
+
+#: functions.php:104
+msgid "Top Menu"
+msgstr ""
+
+#: inc/utilities.php:1271
+#| msgid "Ver Casos de Éxito"
+msgid "Ver Caso de Éxito"
+msgstr "See Success Story"
+
+#: 404.php:97
+msgid "Vover a Inicio"
+msgstr ""
+
+#: inc/template-functions.php:171
+msgctxt "yearly archives date format"
+msgid "Y"
+msgstr ""
+
+#: inc/template-functions.php:171
+msgid "Yearly Archives: "
+msgstr ""
+
+#: inc/template-functions.php:259
+msgid "Your comment is awaiting moderation."
+msgstr ""
+
+#: inc/template-functions.php:261
+msgid ""
+"Your comment is awaiting moderation. This is a preview; your comment will be "
+"visible after it has been approved."
+msgstr ""
+
+#: template-parts/content/content-none.php:58
+msgid "Your search generated no results. Please try a different search."
+msgstr ""
+
+#: template-parts/content/content-none.php:41
+msgid ""
+"Your site is set to show the most recent posts on your homepage, but you "
+"haven&rsquo;t published any posts."
+msgstr ""

@@ -1,0 +1,332 @@
+:root {
+	--def-heading-font-family: "Inter", Helvetica, Arial, sans-serif;
+	--def-font-family: "Inter", Helvetica, Arial, sans-serif;
+	--txt-slider-heading: "Inter", Helvetica, Arial, sans-serif;
+
+	--def-txt-color: #404040;
+	--txt-heading-color: #3a3a3a;
+	--light-light-grey-color: #f5f5f5;
+	--ui-font-size: 0.7rem;
+	--ui-mm-font-size: 0.8rem;
+}
+
+body {
+	@apply text-[var(--txt-color)];
+	font-size: 1rem;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+	@apply font-[300] tracking-[-0.04em];
+}
+
+h1,
+h2,
+h3 {
+	/* letter-spacing: -0.02ch; */
+	letter-spacing: -0.04em;
+	line-height: 1.7ch;
+	margin-left: 0;
+	margin-right: 0;
+	text-transform: uppercase;
+	&:not([data-anim_any]) {
+		text-wrap: balance;
+	}
+
+	&:has(.char) {
+		line-height: 1.65ch;
+	}
+}
+
+h3 {
+	letter-spacing: -0.01ch;
+	line-height: 1.6ch;
+}
+
+h1 {
+	/* @apply txt-[var(--heading-color)] dark:txt-[var(--heading-color-dark)]; */
+	@apply text-[var(--heading-color)] dark:text-[var(--heading-color-dark)] !mt-0 pb-[0.5ch];
+	font-size: clamp(2.2rem, 5vw, 3.5rem);
+	font-weight: 300;
+
+	&.smaller,
+	span.smaller {
+		font-size: clamp(1.4rem, 5vw, 2rem);
+	}
+}
+
+h2 {
+	@apply text-[var(--heading-color)] !mt-0 !pb-[.7ch] pt-[0.3ch];
+	font-size: clamp(2.2rem, 5vw, 3.4rem);
+	/* font-weight: 500; */
+	/* line-height: 1.7ch; */
+	/* letter-spacing: -0.06ch; */
+
+	/* max-width: 600px !important; */
+	&.smaller {
+		font-size: clamp(2rem, 3vw, 2.75rem);
+	}
+
+	&.smaller-2 {
+		font-size: clamp(2rem, 5vw, 3.3rem);
+	}
+}
+
+h3 {
+	@apply text-[var(--heading-color)] dark:text-[var(--heading-color-dark)] !mt-0;
+	margin-bottom: 0.6ch;
+	font-size: clamp(1.6rem, 5vw, 2rem);
+	font-weight: 300;
+
+	&.bigger {
+		font-size: clamp(1.8rem, 5vw, 2.75rem);
+	}
+
+	&.medium {
+		font-size: clamp(1.4rem, 2.2vw, 1.6rem);
+		line-height: 1.2;
+	}
+
+	&.smaller {
+		font-size: clamp(1.45rem, 5vw, 1.5rem);
+		line-height: 1.2;
+	}
+}
+
+h4 {
+	@apply text-[var(--heading-color)] !mt-0 !mb-[.5ch];
+	font-size: clamp(1rem, 3vw, 1.1rem);
+	text-transform: uppercase;
+	letter-spacing: 0.05ch;
+	font-weight: 300;
+}
+
+/*! HEADING WITH INLINE IMG/SVG  */
+h1,
+h2,
+h3 {
+	img,
+	svg {
+		display: inline-block;
+		width: auto;
+		height: 1em;
+		/* margin-left: 0.4ch;
+		margin-right: 1ch; */
+		vertical-align: middle;
+		margin-bottom: 0.4ex;
+	}
+}
+
+.over-heading {
+	font-weight: 300;
+	margin-bottom: 0 !important;
+
+	&:has(+ h1) {
+		font-size: clamp(1.2rem, 8vw, 1.8rem);
+	}
+	&:has(+ h2) {
+		font-size: clamp(1.2rem, 5vw, 1.35rem);
+	}
+	& + h2 {
+		padding-top: 0.2ch;
+	}
+}
+
+.section-heading:has(+ .sub-heading) {
+	padding-bottom: 0;
+}
+
+h2,
+h1 {
+	&:has(+ .sub-heading) {
+		padding-bottom: 0.4ch !important;
+
+		& + .sub-heading {
+			padding-bottom: 2ch !important;
+			margin-bottom: 0;
+		}
+	}
+}
+
+/* h2 {
+	&:has(+ .sub-heading) {
+		margin-bottom: 0.4ch !important;
+	}
+} */
+
+.sub-heading {
+	font-family: var(--def-heading-font-family);
+	font-size: clamp(1.2rem, 4vw, 1.6rem);
+
+	&.has-text-align-center {
+		@apply !max-w-[48rem];
+	}
+}
+
+sup {
+	font-size: 0.88ch;
+	top: -1ch;
+	left: 1.5px;
+}
+
+p {
+	@apply text-[var(--txt-color)] dark:text-[var(--txt-color-dark)] mb-[1.2ch];
+	font-size: clamp(0.9rem, 2vw, 1rem);
+	/* letter-spacing: 0.03ch; */
+	font-weight: 300;
+	letter-spacing: -0.01em;
+	line-height: 1.6;
+
+	&.bigger {
+		font-family: var(--def-heading-font-family);
+		font-size: clamp(1.2rem, 4vw, 1.4rem);
+		line-height: 1.4;
+	}
+	/* color: var(--txt-color, currentColor); */
+	color: currentColor;
+
+	strong {
+		/* font-weight: 600; */
+		font-weight: 500;
+		color: black;
+	}
+}
+
+/*! Headings custom styles */
+h1,
+h2,
+h3,
+h4 {
+	&.gradient,
+	i {
+		background-color: var(--main-color);
+		background-image: var(--heading-gradient);
+		background-size: 150% 100%;
+		background-repeat: no-repeat;
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+		padding-bottom: 0.25ch;
+		/* animation: intro-gradient 4.2s cubic-bezier(0.165, 0.84, 0.44, 1); */
+
+		&.gradient-anim {
+			animation: intro-gradient 4.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+			animation-iteration-count: infinite;
+			animation-direction: alternate;
+			animation-fill-mode: backwards;
+			animation-delay: 0.3s;
+		}
+	}
+}
+
+/* Highlight header */
+h1,
+h2,
+h3 {
+	em {
+		padding-right: 0.01ch;
+		background-color: var(--main-color);
+		background-image: var(--heading-gradient);
+		background-size: 150% 100%;
+		background-repeat: no-repeat;
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+		/* padding-bottom: 0.25ch; */
+		font-style: normal;
+
+		.word {
+			overflow: visible;
+		}
+	}
+
+	&[data-split_text]:has(em),
+	&[data-anim_header]:has(em),
+	&[data-anim_any]:has(em) {
+		.line:not(:first-of-type) {
+			margin-top: -0.35ch;
+		}
+		/* line-height: 2ch; */
+	}
+}
+
+h2,
+h3 {
+	span {
+		display: inline-block;
+	}
+}
+
+ul.wp-block-list {
+	li {
+		font-size: clamp(0.9rem, 2vw, 1rem);
+		font-weight: 300;
+		strong {
+			font-weight: 600;
+		}
+	}
+}
+
+:root.dark {
+	h1,
+	h2,
+	h3 {
+		em {
+			background-image: var(--heading-highlight-grad-dark);
+		}
+	}
+}
+
+.uppercase {
+	text-transform: uppercase !important;
+	* {
+		text-transform: uppercase !important;
+	}
+}
+
+.wrap-default {
+	text-wrap: initial !important;
+}
+
+/*! STYLES FOR POSTS CONTENT */
+
+h3,
+h4,
+h5,
+h6 {
+	padding-top: 1.5ch;
+}
+
+.max-reading-width {
+	width: 100%;
+	max-width: 50rem !important;
+}
+
+.text-wrap-auto {
+	text-wrap: auto !important;
+}
+
+.lowercase {
+	text-transform: lowercase !important;
+}
+
+.no-transform {
+	text-transform: none !important;
+}
+
+p.quote {
+	border-left: 4px solid hsl(0deg 0% 45.42%);
+	padding-left: 1.75ch;
+	font-size: clamp(1.2rem, 4vw, 1.6rem);
+	background: color-mix(in srgb, var(--line-color) 30%, white);
+	border-top-right-radius: var(--def-border-radius);
+	border-bottom-right-radius: var(--def-border-radius);
+	padding-block: 1rem;
+	padding-right: 1rem;
+}

@@ -1,0 +1,269 @@
+:root {
+	--button-font-size: clamp(0.75rem, 3.5vw, 0.88rem);
+	/* --bg-color: radial-gradient(80% 80% at 50% -15%, #27b294 70%, #1d997e 100%); */
+	--bg-color: var(--main-color);
+	/* --bg-color: #34f1c7; */
+	--bg-color-hover: var(--highlight-color);
+	--bg-color-outline: transparent;
+
+	--padding-y: 1.3ch;
+	--padding-x: 2.5ch;
+
+	--button-txt-color: white;
+	/* --txt-color: #293846; */
+	--button-txt-color-hover: white;
+
+	--button-border-radius: 4px;
+	--button-border-width: 1px;
+	--button-border-color: var(--bg-color);
+}
+
+.wp-block-buttons {
+	/* gap: 2rem; */
+	/* margin-top: 2rem; */
+	padding-top: 2rem;
+	column-gap: 2rem;
+	row-gap: clamp(1rem, 2vw, 1.5rem);
+
+	.wp-block-button {
+		flex-shrink: 1 !important;
+	}
+}
+
+.wp-element-button,
+.menu-bt a,
+button#submit {
+	display: inline-block;
+	scale: 1;
+	background: var(--bg-color);
+	letter-spacing: 0px;
+	/* text-transform: capitalize; */
+	@apply !no-underline text-[var(--button-txt-color)] hover:text-[var(--button-txt-color-hover)] py-[var(--padding-y)] px-[var(--padding-x)] shadow shadow-black/40 hover:shadow-lg hover:shadow-slate-700/40 rounded-[var(--button-border-radius)];
+
+	border: var(--button-border-width) solid var(--button-border-color);
+
+	font-size: var(--button-font-size);
+	line-height: 1.75ch;
+	/* text-transform: uppercase; */
+	will-change: auto;
+	/* transition:
+		scale 0.3s cubic-bezier(0.2, 1, 0.3, 1),
+		background 0.6s cubic-bezier(0.2, 1, 0.3, 1),
+		border-color 0.6s cubic-bezier(0.2, 1, 0.3, 1); */
+	transition: all 0.3s cubic-bezier(0.2, 1, 0.3, 1);
+
+	&:hover {
+		scale: 1.1;
+		/* color: white; */
+		background: var(--bg-color-hover);
+		border-color: var(--bg-color-hover);
+	}
+
+	&:has(i.icon) {
+		i.icon {
+			margin-left: 1ex;
+		}
+	}
+
+	/* Button with "imagen integrada" or icon */
+	&:has(svg) {
+		display: grid !important;
+		grid-template-columns: auto min-content;
+		column-gap: 1.5ch;
+		align-items: center;
+		justify-content: center;
+		svg {
+			width: 2ch;
+			height: 2ch;
+		}
+	}
+}
+
+button#submit {
+	&:has(svg) {
+		gap: 0;
+	}
+}
+/* background-color: red; */
+
+.menu-bt a,
+.sub-menu .wp-block-button a {
+	font-size: var(--nav-text-size);
+	line-height: 2.6ch;
+}
+
+.outline {
+	outline-style: none !important;
+
+	.wp-element-button {
+		box-shadow: none;
+		background-color: var(--bg-color-outline);
+		color: var(--bg-color) !important;
+
+		&:hover {
+			@apply shadow-lg shadow-slate-700/40;
+			border-color: var(--bg-color-hover);
+			background-color: var(--bg-color-hover);
+			color: var(--button-txt-color-hover) !important;
+		}
+	}
+
+	&.white {
+		.wp-element-button {
+			color: white !important;
+			border-color: white;
+			&:hover {
+				border-color: var(--bg-color-hover);
+			}
+		}
+	}
+}
+
+.white:not(.outline) {
+	outline-style: none !important;
+
+	.wp-element-button {
+		box-shadow: none;
+		background-color: white;
+		border-color: white;
+		/* color: var(--main-color) !important; */
+		color: black !important;
+
+		mix-blend-mode: lighten;
+
+		&:hover {
+			@apply shadow-lg shadow-slate-700/40;
+			border-color: var(--bg-color-hover);
+			background-color: var(--bg-color-hover);
+			mix-blend-mode: unset;
+			color: var(--button-txt-color-hover) !important;
+		}
+	}
+}
+
+.wp-block-button.big {
+	.wp-element-button {
+		padding: calc(var(--padding-y) * 3.75) calc(var(--padding-y) * 9.75) !important;
+	}
+}
+
+.menu-bt {
+	display: flex;
+
+	a {
+		@apply py-[0.6ch] px-[2ch] shadow-none hover:shadow-none;
+
+		&:hover {
+			scale: 1.02;
+		}
+	}
+
+	&.icon {
+		a {
+			display: grid !important;
+			grid-template-columns: min-content auto;
+			grid-gap: 5px;
+			align-items: center;
+			justify-content: center;
+
+			&::after {
+				grid-column: 1;
+				grid-row: 1;
+				content: "\f095";
+				font-family: "pictauicons";
+				color: currentColor;
+				margin-top: 0.2ch;
+			}
+		}
+	}
+}
+
+.above-header-wrap {
+	.menu-bt {
+		a {
+			@apply bg-white/5 hover:bg-white border-transparent text-white hover:!text-black min-w-[120px] flex justify-center;
+		}
+	}
+}
+
+.main-nav-desktop {
+	.menu-bt {
+		a {
+			@apply min-w-[120px] flex justify-center;
+		}
+	}
+}
+
+/*! Guttenberg button block with added SVG icons by adding specific class: download, share, etc. via hook at utilities.php */
+
+.wp-block-button {
+	&.pdf-before,
+	&.pdf,
+	&.pdf-after {
+		--button-gap: 1.5ch;
+		--bt-padding: calc(var(--button-gap) * 0.75);
+		flex-shrink: 1 !important;
+
+		.wp-element-button {
+			display: flex !important;
+			flex-direction: row !important;
+			gap: var(--button-gap);
+			align-items: center;
+			padding: var(--bt-padding);
+			padding-left: 0;
+			border-color: var(--button-txt-color);
+			border: 0 !important;
+
+			svg {
+				flex-shrink: 0;
+			}
+
+			.ico-pdf {
+				width: 6ch;
+				height: 6ch;
+				border-right: 1px solid var(--button-txt-color);
+				margin: calc(var(--bt-padding) * -1) 0;
+				padding: 0.25ch;
+			}
+
+			span {
+				flex-shrink: 1 !important;
+				min-width: 0 !important;
+				width: 100%;
+				text-align: left;
+			}
+		}
+	}
+
+	&:has(.ico-download) {
+		.ico-download {
+			scale: 1;
+			transition: all 0.3s cubic-bezier(0.2, 1, 0.3, 1);
+			will-change: auto;
+
+			.svg-dl-ring {
+				animation: svg-dl-ring-loop 0.6s linear infinite;
+				animation-play-state: paused;
+			}
+		}
+
+		.wp-element-button:hover {
+			.ico-download {
+				scale: 1.5;
+			}
+			.svg-dl-ring {
+				animation-play-state: running;
+			}
+		}
+	}
+}
+
+/* icon download animation */
+@keyframes svg-dl-ring-loop {
+	from {
+		stroke-dashoffset: 6;
+	}
+	to {
+		stroke-dashoffset: 0;
+	}
+}
