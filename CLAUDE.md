@@ -1,4 +1,4 @@
-# CLAUDE.md — Tema pictau (Prefabricados Duero)
+# CLAUDE.md — Tema pictau (Balanzia)
 
 Instrucciones y contexto para Claude Code en este proyecto.
 
@@ -6,10 +6,10 @@ Instrucciones y contexto para Claude Code en este proyecto.
 
 ## Proyecto
 
-**Tema WordPress personalizado** para el sitio `prefabricadosduero`.
+**Tema WordPress personalizado** para el sitio `balanzia`.
 - **Versión:** 0.1.0 | **Text domain:** `pictau`
-- **URL local:** `https://prefabricadosduero.dev/`
-- **Ruta:** `/Volumes/KRAKEN/HTDOCS/prefabricadosduero/app/public/wp-content/themes/pictau`
+- **URL local:** `https://balanzia.dev/`
+- **Ruta:** `/Volumes/KRAKEN/HTDOCS/balanzia/app/public/wp-content/themes/pictau`
 
 ---
 
@@ -54,17 +54,7 @@ pictau/
 
 ## Custom Post Types (via Pods)
 
-| Slug | Descripción |
-|------|-------------|
-| `ebook` | eBooks |
-| `evento` | Eventos |
-| `caso-exito` | Casos de éxito |
-| `necesidad` | Necesidades |
-| `sector` | Sectores |
-| `servicio` | Servicios |
-| `solucion` | Soluciones |
-
-**Taxonomía:** `event_category` (con meta `orden` para ordenación)
+_Sin CPTs personalizados registrados aún. Añadir aquí cuando se creen._
 
 ---
 
@@ -87,7 +77,7 @@ pictau/
 
 **Fuente:** `tailwind/` → compilado a `theme/style.css`
 - Dark mode: estrategia `class`
-- Colores: Primary `#b91c1c` (rojo), Secondary `#15803d` (verde), Tertiary `#0369a1` (azul)
+- Color brand principal: `rgb(49, 93, 158)` (azul navy, `--brand-color-rgb`)
 
 ---
 
@@ -113,20 +103,6 @@ npm run bundle        # Genera .zip para despliegue
 | `menu-1-mobile` | Móvil |
 | `top_menu` | Sobre el header |
 | `menu-2` | Footer |
-
----
-
-## Proyectos relacionados
-
-### Visualizador 3D — `pd3d-visualizer`
-- **Fuente:** `/Volumes/KRAKEN/PICTAU/WEB/PREFABRICADOS-DUERO/PD-3D_VISUALIZER`
-- **Stack:** React 19 + React Three Fiber + Three.js, build con Vite
-- **Plugin WP:** `wp-content/plugins/pd3d-visualizer/`
-- **Deploy:** el build de Vite escribe directamente en `dist/` del plugin (no requiere rsync)
-- **Build:** `npm run build` (desde el directorio fuente)
-- **Shortcode WP:** `[pd_3d_viewer model="model_id" ui="1" screenshot="1"]`
-- **Base URL dinámica:** inyectada via `window.pd3dConfig.baseUrl` (`wp_localize_script`)
-- **Entry point PHP:** el plugin lee `dist/index.html` para localizar el JS/CSS hasheado generado por Vite
 
 ---
 
