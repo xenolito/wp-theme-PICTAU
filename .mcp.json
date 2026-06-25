@@ -2,14 +2,17 @@
   "mcpServers": {
     "playwright": {
       "type": "stdio",
-      "command": "npx",
+      "command": "/Users/orey/.nvm/versions/node/v22.17.1/bin/node",
       "args": [
-        "@playwright/mcp@latest",
+        "/Users/orey/.nvm/versions/node/v22.17.1/lib/node_modules/@playwright/mcp/cli.js",
         "--headed",
         "--browser",
-        "chrome"
-      ],
-      "env": {}
+        "chrome",
+        "--executable-path",
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "--caps",
+        "devtools"
+      ]
     },
     "chrome-devtools": {
       "type": "stdio",
@@ -17,8 +20,7 @@
       "args": [
         "chrome-devtools-mcp@latest",
         "--isolated"
-      ],
-      "env": {}
+      ]
     }
   }
 }
