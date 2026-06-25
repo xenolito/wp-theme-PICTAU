@@ -7,7 +7,7 @@ Instrucciones y contexto para Claude Code en este proyecto.
 ## Proyecto
 
 **Tema WordPress personalizado** para el sitio `balanzia`.
-- **Versión:** 0.1.0 | **Text domain:** `pictau`
+- **Versión:** 6.1.0 | **Text domain:** `pictau`
 - **URL local:** `https://balanzia.dev/`
 - **Ruta:** `/Volumes/KRAKEN/HTDOCS/balanzia/app/public/wp-content/themes/pictau`
 
@@ -26,6 +26,7 @@ Instrucciones y contexto para Claude Code en este proyecto.
 - **Todo el código relacionado con el CPT `producto` y el catálogo de productos** (shortcodes, hooks de admin, columnas, filtros, Quick Edit, etc.) va en `theme/inc/catalog.php`, no en `template-functions.php`.
 - Compilar siempre tras cambios en JS/CSS: `npm run development` o `npm run watch`.
 - **CSS:** nunca usar BEM (`__` ni `--`). Usar siempre guion medio (`-`) como separador en todos los nombres de clase CSS y HTML.
+- **Versión del tema:** cuando se actualice la versión, hacerlo siempre en los tres sitios a la vez: `tailwind/custom/file-header.css` (campo `Version:`), `package.json` (campo `version`) y `README.md` (línea `**Versión:**`). El fichero autoritativo es `file-header.css`.
 
 ---
 
