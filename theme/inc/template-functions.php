@@ -513,9 +513,22 @@ function customize_theme_pictau($wp_customize)
 
 	$wp_customize->add_control('pictau_contact_email', array(
 		'label'       => esc_html__('Contact email (wp_mail_from)', 'pictau'),
-		'description' => esc_html__('Used as the sender address in WordPress emails. Available via get_theme_mod(\'pictau_contact_email\').', 'pictau'),
+		'description' => esc_html__('Used as the sender address in WordPress emails and shown in the footer. Available via get_theme_mod(\'pictau_contact_email\').', 'pictau'),
 		'section'     => 'pictau_site_info',
 		'type'        => 'email',
+	));
+
+	$wp_customize->add_setting('pictau_contact_phone', array(
+		'default'           => '',
+		'sanitize_callback' => 'sanitize_text_field',
+		'transport'         => 'refresh',
+	));
+
+	$wp_customize->add_control('pictau_contact_phone', array(
+		'label'       => esc_html__('Contact phone', 'pictau'),
+		'description' => esc_html__('Shown in the footer. Available via get_theme_mod(\'pictau_contact_phone\').', 'pictau'),
+		'section'     => 'pictau_site_info',
+		'type'        => 'text',
 	));
 
 
@@ -833,35 +846,43 @@ add_shortcode('social', 'pictau_social');
 
 function pictau_copyright($atts)
 {
-	// ob_start();
-
 	extract(shortcode_atts(array(), $atts));
 
-	// Obtener ID del logo
+	// Logo: inline SVG if the custom logo is an SVG, otherwise <figure><img/></figure>
+	$logo_html      = '';
 	$custom_logo_id = get_theme_mod('custom_logo');
 
-	// Obtener la URL del logo
-	$logo_url = wp_get_attachment_image_url($custom_logo_id, 'full');
-	// $logo_filename = basename($logo_url); //! restore this for default theme logo
-	$logo_filename = 'logo_PDJIT.svg';
+	if ($custom_logo_id) {
+		if (get_post_mime_type($custom_logo_id) === 'image/svg+xml') {
+			$logo_html = get_svg(get_attached_file($custom_logo_id));
+		} else {
+			$logo_html = '<figure>' . wp_get_attachment_image($custom_logo_id, 'full') . '</figure>';
+		}
+	}
 
+	// Tagline: WordPress native site description (Ajustes > General)
+	$tagline      = get_bloginfo('description');
+	$tagline_html = $tagline ? '<p class="company-logo-copy">' . esc_html($tagline) . '</p>' : '';
 
+	// Contact info: Customizer > Site Information, neutral placeholders when empty
+	$phone = get_theme_mod('pictau_contact_phone', '') ?: '+34 xxx xx xx xx';
+	$email = get_theme_mod('pictau_contact_email', '') ?: 'mail@dominiocliente.com';
 
-	$output = '	<div class="pct-copyright">
-								<div class="company-logo">' . do_shortcode('[svg filename="' . $logo_filename . '"]') . '
-								<p class="company-logo-copy">50 años al servicio de la construcción.<br>Lideres en prefabricados de hormigón.</p>
+	$phone_clean = preg_replace('/\s+/', '', $phone);
+
+	$output = '<div class="pct-copyright">
+								<div class="company-logo">' . $logo_html . $tagline_html . '
 								</div>
 								<div class="copy">
 									<ul class="copy-contact">
-											<li><a href="tel:+34980691938">+34 980 69 19 38</a></li>
-											<li><a href="mailto:info@prefabricadosduero.com">info@prefabricadosduero.com</a></li>
+											<li><a href="tel:' . esc_attr($phone_clean) . '">' . esc_html($phone) . '</a></li>
+											<li><a href="mailto:' . esc_attr($email) . '">' . esc_html($email) . '</a></li>
 									</ul>
 									<ul>
 										<li>© ' . apply_shortcodes('[myYear]') . ' ' . get_bloginfo('name') . '</li>
 									</ul>
 								</div>
 							</div>';
-
 
 	echo $output;
 	return;
@@ -1311,15 +1332,15 @@ function get_svg($filename, $attributes = array())
 {
 	static $svg_cache = [];
 
-	$upload_path = wp_upload_dir()['path'];
-	$cache_key   = $filename . serialize($attributes);
+	$file_path = ($filename[0] === '/') ? $filename : wp_upload_dir()['basedir'] . '/' . $filename;
+	$cache_key = $filename . serialize($attributes);
 
 	if (isset($svg_cache[$cache_key])) {
 		return $svg_cache[$cache_key];
 	}
 
 	// Get the SVG file.
-	$svg = file_get_contents($upload_path . '/' . $filename);
+	$svg = file_get_contents($file_path);
 
 	// If there was an error retrieving the SVG file, return a WP_Error object.
 	if (! $svg) {
