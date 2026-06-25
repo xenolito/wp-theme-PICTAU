@@ -1,5 +1,5 @@
 module.exports = {
-  proxy: 'https://prefabricadosduero.dev/',
+  proxy: 'https://balanzia.dev/',
   https: true,
   files: ['theme'],
   notify: false,
