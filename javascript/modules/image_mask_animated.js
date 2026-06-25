@@ -33,7 +33,7 @@ import { gsap } from 'gsap'
 
 document.addEventListener('DOMContentLoaded', () => {
 	const attributeId = 'animask'
-	const containers  = document.querySelectorAll(`[data-${attributeId}]`)
+	const containers = document.querySelectorAll(`[data-${attributeId}]`)
 	if (!containers.length) return
 
 	let uid = 0
@@ -41,43 +41,43 @@ document.addEventListener('DOMContentLoaded', () => {
 	const ImageMask = class {
 		constructor(container, config = {}) {
 			const {
-				points       = '8',
-				intensity    = '0.12',
-				speed        = '1',
-				gap          = '20',
-				ringcolor    = null,
-				ringopacity  = null,
-				ring1width   = '12',
-				ring1color   = null,
+				points = '8',
+				intensity = '0.12',
+				speed = '1',
+				gap = '20',
+				ringcolor = null,
+				ringopacity = null,
+				ring1width = '12',
+				ring1color = null,
 				ring1opacity = null,
-				ring2width   = '2',
-				ring2color   = null,
+				ring2width = '2',
+				ring2color = null,
 				ring2opacity = null,
 			} = config
 
-			this.container    = container
-			this.n            = Math.max(3, Math.min(20, parseInt(points)    || 8))
-			this.intensity    = parseFloat(intensity)    || 0.12
-			this.speed        = parseFloat(speed)        || 1
-			this.gap          = parseFloat(gap)          || 20
-			this.ring1Width   = parseFloat(ring1width)   || 12
-			this.ring1Color   = ring1color  || ringcolor  || '#ffffff'
-			this.ring1Opacity = parseFloat(ring1opacity  || ringopacity  || '0.85') || 0.85
-			this.ring2Width   = parseFloat(ring2width)   || 2
-			this.ring2Color   = ring2color  || ringcolor  || '#ffffff'
-			this.ring2Opacity = parseFloat(ring2opacity  || ringopacity  || '0.85') || 0.85
+			this.container = container
+			this.n = Math.max(3, Math.min(20, parseInt(points) || 8))
+			this.intensity = parseFloat(intensity) || 0.12
+			this.speed = parseFloat(speed) || 1
+			this.gap = parseFloat(gap) || 20
+			this.ring1Width = parseFloat(ring1width) || 12
+			this.ring1Color = ring1color || ringcolor || '#ffffff'
+			this.ring1Opacity = parseFloat(ring1opacity || ringopacity || '0.85') || 0.85
+			this.ring2Width = parseFloat(ring2width) || 2
+			this.ring2Color = ring2color || ringcolor || '#ffffff'
+			this.ring2Opacity = parseFloat(ring2opacity || ringopacity || '0.85') || 0.85
 
-			this.id         = `animask-${++uid}`
+			this.id = `animask-${++uid}`
 			// Random time offset per instance so multiple blobs on the same page don't sync
 			this.timeOffset = Math.random() * 100
 			// Per-point phase offsets spread over two full cycles for variety
-			this.phases     = Array.from({ length: this.n }, (_, i) => (i / this.n) * Math.PI * 4)
+			this.phases = Array.from({ length: this.n }, (_, i) => (i / this.n) * Math.PI * 4)
 			// Per-point amplitude multipliers (0–1) so each point has a different max displacement
 			this.amplitudes = Array.from({ length: this.n }, () => Math.random())
-			this.active     = false
+			this.active = false
 			this.cx = this.cy = this.baseR = 0
 
-			this.tick    = this.tick.bind(this)
+			this.tick = this.tick.bind(this)
 			this.measure = this.measure.bind(this)
 
 			this.init()
@@ -90,14 +90,14 @@ document.addEventListener('DOMContentLoaded', () => {
 				return
 			}
 
-			this.img.style.display        = 'block'
+			this.img.style.display = 'block'
 			this.container.style.position = 'relative'
 			// Safety net: reveal unconditionally after 3s in case measure never gets valid dimensions
 			this.revealTimer = setTimeout(() => this.reveal(), 3000)
 
 			const imgWrapper = this.container.querySelector('picture') ?? this.container.querySelector('figure')
 			if (imgWrapper) {
-				imgWrapper.style.userSelect    = 'none'
+				imgWrapper.style.userSelect = 'none'
 				imgWrapper.style.pointerEvents = 'none'
 			}
 
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			if (this.img.complete && this.img.naturalWidth > 0) {
 				requestAnimationFrame(this.measure)
 			} else {
-				this.img.addEventListener('load',  () => requestAnimationFrame(this.measure), { once: true })
+				this.img.addEventListener('load', () => requestAnimationFrame(this.measure), { once: true })
 				this.img.addEventListener('error', () => requestAnimationFrame(this.measure), { once: true })
 			}
 			// Fallback: final measure after full page load catches any layout shifts
@@ -117,20 +117,20 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 
 		setupSVG = () => {
-			const ns  = 'http://www.w3.org/2000/svg'
+			const ns = 'http://www.w3.org/2000/svg'
 			const svg = document.createElementNS(ns, 'svg')
 			svg.classList.add('animask-svg')
 			svg.setAttribute('aria-hidden', 'true')
 			Object.assign(svg.style, {
-				position:      'absolute',
-				overflow:      'visible',
+				position: 'absolute',
+				overflow: 'visible',
 				pointerEvents: 'none',
 			})
 
 			// <defs> → <clipPath> applied to the <img> via CSS clip-path: url(#id)
 			const defs = document.createElementNS(ns, 'defs')
 			const cpEl = document.createElementNS(ns, 'clipPath')
-			cpEl.id    = `${this.id}-clip`
+			cpEl.id = `${this.id}-clip`
 			this.clipShape = document.createElementNS(ns, 'path')
 			cpEl.appendChild(this.clipShape)
 			defs.appendChild(cpEl)
@@ -142,9 +142,9 @@ document.addEventListener('DOMContentLoaded', () => {
 				{ color: this.ring2Color, width: this.ring2Width, opacity: this.ring2Opacity },
 			].map(({ color, width, opacity }) => {
 				const path = document.createElementNS(ns, 'path')
-				path.setAttribute('fill',           'none')
-				path.setAttribute('stroke',         color)
-				path.setAttribute('stroke-width',   width)
+				path.setAttribute('fill', 'none')
+				path.setAttribute('stroke', color)
+				path.setAttribute('stroke-width', width)
 				path.setAttribute('stroke-opacity', opacity)
 				svg.appendChild(path)
 				return path
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.svg = svg
 
 			// Apply clip-path to the image element
-			this.img.style.clipPath       = `url(#${this.id}-clip)`
+			this.img.style.clipPath = `url(#${this.id}-clip)`
 			this.img.style.webkitClipPath = `url(#${this.id}-clip)`
 		}
 
@@ -167,21 +167,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			const w = iRect.width
 			const h = iRect.height
-			const t = iRect.top  - cRect.top
+			const t = iRect.top - cRect.top
 			const l = iRect.left - cRect.left
 
 			Object.assign(this.svg.style, {
-				top:    `${t}px`,
-				left:   `${l}px`,
-				width:  `${w}px`,
+				top: `${t}px`,
+				left: `${l}px`,
+				width: `${w}px`,
 				height: `${h}px`,
 			})
 			this.svg.setAttribute('viewBox', `0 0 ${w} ${h}`)
 
-			this.cx    = w / 2
-			this.cy    = h / 2
+			this.cx = w / 2
+			this.cy = h / 2
 			// 0.88 leaves a small visual margin from the image edges
-			this.baseR = Math.min(w, h) / 2 * 0.88
+			this.baseR = (Math.min(w, h) / 2) * 0.88
 
 			this.render(this.timeOffset)
 			this.reveal()
@@ -197,8 +197,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			const { n, intensity, baseR, speed, phases, amplitudes, cx, cy } = this
 			return Array.from({ length: n }, (_, i) => {
 				const angle = (i / n) * Math.PI * 2 - Math.PI / 2
-				const delta = -(intensity * baseR * amplitudes[i]) * (1 + Math.sin(t * speed + phases[i])) / 2
-				const ri    = r + delta
+				const delta = (-(intensity * baseR * amplitudes[i]) * (1 + Math.sin(t * speed + phases[i]))) / 2
+				const ri = r + delta
 				return { x: cx + ri * Math.cos(angle), y: cy + ri * Math.sin(angle) }
 			})
 		}
@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		// Catmull-Rom → cubic Bézier conversion for a closed smooth curve
 		toPath = pts => {
 			const len = pts.length
-			const k   = 1 / 6
+			const k = 1 / 6
 
 			const c1x = i => pts[i].x + (pts[(i + 1) % len].x - pts[(i - 1 + len) % len].x) * k
 			const c1y = i => pts[i].y + (pts[(i + 1) % len].y - pts[(i - 1 + len) % len].y) * k
@@ -243,15 +243,18 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 
 		setupIntersectionObserver = () => {
-			this.io = new IntersectionObserver(([entry]) => {
-				if (entry.isIntersecting && !this.active) {
-					gsap.ticker.add(this.tick)
-					this.active = true
-				} else if (!entry.isIntersecting && this.active) {
-					gsap.ticker.remove(this.tick)
-					this.active = false
-				}
-			}, { threshold: 0.1 })
+			this.io = new IntersectionObserver(
+				([entry]) => {
+					if (entry.isIntersecting && !this.active) {
+						gsap.ticker.add(this.tick)
+						this.active = true
+					} else if (!entry.isIntersecting && this.active) {
+						gsap.ticker.remove(this.tick)
+						this.active = false
+					}
+				},
+				{ threshold: 0.1 }
+			)
 			this.io.observe(this.container)
 		}
 
@@ -260,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.ro?.disconnect()
 			this.io?.disconnect()
 			if (this.img) {
-				this.img.style.clipPath       = ''
+				this.img.style.clipPath = ''
 				this.img.style.webkitClipPath = ''
 			}
 			this.svg?.remove()

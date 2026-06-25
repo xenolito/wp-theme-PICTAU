@@ -63,9 +63,7 @@
 	 * no el color. background-color: currentColor hereda el color del texto del botón.
 	 */
 	function svgToMaskUrl(svgStr) {
-		const maskSvg = svgStr
-			.replace(/stroke="currentColor"/g, 'stroke="black"')
-			.replace(/fill="currentColor"/g, 'fill="black"')
+		const maskSvg = svgStr.replace(/stroke="currentColor"/g, 'stroke="black"').replace(/fill="currentColor"/g, 'fill="black"')
 		return `url("data:image/svg+xml,${encodeURIComponent(maskSvg)}")`
 	}
 
@@ -89,9 +87,7 @@
 				if (!before.length && !after.length) return
 
 				const sel = `[data-block="${props.clientId}"] .wp-block-button__link`
-				const lines = [
-					`${sel} { display: inline-flex !important; align-items: center !important; gap: 0.4em !important; }`,
-				]
+				const lines = [`${sel} { display: inline-flex !important; align-items: center !important; gap: 0.4em !important; }`]
 
 				// ::before — primer icono "before"
 				if (before.length > 0) {
@@ -131,81 +127,79 @@
 	const { useState } = wp.element
 
 	// 1. Registrar atributos groupLink, groupLinkTarget, groupLinkRel, groupLinkClass
-	addFilter(
-		'blocks.registerBlockType',
-		'pictau/group-link-attribute',
-		function ( settings, name ) {
-			if ( name !== 'core/group' ) return settings
-			return {
-				...settings,
-				attributes: {
-					...settings.attributes,
-					groupLink:      { type: 'string', default: '' },
-					groupLinkTarget:{ type: 'string', default: '' },
-					groupLinkRel:   { type: 'string', default: '' },
-					groupLinkClass: { type: 'string', default: '' },
-				},
-			}
+	addFilter('blocks.registerBlockType', 'pictau/group-link-attribute', function (settings, name) {
+		if (name !== 'core/group') return settings
+		return {
+			...settings,
+			attributes: {
+				...settings.attributes,
+				groupLink: { type: 'string', default: '' },
+				groupLinkTarget: { type: 'string', default: '' },
+				groupLinkRel: { type: 'string', default: '' },
+				groupLinkClass: { type: 'string', default: '' },
+			},
 		}
-	)
+	})
 
 	// 2. ToolbarButton + URLPopover (mismo componente que el bloque imagen de WP core)
 	//    renderSettings activa el chevron (↓) con toggle nueva pestaña + rel + clase CSS.
-	addFilter(
-		'editor.BlockEdit',
-		'pictau/group-link-toolbar',
-		function ( BlockEdit ) {
-			return function GroupLinkToolbar( props ) {
-				if ( props.name !== 'core/group' ) return el( BlockEdit, props )
+	addFilter('editor.BlockEdit', 'pictau/group-link-toolbar', function (BlockEdit) {
+		return function GroupLinkToolbar(props) {
+			if (props.name !== 'core/group') return el(BlockEdit, props)
 
-				const { BlockControls, URLPopover, URLInput } = wp.blockEditor
-				const { ToolbarGroup, ToolbarButton, Button, ToggleControl, TextControl } = wp.components
+			const { BlockControls, URLPopover, URLInput } = wp.blockEditor
+			const { ToolbarGroup, ToolbarButton, Button, ToggleControl, TextControl } = wp.components
 
-				const [ isPopoverOpen, setIsPopoverOpen ] = useState( false )
-				const [ isEditing, setIsEditing ]         = useState( false )
-				const [ toolbarBtnEl, setToolbarBtnEl ]   = useState( null )
+			const [isPopoverOpen, setIsPopoverOpen] = useState(false)
+			const [isEditing, setIsEditing] = useState(false)
+			const [toolbarBtnEl, setToolbarBtnEl] = useState(null)
 
-				const groupLink       = props.attributes.groupLink       || ''
-				const groupLinkTarget = props.attributes.groupLinkTarget || ''
-				const groupLinkRel    = props.attributes.groupLinkRel    || ''
-				const groupLinkClass  = props.attributes.groupLinkClass  || ''
+			const groupLink = props.attributes.groupLink || ''
+			const groupLinkTarget = props.attributes.groupLinkTarget || ''
+			const groupLinkRel = props.attributes.groupLinkRel || ''
+			const groupLinkClass = props.attributes.groupLinkClass || ''
 
-				function openPopover() {
-					setIsPopoverOpen( true )
-					setIsEditing( ! groupLink )
-				}
+			function openPopover() {
+				setIsPopoverOpen(true)
+				setIsEditing(!groupLink)
+			}
 
-				function closePopover() {
-					setIsPopoverOpen( false )
-					setIsEditing( false )
-				}
+			function closePopover() {
+				setIsPopoverOpen(false)
+				setIsEditing(false)
+			}
 
-				function removeLink() {
-					props.setAttributes( { groupLink: '', groupLinkTarget: '', groupLinkRel: '', groupLinkClass: '' } )
-					closePopover()
-				}
+			function removeLink() {
+				props.setAttributes({ groupLink: '', groupLinkTarget: '', groupLinkRel: '', groupLinkClass: '' })
+				closePopover()
+			}
 
-				return el(
-					wp.element.Fragment,
+			return el(
+				wp.element.Fragment,
+				null,
+				el(BlockEdit, props),
+				el(
+					BlockControls,
 					null,
-					el( BlockEdit, props ),
 					el(
-						BlockControls,
+						ToolbarGroup,
 						null,
 						el(
-							ToolbarGroup,
-							null,
-							el( 'span', { ref: setToolbarBtnEl },
-								el( ToolbarButton, {
-									icon: 'admin-links',
-									label: groupLink ? 'Editar enlace de grupo' : 'Añadir enlace de grupo',
-									isActive: !! groupLink,
-									onClick: function () { isPopoverOpen ? closePopover() : openPopover() },
-								} )
-							)
+							'span',
+							{ ref: setToolbarBtnEl },
+							el(ToolbarButton, {
+								icon: 'admin-links',
+								label: groupLink ? 'Editar enlace de grupo' : 'Añadir enlace de grupo',
+								isActive: !!groupLink,
+								onClick: function () {
+									isPopoverOpen ? closePopover() : openPopover()
+								},
+							})
 						)
-					),
-					isPopoverOpen && el(
+					)
+				),
+				isPopoverOpen &&
+					el(
 						URLPopover,
 						{
 							anchor: toolbarBtnEl,
@@ -214,80 +208,92 @@
 								return el(
 									'div',
 									{ style: { padding: '0 16px 8px' } },
-									el( ToggleControl, {
+									el(ToggleControl, {
 										__nextHasNoMarginBottom: true,
 										label: 'Abrir en una nueva pestaña',
 										checked: groupLinkTarget === '_blank',
-										onChange: function ( val ) {
-											props.setAttributes( { groupLinkTarget: val ? '_blank' : '' } )
+										onChange: function (val) {
+											props.setAttributes({ groupLinkTarget: val ? '_blank' : '' })
 										},
-									} ),
-									el( TextControl, {
+									}),
+									el(TextControl, {
 										__nextHasNoMarginBottom: true,
 										label: 'Relación del enlace',
 										value: groupLinkRel,
-										onChange: function ( val ) {
-											props.setAttributes( { groupLinkRel: val } )
+										onChange: function (val) {
+											props.setAttributes({ groupLinkRel: val })
 										},
-									} ),
-									el( TextControl, {
+									}),
+									el(TextControl, {
 										__nextHasNoMarginBottom: true,
 										label: 'Clase CSS del enlace',
 										value: groupLinkClass,
-										onChange: function ( val ) {
-											props.setAttributes( { groupLinkClass: val } )
+										onChange: function (val) {
+											props.setAttributes({ groupLinkClass: val })
 										},
-									} )
+									})
 								)
 							},
 						},
 						isEditing
 							? el(
-								'form',
-								{
-									className: 'block-editor-url-popover__row',
-									onSubmit: function ( e ) { e.preventDefault(); setIsEditing( false ) },
-								},
-								el( URLInput, {
-									value: groupLink,
-									onChange: function ( val ) { props.setAttributes( { groupLink: val } ) },
-									__nextHasNoMarginBottom: true,
-								} ),
-								el( Button, {
-									icon: 'yes',
-									label: 'Aplicar',
-									type: 'submit',
-									className: 'is-compact',
-								} )
-							)
+									'form',
+									{
+										className: 'block-editor-url-popover__row',
+										onSubmit: function (e) {
+											e.preventDefault()
+											setIsEditing(false)
+										},
+									},
+									el(URLInput, {
+										value: groupLink,
+										onChange: function (val) {
+											props.setAttributes({ groupLink: val })
+										},
+										__nextHasNoMarginBottom: true,
+									}),
+									el(Button, {
+										icon: 'yes',
+										label: 'Aplicar',
+										type: 'submit',
+										className: 'is-compact',
+									})
+								)
 							: el(
-								'div',
-								{ className: 'block-editor-url-popover__link-viewer block-editor-format-toolbar__link-container-content' },
-								el( 'a', {
-									href: groupLink,
-									target: '_blank',
-									rel: 'noreferrer noopener',
-									className: 'block-editor-url-popover__link-viewer-url',
-									onClick: function ( e ) { e.preventDefault() },
-								}, groupLink ),
-								el( Button, {
-									icon: 'edit',
-									label: 'Editar el enlace',
-									className: 'is-compact',
-									onClick: function () { setIsEditing( true ) },
-								} ),
-								el( Button, {
-									icon: 'editor-unlink',
-									label: 'Eliminar el enlace',
-									className: 'is-compact',
-									onClick: removeLink,
-								} )
-							)
+									'div',
+									{ className: 'block-editor-url-popover__link-viewer block-editor-format-toolbar__link-container-content' },
+									el(
+										'a',
+										{
+											href: groupLink,
+											target: '_blank',
+											rel: 'noreferrer noopener',
+											className: 'block-editor-url-popover__link-viewer-url',
+											onClick: function (e) {
+												e.preventDefault()
+											},
+										},
+										groupLink
+									),
+									el(Button, {
+										icon: 'edit',
+										label: 'Editar el enlace',
+										className: 'is-compact',
+										onClick: function () {
+											setIsEditing(true)
+										},
+									}),
+									el(Button, {
+										icon: 'editor-unlink',
+										label: 'Eliminar el enlace',
+										className: 'is-compact',
+										onClick: removeLink,
+									})
+								)
 					)
-				)
-			}
+			)
 		}
-	)
+	})
 })()
 
 wp.domReady(() => {
