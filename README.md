@@ -8,14 +8,29 @@ Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida c
 
 ---
 
-## Requisitos
+## Entorno de desarrollo
 
 - Local by Flywheel (o similar) con PHP 8+ y MySQL
 - Node.js 18+ y npm
 - WP-CLI (para operaciones de Pods vía `wp eval`)
-- Plugin [Pods](https://wordpress.org/plugins/pods/) activo
-- Plugin [Yoast SEO](https://wordpress.org/plugins/wordpress-seo/) activo (v27.6+)
-- Plugin [Polylang](https://wordpress.org/plugins/polylang/) (opcional, para i18n)
+
+## Plugins recomendados
+
+- [Contact Form 7](https://es.wordpress.org/plugins/contact-form-7/)
+- [Contact Form CFDB7](https://es.wordpress.org/plugins/contact-form-cfdb7/)
+- [Polylang](https://es.wordpress.org/plugins/polylang/)
+- [CPT i18n slugs – Slugs traducibles para CPT (Polylang + Pods)](git@github.com:xenolito/WordPress-Plugin-Polylang-Addon-CPT-i18n-slugs.git)
+- [GDPR Cookie Compliance](https://es.wordpress.org/plugins/gdpr-cookie-compliance/)
+- [Loco Translate](https://es.wordpress.org/plugins/loco-translate/)
+- [Maintenance Mode by Pictau](git@github.com:xenolito/WordPress-Plugin-Maintenance-Mode-by-Pictau.git)
+- [Multilingual CF7 with Polylang](https://es.wordpress.org/plugins/multilingual-contact-form-7-with-polylang/)
+- [PCT Gallery](git@github.com:xenolito/WordPress-Plugin-Image-Gallery.git)
+- [Pictau Blocks Gutenberg](git@github.com:xenolito/wordpress-pictau-blocks-plugin.git)
+- [Pods](https://es.wordpress.org/plugins/pods/)
+- [WP Hide Login](https://es.wordpress.org/plugins/wps-hide-login/)
+- [WP Mail SMTP](https://es.wordpress.org/plugins/wp-mail-smtp/)
+- [Yoast Duplicate Post](https://es.wordpress.org/plugins/duplicate-post/)
+- [Updraft Plus – Backup and Restore](https://es.wordpress.org/plugins/updraftplus/)
 
 ---
 
