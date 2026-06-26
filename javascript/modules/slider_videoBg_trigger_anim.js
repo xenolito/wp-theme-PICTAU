@@ -32,6 +32,7 @@ window.addEventListener('load', () => {
 	let headerAnimLaunched = false
 	// h1.headerAnimation.play()
 
+	// Define (just define, not play) the cover animation (fade out) and trigger the header animations when the cover is fading out.
 	if (cover) {
 		window.introTween.to(cover, {
 			opacity: 0,
@@ -64,23 +65,4 @@ window.addEventListener('load', () => {
 	}, 50)
 
 	// window.introTween.play()
-
-	//! On scroll main slider
-	const nextSection = document.querySelector('.slider + section')
-
-	const nextSectionST = ScrollTrigger.create({
-		trigger: nextSection,
-		start: 'top bottom-=5%',
-		onEnter: self => {
-			headersToAnim.forEach(header => {
-				header.headerAnimation.timeLine.reverse()
-			})
-		},
-		onLeaveBack: () => {
-			headersToAnim.forEach(header => {
-				header.headerAnimation.timeLine.play()
-			})
-		},
-		scrub: 1,
-	})
 })

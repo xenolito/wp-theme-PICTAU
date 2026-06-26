@@ -1,10 +1,18 @@
 /**
  * Animation any for WP based on GSAP
- * version: 3.1
+ * version: 4.8.2
  * Added: nextanim param for identifiy an element with animation to play after this one
- * © @xenolito 2024
+ * Added: callback function after animation complete: Callback should exist/scope at window level. :-(
+ * ? changelog:
+ * ? Added matchmedia param to setup: as string like "min-width: 1024px". If true, animation will run, otherwise will be skipped, including not passed (html param: data-anim-any-matchmedia)
+ * ? Added zoomIn and rotateX animations from v3.1
+ * ? Added chainanim param from v3.1
+ *
+ * © @xenolito 2025
  *
  */
+
+// TODO When animation is set to autoplay=false, and is chained to another animation, it does not make a reverse animation on exit the viewport (repeat=true not working??)
 
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -29,8 +37,10 @@ gsap.registerPlugin(CustomEase)
  *    	'slideFromBottom'		--> slide from botton in each char / word / line
  * 			'slideFromLeft'			--> slide from left in each char / word
  * 			'slideFromTop'			--> slide from Top in each char / word
- * 			'slideFromRight'			--> slide from Right in each char / word
- *TODO 	'blurOut' 					--> Random start blur out each char / word
+ * 			'slideFromRight'		--> slide from Right in each char / word
+ * 			'zoomIn'				--> zoom in from scale. param: 'zoomIn,1.2' (default scale 1.2)
+ * 			'rotateX'				--> rotate from X axis. params: 'rotateX,90' or 'rotateX,90,bottom'
+ *TODO 	'blurOut' 				--> Random start blur out each char / word
  */
 
 const hyphenToCamelcase = str => {
@@ -53,20 +63,19 @@ document.addEventListener('DOMContentLoaded', () => {
 				animation = 'slideFromBottom',
 				repeat = true,
 				whattoanim = 'self',
-				delay = 0,
+				delay = 0.33,
 				duration = 1.5,
 				stagger = 0.1,
 				autoplay = true,
 				triggerstart = null,
 				markers = false,
 				chainanim = false,
-				nextanim = false,
-				nextanimStartAt = 0.5,
+				nextanim = false, // next animation to play after this one: '.selector' or '.selector, 1.5' where 1.5 is seconds to wait after completion
+				callback = false, // callback function to call after animation complete
 				slideamount = 100,
+				matchmedia = false, // disable animation if matchmedia query does not match (e.g. "min-width: 1024px")
 				log = false,
 			} = config
-
-			// console.log('repeat hardcoded', repeat)
 
 			const [animationName, animParam, originParam] = animation.split(',').map(s => s.trim())
 
@@ -85,64 +94,69 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.rotateXStartAngle = animParam !== undefined ? Number(animParam) : 90
 			this.rotateXOriginY = originParam === 'bottom' ? '100%' : '0%'
 			this.chainanim = chainanim
+			this.matchmedia = matchmedia ?? false
+
+			if (this.matchmedia) this.mquery = window.matchMedia(`(${this.matchmedia})`)
 
 			this.nextanim = nextanim
-			this.nextAnimStartAt = nextanimStartAt
-			this.nextanimTriggered = false //! review this, used at the onUpdate event of the timeline
+			this.callback = callback
 
-			this.triggerstart = !triggerstart ? `${this.animation === 'slideFromBottom' && this.whattoanim === 'self' ? `top-=${this.slideamount}` : 'top'} bottom-=15%` : `top ${triggerstart}`
+			this.triggerstart = !triggerstart ? `${this.animation === 'slideFromBottom' && this.whattoanim === 'self' ? `top-=${this.slideamount}` : 'top'} bottom-=18%` : `top ${triggerstart}`
 
-			if (this.log) console.log(`log activated for ${this.header} with class: ${this.header.classList}`)
-
-			// console.log('this.animation', this.animation, 'this.whattoanim', this.whattoanim, 'st start: ', this.triggerstart)
-			this.setupAnimation()
+			if (!this.matchmedia || (this.mquery && this.mquery.matches)) {
+				this.setupAnimation()
+			} else {
+				return
+			}
 		}
 
 		play = () => {
-			// const timeLineToPlay = this.masterTimeLine ? this.masterTimeLine : this.timeLine
-			// timeLineToPlay.play()
-			this.timeLine.play() //! REFACTOR THIS for propper masterTimeLine play animation for chained animations
+			if (!this.matchmedia || (this.mquery && this.mquery.matches)) {
+				this.timeLine.play()
+			} else return
 		}
 
 		setupAnimation = () => {
 			this.timeLine = gsap.timeline({
 				paused: !this.autoplay,
-				onUpdate:
-					this.nextanim &&
-					function (callback) {
-						if (this.progress() >= callback.nextAnimStartAt && !callback.nextanimTriggered) {
-							if (callback.nextToAnimate.headerAnimation) {
-								callback.nextToAnimate.headerAnimation.play()
-								callback.nextanimTriggered = true
-							} else return
-						}
-					},
-				onUpdateParams: this.nextanim && [this],
 			})
 
 			if (this.nextanim) {
-				const [target, startAt = this.nextAnimStartAt] = this.nextanim.split(',')
-				this.nextAnimStartAt = Number(startAt) > 1 ? 1 : Number(startAt)
-				this.nextToAnimate = this.header.parentElement.parentElement.querySelector(target)
+				const parts = this.nextanim.split(',')
+				const selector = parts[0].trim()
+				this.nextAnimDelay = parts[1] ? Number(parts[1].trim()) : -1.5
+				this.nextToAnimate = document.querySelector(selector)
 			}
 
-			// if there is another element which animation we need to play after this one, we store a ref to this animation on the target...
+			if (this.callback) {
+				const [callbackFunc, callbackDelay = 0] = this.callback.split(',')
+				this.callbackFunc = callbackFunc
+				this.callbackDelay = Number(callbackDelay)
+
+				this.timeLine.eventCallback('onComplete', () => {
+					if (window[this.callbackFunc] === undefined) {
+						console.warn(`Callback function "${this.callbackFunc}" does not exist in the global scope (window). Please ensure it is defined before using it in the animation.`)
+						return
+					}
+					setTimeout(() => {
+						window[this.callbackFunc]()
+					}, this.callbackDelay)
+				})
+			}
+
 			if (this.chainanim) {
 				this.setupChainedAnimations()
 			}
 
-			// if this element animation is chained to previous another one...
+			// if this element animation is chained to a previous one via chainanim
 			if (this.header.animChainedTo) {
 				this.chainedTo = this.header.animChainedTo.headerAnimation
-				// this.chainedTo.masterTimeLine.add(this.timeLine, '>-75%')
 				this.chainedTo.masterTimeLine.add(this.timeLine, '>-70%')
-				// console.log('animation chained', this.header.animChainedTo, 'depend on:', this.chainedTo.header)
 			}
 
 			if (this.markers) console.log(this.triggerstart)
 
 			if (this.autoplay && !this.chainedTo) {
-				// Set default ScrollTrigger
 				this.trigger = ScrollTrigger.create({
 					trigger: this.header,
 					start: this.triggerstart,
@@ -155,9 +169,6 @@ document.addEventListener('DOMContentLoaded', () => {
 						}
 					},
 					markers: this.markers,
-					// markers: true,
-					// markers: this.whattoanim === 'self' ? true : false,
-					// invalidateOnRefresh: true, //! Test this, better not to use when there is no scrub associated to ST
 				})
 			}
 
@@ -172,12 +183,22 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.animation === 'slideFromRight' && this.setSlideTo('left')
 			this.animation === 'zoomIn' && this.setZoomInAnimation()
 			this.animation === 'rotateX' && this.setRotateXAnimation()
+
+			// Add nextanim call after tweens so ">" resolves to the end of the last tween
+			if (this.nextanim && this.nextToAnimate) {
+				const position = `>${this.nextAnimDelay >= 0 ? '+' : ''}${this.nextAnimDelay}`
+				this.timeLine.call(
+					() => {
+						this.nextToAnimate.headerAnimation?.play()
+					},
+					[],
+					position
+				)
+			}
 		}
 
 		setupChainedAnimations = () => {
 			const chainedAnimations = Array.from(this.chainanim.split(','))
-
-			// console.log(this.header, 'chained to animation: ', chainedAnimations)
 
 			chainedAnimations.forEach(targetEl => {
 				let elementAnimToChain = this.header.parentElement.parentElement.querySelector(targetEl)
@@ -192,7 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		chainElementAnimation = elementWithAnimation => {
 			elementWithAnimation.animChainedTo = this.header
-			// console.log('element animation to chain:', elementWithAnimation);
 		}
 
 		setSlideTo = dir => {
@@ -203,7 +223,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			if (this.whattoanim !== 'self') {
 				this.typeSplit = new SplitType(this.header, {
-					// types: 'lines, chars',
 					tagName: 'span',
 				})
 
@@ -224,21 +243,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			gsap.set(elementsToAnim, {
 				pointerEvents: 'none',
-				// y: () => startPosition.y,
-				// x: () => startPosition.x,
 			})
 
 			this.timeLine.fromTo(
 				elementsToAnim,
 				{
-					// yPercent: 20,
 					y: () => startPosition.y,
 					x: () => startPosition.x,
 					opacity: 0,
 					pointerEvents: 'none',
 				},
 				{
-					// yPercent: 0,
 					y: 0,
 					x: 0,
 					opacity: 1,
@@ -246,11 +261,6 @@ document.addEventListener('DOMContentLoaded', () => {
 					duration: this.duration,
 					delay: this.delay,
 					stagger: this.stagger,
-					// ease: 'expo.out',
-					// ease: CustomEase.create(
-					// 	'custom',
-					// 	'M0,0 C0.104,0.204 -0.267,1.054 1,1 '
-					// ),
 					ease: 'power4.out',
 				}
 			)
@@ -258,7 +268,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		setClippedFromBottom = () => {
 			this.typeSplit = new SplitType(this.header, {
-				// types: 'lines, chars',
 				tagName: 'span',
 			})
 
@@ -270,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			gsap.set(this.header, { opacity: 1 })
 
 			this.typeSplit.lines.forEach(line => {
-				line.style.clipPath = `polygon(0 -10px, 100% -10px, 100% 100%, 0% 100%)`
+				line.style.clipPath = `polygon(0 -10px, 110% -10px, 110% 100%, 0% 100%)`
 				line.style.userSelect = 'none'
 			})
 
@@ -283,21 +292,12 @@ document.addEventListener('DOMContentLoaded', () => {
 				duration: this.duration,
 				delay: this.delay,
 				stagger: this.stagger,
-				// ease: 'expo.out',
 				ease: CustomEase.create('custom', 'M0,0 C0.104,0.204 -0.267,1.054 1,1 '),
-				// ease: 'power4.out',
-				onComplete: () => {
-					if (this.nextanim) {
-						// console.log('next anim', this.nextanim)
-						this.timeLine.play()
-					}
-				},
 			})
 		}
 
 		setClippedFromLeft = () => {
 			this.typeSplit = new SplitType(this.header, {
-				// types: 'lines, chars',
 				tagName: 'span',
 			})
 
@@ -353,7 +353,6 @@ document.addEventListener('DOMContentLoaded', () => {
 					x: 0,
 					stagger: this.stagger,
 					duration: this.duration,
-					// delay: this.delay,
 					ease: 'power4.inOut',
 				},
 				'>-0.3'
@@ -362,7 +361,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		setClippedFromTop = () => {
 			this.typeSplit = new SplitType(this.header, {
-				// types: 'lines, chars',
 				tagName: 'span',
 			})
 
@@ -418,7 +416,6 @@ document.addEventListener('DOMContentLoaded', () => {
 					x: 0,
 					stagger: this.stagger,
 					duration: this.duration,
-					// delay: this.delay,
 					ease: 'power4.inOut',
 				},
 				'>-0.3'
@@ -427,7 +424,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		setBlurInAnimation = () => {
 			this.typeSplit = new SplitType(this.header, {
-				// types: 'lines, chars',
 				tagName: 'span',
 			})
 
@@ -439,7 +435,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			elementsToAnim.forEach(elem => {
 				const randomBlurPx = getRandom(0, 50)
-				// const randomScale = getRandom(1, 5);
 
 				elem.style.userSelect = 'none'
 				elem.style.filter = `blur(${randomBlurPx}px)`
@@ -464,20 +459,16 @@ document.addEventListener('DOMContentLoaded', () => {
 				scale: 1,
 				opacity: 1,
 				duration: this.duration,
-				// ease: 'expo.out',
 				ease: CustomEase.create('custom', 'M0,0 C0.104,0.204 -0.267,1.054 1,1 '),
 			})
 
-			elementsToAnim.forEach((elem, index) => {
-				// this.timeLine
+			elementsToAnim.forEach(elem => {
 				this.timeLine.to(
 					elem.blur,
 					{
 						amount: 0,
-						// scale: 1,
 						duration: this.duration * 1.5,
 						ease: 'expo.out',
-						// delay: getRandom(0, 1),
 						onUpdate: () => {
 							elem.blur.target.style.filter = `blur(${elem.blur.amount}px)`
 						},
@@ -531,12 +522,21 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 
+	// Pre-pass: collect chained targets so their autoplay can be overridden before instantiation
+	const chainedTargets = new Set()
 	headerToAnim.forEach(header => {
-		// const datasets = header.dataset
-		const config = getConfigByAtt(header, 'anim_any')
+		const config = getConfigByAtt(header, attributeId)
+		if (!config.nextanim) return
+		const selector = config.nextanim.split(',')[0].trim()
+		const target = document.querySelector(selector)
+		if (target && target.hasAttribute(`data-${attributeId}`)) {
+			chainedTargets.add(target)
+		}
+	})
 
-		// console.log('CONFIG ', config)
-
+	headerToAnim.forEach(header => {
+		const config = getConfigByAtt(header, attributeId)
+		if (chainedTargets.has(header)) config.autoplay = '0'
 		const headerAnimation = new HeaderAnimation(header, config)
 		header.headerAnimation = headerAnimation
 	})
