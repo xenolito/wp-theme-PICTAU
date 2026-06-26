@@ -267,6 +267,9 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 
 		setClippedFromBottom = () => {
+			// const clipHeight = this.header.offsetHeight + 10
+			const clipVerticalMargin = '96%' // When 100% show the tildes of the typography, lower the value to hide it.
+
 			this.typeSplit = new SplitType(this.header, {
 				tagName: 'span',
 			})
@@ -279,7 +282,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			gsap.set(this.header, { opacity: 1 })
 
 			this.typeSplit.lines.forEach(line => {
-				line.style.clipPath = `polygon(0 -10px, 110% -10px, 110% 100%, 0% 100%)`
+				line.style.clipPath = `polygon(0 -10px, 100% -10px, 100% ${clipVerticalMargin}, 0% ${clipVerticalMargin})`
+				// line.style.clipPath = `polygon(0 -${clipMargin}px, 100% -${clipMargin}px, 100% ${clipMargin * 12}%, 0% ${clipMargin * 12}%)`
 				line.style.userSelect = 'none'
 			})
 
