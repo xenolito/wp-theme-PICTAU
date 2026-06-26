@@ -1,14 +1,16 @@
 /**
  * Animation any for WP based on GSAP
- * version: 4.8.2
+ * version: 4.9.0
  * Added: nextanim param for identifiy an element with animation to play after this one
  * Added: callback function after animation complete: Callback should exist/scope at window level. :-(
  * ? changelog:
  * ? Added matchmedia param to setup: as string like "min-width: 1024px". If true, animation will run, otherwise will be skipped, including not passed (html param: data-anim-any-matchmedia)
  * ? Added zoomIn and rotateX animations from v3.1
  * ? Added chainanim param from v3.1
+ * ? Merged animation_any_V1.js (v4.8.1) as single canonical file
+ * ? setClippedFromBottom: replaced clipPath polygon with clip-path inset(-0.4em 0 0 0) for diacritic-safe masking
  *
- * © @xenolito 2025
+ * © @xenolito 2026
  *
  */
 
