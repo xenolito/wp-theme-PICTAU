@@ -72,6 +72,9 @@ body {
 
 :where(.editor-styles-wrapper) .is-bg {
 	height: auto !important;
+	> * {
+		width: 100% !important;
+	}
 }
 
 .editor-styles-wrapper ::after {

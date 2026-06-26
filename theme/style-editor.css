@@ -12038,10 +12038,6 @@ section.category-grid-section > * {
   animation-play-state: paused;
 }
 
-.slider.anim-intro .slider-cover {
-  opacity: 0 !important;
-}
-
 /* ── Enlace de grupo (core/group con groupLink) ─────────────────────────── */
 
 .group-link-wrapper {
@@ -12105,6 +12101,50 @@ section.category-grid-section > * {
 		}
 	}
 } */
+
+/*! HOME PAGE HERO SLIDER WITH VIDEO BACKGROUND */
+
+.slider.has-video-bg {
+  position: relative;
+  color: white;
+}
+
+.slider.has-video-bg h1 {
+  font-size: clamp(3.4rem, 10vw, 7rem);
+  color: white;
+  text-align: center;
+  margin-bottom: 0.5ch;
+  opacity: 0;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.slider.has-video-bg p {
+  text-align: center;
+}
+
+.slider.has-video-bg p.description {
+  font-size: clamp(1.2rem, 3vw, 1.6rem);
+  font-weight: 500;
+}
+
+.slider.has-video-bg .slider-cover:not(.block-editor-block-list__block) {
+  display: block;
+  position: absolute;
+  /* opacity: 0; */
+  inset: 0;
+  background-color: black;
+  max-width: unset !important;
+  width: 100vw !important;
+  height: 100dvh;
+}
+
+@media only screen and (max-width: px) {
+}
+
+.slider.has-video-bg .scene {
+  justify-content: flex-end;
+  padding-bottom: clamp(1rem, 3vw, 3rem);
+}
 
 :root {
   --amb-radius: 8px;
