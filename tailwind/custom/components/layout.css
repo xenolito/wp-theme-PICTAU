@@ -954,9 +954,9 @@ body:has(.home) {
 }
 
 body.fixed-header {
-	> #page > #content {
+	/* > #page > #content {
 		margin-top: var(--whole-header-height);
-	}
+	} */
 
 	.entry-content > .slider {
 		/* @apply pt-[var(--whole-header-height)]; */
@@ -1035,7 +1035,7 @@ section:not(.block-editor-block-list__block) {
 		}
 
 		&:has(.is-bg.full-vh) {
-			min-height: 100vh;
+			min-height: 100vh !important;
 			overflow: hidden;
 		}
 
@@ -2884,9 +2884,10 @@ nav.dot-navigation {
 	/* background: red; */
 	bottom: calc(var(--default-section-vert-padding) * 0.15);
 	left: 50%;
+	width: 60px !important;
+	translate: -50%;
 	svg {
-		translate: -50%;
-		scale: 0.75;
+		scale: 0.4;
 		* {
 			stroke-width: 3;
 		}

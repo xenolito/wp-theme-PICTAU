@@ -2404,23 +2404,11 @@ canvas.anim-bg {
 		padding: 2rem;
 		@media only screen and (min-width: 769px) {
 			width: auto !important;
-			padding-left: 0;
-			padding-right: 4rem;
 		}
 
 		.content {
 			text-align: center;
 		}
-
-		/* @media only screen and (max-width: 1023px) {
-			transform: translate(0, 0) !important;
-			opacity: 1 !important;
-			width: 100vw !important;
-			height: 100svh !important;
-			justify-content: flex-end;
-			padding-bottom: 4rem;
-		} */
-		/* padding-top: 0; */
 	}
 
 	h2 {
