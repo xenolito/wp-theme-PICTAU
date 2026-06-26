@@ -47,7 +47,6 @@ import './modules/faqs'
 // import './modules/bg_body_color_change'
 // import './modules/webgl_animBg'
 import './modules/logosGridFilter'
-// import './modules/slider_videoBg_trigger_anim'
 // import './modules/video_play_scrolltriggered'
 // import './modules/navigation_dot'
 import './modules/scrollToAName'
@@ -66,6 +65,7 @@ import './modules/parallax'
 // import './modules/__intro_anim' //! remove/update. This is a specific intro animation for the home page slider for this customer.
 import { initImageLoaderCover } from './modules/imageLoaderCover'
 import { initCatalogMenu } from './modules/catalogMenu'
+import './modules/slider_videoBg_trigger_anim'
 
 document.addEventListener('DOMContentLoaded', () => {
 	// console.clear()
@@ -90,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	// setBackgrounds()
 })
 
+// Callbacks for CPT Slides (optional)
 const sliderInit = (window.sliderInit = (index, splide) => {
 	const splideRoot = splide.root
 

@@ -55,42 +55,32 @@ window.addEventListener('load', () => {
 
 	window.introTween.add(firstHeader.headerAnimation, '>-75%')
 
-	let loader
-
-	if (cover) loader = cover.querySelector('.loader')
-
-	if (loader) {
-		const loaderTl = gsap.timeline()
-		loaderTl.to(loader, { opacity: 0, duration: 0.3 })
-		window.introTween.add(loaderTl, '<-1')
-	}
-
 	setTimeout(() => {
 		window.introTween.play()
 		if (cover) {
 			cover.style.pointerEvents = 'none'
 		}
-		if (video) window.video_intro.play()
+		if (video && !video.autoplay) window.video_intro.play()
 	}, 50)
 
 	// window.introTween.play()
 
 	//! On scroll main slider
-	// const nextSection = document.querySelector('.slider + section')
+	const nextSection = document.querySelector('.slider + section')
 
-	// const nextSectionST = ScrollTrigger.create({
-	// 	trigger: nextSection,
-	// 	start: 'top bottom-=5%',
-	// 	onEnter: self => {
-	// 		headersToAnim.forEach(header => {
-	// 			header.headerAnimation.timeLine.reverse()
-	// 		})
-	// 	},
-	// 	onLeaveBack: () => {
-	// 		headersToAnim.forEach(header => {
-	// 			header.headerAnimation.timeLine.play()
-	// 		})
-	// 	},
-	// 	scrub: 1,
-	// })
+	const nextSectionST = ScrollTrigger.create({
+		trigger: nextSection,
+		start: 'top bottom-=5%',
+		onEnter: self => {
+			headersToAnim.forEach(header => {
+				header.headerAnimation.timeLine.reverse()
+			})
+		},
+		onLeaveBack: () => {
+			headersToAnim.forEach(header => {
+				header.headerAnimation.timeLine.play()
+			})
+		},
+		scrub: 1,
+	})
 })

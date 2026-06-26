@@ -70,6 +70,10 @@ body {
   height: auto !important;
 }
 
+:where(.editor-styles-wrapper) .is-bg > * {
+  width: 100% !important;
+}
+
 .editor-styles-wrapper ::after {
   display: none !important;
 }
