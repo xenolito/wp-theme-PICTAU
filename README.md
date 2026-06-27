@@ -622,6 +622,39 @@ Renderiza una imagen aleatoria de una lista en un `<figure><img>`. Diseñado par
 
 ---
 
+### `[svg]`
+
+Renderiza un archivo SVG inline directamente desde la carpeta del tema, con sanitización automática.
+
+**Atributos:**
+
+| Atributo | Tipo | Default | Descripción |
+|---|---|---|---|
+| `filename` | string | *(requerido)* | Nombre del archivo SVG (sin extensión) dentro de la carpeta de SVGs del tema |
+| `class` | string | `''` | Clases CSS adicionales |
+| `width` | string | `''` | Atributo `width` del SVG |
+| `height` | string | `''` | Atributo `height` del SVG |
+| `figure` | bool | `false` | Si `true`, envuelve el SVG en un `<figure>` con las clases indicadas en `class` |
+
+**Ejemplo:**
+```
+[svg filename="logo-marca" class="w-32 h-auto"]
+[svg filename="icono-flecha" figure="true" class="my-icon"]
+```
+
+### `[svg-inline]`
+
+Convierte cualquier etiqueta `<img src="*.svg">` encontrada dentro del bloque de contenido en SVG inline. Útil para hacer SVGs externos editables con CSS. Depende de la función `wp_svg_inline_filter()`.
+
+**Ejemplo:**
+```
+[svg-inline]
+  <img src="/wp-content/uploads/2024/logo.svg" class="brand-logo">
+[/svg-inline]
+```
+
+---
+
 ### `[pd_3d_viewer]`
 
 Embebe el visualizador 3D React (requiere el plugin `pd3d-visualizer`).
@@ -1168,4 +1201,4 @@ Para locales no ingleses, construye un mapa inverso (traducción → msgid ingl�
 - Comentarios deshabilitados globalmente
 - Búsqueda vacía redirige a home
 - GTM configurable desde el Customizer
-- SVG inline via `[inline_svg]`
+- SVG inline via `[svg filename="..."]` (desde carpeta del tema) y `[svg-inline]` (convierte `<img src="*.svg">` en inline)
