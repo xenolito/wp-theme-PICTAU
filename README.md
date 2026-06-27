@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 6.2.0
+- **Versión:** 6.3.0
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -29,7 +29,6 @@ Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida c
 - [Pods](https://es.wordpress.org/plugins/pods/)
 - [WP Hide Login](https://es.wordpress.org/plugins/wps-hide-login/)
 - [WP Mail SMTP](https://es.wordpress.org/plugins/wp-mail-smtp/)
-- [Yoast Duplicate Post](https://es.wordpress.org/plugins/duplicate-post/)
 - [Updraft Plus – Backup and Restore](https://es.wordpress.org/plugins/updraftplus/)
 
 ---
@@ -1065,6 +1064,22 @@ Panel **Apariencia → Personalizar → THEME CUSTOMIZER**.
 Los filtros `wp_mail_from` y `wp_mail_from_name` **solo se registran** si el valor está guardado (no vacío). Si el campo está vacío, WordPress usa su comportamiento por defecto.
 
 El plugin **Maintenance Mode by PICTAU** consume `pictau_contact_email` directamente.
+
+---
+
+## Admin — Clonación de contenidos
+
+Implementada en `theme/inc/clone-post.php` (nativa del tema, sin plugin externo).
+
+Aparece el enlace **Clonar** en la fila de cada contenido y como **bulk action** en los listados del admin. El clon se crea siempre como **borrador**.
+
+**Post types soportados:** todos los públicos con UI (`post`, `page`, `pictau_blocks`, `gallery_item`) excepto tipos internos de WP, Pods y plugins de terceros.
+
+**Qué se copia:** título, contenido, extracto, autor, template, taxonomías asignadas y todos los post meta (excepto `_edit_lock`, `_edit_last`, `_wp_old_slug` y meta con prefijo `_dp_`).
+
+**Seguridad:** nonce por post ID (`pictau_clone_{post_id}`) + `current_user_can('edit_post')`.
+
+> Reemplaza el plugin **Yoast Duplicate Post** — desinstalarlo si estaba activo.
 
 ---
 
