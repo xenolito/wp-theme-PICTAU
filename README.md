@@ -20,7 +20,6 @@ Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida c
 - [Contact Form 7 Registro de envios + GDPR](https://github.com/xenolito/WordPress-Plugin-Contact-Form-7_Registro-envios-GDPR)
 - [Polylang](https://es.wordpress.org/plugins/polylang/)
 - [CPT i18n slugs – Slugs traducibles para CPT (Polylang + Pods)](https://github.com/xenolito/WordPress-Plugin-Polylang-Addon-CPT-i18n-slugs)
-- [GDPR Cookie Compliance](https://es.wordpress.org/plugins/gdpr-cookie-compliance/)
 - [Loco Translate](https://es.wordpress.org/plugins/loco-translate/)
 - [Maintenance Mode by Pictau](https://github.com/xenolito/WordPress-Plugin-Maintenance-Mode-by-Pictau)
 - [Multilingual CF7 with Polylang](https://es.wordpress.org/plugins/multilingual-contact-form-7-with-polylang/)
@@ -29,6 +28,7 @@ Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida c
 - [Pods](https://es.wordpress.org/plugins/pods/)
 - [WP Hide Login](https://es.wordpress.org/plugins/wps-hide-login/)
 - [WP Mail SMTP](https://es.wordpress.org/plugins/wp-mail-smtp/)
+- [WPConsent – Cookies Banner & Privacy Suite](https://es.wordpress.org/plugins/wpconsent-cookies-banner-privacy-suite/)
 - [Updraft Plus – Backup and Restore](https://es.wordpress.org/plugins/updraftplus/)
 
 ---
