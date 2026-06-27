@@ -1,6 +1,6 @@
 /**
  * Animation any for WP based on GSAP
- * version: 4.9.0
+ * version: 4.9.1
  * Added: nextanim param for identifiy an element with animation to play after this one
  * Added: callback function after animation complete: Callback should exist/scope at window level. :-(
  * ? changelog:
@@ -9,6 +9,7 @@
  * ? Added chainanim param from v3.1
  * ? Merged animation_any_V1.js (v4.8.1) as single canonical file
  * ? setClippedFromBottom: replaced clipPath polygon with clip-path inset(-0.4em 0 0 0) for diacritic-safe masking
+ * ? Fixed nextanim callback not firing when animation duration <= |nextAnimDelay|: position clamped to tlDuration instead of t=0 (GSAP skips callbacks at t=0 on play())
  *
  * © @xenolito 2026
  *
@@ -188,13 +189,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			// Add nextanim call after tweens so ">" resolves to the end of the last tween
 			if (this.nextanim && this.nextToAnimate) {
-				const position = `>${this.nextAnimDelay >= 0 ? '+' : ''}${this.nextAnimDelay}`
+				const tlDuration = this.timeLine.duration()
+				const rawPos = tlDuration + this.nextAnimDelay
+				// If the offset pushes the callback to t<=0, GSAP won't fire it (playhead
+				// starts there and never crosses it going forward). Fall back to end of timeline.
+				const absolutePos = rawPos > 0.001 ? rawPos : tlDuration
 				this.timeLine.call(
 					() => {
 						this.nextToAnimate.headerAnimation?.play()
 					},
 					[],
-					position
+					absolutePos
 				)
 			}
 		}
