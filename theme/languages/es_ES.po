@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: EQM by PICTAU\n"
+"Project-Id-Version: BALANZIA\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-27 11:35+0000\n"
 "PO-Revision-Date: 2026-04-27 09:06+0000\n"
