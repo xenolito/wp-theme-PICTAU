@@ -1,7 +1,7 @@
 :root {
-	--def-heading-font-family: "Inter", Helvetica, Arial, sans-serif;
-	--def-font-family: "Inter", Helvetica, Arial, sans-serif;
-	--txt-slider-heading: "Inter", Helvetica, Arial, sans-serif;
+	--def-heading-font-family: "Outfit", Helvetica, Arial, sans-serif;
+	--def-font-family: "Outfit", Helvetica, Arial, sans-serif;
+	--txt-slider-heading: "Outfit", Helvetica, Arial, sans-serif;
 
 	--def-txt-color: #404040;
 	--txt-heading-color: #3a3a3a;
@@ -34,7 +34,7 @@ h3 {
 	line-height: 1.7ch;
 	margin-left: 0;
 	margin-right: 0;
-	text-transform: uppercase;
+	/* text-transform: uppercase; */
 	&:not([data-anim_any]) {
 		text-wrap: balance;
 	}

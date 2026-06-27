@@ -959,7 +959,7 @@ body.fixed-header {
 	} */
 
 	.entry-content > .slider {
-		/* @apply pt-[var(--whole-header-height)]; */
+		@apply pt-[var(--whole-header-height)];
 		.slider-cover {
 			height: 100%;
 		}
@@ -3265,10 +3265,7 @@ section.category-grid-section {
 	}
 
 	.scene {
-		@media only screen and (max-width: px) {
-		}
-
-		justify-content: flex-end;
-		padding-bottom: clamp(1rem, 3vw, 3rem);
+		justify-content: center;
+		padding-block: var(--def-layout-x-padding);
 	}
 }
