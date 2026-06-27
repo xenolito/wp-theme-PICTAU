@@ -16,6 +16,11 @@ body.login {
 	background: var(--blue-gradient);
 }
 
+.wp-login-logo {
+	filter: invert(1);
+	height: 3rem;
+}
+
 h1 {
 	/*background-color: #ffffff;*/
 }
@@ -78,22 +83,43 @@ a:hover {
 input#wp-submit{
 
 	background: var(--blue-gradient);
+	background-size: 200% 200%;
 
     border-color: transparent;
+		border: 0;
 /*    -webkit-box-shadow: inset 0 1px 0 rgba(120,200,230,.5),0 1px 0 rgba(0,0,0,.15);
     box-shadow: inset 0 1px 0 rgba(120,200,230,.5),0 1px 0 rgba(0,0,0,.15);*/
     color: #fff;
     text-decoration: none;
     font-size: 16px;
     line-height: 16px;
-    padding: 15px 20px;
+    /* padding: 15px 20px; */
     height: auto;
 }
 
 input#wp-submit:hover {
-	background: var(--main-gradient);
+	background: #343434;
+	color: white;
 }
 
+
+.language-switcher {
+	[type="submit"] {
+		background: white;
+		border-color: transparent;
+		color: rgb(12, 42, 216);
+		text-decoration: none;
+		font-size: 16px;
+		line-height: 16px;
+		/* padding: 15px 20px; */
+		height: auto;
+
+		&:hover {
+			background: #343434;
+			color: white;
+		}
+	}
+}
 
 p#backtoblog{
 	display: none;
