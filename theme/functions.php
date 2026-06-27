@@ -277,3 +277,36 @@ require get_template_directory() . '/inc/block-attributes.php';
  * Clonación de posts nativa del tema (reemplaza el plugin duplicate-post).
  */
 require get_template_directory() . '/inc/clone-post.php';
+
+/**
+ * Pictau Blocks — CPT, widget, shortcode y página de ajustes (reemplaza el plugin wordpress-pictau-blocks-plugin).
+ * Si el plugin sigue activo, se omite el require para evitar colisión de funciones y se muestra un aviso de admin.
+ */
+$pictau_plugin_slug = 'wordpress-pictau-blocks-plugin/pictau-blocks-gutenberg.php';
+$active_plugins     = (array) get_option( 'active_plugins', array() );
+
+if ( in_array( $pictau_plugin_slug, $active_plugins, true ) ) {
+
+	add_action( 'admin_notices', function () {
+		$deactivate_url = wp_nonce_url(
+			admin_url( 'plugins.php?action=deactivate&plugin=' . rawurlencode( 'wordpress-pictau-blocks-plugin/pictau-blocks-gutenberg.php' ) ),
+			'deactivate-plugin_wordpress-pictau-blocks-plugin/pictau-blocks-gutenberg.php'
+		);
+		?>
+		<div class="notice notice-error">
+			<p>
+				<strong><?php esc_html_e( 'Pictau Blocks — acción requerida', 'pictau' ); ?></strong><br>
+				<?php esc_html_e( 'El plugin "PICTAU BLOCKS GUTENBERG" está activo pero esta funcionalidad ya está integrada en el tema. Mantenerlo activo puede causar un error fatal por duplicidad de funciones.', 'pictau' ); ?>
+				&nbsp;<a href="<?php echo esc_url( $deactivate_url ); ?>" class="button button-primary">
+					<?php esc_html_e( 'Desactivar el plugin ahora', 'pictau' ); ?>
+				</a>
+			</p>
+		</div>
+		<?php
+	} );
+
+} else {
+	require get_template_directory() . '/inc/pictau-blocks-gutenberg.php';
+}
+
+unset( $pictau_plugin_slug, $active_plugins );

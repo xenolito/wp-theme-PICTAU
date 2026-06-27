@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 6.3.0
+- **Versión:** 7.0.0
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -25,7 +25,7 @@ Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida c
 - [Maintenance Mode by Pictau](https://github.com/xenolito/WordPress-Plugin-Maintenance-Mode-by-Pictau)
 - [Multilingual CF7 with Polylang](https://es.wordpress.org/plugins/multilingual-contact-form-7-with-polylang/)
 - [PCT Gallery](https://github.com/xenolito/WordPress-Plugin-Image-Gallery)
-- [Pictau Blocks Gutenberg](https://github.com/xenolito/wordpress-pictau-blocks-plugin)
+- ~~[Pictau Blocks Gutenberg](https://github.com/xenolito/wordpress-pictau-blocks-plugin)~~ — **integrado en el tema desde v7.0.0**, desinstalar si estaba activo
 - [Pods](https://es.wordpress.org/plugins/pods/)
 - [WP Hide Login](https://es.wordpress.org/plugins/wps-hide-login/)
 - [WP Mail SMTP](https://es.wordpress.org/plugins/wp-mail-smtp/)
@@ -57,11 +57,13 @@ npm run bundle       # Generar .zip para despliegue
 pictau/
 ├── theme/
 │   ├── inc/
-│   │   ├── template-functions.php  # Shortcodes y hooks
+│   │   ├── template-functions.php       # Shortcodes y hooks
 │   │   ├── template-tags.php
 │   │   ├── utilities.php
 │   │   ├── events.php
-│   │   └── block-attributes.php    # Atributos HTML en bloques Gutenberg
+│   │   ├── block-attributes.php         # Atributos HTML en bloques Gutenberg
+│   │   ├── clone-post.php               # Clonación nativa de posts
+│   │   └── pictau-blocks-gutenberg.php  # CPT, widget y shortcode Pictau Blocks
 │   ├── js/                          # JS compilado
 │   ├── template-parts/
 │   │   ├── layout/
@@ -1064,6 +1066,40 @@ Panel **Apariencia → Personalizar → THEME CUSTOMIZER**.
 Los filtros `wp_mail_from` y `wp_mail_from_name` **solo se registran** si el valor está guardado (no vacío). Si el campo está vacío, WordPress usa su comportamiento por defecto.
 
 El plugin **Maintenance Mode by PICTAU** consume `pictau_contact_email` directamente.
+
+---
+
+## Pictau Blocks — Bloques reutilizables
+
+Funcionalidad integrada en el tema desde **v7.0.0** (anteriormente distribuida como plugin independiente `wordpress-pictau-blocks-plugin`).
+
+Permite crear bloques de contenido estático reutilizables editados con Gutenberg e insertarlos en cualquier página, widget o template mediante un shortcode.
+
+**Archivo:** `theme/inc/pictau-blocks-gutenberg.php`
+
+### CPT `pictau_blocks`
+
+Tipo de contenido interno (no público, excluido de búsqueda) que almacena cada bloque. El contenido se edita con el editor de bloques de WordPress.
+
+### Shortcode `[pictau-blocks id="X"]`
+
+Renderiza el contenido del block con ID `X`. Procesa bloques Gutenberg (`do_blocks`) y shortcodes anidados (`apply_shortcodes`). Limpia comentarios HTML de Gutenberg y tags `<p>` vacíos del output.
+
+**Caché con transients:** los bloques sin shortcodes dinámicos se cachean automáticamente durante 12 horas. El caché se invalida al guardar el CPT.
+
+**Columna en el admin:** el listado de `pictau_blocks` muestra el shortcode listo para copiar en cada fila.
+
+### Widget
+
+Widget nativo `Pictau Blocks` disponible en **Apariencia → Widgets** y en el editor de widgets del Customizer. Permite seleccionar un block del CPT y renderizarlo en cualquier sidebar o área de widgets.
+
+### Página de ajustes
+
+Disponible en **Ajustes → PICTAU-BLOCKS Settings** con documentación de uso.
+
+### Migración desde el plugin
+
+Si el plugin `wordpress-pictau-blocks-plugin` está activo al mismo tiempo que el tema, el tema muestra un aviso de error en el admin con un botón directo para desactivarlo — evitando así cualquier error PHP fatal por colisión de funciones. Una vez desactivado el plugin, el tema toma el control automáticamente sin pérdida de datos (los posts `pictau_blocks` existentes se conservan).
 
 ---
 
