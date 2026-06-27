@@ -16,7 +16,7 @@
 
 		<div class="footer-container">
 			<?php
-			$required_plugin = checkPluginActive('pictau-blocks-gutenberg');
+			$required_plugin = in_array('wordpress-pictau-blocks-plugin/pictau-blocks-gutenberg.php', apply_filters('active_plugins', get_option('active_plugins')));
 			$user_role = get_user_role();
 			$show_err_msg = ($user_role === 'administrator' || $user_role === 'editor');
 
@@ -58,13 +58,13 @@
 
 				if (!strlen($str)) {
 					if ($show_err_msg) {
-						echo '<p>⛔️ You need to create a "Pictau Block" for footer and set its shortcode @ customizer --> PICTAU Theme Customizer --> Footer</p>';
+						echo '<p style="background-color: #ff1053; color: white; padding: 10px; border-radius: 5px;">⛔️ You need to create a "Pictau Block" for footer and set its shortcode @ customizer --> PICTAU Theme Customizer --> Footer</p>';
 					}
 				} else {
 					echo $str;
 				}
 			} else if ($show_err_msg) {
-				echo '<p>⛔️ Please, install and activate PICTAU BLOCKS GUTENBERG and create a pictau block for footer, and setup at Customizer --> PICTAU Theme customizer... </p>' . get_theme_mod('pictau_block_footer') . '  -- required plugin: ' . $required_plugin;
+				echo '<p style="background-color: #ff1053; color: white; padding: 10px; border-radius: 5px;">⛔️ Please, install and activate PICTAU BLOCKS GUTENBERG and create a pictau block for footer, and setup at Customizer --> PICTAU Theme customizer... </p>';
 			}
 
 			?>
