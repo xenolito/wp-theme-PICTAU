@@ -272,3 +272,8 @@ require get_template_directory() . '/inc/template-functions.php';
  * Atributos HTML en bloques Gutenberg (reemplaza attributes-for-blocks).
  */
 require get_template_directory() . '/inc/block-attributes.php';
+
+/**
+ * Clonación de posts nativa del tema (reemplaza el plugin duplicate-post).
+ */
+require get_template_directory() . '/inc/clone-post.php';
