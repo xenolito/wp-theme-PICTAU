@@ -15,7 +15,7 @@ Instrucciones y contexto para Claude Code en este proyecto.
 
 ## Reglas de trabajo
 
-- **Usar siempre el MCP de Playwright** para verificaciones visuales, debug de CSS/JS y comportamiento en el navegador. No pedir permiso cada vez.
+- **Usar siempre el MCP de Playwright** (`mcp__playwright__*`) para verificaciones visuales, debug de CSS/JS y comportamiento en el navegador. **Nunca usar Chrome DevTools MCP** (`mcp__chrome-devtools__*`) para estas tareas: sus snapshots son muy verbosos y consumen demasiado contexto. Playwright tiene `browser_console_messages` para comprobar errores de consola de forma eficiente. No pedir permiso cada vez.
 - **Si el navegador de Playwright está cerrado**, abrirlo directamente con `browser_navigate` sin pedir confirmación. Si falla con "Target page, context or browser has been closed", usar `browser_run_code` para forzar nueva sesión.
 - **Al terminar cada sesión de Playwright**, eliminar el directorio `.playwright-mcp/` con `rm -rf .playwright-mcp`.
 - Respetar la estructura de CPTs, el enfoque Tailwind-first y el patrón de módulos JS.

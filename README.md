@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.0.0
+- **Versión:** 7.1.0
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -23,7 +23,6 @@ Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida c
 - [GDPR Cookie Compliance](https://es.wordpress.org/plugins/gdpr-cookie-compliance/)
 - [Loco Translate](https://es.wordpress.org/plugins/loco-translate/)
 - [Maintenance Mode by Pictau](https://github.com/xenolito/WordPress-Plugin-Maintenance-Mode-by-Pictau)
-- [Multilingual CF7 with Polylang](https://es.wordpress.org/plugins/multilingual-contact-form-7-with-polylang/)
 - [PCT Gallery](https://github.com/xenolito/WordPress-Plugin-Image-Gallery)
 - ~~[Pictau Blocks Gutenberg](https://github.com/xenolito/wordpress-pictau-blocks-plugin)~~ — **integrado en el tema desde v7.0.0**, desinstalar si estaba activo
 - [Pods](https://es.wordpress.org/plugins/pods/)
@@ -1116,6 +1115,50 @@ Aparece el enlace **Clonar** en la fila de cada contenido y como **bulk action**
 **Seguridad:** nonce por post ID (`pictau_clone_{post_id}`) + `current_user_can('edit_post')`.
 
 > Reemplaza el plugin **Yoast Duplicate Post** — desinstalarlo si estaba activo.
+
+---
+
+## Contact Form 7 + Polylang — Integración nativa
+
+Integración nativa que reemplaza el plugin externo "Multilingual Contact Form 7 with Polylang". Implementada en `theme/inc/cf7-polylang.php` y cargada condicionalmente desde `theme/inc/utilities.php` cuando ambos plugins (CF7 y Polylang) están activos.
+
+### Funcionalidades
+
+**Tokens `{X}` en formularios:** cualquier texto entre llaves (`{Texto de ejemplo}`) en el editor CF7 se registra automáticamente como string traducible en Polylang (grupo "Contact Form 7"). En el frontend se sustituye por su traducción al idioma activo.
+
+- Los tokens en atributos `value=` de campos no-submit se protegen y **no se traducen** (preservan el valor técnico).
+- Compatibilidad con campos `select`/`radio`/`checkbox` con pipes (`{Opción}|val`): el valor técnico tras el pipe se restaura en los datos enviados.
+- Compatibilidad con plantillas de email: sujeto y cuerpo con tokens `{X}` se traducen al idioma del formulario.
+- Bloques `<style>` se neutralizan antes de aplicar el regex para evitar falsos positivos con propiedades CSS.
+
+**Mensajes de error CF7:** los mensajes de validación del formulario (éxito, error de validación, spam, etc.) se registran en Polylang bajo el grupo "Contact Form 7 Error Messages" y se traducen en frontend.
+
+**Locale forzado en AJAX:** las respuestas AJAX del formulario usan siempre el idioma correcto mediante cascada: `_wpcf7_locale` (POST) → cookie `pll_language` → `pll_current_language()`.
+
+**Caché por formulario:** los tokens se escanean una sola vez por formulario y se cachean en transientes (`WEEK_IN_SECONDS`). El caché se invalida automáticamente al guardar el formulario.
+
+### Panel Polylang en el editor CF7
+
+Cada formulario tiene una pestaña **Polylang** en el editor con:
+
+- Lista de los tokens traducibles detectados en el formulario.
+- Aviso si hay strings huérfanas (eliminadas del formulario pero aún en el registro).
+- **"Traducir campos del formulario"** — enlace directo a Polylang > String Translations filtrado por el grupo "Contact Form 7".
+- **"Traducir mensajes de error"** — enlace directo a Polylang > String Translations filtrado por el grupo "Contact Form 7 Error Messages".
+- **"Importar mensajes de error desde CF7"** — importa las traducciones de los mensajes de error directamente desde los archivos `.mo` del plugin CF7 a Polylang, sin salida de pantalla. Muestra el resultado inline (importadas / omitidas por idioma).
+- **"Limpiar strings huérfanas"** — elimina del registro interno las strings que ya no existen en ningún formulario, sin recargar la página.
+
+### Página Polylang > String Translations
+
+Cuando se filtra por el grupo "Contact Form 7 Error Messages", aparece un aviso con el botón **"Importar mensajes de error desde CF7"** que ejecuta la misma importación masiva para todos los idiomas configurados en Polylang.
+
+### Archivos `.mo` de CF7
+
+La importación busca los archivos `.mo` de CF7 en:
+1. `WP_LANG_DIR/plugins/contact-form-7-{locale}.mo`
+2. `WP_PLUGIN_DIR/contact-form-7/languages/contact-form-7-{locale}.mo`
+
+Para locales no ingleses, construye un mapa inverso (traducción → msgid inglés) para poder buscar correctamente en el `.mo` del idioma destino.
 
 ---
 

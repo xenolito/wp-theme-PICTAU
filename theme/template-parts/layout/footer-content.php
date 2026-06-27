@@ -39,7 +39,7 @@
 			}
 
 			if ( ! strlen( $str ) && $show_err_msg ) {
-				echo '<p style="background-color:#ff1053;color:white;padding:10px;border-radius:5px;">⛔️ ' . esc_html__( 'Crea un "Pictau Block" para el footer y asígnalo en Personalizar → PICTAU Theme Customizer → Footer', 'pictau' ) . '</p>';
+				echo '<p style="background-color:#fb9500;color:white;padding:10px;border-radius:5px;">⛔️ ' . esc_html__( 'Crea un "Pictau Block" para el footer y asígnalo en Personalizar → PICTAU Theme Customizer → Footer', 'pictau' ) . '</p>';
 			} else {
 				echo $str;
 			}
