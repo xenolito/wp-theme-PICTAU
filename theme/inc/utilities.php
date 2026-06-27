@@ -645,6 +645,11 @@ add_shortcode('logos-partners', 'show_partners_logos');
 //! CONTACT FORM 7 HTML TEMPLATES FOR SENT EMAILS
 require get_template_directory() . '/inc/cf7_html_email_templates.php';
 
+//! INTEGRACIÓN NATIVA CF7 + POLYLANG (reemplaza plugin externo)
+if ( class_exists( 'WPCF7_ContactForm' ) && function_exists( 'pll_register_string' ) ) {
+	require get_template_directory() . '/inc/cf7-polylang.php';
+}
+
 
 
 //! FEATURERD AREAS CARDS FOR HOMEPAGE WITH POD TEMPLATE

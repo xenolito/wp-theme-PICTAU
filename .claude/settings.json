@@ -82,7 +82,8 @@
       "mcp__chrome-devtools__performance_stop_trace",
       "mcp__chrome-devtools__performance_analyze_insight",
       "mcp__chrome-devtools__take_memory_snapshot",
-      "Read(/var/folders/**/chrome-devtools-mcp-*/**)"
+      "Read(/var/folders/**)",
+      "Read(/private/tmp/**)"
     ]
   }
 }
