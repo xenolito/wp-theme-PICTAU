@@ -3372,7 +3372,7 @@ body.home [data-heroslider] h2#slider-start-animation:has(.sup) .sup .char {
   --button-txt-color: white;
   /* --txt-color: #293846; */
   --button-txt-color-hover: white;
-  --button-border-radius: 4px;
+  --button-border-radius: 0px;
   --button-border-width: 1px;
   --button-border-color: var(--bg-color);
 }
@@ -8522,10 +8522,10 @@ body.header-width-centered .main-header-content {
   --submenu-bg-color: white;
   /*? Navigation Default texts */
   --nav-font-family: var(--def-font-family);
-  --nav-text-size: clamp(0.6rem, 3vw, 0.65rem);
+  --nav-text-size: clamp(0.6rem, 3vw, 0.8rem);
   --nav-letter-spacing: 0.3ch;
   --nav-text-transform: uppercase;
-  --nav-text-weight: 700;
+  --nav-text-weight: 400;
   --nav-text-color: rgba(0, 0, 0, 0.75);
   --nav-text-color-scrolled: rgba(0, 0, 0, 0.75);
   --nav-text-color-transparent: white;
@@ -18539,8 +18539,8 @@ button.swiper-pagination-bullet {
 
 :root {
   /* ! SHAPES */
-  --def-border-radius: 4px;
-  --min-border-radius: 4px;
+  --def-border-radius: 0px;
+  --min-border-radius: 0px;
   --box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.04), 0px 6px 12px rgba(0, 0, 0, 0.02);
   --box-shadow-pop: 0px 51px 78px rgba(17, 7, 53, 0.05), 0px 21.3066px 35.4944px rgba(17, 7, 53, 0.0359427), 0px 11.3915px 18.9418px rgba(17, 7, 53, 0.0298054),
 		0px 6.38599px 9.8801px rgba(17, 7, 53, 0.025), 0px 3.39155px 4.58665px rgba(17, 7, 53, 0.0201946), 0px 1.4113px 1.55262px rgba(17, 7, 53, 0.0140573), inset 0px 1px 0px rgba(41, 56, 78, 0.05);

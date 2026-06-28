@@ -960,10 +960,10 @@ body.header-width-centered {
 
 	/*? Navigation Default texts */
 	--nav-font-family: var(--def-font-family);
-	--nav-text-size: clamp(0.6rem, 3vw, 0.65rem);
+	--nav-text-size: clamp(0.6rem, 3vw, 0.8rem);
 	--nav-letter-spacing: 0.3ch;
 	--nav-text-transform: uppercase;
-	--nav-text-weight: 700;
+	--nav-text-weight: 400;
 	--nav-text-color: rgba(0, 0, 0, 0.75);
 	--nav-text-color-scrolled: rgba(0, 0, 0, 0.75);
 	--nav-text-color-transparent: white;

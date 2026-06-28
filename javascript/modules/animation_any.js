@@ -76,6 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				nextanim = false, // next animation to play after this one: '.selector' or '.selector, 1.5' where 1.5 is seconds to wait after completion
 				callback = false, // callback function to call after animation complete
 				slideamount = 100,
+				scalestart = 3, // blurIn: initial scale per character before animating to 1
 				matchmedia = false, // disable animation if matchmedia query does not match (e.g. "min-width: 1024px")
 				log = false,
 			} = config
@@ -84,7 +85,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			this.header = targetDOMElement
 			this.whattoanim = whattoanim
-			this.repeat = repeat === 'false' || repeat === '0' ? false : true
+			this.animation = animationName
+			if (this.animation === 'blurIn' && this.whattoanim === 'self') {
+				this.whattoanim = 'chars'
+			}
 			this.markers = markers === 'true' || markers === '1' ? true : false
 			this.slideamount = slideamount
 			this.log = log === 'true' || log === '1' ? true : false
@@ -92,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.duration = Number(duration)
 			this.autoplay = Number(autoplay)
 			this.stagger = stagger
-			this.animation = animationName
+			this.scaleStart = Number(scalestart)
 			this.zoomStartScale = animParam !== undefined ? Number(animParam) : 1.2
 			this.rotateXStartAngle = animParam !== undefined ? Number(animParam) : 90
 			this.rotateXOriginY = originParam === 'bottom' ? '100%' : '0%'
@@ -439,49 +443,36 @@ document.addEventListener('DOMContentLoaded', () => {
 			}
 
 			let elementsToAnim = this.typeSplit[this.whattoanim]
+			const staggerWindow = this.stagger * elementsToAnim.length
+			const entryEase = CustomEase.create('custom', 'M0,0 C0.104,0.204 -0.267,1.054 1,1 ')
 
 			elementsToAnim.forEach(elem => {
-				const randomBlurPx = getRandom(0, 50)
-
 				elem.style.userSelect = 'none'
-				elem.style.filter = `blur(${randomBlurPx}px)`
-
-				elem.blur = {
-					amount: randomBlurPx,
-					scale: randomBlurPx / 50,
-					target: elem,
-				}
+				elem.style.filter = `blur(${getRandom(0, 50)}px)`
+				elem.style.willChange = 'filter, transform, opacity'
 			})
 
-			gsap.set(this.header, {
-				scale: 3,
-				opacity: 0,
-			})
-
-			gsap.set(elementsToAnim, {
-				willChange: 'auto',
-			})
-
-			this.timeLine.to(this.header, {
-				scale: 1,
-				opacity: 1,
-				duration: this.duration,
-				ease: CustomEase.create('custom', 'M0,0 C0.104,0.204 -0.267,1.054 1,1 '),
-			})
+			// El contenedor empieza en opacity:0 por CSS — lo revelamos para que los chars lo gestionen
+			gsap.set(this.header, { opacity: 1 })
+			gsap.set(elementsToAnim, { scale: this.scaleStart, opacity: 0 })
 
 			elementsToAnim.forEach(elem => {
-				this.timeLine.to(
-					elem.blur,
-					{
-						amount: 0,
-						duration: this.duration * 1.5,
-						ease: 'expo.out',
-						onUpdate: () => {
-							elem.blur.target.style.filter = `blur(${elem.blur.amount}px)`
-						},
-					},
-					'0'
-				)
+				const offset = gsap.utils.random(0, staggerWindow)
+
+				// Posición absoluta en el timeline (no delay interno) para garantizar sincronía
+				this.timeLine.to(elem, {
+					scale: 1,
+					opacity: 1,
+					duration: this.duration,
+					ease: entryEase,
+				}, offset)
+
+				this.timeLine.to(elem, {
+					filter: 'blur(0px)',
+					duration: this.duration * 1.5,
+					ease: 'expo.out',
+					onComplete: () => { elem.style.willChange = 'auto' },
+				}, offset)
 			})
 		}
 

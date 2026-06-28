@@ -83,6 +83,7 @@
       "mcp__chrome-devtools__performance_analyze_insight",
       "mcp__chrome-devtools__take_memory_snapshot",
       "Read(/var/folders/**)",
+      "Read(/private/var/folders/**)",
       "Read(/private/tmp/**)"
     ]
   }
