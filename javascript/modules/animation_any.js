@@ -35,9 +35,9 @@ gsap.registerPlugin(CustomEase)
  * @author: Oscar Rey Tajes, oscar.rey.tajes@gmail.com
  *
  * available animations for data-anim-header attribute: data-anim-any"
- * 			'blurIn' (default) 	--> Random start blur in each char / word
+ * 			'blurIn' --> Random start blur in each char / word
  * 			'clippedFromBottom'	--> clipped slide from bottom in each char / word
- *    	'slideFromBottom'		--> slide from botton in each char / word / line
+ *    	'slideFromBottom' (default)		--> slide from botton in each char / word / line
  * 			'slideFromLeft'			--> slide from left in each char / word
  * 			'slideFromTop'			--> slide from Top in each char / word
  * 			'slideFromRight'		--> slide from Right in each char / word

@@ -36,7 +36,7 @@ window.addEventListener('load', () => {
 	if (cover) {
 		window.introTween.to(cover, {
 			opacity: 0,
-			duration: 0.8,
+			duration: 1.2,
 			ease: 'power2.out',
 			onUpdate: function () {
 				if (this.progress() > 0.3 && !headerAnimLaunched) {
@@ -63,6 +63,4 @@ window.addEventListener('load', () => {
 		}
 		if (video && !video.autoplay) window.video_intro.play()
 	}, 50)
-
-	// window.introTween.play()
 })
