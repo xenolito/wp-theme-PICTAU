@@ -895,9 +895,8 @@ body.header-width-centered {
 
 	.lang-list {
 		position: relative;
-		opacity: 1;
 		margin: 0;
-		translate: 0 0;
+		translate: 0 0 !important;
 		gap: 0;
 		flex-flow: row;
 		opacity: 0;

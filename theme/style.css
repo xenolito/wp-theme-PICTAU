@@ -8918,7 +8918,7 @@ body.header-width-centered .main-header-content {
 .lang-switcher.horizontal .lang-list {
   position: relative;
   margin: 0;
-  translate: 0 0;
+  translate: 0 0 !important;
   gap: 0;
   flex-flow: row;
   opacity: 0;
