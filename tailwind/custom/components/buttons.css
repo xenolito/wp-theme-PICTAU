@@ -13,7 +13,7 @@
 	/* --txt-color: #293846; */
 	--button-txt-color-hover: white;
 
-	--button-border-radius: 4px;
+	--button-border-radius: 0px;
 	--button-border-width: 1px;
 	--button-border-color: var(--bg-color);
 }

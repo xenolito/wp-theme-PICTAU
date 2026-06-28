@@ -444,7 +444,7 @@ final class Pictau_CF7_Polylang {
 		// Remover bloques <style> antes de buscar tokens
 		$clean = preg_replace( '/<style\b[^>]*>.*?<\/style>/si', '', $text );
 
-		preg_match_all( '/\{([^{};:\n\r"=]+?)\}/', $clean, $matches );
+		preg_match_all( '/\{([^{};:\n\r]+?)\}/', $clean, $matches );
 
 		return array_unique( $matches[1] );
 	}
@@ -469,9 +469,9 @@ final class Pictau_CF7_Polylang {
 			$text
 		);
 
-		// Traducir tokens {X} (excluye CSS-like: :  ;  {}  saltos, y atributos HTML: " =)
+		// Traducir tokens {X} (excluye CSS-like: :  ;  {}  saltos de línea)
 		$text = preg_replace_callback(
-			'/\{([^{};:\n\r"=]+?)\}/',
+			'/\{([^{};:\n\r]+?)\}/',
 			function( $match ) {
 				$decoded    = html_entity_decode( $match[1], ENT_QUOTES );
 				$translated = function_exists( 'pll__' ) ? pll__( $decoded ) : $decoded;

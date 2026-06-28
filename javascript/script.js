@@ -52,7 +52,6 @@ import './modules/logosGridFilter'
 import './modules/scrollToAName'
 import './modules/style-header-by-section'
 import './modules/video-trigger'
-// import './modules/lang_switcher'
 import './modules/social_share_buttons'
 // import './modules/browser_lang_redirection'
 import './modules/event_selector'
@@ -65,6 +64,7 @@ import './modules/parallax'
 // import './modules/__intro_anim' //! remove/update. This is a specific intro animation for the home page slider for this customer.
 import { initImageLoaderCover } from './modules/imageLoaderCover'
 import { initCatalogMenu } from './modules/catalogMenu'
+import './modules/lang_switcher'
 import './modules/slider_videoBg_trigger_anim'
 
 document.addEventListener('DOMContentLoaded', () => {
