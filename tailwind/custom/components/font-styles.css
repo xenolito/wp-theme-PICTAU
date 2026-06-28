@@ -31,7 +31,7 @@ h2,
 h3 {
 	/* letter-spacing: -0.02ch; */
 	letter-spacing: -0.04em;
-	line-height: 1.7ch;
+	/* line-height: 1.7ch; */
 	margin-left: 0;
 	margin-right: 0;
 	/* text-transform: uppercase; */
@@ -40,7 +40,7 @@ h3 {
 	}
 
 	&:has(.char) {
-		line-height: 1.65ch;
+		line-height: 1.2;
 	}
 }
 
@@ -230,16 +230,16 @@ h1,
 h2,
 h3 {
 	em {
-		padding-right: 0.01ch;
+		color: var(--main-color);
+		font-style: normal;
+		/* padding-right: 0.01ch;
 		background-color: var(--main-color);
 		background-image: var(--heading-gradient);
 		background-size: 150% 100%;
 		background-repeat: no-repeat;
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
-		background-clip: text;
-		/* padding-bottom: 0.25ch; */
-		font-style: normal;
+		background-clip: text; */
 
 		.word {
 			overflow: visible;
