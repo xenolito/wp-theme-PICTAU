@@ -939,8 +939,8 @@ body.header-width-centered {
 	--header-x-padding-min: 2.5rem;
 
 	/*? Brand Logo */
-	--logo-brand-color: #315d9e;
-	--logo-brand-color-scrolled: unset;
+	--logo-brand-color: var(--main-color, black);
+	--logo-brand-color-scrolled: var(--main-color, black);
 	--logo-brand-color-transparent: white;
 
 	--desktop-logo-brand-width: 190px;

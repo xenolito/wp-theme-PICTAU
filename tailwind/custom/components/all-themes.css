@@ -1,9 +1,5 @@
 :root {
-	/* --main-color: hsl(350, 87%, 37%); */
-	--main-color-rgb: 176, 12, 40;
-
 	--main-color: hsl(26, 100%, 50%);
-	--main-color-rgb: 56, 54, 52;
 
 	--brand-color-rgb: 49, 93, 158;
 
@@ -13,8 +9,8 @@
 
 	/* --main-color: rgba(0, 255, 218, 1); */
 	/* --cta-color: rgba(0, 255, 218, 1); */
-	--cta-color: hsl(354, 73%, 46%);
-	--highlight-color: hsl(354, 73%, 46%);
+	--cta-color: hsl(24, 8%, 12%);
+	--highlight-color: hsl(24, 8%, 12%);
 
 	/* --txt-color: #343434; */
 	--txt-color: #343434;

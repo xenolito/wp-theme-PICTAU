@@ -783,8 +783,7 @@ body .is-layout-constrained:not(.alignfull) > * {
 		display: flex;
 		position: absolute;
 		inset: 0;
-		/* background-color: rgba(0, 0, 0, 0.33); */
-		background-color: rgba(0, 0, 0, 0.45);
+		background-color: rgba(0, 0, 0, 0.66);
 	}
 }
 
@@ -3266,6 +3265,5 @@ section.category-grid-section {
 
 	.scene {
 		justify-content: center;
-		padding-block: var(--def-layout-x-padding);
 	}
 }

@@ -1867,18 +1867,15 @@ sup {
 }
 
 :root {
-  /* --main-color: hsl(350, 87%, 37%); */
-  --main-color-rgb: 176, 12, 40;
   --main-color: hsl(26, 100%, 50%);
-  --main-color-rgb: 56, 54, 52;
   --brand-color-rgb: 49, 93, 158;
   --line-color: hsl(0, 0%, 92%);
   --grey-color: hsla(0, 1.42%, 75%, 1);
   --light-grey-color: hsla(210, 20%, 97%, 1);
   /* --main-color: rgba(0, 255, 218, 1); */
   /* --cta-color: rgba(0, 255, 218, 1); */
-  --cta-color: hsl(354, 73%, 46%);
-  --highlight-color: hsl(354, 73%, 46%);
+  --cta-color: hsl(24, 8%, 12%);
+  --highlight-color: hsl(24, 8%, 12%);
   /* --txt-color: #343434; */
   --txt-color: #343434;
   --txt-color-theme-light: var(--txt-color);
@@ -3813,7 +3810,7 @@ body.home [data-heroslider] h2#slider-start-animation:has(.sup) .sup .char {
   --bg-color: var(--main-color);
   /* --bg-color: #34f1c7; */
   --bg-color-hover: var(--highlight-color);
-  --bg-color-outline: transparent;
+  --bg-color-outline: var(--header-bg-color-transparent, transparent);
   --padding-y: 1.3ch;
   --padding-x: 2.5ch;
   --button-txt-color: white;
@@ -4017,6 +4014,8 @@ button#submit:has(svg) {
 .outline .wp-element-button {
   box-shadow: none;
   background-color: var(--bg-color-outline);
+  -webkit-backdrop-filter: blur(15px);
+          backdrop-filter: blur(15px);
   color: var(--bg-color) !important;
 }
 
@@ -8954,8 +8953,8 @@ body.header-width-centered .main-header-content {
   /* --header-x-padding: 2rem; */
   --header-x-padding-min: 2.5rem;
   /*? Brand Logo */
-  --logo-brand-color: #315d9e;
-  --logo-brand-color-scrolled: unset;
+  --logo-brand-color: var(--main-color, black);
+  --logo-brand-color-scrolled: var(--main-color, black);
   --logo-brand-color-transparent: white;
   --desktop-logo-brand-width: 190px;
   --mobile-logo-brand-width: 140px;
@@ -9909,8 +9908,7 @@ body .is-layout-constrained:not(.alignfull) > * {
   display: flex;
   position: absolute;
   inset: 0;
-  /* background-color: rgba(0, 0, 0, 0.33); */
-  background-color: rgba(0, 0, 0, 0.45);
+  background-color: rgba(0, 0, 0, 0.66);
 }
 
 /* .is-layout-constrained > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
@@ -12550,7 +12548,6 @@ section.category-grid-section > * {
 
 .slider.has-video-bg .scene {
   justify-content: center;
-  padding-block: var(--def-layout-x-padding);
 }
 
 :root {
@@ -17244,10 +17241,6 @@ canvas.anim-bg {
   grid-template-rows: 1fr;
 }
 
-.slider > *:has(.scene) {
-  pointer-events: none;
-}
-
 .slider [data-video] {
   position: absolute;
 }
@@ -17280,8 +17273,12 @@ canvas.anim-bg {
   line-height: 1.8ch;
 }
 
+body.home .slider {
+  --button-font-size: clamp(1rem, 3.5vw, 1.2rem);
+}
+
 body.home .slider h1 {
-  font-size: clamp(2.5rem, 8vw, 5rem) !important;
+  font-size: clamp(3rem, 8vw, 7rem) !important;
   font-weight: 600;
 }
 
