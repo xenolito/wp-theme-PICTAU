@@ -209,12 +209,6 @@ function mergeClass(existing, value) {
 			margin-top: 4px !important;
 		}
 
-		/* CSS Adicional textarea: 1 fila de alto */
-		.block-editor-block-inspector__advanced .components-textarea-control__input {
-			min-height: unset !important;
-			height: 2rem;
-			resize: vertical;
-		}
 
 		/* Ordenar paneles del tab Settings: nuestro panel → Avanzado → resto */
 		[id$="-settings-view"] {
