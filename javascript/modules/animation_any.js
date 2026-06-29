@@ -1,15 +1,17 @@
 /**
  * Animation any for WP based on GSAP
- * version: 4.9.1
- * Added: nextanim param for identifiy an element with animation to play after this one
- * Added: callback function after animation complete: Callback should exist/scope at window level. :-(
+ * version: 4.9.2
+ *
  * ? changelog:
- * ? Added matchmedia param to setup: as string like "min-width: 1024px". If true, animation will run, otherwise will be skipped, including not passed (html param: data-anim-any-matchmedia)
+ * ? v4.9.2 — Fixed nextanim timing: chained targets (no explicit data-anim_any_delay) now get delay=0 in pre-pass, so nextAnimDelay controls the visual overlap directly without the default 0.33s shifting the start. Explicit delay attributes are preserved. Also improved absolutePos fallback from tlDuration to Math.max(0.001, rawPos) to maximise overlap on very short animations.
+ * ? v4.9.1 — Fixed nextanim callback not firing when animation duration <= |nextAnimDelay|: position clamped to tlDuration instead of t=0 (GSAP skips callbacks at t=0 on play())
+ * ? v4.9.0 — Added nextanim param: chain an element's animation after this one fires ('.selector' or '.selector,-0.5' to start 0.5s before end)
+ * ? v4.8.1 — Added callback function after animation complete (must exist at window scope)
+ * ? Added matchmedia param: disable animation if query doesn't match (e.g. "min-width: 1024px")
  * ? Added zoomIn and rotateX animations from v3.1
  * ? Added chainanim param from v3.1
  * ? Merged animation_any_V1.js (v4.8.1) as single canonical file
  * ? setClippedFromBottom: replaced clipPath polygon with clip-path inset(-0.4em 0 0 0) for diacritic-safe masking
- * ? Fixed nextanim callback not firing when animation duration <= |nextAnimDelay|: position clamped to tlDuration instead of t=0 (GSAP skips callbacks at t=0 on play())
  *
  * © @xenolito 2026
  *
@@ -195,9 +197,10 @@ document.addEventListener('DOMContentLoaded', () => {
 			if (this.nextanim && this.nextToAnimate) {
 				const tlDuration = this.timeLine.duration()
 				const rawPos = tlDuration + this.nextAnimDelay
-				// If the offset pushes the callback to t<=0, GSAP won't fire it (playhead
-				// starts there and never crosses it going forward). Fall back to end of timeline.
-				const absolutePos = rawPos > 0.001 ? rawPos : tlDuration
+				// GSAP won't fire callbacks at t=0 (playhead starts there). For animations
+				// too short to honour the full offset, fire as early as possible instead of
+				// falling back to the end of the timeline (which would start the target late).
+				const absolutePos = Math.max(0.001, rawPos)
 				this.timeLine.call(
 					() => {
 						this.nextToAnimate.headerAnimation?.play()
@@ -534,7 +537,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	headerToAnim.forEach(header => {
 		const config = getConfigByAtt(header, attributeId)
-		if (chainedTargets.has(header)) config.autoplay = '0'
+		if (chainedTargets.has(header)) {
+			config.autoplay = '0'
+			// Strip the default auto-play delay for chained targets: their timing is
+			// already controlled by the triggering element's nextAnimDelay offset, so
+			// an additional default delay would shift the visual start unexpectedly.
+			// An explicit data-anim_any_delay attribute is preserved as-is.
+			if (config.delay === undefined) config.delay = '0'
+		}
 		const headerAnimation = new HeaderAnimation(header, config)
 		header.headerAnimation = headerAnimation
 	})

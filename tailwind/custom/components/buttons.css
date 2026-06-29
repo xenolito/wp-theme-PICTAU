@@ -4,7 +4,7 @@
 	--bg-color: var(--main-color);
 	/* --bg-color: #34f1c7; */
 	--bg-color-hover: var(--highlight-color);
-	--bg-color-outline: transparent;
+	--bg-color-outline: var(--header-bg-color-transparent, transparent);
 
 	--padding-y: 1.3ch;
 	--padding-x: 2.5ch;
@@ -98,6 +98,7 @@ button#submit {
 	.wp-element-button {
 		box-shadow: none;
 		background-color: var(--bg-color-outline);
+		backdrop-filter: blur(15px);
 		color: var(--bg-color) !important;
 
 		&:hover {
