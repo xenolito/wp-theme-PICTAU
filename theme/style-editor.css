@@ -1428,7 +1428,7 @@ sup {
   /* --main-color: rgba(0, 255, 218, 1); */
   /* --cta-color: rgba(0, 255, 218, 1); */
   --cta-color: hsl(24, 8%, 12%);
-  --highlight-color: hsl(24, 8%, 12%);
+  --highlight-color: hsl(0, 3%, 6%);
   /* --txt-color: #343434; */
   --txt-color: #343434;
   --txt-color-theme-light: var(--txt-color);
@@ -7804,7 +7804,8 @@ body.header-width-centered .main-header-content {
   padding-bottom: .5rem;
   padding-left: 3px;
   padding-right: 3px;
-  --inset-y: 5px;
+  --inset-y: 2px;
+  /* increase for make it thinner vertically */
   --inset-x: -10px;
   --inset-x-with-icon: 0;
   position: relative;
