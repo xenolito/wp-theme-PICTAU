@@ -1872,7 +1872,11 @@ function language_switcher($atts = [], $content = '')
 
 	$output = '<div class="lang-switcher ' . $isHorizontal . '">';
 
-	if (function_exists('pll_the_languages')) {
+	if ( ! function_exists( 'pll_the_languages' ) ) {
+		if ( current_user_can( 'manage_options' ) ) {
+			$output .= '<span class="lang-switcher-warning">🚩 ' . esc_html__( 'No multilanguage detected Polylang', 'pictau' ) . '</span>';
+		}
+	} elseif (function_exists('pll_the_languages')) {
 
 		// $output .= '<div class="current-lang">'. pl_get_current_lang() . ' --- <img width="30" height="30" src="' . get_lang_flag_src(pl_get_current_lang()) . '" /></div>';
 
