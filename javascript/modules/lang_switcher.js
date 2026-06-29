@@ -18,6 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
 				this.switcher = switcher
 				this.isHorizontal = this.switcher.classList.contains('horizontal')
 				this.langList = this.switcher.querySelector('.lang-list')
+
+				if (!this.langList) return
+
 				this.langListContainer = this.langList.querySelector('ul')
 				this.currentLang = this.switcher.querySelector('.current-lang')
 				this.langItems = this.switcher.querySelectorAll('.lang-item')
