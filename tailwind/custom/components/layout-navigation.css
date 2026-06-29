@@ -256,7 +256,8 @@ body.header-width-centered {
 				.menu-item-nolink {
 					&:not(.bt) {
 						@apply flex items-center py-[.5rem] px-[3px];
-						--inset-y: 5px;
+						--inset-y: 2px; /* increase for make it thinner vertically */
+						--inset-x: -10px;
 						--inset-x: -10px;
 						--inset-x-with-icon: 0;
 						position: relative;
