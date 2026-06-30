@@ -399,6 +399,10 @@ body.header-width-centered {
 	}
 
 	#primary-menu {
+		display: flex;
+		flex-flow: column;
+		gap: 0.5ch;
+
 		.menu-item {
 			@apply text-nowrap whitespace-nowrap py-[.2ch] min-w-[var(--submenu-min-width)] max-w-[300px];
 
@@ -420,6 +424,8 @@ body.header-width-centered {
 
 				a {
 					position: relative;
+					margin-left: 1.5rem;
+
 					&::before {
 						content: "";
 						position: absolute;
