@@ -8005,6 +8005,7 @@ body.header-width-centered .main-header-content {
 
 .main-nav-mobile #primary-menu .menu-item.menu-bt a {
   position: relative;
+  margin-top: 1rem;
   margin-left: 1.5rem;
 }
 
