@@ -19006,17 +19006,6 @@ button.swiper-pagination-bullet {
   --box-shadow-md: 0 4px 26px -3px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --box-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   /* ! COLORS DEFAULT */
-  /* --main-color: #c3ff00; */
-  /* --main-color: #1100ff; */
-  /* --main-color-darker: #7a9913; */
-  --secondary-color: rgba(0, 31, 52, 0.8);
-  --secondary-color: rgba(30, 55, 94, 1);
-  --body-bg-light: white;
-  --body-bg-dark: #051a36;
-  --bg-main: white;
-  --bg-secondary: #f9fbfa;
-  --bg-layer2-dark: #051a36;
-  /* --bg-dark: #24262b; */
   --bg-card-dark: #1d2a3d;
   --bg-card-light: white;
   --bg-sec-dark: rgba(255, 255, 255, 0.1);
