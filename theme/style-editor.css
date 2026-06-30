@@ -7965,6 +7965,12 @@ body.header-width-centered .main-header-content {
   translate: calc(-100% + var(--mobile-switcher-dim) + 2 * var(--mobile-switcher-borderDim)) 0;
 }
 
+.main-nav-mobile #primary-menu {
+  display: flex;
+  flex-flow: column;
+  gap: 0.5ch;
+}
+
 .main-nav-mobile #primary-menu .menu-item {
   min-width: var(--submenu-min-width);
   max-width: 300px;
@@ -7999,6 +8005,7 @@ body.header-width-centered .main-header-content {
 
 .main-nav-mobile #primary-menu .menu-item.menu-bt a {
   position: relative;
+  margin-left: 1.5rem;
 }
 
 .main-nav-mobile #primary-menu .menu-item.menu-bt a::before {
