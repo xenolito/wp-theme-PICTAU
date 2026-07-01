@@ -17,82 +17,28 @@
 	--def-border-radius: 0px;
 	--min-border-radius: 0px;
 
-	--box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.04), 0px 6px 12px rgba(0, 0, 0, 0.02);
 	--box-shadow-pop: 0px 51px 78px rgba(17, 7, 53, 0.05), 0px 21.3066px 35.4944px rgba(17, 7, 53, 0.0359427), 0px 11.3915px 18.9418px rgba(17, 7, 53, 0.0298054),
 		0px 6.38599px 9.8801px rgba(17, 7, 53, 0.025), 0px 3.39155px 4.58665px rgba(17, 7, 53, 0.0201946), 0px 1.4113px 1.55262px rgba(17, 7, 53, 0.0140573), inset 0px 1px 0px rgba(41, 56, 78, 0.05);
-
-	--navigation-box-shadow: 0px 51px 80px rgba(22, 26, 41, 0.0154121), 0px 15.375px 24.1177px rgba(22, 26, 41, 0.0270905), 0px 6.38599px 10.0172px rgba(22, 26, 41, 0.0409122),
-		0px 0.5px 3.62304px rgba(22, 26, 41, 0.07);
 
 	--tw-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 	--tw-ring-offset-shadow: 0 0 #0000;
 	--tw-ring-shadow: 0 0 #0000;
-	--box-shadow-big: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-
-	--box-shadow-md: 0 4px 26px -3px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-	--box-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 
 	/* ! COLORS DEFAULT */
 
 	--bg-card-light: white;
 	--bg-card-dark: #1d2a3d;
 	--bg-card-light: white;
-	--bg-sec-dark: rgba(255, 255, 255, 0.1);
 
 	/*! DARK OVERLAYS */
 	--dark-overlay-header: linear-gradient(160deg, rgba(0, 0, 0, 0.7) 50%, rgba(0, 0, 0, 0) 100%);
 	--dark-overlay-from-bottom: linear-gradient(340deg, rgba(0, 0, 0, 0.4) 15%, rgba(0, 0, 0, 0) 100%);
 	--dark-overlay-from-bottom-slider: linear-gradient(350deg, rgba(0, 0, 0, 1) 15%, rgba(0, 0, 0, 0) 100%);
-	/* --dark-overlay-from-bottom-slider: linear-gradient(350deg, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%); */
 	--dark-overlay-from-bottom-for-text: linear-gradient(0deg, rgba(0, 0, 0, 0.52) 5%, rgba(0, 0, 0, 0) 100%);
-
-	/*! COLOR THEMES */
-
-	/* --bg-color-theme-A: rgb(210 181 138 / 20%); */
-	/* --bg-color-theme-A: rgb(0 0 0 / 5%); */
-	/* --bg-color-theme-A: rgb(111 127 17 / 10%); */
-
-	--bg-color-theme-white: white;
-	--bg-color-theme-white-dark: rgb(255 255 255 / 10%);
-	--heading-color-theme-white: rgb(87 60 20 / 100%);
-	--heading-color-theme-white-dark: var(--main-color);
-	--txt-color-theme-white: black;
-	--txt-color-theme-white-dark: white;
-
-	--bg-color-theme-Blue: #0056c7;
-	--bg-color-theme-Blue-dark: #0056c7;
-	--heading-color-theme-Blue: white;
-	--heading-color-theme-Blue-dark: white;
-	--txt-color-theme-Blue: white;
-	--txt-color-theme-Blue-dark: white;
-
-	--bg-color-theme-Red: #d92727;
-	--bg-color-theme-Red-dark: #d92727;
-	--heading-color-theme-Red: white;
-	--heading-color-theme-Red-dark: white;
-	--txt-color-theme-Red: white;
-	--txt-color-theme-Red-dark: white;
-
-	--bg-color-theme-Orange: #e18800;
-	--bg-color-theme-Orange-dark: #e18800;
-	--heading-color-theme-Orange: white;
-	--heading-color-theme-Orange-dark: white;
-	--txt-color-theme-Orange: white;
-	--txt-color-theme-Orange-dark: white;
-
-	/*! END COLOR THEMES */
 
 	/*! GRADIENTS */
 
-	--main-grad: linear-gradient(108deg, #008dff 24%, #00d39a 80%);
-	--main-grad-rev: linear-gradient(108deg, #00f6ff 24%, #008dff 80%);
-	--grad-2: linear-gradient(108deg, #008dff 70%, #00f6ff 100%);
-	--menu-txt-color: var(--main-color-second);
-	--scrolled-menu-txt-color: var(--main-color-second);
-	--scrollbar-handle-color: rgba(0, 0, 0, 0.3);
-	--mmenu-card-color: #f5f9fd;
-
-	--intro-gradient: linear-gradient(45deg, #a163f1, #6363f1 22%, #3498ea 40%, #40dfa3 67%, rgba(64, 223, 163, 0));
+	/* --intro-gradient: linear-gradient(45deg, #a163f1, #6363f1 22%, #3498ea 40%, #40dfa3 67%, rgba(64, 223, 163, 0)); */
 	--heading-gradient: linear-gradient(45deg, #2dd9f5, #2d9bf5 25%, #3498ea 40%, #f84ec3 67%, rgba(64, 223, 163, 0));
 
 	/* --mask-horiz-gradient: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%); */
@@ -103,29 +49,12 @@
 
 	--mask-testimonials-gradient: radial-gradient(50% 350% at 50% 50%, #fff 70%, transparent 100%);
 
-	--mask-faded-down: linear-gradient(353deg, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, 0.5011441647597255) 25%, rgba(0, 0, 0, 1) 47%, rgba(0, 0, 0, 1) 100%);
 	--mask-faded-down2: linear-gradient(360deg, rgba(0, 0, 0, 0) 7%, rgba(0, 0, 0, 0.5011441647597255) 20%, rgba(0, 0, 0, 0.5956976540616247) 32%, rgba(0, 0, 0, 1) 52%, rgba(0, 0, 0, 1) 100%);
 
 	--mask-faded-down3: linear-gradient(360deg, rgba(0, 0, 0, 0) 7%, rgba(0, 0, 0, 0.2) 20%, rgba(0, 0, 0, 0.4) 32%, rgba(0, 0, 0, 0.6) 40%, rgba(0, 0, 0, 1) 52%, rgba(0, 0, 0, 1) 100%);
 
 	/* --mask-radial-content: radial-gradient(50% 60% at 70% 55%, black 70%, transparent); */
 	--mask-radial-content: radial-gradient(80% 50% at 70% 80%, black 70%, transparent);
-
-	--footer-gradient: linear-gradient(
-		130deg,
-		hsl(0deg 0% 21%) 0%,
-		hsl(240deg 2% 21%) 11%,
-		hsl(230deg 6% 20%) 22%,
-		hsl(233deg 8% 20%) 33%,
-		hsl(228deg 10% 20%) 44%,
-		hsl(226deg 13% 19%) 56%,
-		hsl(228deg 16% 19%) 67%,
-		hsl(229deg 18% 18%) 78%,
-		hsl(227deg 21% 18%) 89%,
-		hsl(229deg 24% 17%) 100%
-	);
-
-	--footer-gradient: linear-gradient(to top, rgb(252, 0, 141), rgb(252, 91, 42) 100%);
 
 	--footer-gradient-dark: linear-gradient(
 		180deg,
@@ -140,22 +69,6 @@
 		hsl(216deg 84% 10%) 89%,
 		hsl(215deg 86% 11%) 100%
 	);
-
-	--card-gradient: linear-gradient(
-		155deg,
-		hsl(215deg 86% 8%) 0%,
-		hsl(215deg 79% 11%) 11%,
-		hsl(215deg 74% 14%) 22%,
-		hsl(216deg 66% 16%) 33%,
-		hsl(216deg 60% 19%) 44%,
-		hsl(217deg 54% 21%) 56%,
-		hsl(217deg 46% 24%) 67%,
-		hsl(216deg 41% 27%) 78%,
-		hsl(216deg 34% 29%) 89%,
-		hsl(217deg 28% 32%) 100%
-	);
-
-	/* --mmenu-card-color: #f5f9fd; */
 
 	/* ? THEME COLOR SCHEME DEFAULT */
 	--gradient-primary: linear-gradient(
@@ -202,126 +115,41 @@
 	/* ? custom secon grad bg */
 	--gradient-highlight-primary: radial-gradient(50vw 100% at calc(80% - 5vw) 100%, hsl(25deg 100% 93% / 93%) 25%, hsl(57deg 98% 100% / 0%) 120%);
 
-	--gradient-highlight-second: radial-gradient(50vw 50% at calc(100% - 5vw) 100%, hsla(225, 100%, 50%, 0.23) 25%, hsl(57deg 98% 100% / 0%) 120%);
-
-	--header-default-grad-bg: linear-gradient(
-		15deg,
-		hsl(207deg 98% 19%) 0%,
-		hsl(207deg 98% 22%) 11%,
-		hsl(207deg 98% 25%) 22%,
-		hsl(207deg 99% 29%) 33%,
-		hsl(207deg 99% 33%) 44%,
-		hsl(207deg 99% 36%) 56%,
-		hsl(207deg 99% 40%) 67%,
-		hsl(207deg 99% 43%) 78%,
-		hsl(207deg 100% 46%) 89%,
-		hsl(207deg 100% 50%) 100%
-	);
-
-	--heading-highlight-grad: linear-gradient(
-		45deg,
-		hsl(76deg 48% 43%) 0%,
-		hsl(76deg 52% 44%) 11%,
-		hsl(76deg 55% 45%) 22%,
-		hsl(76deg 59% 46%) 33%,
-		hsl(76deg 63% 47%) 44%,
-		hsl(76deg 67% 48%) 56%,
-		hsl(76deg 72% 49%) 67%,
-		hsl(75deg 77% 49%) 78%,
-		hsl(75deg 85% 49%) 89%,
-		hsl(74deg 100% 47%) 100%
-	);
-
 	--footer-bg-color: transparent;
 
 	--ui-color: #eaeaea;
-	--ui-color-subdarker: #ccc;
-	--ui-color-darker: #767676;
 
 	/* ! DIMENSIONS CONSTANTS */
 	--layout-max-width: 1500px;
-	--wp--style--global--content-size: var(--layout-max-width); /*! override WP default value */
-
 	--def-layout-x-padding: clamp(1rem, 5.5vw, 8rem);
-
 	--mobile-switcher-dim: 13px;
 	--mobile-switcher-borderDim: 6px;
-
 	--mobile-header-height: 45px;
 	--desktop-header-height: 80px;
-
 	--desktop-above-header-height: 0px;
-
 	&:has(.above-header-wrap) {
 		--desktop-above-header-height: 46px;
 	}
 
 	--mobile-above-header-height: 0px;
 	--whole-header-height: calc(var(--desktop-header-height) + var(--desktop-above-header-height) + var(--desktop-space-top));
-	/* --whole-header-height: calc(var(--desktop-header-height) + var(--desktop-above-header-height)); */
 	@media only screen and (max-width: 1024px) {
 		--whole-header-height: calc(var(--mobile-header-height) + var(--mobile-above-header-height));
 	}
-	--mobile-breakpoint: 1023px;
-	/* --default-section-vert-padding: clamp(4.5rem, 10vw, 6rem); */
-
-	--header-min-height: 250px;
-	@media only screen and (max-width: 921px) {
-		--header-min-height: 200px;
-	}
-	@media only screen and (max-width: 544px) {
-		--header-min-height: 160px;
-	}
-
-	/* --sticky-header-trigger-height: 350px; */
-	--desktop-submenu-width: 260px;
-	--header-sub-line-height: 4px;
-
-	--svg-default-h: 80px;
-	--svg-default-w: 80px;
 
 	--form-max-width: 320px;
 
-	/* ! LOGO HEADER DIMENSIONS */
-	--logo-brand-width: var(--desktop-logo-brand-width);
-	@media only screen and (max-width: 1023px) {
-		--logo-brand-width: var(--mobile-logo-brand-width);
-	}
-	--logo-brand-height: auto;
-
-	/* ! MOBILE MENU DIMENSIONS */
-	--mm-width: 360px;
-	--mm-nav-header-height: calc(1ch * 4.8);
-
 	/* ! SINGLE PAGE HEADER */
 	--page-header-min-height: 250px;
-	--page-header-blog-min-height: 550px;
-	--content-max-width: 1240px;
-
-	--border-def: 1px solid var(--ui-color);
-	--border-def-dark: 1px solid white;
-
-	/* ! scroller handler settings for "overlayscrollbars" module */
-	--scroll-handler-bg: red;
 
 	/* ! SLIDER DIMENSIONS */
 	--slider-min-height-base: 500px;
 	@media only screen and (max-width: 980px) {
 		--slider-min-height-base: 1px;
 	}
-	--slider-min-height: clamp(460px, var(--slider-min-height-base) + 10vw, 890px);
-	--slider-height: 100svh;
 
 	/*! SECTIONS OVERLAP */
 	--section-overlap-y: 200px;
-
-	/* * Animated border tiles */
-	--anim-border-width: 2px;
-	--anim-border-radius: var(--def-border-radius);
-	/* --bright-color: #3ac47e; */
-	--bright-color: white;
-	/* --bright-color: red; */
-	/* --border-color: #b2c6d7; */
 }
 
 body {
@@ -337,7 +165,6 @@ body {
 }
 
 .theme-dark-2 {
-	/* --color-header: var(--main-color); */
 	--color-header: white;
 	--color-content: rgba(255, 255, 255, 0.75);
 }

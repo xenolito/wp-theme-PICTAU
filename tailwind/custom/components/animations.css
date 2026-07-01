@@ -1,43 +1,43 @@
 :root {
-	--animation-fade-in: fade-in 0.5s var(--ease-3);
-	--animation-fade-in-bloom: fade-in-bloom 2s var(--ease-3);
-	--animation-fade-out: fade-out 0.5s var(--ease-3);
-	--animation-fade-out-bloom: fade-out-bloom 2s var(--ease-3);
-	--animation-scale-up: scale-up 0.5s var(--ease-3);
-	--animation-scale-down: scale-down 0.5s var(--ease-3);
-	--animation-slide-out-up: slide-out-up 0.5s var(--ease-3);
-	--animation-slide-out-down: slide-out-down 0.5s var(--ease-3);
-	--animation-slide-out-right: slide-out-right 0.5s var(--ease-3);
-	--animation-slide-out-left: slide-out-left 0.5s var(--ease-3);
-	--animation-slide-in-up: slide-in-up 0.5s var(--ease-3);
-	--animation-slide-in-down: slide-in-down 0.5s var(--ease-3);
-	--animation-slide-in-right: slide-in-right 0.5s var(--ease-3);
-	--animation-slide-in-left: slide-in-left 0.5s var(--ease-3);
-	--animation-shake-x: shake-x 0.75s var(--ease-out-5);
-	--animation-shake-y: shake-y 0.75s var(--ease-out-5);
-	--animation-shake-z: shake-z 1s var(--ease-in-out-3);
-	--animation-spin: spin 2s linear infinite;
-	--animation-ping: ping 5s var(--ease-out-3) infinite;
-	--animation-blink: blink 1s var(--ease-out-3) infinite;
-	--animation-float: float 3s var(--ease-in-out-3) infinite;
-	--animation-bounce: bounce 2s var(--ease-squish-2) infinite;
+	/* --animation-fade-in: fade-in 0.5s var(--ease-3); */
+	/* --animation-fade-in-bloom: fade-in-bloom 2s var(--ease-3); */
+	/* --animation-fade-out: fade-out 0.5s var(--ease-3); */
+	/* --animation-fade-out-bloom: fade-out-bloom 2s var(--ease-3); */
+	/* --animation-scale-up: scale-up 0.5s var(--ease-3); */
+	/* --animation-scale-down: scale-down 0.5s var(--ease-3); */
+	/* --animation-slide-out-up: slide-out-up 0.5s var(--ease-3); */
+	/* --animation-slide-out-down: slide-out-down 0.5s var(--ease-3); */
+	/* --animation-slide-out-right: slide-out-right 0.5s var(--ease-3); */
+	/* --animation-slide-out-left: slide-out-left 0.5s var(--ease-3); */
+	/* --animation-slide-in-up: slide-in-up 0.5s var(--ease-3); */
+	/* --animation-slide-in-down: slide-in-down 0.5s var(--ease-3); */
+	/* --animation-slide-in-right: slide-in-right 0.5s var(--ease-3); */
+	/* --animation-slide-in-left: slide-in-left 0.5s var(--ease-3); */
+	/* --animation-shake-x: shake-x 0.75s var(--ease-out-5); */
+	/* --animation-shake-y: shake-y 0.75s var(--ease-out-5); */
+	/* --animation-shake-z: shake-z 1s var(--ease-in-out-3); */
+	/* --animation-spin: spin 2s linear infinite; */
+	/* --animation-ping: ping 5s var(--ease-out-3) infinite; */
+	/* --animation-blink: blink 1s var(--ease-out-3) infinite; */
+	/* --animation-float: float 3s var(--ease-in-out-3) infinite; */
+	/* --animation-bounce: bounce 2s var(--ease-squish-2) infinite; */
 
-	--ease-1: cubic-bezier(0.25, 0, 0.5, 1);
-	--ease-2: cubic-bezier(0.25, 0, 0.4, 1);
+	/* --ease-1: cubic-bezier(0.25, 0, 0.5, 1); */
+	/* --ease-2: cubic-bezier(0.25, 0, 0.4, 1); */
 	--ease-3: cubic-bezier(0.25, 0, 0.3, 1);
-	--ease-out-1: cubic-bezier(0, 0, 0.75, 1);
-	--ease-out-2: cubic-bezier(0, 0, 0.5, 1);
+	/* --ease-out-1: cubic-bezier(0, 0, 0.75, 1); */
+	/* --ease-out-2: cubic-bezier(0, 0, 0.5, 1); */
 	--ease-out-3: cubic-bezier(0, 0, 0.3, 1);
-	--ease-out-4: cubic-bezier(0, 0, 0.1, 1);
+	/* --ease-out-4: cubic-bezier(0, 0, 0.1, 1); */
 	--ease-out-5: cubic-bezier(0, 0, 0, 1);
-	--ease-in-out-1: cubic-bezier(0.1, 0, 0.9, 1);
-	--ease-in-out-2: cubic-bezier(0.3, 0, 0.7, 1);
+	/* --ease-in-out-1: cubic-bezier(0.1, 0, 0.9, 1); */
+	/* --ease-in-out-2: cubic-bezier(0.3, 0, 0.7, 1); */
 	--ease-in-out-3: cubic-bezier(0.5, 0, 0.5, 1);
-	--ease-in-out-4: cubic-bezier(0.7, 0, 0.3, 1);
-	--ease-in-out-5: cubic-bezier(0.9, 0, 0.1, 1);
-	--ease-squish-1: var(--ease-elastic-in-out-1);
+	/* --ease-in-out-4: cubic-bezier(0.7, 0, 0.3, 1); */
+	/* --ease-in-out-5: cubic-bezier(0.9, 0, 0.1, 1); */
+	/* --ease-squish-1: var(--ease-elastic-in-out-1); */
 	--ease-squish-2: var(--ease-elastic-in-out-2);
-	--ease-squish-3: var(--ease-elastic-in-out-3);
+	/* --ease-squish-3: var(--ease-elastic-in-out-3); */
 }
 
 /* image_mask_animated: hide before JS applies clip-path to prevent flash of unmasked image */
@@ -479,7 +479,7 @@
 
 [data-stickysection] .is-layer[data-st-index="1"] {
 	/* Timing */
-	--st-size: 1;
+	/* --st-size: 1; */
 	--st-in: 0.5;
 	--st-out: 0.5;
 	--st-gap-after: 0.2;
@@ -500,7 +500,7 @@
 }
 
 [data-stickysection] .is-layer[data-st-index="2"] {
-	--st-size: 2;
+	/* --st-size: 2; */
 	--st-in: 0.1; /* entra rápido */
 	--st-out: 0.2; /* sale rápido */
 	/* 80% del slot en hold */
@@ -512,7 +512,7 @@
 	--dot-dim: 40px;
 	--dot-wave-width: 1px;
 	--dot-wave-distance: 1.5;
-	--dot-padding: 0.5rem;
+	/* --dot-padding: 0.5rem; */
 
 	position: relative;
 	z-index: 3;

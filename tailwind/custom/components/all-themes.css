@@ -7,27 +7,16 @@
 	--grey-color: hsla(0, 1.42%, 75%, 1);
 	--light-grey-color: hsla(210, 20%, 97%, 1);
 
-	/* --main-color: rgba(0, 255, 218, 1); */
-	/* --cta-color: rgba(0, 255, 218, 1); */
 	--cta-color: hsl(24, 8%, 12%);
 	--highlight-color: hsl(0, 3%, 6%);
 
-	/* --txt-color: #343434; */
 	--txt-color: #343434;
 	--txt-color-theme-light: var(--txt-color);
 	--txt-color-theme-dark: hsl(0, 100%, 100%);
 	--txt-color-theme-custom: var(--txt-color);
 
-	/* --link-color: var(--main-color); */
-	/* --link-color: var(--cta-color);
-	--link-underline-color: var(--cta-color); */
 	--link-color: var(--main-color);
-	--link-underline-color: var(--main-color);
-
 	--link-color-content: var(--cta-color, var(--link-color));
-	--link-underline-color: var(--cta-color, var(--link-color));
-
-	/* --heading-color: #293846; */
 	--heading-color: var(--main-color);
 	--heading-color-theme-light: var(--main-color);
 	--heading-color-theme-light: var(--txt-color);
@@ -37,8 +26,6 @@
 	--bg-color-theme-light: white;
 	--bg-color-theme-dark: rgb(162, 162, 162);
 	--bg-color-theme-dark: hsl(0, 1%, 20%);
-
-	/* --bg-color-theme-dark: linear-gradient(174deg, rgb(10, 49, 81) 50%, rgb(30, 65, 103) 100%); */
 
 	--bg-gradient-theme-dark: linear-gradient(174deg, rgba(21, 33, 46, 1) 0%, rgb(17, 32, 48) 100%);
 	--bg-gradient-theme-dark: linear-gradient(174deg, rgba(21, 33, 46, 1) 0%, rgb(30, 65, 103) 100%);
@@ -78,10 +65,6 @@ figure figcaption {
 		color: var(--txt-color-theme-light);
 	}
 
-	/* &:has([class*="theme-color-"]) {
-		color: var(--txt-color-theme-light);
-	} */
-
 	h1,
 	h2,
 	h3,
@@ -110,12 +93,7 @@ figure figcaption {
 
 	.header-tag {
 		color: var(--tag-color, #343434);
-		/* border-color: rgba(255, 255, 255, 1); */
 	}
-
-	/* .card {
-		background-color: white;
-	} */
 }
 
 /*! THEME COLOR DARK */
@@ -167,7 +145,6 @@ figure figcaption {
 	.header-tag {
 		background: white;
 		color: var(--main-color);
-		/* border-color: rgba(255, 255, 255, 1); */
 	}
 
 	.card:not(.transparent) {
@@ -234,10 +211,8 @@ figure figcaption {
 
 	.cta-arrow {
 		--width: 30px;
-		/* --bg-color: rgba(255, 255, 255, 0.45); */
 		--bg-color: rgba(255, 255, 255, 1);
 		--bg-color: color-mix(in srgb, var(--bg-color-theme-custom), white 43%);
-		/* --border-color: rgba(0, 0, 0, 0.15); */
 		--border-color: rgba(255, 255, 255, 1);
 	}
 

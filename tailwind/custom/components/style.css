@@ -8,27 +8,6 @@
 
 /*! CUSTOM THEMES  */
 
-.main-header-content {
-	.logo-brand {
-		@media only screen and (max-width: 1023px) {
-			translate: 0 0.7ch;
-			#extended {
-				display: none;
-			}
-		}
-	}
-}
-
-.logo-brand {
-	filter: none !important;
-
-	svg {
-		@media only screen and (max-width: 1270px) {
-			--logo-brand-width: calc(var(--mobile-logo-brand-width) * 0.9);
-		}
-	}
-}
-
 .slider {
 	h1 {
 		/* font-family: var(--txt-slider-heading); */
@@ -52,7 +31,7 @@
 /*! DEFAULT PAGE HEADER STYLES */
 #main > article {
 	header.entry-header {
-		--paddV: calc(var(--def-layout-x-padding) * 2);
+		/* --paddV: calc(var(--def-layout-x-padding) * 2); */
 
 		.entry-header-content {
 			h1.entry-title {
@@ -517,8 +496,8 @@ icon[class*="grad-"] {
 				background-color: rgb(from var(--base-color) r g b / 100%);
 				background-image: var(--bg-gradient);
 
-				--pattern-dim: 10;
-				--pattern-color: var(--bg-secondary);
+				/* --pattern-dim: 10; */
+				/* --pattern-color: var(--bg-secondary); */
 
 				@media only screen and (max-width: 1124px) {
 					max-width: 250px;
@@ -1495,7 +1474,7 @@ canvas.anim-bg {
 	--numberedBgColor: var(--main-color);
 	--dim: 2em;
 	--padding: 1.2em;
-	--connectLineColor: var(--connectedcolor, var(--numberedBgColor));
+	/* --connectLineColor: var(--connectedcolor, var(--numberedBgColor)); */
 }
 
 /*! CUSTOM RESPONSIVE TABLES */
@@ -3107,7 +3086,7 @@ body.single-ebook {
 }
 
 .mwai-window-box {
-	--mwai-fontSize: 1rem !important;
+	/* --mwai-fontSize: 1rem !important; */
 
 	.mwai-body {
 		overscroll-behavior: contain;
