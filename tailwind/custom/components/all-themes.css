@@ -23,7 +23,8 @@
 	--heading-color-theme-dark: hsl(0, 100%, 100%);
 	--heading-color-theme-custom: var(--heading-color);
 
-	--bg-color-theme-light: white;
+	--bg-color-theme-light: red;
+	--bg-color-theme-light: #f7f5f0;
 	--bg-color-theme-dark: rgb(162, 162, 162);
 	--bg-color-theme-dark: hsl(0, 1%, 20%);
 
