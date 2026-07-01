@@ -55,6 +55,8 @@ const ModalWP = class {
 		this.modal.setAttribute('id', `${this.modalID}-${window.crypto.randomUUID()}`)
 		this.modal.setAttribute('data-modal', this.modalID)
 		this.modal.setAttribute('data-lenis-prevent', '')
+		this.modal.style.setProperty('--modal-height', window.outerHeight + 'px')
+
 		if (this.modalContent.classList.length) this.modal.setAttribute('class', this.modalContent.classList)
 		this.modal.modalOBJ = this
 

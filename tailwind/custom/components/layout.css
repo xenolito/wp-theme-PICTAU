@@ -15,12 +15,13 @@ body {
 	margin-top: 0 !important;
 	scroll-behavior: smooth;
 	overflow-x: clip !important;
-	transition: background 0.7s ease;
+	background-color: var(--bg-color-theme-light);
+
+	/* transition: background 0.7s ease; */
 
 	/* &.stop-scrolling {
 		overflow: hidden !important;
 	} */
-	@apply bg-[var(--bg-color-theme-light)];
 }
 
 body {
@@ -355,11 +356,16 @@ figure {
 	}
 }
 
+.is-content-justification-left,
 .no-center {
 	margin-left: 0 !important;
 	margin-right: 0 !important;
 	> * {
 		text-align: left !important;
+	}
+
+	.wp-block-buttons {
+		justify-content: flex-start !important;
 	}
 }
 
