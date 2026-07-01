@@ -9,7 +9,7 @@
 	--amb-panel-shadow: 0 4px 24px hsl(0 0% 0% / 0.16);
 	--cta-color: hsl(354, 73%, 46%);
 	--amb-accent: var(--cta-color);
-	--amb-accent-hover: #122d54;
+	/* --amb-accent-hover: #122d54; */
 	--amb-thumb-size: 56px;
 	--amb-thumb-size: 80px;
 	--amb-transition: 0.6s cubic-bezier(0.2, 1, 0.3, 1);

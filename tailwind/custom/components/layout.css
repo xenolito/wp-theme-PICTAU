@@ -793,7 +793,7 @@ body .is-layout-constrained:not(.alignfull) > * {
 /*! PAGE HEADERS */
 #main > article {
 	header.entry-header {
-		--paddV: calc(var(--def-layout-x-padding) * 2);
+		/* --paddV: calc(var(--def-layout-x-padding) * 2); */
 		@apply flex justify-center min-h-[var(--page-header-min-height)];
 		position: relative;
 		width: 100vw;
@@ -1278,7 +1278,7 @@ body.single-evento {
 	--numberedBgColor: #008dff;
 	--dim: 2em;
 	--padding: 1.2em;
-	--connectLineColor: var(--connectedcolor, var(--numberedBgColor));
+	/* --connectLineColor: var(--connectedcolor, var(--numberedBgColor)); */
 
 	padding-top: calc(var(--default-section-vert-padding) * 0.5);
 
@@ -1768,7 +1768,7 @@ Two different sets of styles for the FAQs, one for the collapsable version and a
 	--size: 30px;
 	--scale: 0;
 	--bg-color: var(--main-color);
-	--bg-color-dark: white;
+	/* --bg-color-dark: white; */
 	--txt-color: black !important;
 
 	display: grid;
@@ -2553,7 +2553,7 @@ nav.dot-navigation {
 	--dot-dim: 0.4rem;
 	--dot-spacing: 0.1rem;
 	--window-padding: calc(var(--def-layout-x-padding) * 0.3);
-	--label-color: white;
+	/* --label-color: white; */
 
 	display: none;
 
@@ -2779,7 +2779,7 @@ nav.dot-navigation {
 	--thumb-padding: 4px;
 
 	--ui-color-primary: 255, 255, 255;
-	--ui-color-secondary: 0, 0, 0;
+	/* --ui-color-secondary: 0, 0, 0; */
 	--bg-on: 3, 169, 244;
 	--bg-off: 0, 0, 0;
 	--tr: all 0.3s cubic-bezier(0.2, 1, 0.3, 1);

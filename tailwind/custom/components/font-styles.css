@@ -2,12 +2,7 @@
 	--def-heading-font-family: "Outfit", Helvetica, Arial, sans-serif;
 	--def-font-family: "Outfit", Helvetica, Arial, sans-serif;
 	--txt-slider-heading: "Outfit", Helvetica, Arial, sans-serif;
-
 	--def-txt-color: #404040;
-	--txt-heading-color: #3a3a3a;
-	--light-light-grey-color: #f5f5f5;
-	--ui-font-size: 0.7rem;
-	--ui-mm-font-size: 0.8rem;
 }
 
 body {
@@ -29,12 +24,9 @@ h5 {
 h1,
 h2,
 h3 {
-	/* letter-spacing: -0.02ch; */
 	letter-spacing: -0.04em;
-	/* line-height: 1.7ch; */
 	margin-left: 0;
 	margin-right: 0;
-	/* text-transform: uppercase; */
 	&:not([data-anim_any]) {
 		text-wrap: balance;
 	}
@@ -50,7 +42,6 @@ h3 {
 }
 
 h1 {
-	/* @apply txt-[var(--heading-color)] dark:txt-[var(--heading-color-dark)]; */
 	@apply text-[var(--heading-color)] dark:text-[var(--heading-color-dark)] !mt-0 pb-[0.5ch];
 	font-size: clamp(2.2rem, 5vw, 3.5rem);
 	font-weight: 300;
@@ -64,11 +55,6 @@ h1 {
 h2 {
 	@apply text-[var(--heading-color)] !mt-0 !pb-[.7ch] pt-[0.3ch];
 	font-size: clamp(2.2rem, 5vw, 3.4rem);
-	/* font-weight: 500; */
-	/* line-height: 1.7ch; */
-	/* letter-spacing: -0.06ch; */
-
-	/* max-width: 600px !important; */
 	&.smaller {
 		font-size: clamp(2rem, 3vw, 2.75rem);
 	}
@@ -116,8 +102,6 @@ h3 {
 		display: inline-block;
 		width: auto;
 		height: 1em;
-		/* margin-left: 0.4ch;
-		margin-right: 1ch; */
 		vertical-align: middle;
 		margin-bottom: 0.4ex;
 	}
@@ -154,12 +138,6 @@ h1 {
 	}
 }
 
-/* h2 {
-	&:has(+ .sub-heading) {
-		margin-bottom: 0.4ch !important;
-	}
-} */
-
 .sub-heading {
 	font-family: var(--def-heading-font-family);
 	font-size: clamp(1.2rem, 4vw, 1.6rem);
@@ -178,7 +156,6 @@ sup {
 p {
 	@apply text-[var(--txt-color)] dark:text-[var(--txt-color-dark)] mb-[1.2ch];
 	font-size: clamp(0.9rem, 2vw, 1rem);
-	/* letter-spacing: 0.03ch; */
 	font-weight: 300;
 	letter-spacing: -0.01em;
 	line-height: 1.6;
@@ -188,11 +165,9 @@ p {
 		font-size: clamp(1.2rem, 4vw, 1.4rem);
 		line-height: 1.4;
 	}
-	/* color: var(--txt-color, currentColor); */
 	color: currentColor;
 
 	strong {
-		/* font-weight: 600; */
 		font-weight: 500;
 		color: black;
 	}
@@ -213,7 +188,6 @@ h4 {
 		-webkit-text-fill-color: transparent;
 		background-clip: text;
 		padding-bottom: 0.25ch;
-		/* animation: intro-gradient 4.2s cubic-bezier(0.165, 0.84, 0.44, 1); */
 
 		&.gradient-anim {
 			animation: intro-gradient 4.2s cubic-bezier(0.075, 0.82, 0.165, 1);
@@ -252,7 +226,6 @@ h3 {
 		.line:not(:first-of-type) {
 			margin-top: -0.35ch;
 		}
-		/* line-height: 2ch; */
 	}
 }
 

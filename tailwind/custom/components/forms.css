@@ -21,7 +21,6 @@
 
 .wpcf7 form {
 	--form-input-border-width: 2px;
-	/* --form-field-border-color: #808080; */
 	--form-field-border-color: #767a7f;
 	--form-field-border-radius: 6px;
 	--form-field-focus-border-color: var(--main-color);
@@ -30,8 +29,6 @@
 	--form-error-validation-icon-filter: brightness(0);
 	--form-field-txt-color: black;
 	--form-legal-txt-color: var(--def-txt-color);
-	--form-submit-bg-color: green;
-	--msg-sent-ok-bg-color: rgba(0, 0, 0, 0.2);
 	--form-placeholder-color: #9ca3af;
 	--form-input-padding-x: 1.25rem;
 	--form-input-padding-y: 0.33rem;
@@ -95,7 +92,6 @@
 		form {
 			--form-error-validation-icon-filter: brightness(1);
 			--form-legal-txt-color: white;
-			--msg-sent-ok-bg-color: #193a67;
 		}
 	}
 }
@@ -442,7 +438,7 @@ label[for="cv_file"] {
 }
 
 .wpcf7 button[id="submit"] {
-	--submit-working-padding: 0.7ch;
+	/* --submit-working-padding: 0.7ch; */
 
 	display: grid !important;
 	justify-content: center;
@@ -532,7 +528,6 @@ label[for="cv_file"] {
 
 @keyframes roundIt {
 	to {
-		/* width: 40px; */
 		width: auto;
 		min-width: inherit;
 	}
@@ -655,8 +650,6 @@ form.wpcf7-form:has(.pct-form-2cols) {
 }
 
 .multi-checkbox {
-	/* --form-field-border-color: var(--main-color-third);
-	--form-field-focus-border-color: var(--link-color); */
 	padding: calc(var(--def-layout-x-padding) * 0.5);
 	@apply bg-white dark:bg-white/5 border-2 border-[var(--form-field-border-color)] dark:border-white/20 rounded-[var(--def-border-radius)];
 

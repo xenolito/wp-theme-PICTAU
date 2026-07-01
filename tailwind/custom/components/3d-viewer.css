@@ -1,6 +1,6 @@
 :root {
 	--border-radius: 16px;
-	--box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	/* --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
 	--viewer-3d_bg-color: hsl(43, 19%, 93%);
 	--viewer-3d_text-color: hsla(43, 19%, 85%, 1);
 	--padd: clamp(2rem, 3vw, 4rem);
@@ -735,7 +735,7 @@ sup {
 /* ===== External UI — panel lateral inyectado via portal ===== */
 .pd3d-external-ui {
 	--picker-size: 3rem;
-	--picker-radius: 0.625rem;
+	/* --picker-radius: 0.625rem; */
 	--picker-border: rgba(0, 0, 0, 0.36);
 	--picker-border-hover: rgba(0, 0, 0, 0.35);
 	--picker-selected-outline: #00000076;
