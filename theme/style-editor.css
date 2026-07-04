@@ -12035,14 +12035,14 @@ section.category-grid-section > * {
 	}
 } */
 
-/*! HOME PAGE HERO SLIDER WITH VIDEO BACKGROUND */
+/*! HOME PAGE HERO SLIDER — contenido a pantalla completa (con o sin [video-bg] dentro del slide) */
 
-.slider.has-video-bg:not(:has(.hero)-slider-fallback) {
+.slider:not(:has(.hero-slider-fallback)) {
   position: relative;
   color: white;
 }
 
-.slider.has-video-bg:not(:has(.hero)-slider-fallback) h1 {
+.slider:not(:has(.hero-slider-fallback)) h1 {
   font-size: clamp(3.4rem, 10vw, 7rem);
   color: white;
   text-align: center;
@@ -12051,16 +12051,16 @@ section.category-grid-section > * {
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
 }
 
-.slider.has-video-bg:not(:has(.hero)-slider-fallback) p {
+.slider:not(:has(.hero-slider-fallback)) p {
   text-align: center;
 }
 
-.slider.has-video-bg:not(:has(.hero)-slider-fallback) p.description {
+.slider:not(:has(.hero-slider-fallback)) p.description {
   font-size: clamp(1.2rem, 3vw, 1.6rem);
   font-weight: 500;
 }
 
-.slider.has-video-bg:not(:has(.hero)-slider-fallback) .slider-cover:not(.block-editor-block-list__block) {
+.slider:not(:has(.hero-slider-fallback)) .slider-cover:not(.block-editor-block-list__block) {
   display: block;
   position: absolute;
   /* opacity: 0; */
@@ -12071,7 +12071,7 @@ section.category-grid-section > * {
   height: 100dvh;
 }
 
-.slider.has-video-bg:not(:has(.hero)-slider-fallback) .scene {
+.slider:not(:has(.hero-slider-fallback)) .scene {
   justify-content: center;
 }
 
