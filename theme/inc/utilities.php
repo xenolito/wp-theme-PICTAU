@@ -2355,6 +2355,16 @@ function hero_slider_admin_notice_empty()
 	if (!current_user_can('edit_posts')) return;
 	if (!post_type_exists('slide')) return;
 
+	// Envuelto en un contenedor con id fijo para poder refrescarlo por AJAX
+	// (ver hero_slider_ajax_refresh_notice()) tras un cambio de estado por Quick Edit,
+	// que no recarga la página y dejaría este aviso desactualizado.
+	echo '<div id="hero-slider-empty-notice">' . pictau_hero_slider_notice_html() . '</div>';
+}
+
+function pictau_hero_slider_notice_html()
+{
+	if (!post_type_exists('slide')) return '';
+
 	global $wpdb;
 	$pages = $wpdb->get_results(
 		"SELECT ID, post_title, post_content
@@ -2363,7 +2373,7 @@ function hero_slider_admin_notice_empty()
 		   AND post_content LIKE '%[hero-slider%'
 		   AND post_type NOT IN ('revision', 'attachment')"
 	);
-	if (empty($pages)) return;
+	if (empty($pages)) return '';
 
 	// Agrupado por página: una página con varios shortcodes [hero-slider] que fallan
 	// (p.ej. uno sin filtro y otro con category="x") debe listarse una sola vez, no una por shortcode.
@@ -2415,7 +2425,7 @@ function hero_slider_admin_notice_empty()
 		}
 	}
 
-	if (empty($pages_with_failures)) return;
+	if (empty($pages_with_failures)) return '';
 
 	$warnings = [];
 	foreach ($pages_with_failures as $data) {
@@ -2439,10 +2449,50 @@ function hero_slider_admin_notice_empty()
 		);
 	}
 
-	echo '<div class="notice notice-error is-dismissible">';
-	echo '<p><strong>' . esc_html__('⚠ Hero Slider: sin slides disponibles', 'pictau') . '</strong></p>';
-	echo '<ul>' . implode('', $warnings) . '</ul>';
-	echo '</div>';
+	$html  = '<div class="notice notice-error is-dismissible">';
+	$html .= '<p><strong>' . esc_html__('⚠ Hero Slider: sin slides disponibles', 'pictau') . '</strong></p>';
+	$html .= '<ul>' . implode('', $warnings) . '</ul>';
+	$html .= '</div>';
+
+	return $html;
+}
+
+// =============================================================================
+// HERO SLIDER: refrescar el aviso de "sin slides" tras Quick Edit (AJAX)
+// =============================================================================
+
+// Quick Edit (y Edición en lote) guardan por AJAX (action=inline-save / inline-save-bulk)
+// sin recargar la página, así que el aviso pintado en admin_notices al cargar la lista
+// queda desactualizado si el cambio de estado afecta a la disponibilidad de slides.
+// El chequeo JS de más abajo usa indexOf("action=inline-save"), que también detecta
+// "action=inline-save-bulk" al ser prefijo de esa cadena. Este endpoint recalcula el aviso y el
+// JS de abajo lo sustituye en el DOM tras cada guardado de Quick Edit en el listado de slides.
+add_action('wp_ajax_hero_slider_refresh_notice', 'hero_slider_ajax_refresh_notice');
+function hero_slider_ajax_refresh_notice()
+{
+	check_ajax_referer('hero_slider_refresh_notice', 'nonce');
+	if (!current_user_can('edit_posts')) wp_send_json_error(null, 403);
+	wp_send_json_success(['html' => pictau_hero_slider_notice_html()]);
+}
+
+add_action('admin_enqueue_scripts', 'hero_slider_enqueue_quickedit_refresh');
+function hero_slider_enqueue_quickedit_refresh()
+{
+	$screen = get_current_screen();
+	if (!$screen || 'edit-slide' !== $screen->id) return;
+
+	$nonce = wp_create_nonce('hero_slider_refresh_notice');
+	wp_add_inline_script('inline-edit-post', '
+	(function ($) {
+		$(document).on("ajaxComplete", function (event, xhr, settings) {
+			if (typeof settings.data !== "string" || settings.data.indexOf("action=inline-save") === -1) return;
+			$.post(ajaxurl, { action: "hero_slider_refresh_notice", nonce: "' . esc_js($nonce) . '" }, function (response) {
+				var el = document.getElementById("hero-slider-empty-notice");
+				if (el && response && response.success) el.innerHTML = response.data.html;
+			});
+		});
+	})(jQuery);
+	');
 }
 
 // =============================================================================
