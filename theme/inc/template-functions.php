@@ -1786,10 +1786,37 @@ function hero_slider_preload()
 
 	foreach ($slides_to_preload as $slide) {
 		$slide_content = $slide['content'];
-		if (!preg_match('/<img[^>]+src=["\']([^"\']+)["\'][^>]*/i', $slide_content, $matches)) continue;
-		$img_src = $matches[1];
+		// Solo la imagen de fondo real del slide (convención "is-bg", ver hero_slider_shortcode()
+		// y pictau_post_thumbnail()) debe precargarse para LCP. Sin este filtro, un slide sin
+		// imagen de fondo (p.ej. uno que usa [video-bg]) haría matchear cualquier otro <img>
+		// presente en su contenido — como el icono oculto de "scroll down" — precargando un
+		// recurso que nunca llega a pintarse (aviso "preloaded but not used" en devtools).
+		if (!preg_match('/<figure[^>]*\bclass="[^"]*\bis-bg\b[^"]*"[^>]*>\s*(<img\b[^>]*>)/i', $slide_content, $fig_match)) continue;
+		$img_tag = $fig_match[1];
+		if (!preg_match('/\bsrc=["\']([^"\']+)["\']/i', $img_tag, $src_match)) continue;
+		$img_src = $src_match[1];
 		if (!$img_src) continue;
-		echo '<link rel="preload" as="image" href="' . esc_url($img_src) . '"' . $priority . '>';
+
+		// Añadir imagesrcset/imagesizes idénticos a los que the_content() añadirá al <img> real
+		// (misma lógica que usa WP core en wp_filter_content_tags()). Sin esto, en pantallas de
+		// alta densidad el navegador puede elegir un candidato del srcset distinto al que se
+		// precargó aquí (que solo conoce el src base), y devtools avisa de "preloaded but not
+		// used" aunque la imagen sí se muestre.
+		$srcset_attr = '';
+		$sizes_attr  = '';
+		if (preg_match('/\bwp-image-(\d+)\b/i', $img_tag, $id_match) && preg_match('/-(\d+)x(\d+)\.\w+$/', $img_src, $dim_match)) {
+			$attachment_id = (int) $id_match[1];
+			$image_meta    = wp_get_attachment_metadata($attachment_id);
+			if ($image_meta) {
+				$size_array = [(int) $dim_match[1], (int) $dim_match[2]];
+				$srcset     = wp_calculate_image_srcset($size_array, $img_src, $image_meta, $attachment_id);
+				$sizes      = wp_calculate_image_sizes($size_array, $img_src, $image_meta, $attachment_id);
+				if ($srcset) $srcset_attr = ' imagesrcset="' . esc_attr($srcset) . '"';
+				if ($sizes) $sizes_attr = ' imagesizes="' . esc_attr($sizes) . '"';
+			}
+		}
+
+		echo '<link rel="preload" as="image" href="' . esc_url($img_src) . '"' . $priority . $srcset_attr . $sizes_attr . '>';
 	}
 }
 add_action('wp_head', 'hero_slider_preload', 2);

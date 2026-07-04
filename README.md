@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.2.0
+- **Versión:** 7.2.1
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -655,6 +655,16 @@ El reveal está ligado a la carga real de la imagen del primer slide, no a tempo
 [hero-slider delay="4000" customarrows="#mis-flechas" bullets="no" callback="onSlideChanged"]
 [hero-slider category="home" delay="7.5" bullets="yes"]
 ```
+
+#### Preload de la imagen de fondo (LCP)
+
+`hero_slider_preload()` (`theme/inc/template-functions.php`, hook `wp_head` prioridad 2) emite un `<link rel="preload" as="image">` para la imagen de fondo del slide que se mostrará primero, optimizando el LCP.
+
+**Solo cuenta la imagen de fondo real del slide**, identificada por la convención `is-bg` (la misma clase que usa `pictau_post_thumbnail('is-bg only-img')`): el preload busca específicamente un `<img>` dentro de un `<figure class="...is-bg...">`. Si el slide no tiene ninguna imagen `is-bg` (por ejemplo, uno que usa `[video-bg]` como fondo), no se emite ningún preload para ese slide — el LCP allí lo cubre el vídeo, no una imagen. Antes de este filtro, la regex cogía ciegamente el primer `<img>` del contenido del slide, lo que en un slide con `[video-bg]` acababa precargando por error cualquier otra imagen presente (p.ej. un icono decorativo oculto), generando un aviso de "preloaded but not used" en devtools sin optimizar nada realmente.
+
+**`imagesrcset` / `imagesizes` en el preload:** además del `src` base, el `<link rel="preload">` incluye `imagesrcset` e `imagesizes` calculados con las mismas funciones de WordPress core que generan el `srcset`/`sizes` del `<img>` real (`wp_calculate_image_srcset()` / `wp_calculate_image_sizes()`, a partir del `wp-image-{ID}` y las dimensiones del archivo en el `src`). Sin esto, el navegador podía preload-ear el candidato base (p.ej. la variante de 1024px) pero, en una pantalla de alta densidad (Retina), renderizar un candidato distinto del `srcset` del `<img>` (p.ej. 2048px) — dos peticiones de red diferentes, y la primera marcada como "no usada". Con `imagesrcset`/`imagesizes` idénticos en ambos, el algoritmo de selección de candidato del navegador es el mismo en el preload y en el render, así que siempre coinciden en la misma variante.
+
+> Nota: `imagesrcset`/`imagesizes` en un `<link rel="preload">` funcionan igual que `srcset`/`sizes` en un `<img>` — el navegador descarga **una única** variante (la que mejor encaja según `imagesizes` + la densidad de píxeles de la pantalla), nunca todas las listadas.
 
 ### `[video-bg]`
 
