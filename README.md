@@ -656,6 +656,62 @@ El reveal está ligado a la carga real de la imagen del primer slide, no a tempo
 [hero-slider category="home" delay="7.5" bullets="yes"]
 ```
 
+### `[video-bg]`
+
+Vídeo de fondo a pantalla completa (`<video class="video-bg" autoplay muted loop playsinline>`), pensado como fondo de una sección hero — usado tanto suelto en una sección estática como dentro de un slide de `[hero-slider]`.
+
+**Implementación:** `theme/inc/template-functions.php` — `video_as_background()`.
+
+**Atributos:**
+
+| Atributo | Tipo | Default | Descripción |
+|---|---|---|---|
+| `src` | string | *(requerido)* | Ruta relativa (sin extensión) dentro de `wp_upload_dir()`. Se resuelve a `{src}.mp4` / `{src}.webp` (poster) y, si se indica, `{src}.webm`. Admite una lista separada por comas: se elige uno al azar en cada carga (`array_rand`). |
+| `mobile` | string | `''` | Sufijo añadido a `src` para servir una variante distinta en móvil (`<source media="(min-width: 769px)">` para la versión desktop). |
+| `poster` | string | `''` | Se usa junto con `src` para el atributo `poster` del `<video>` (`{src}.webp`). |
+| `overlayopacity` | float | `false` | Si se indica, añade `data-overlayopacity` al wrapper, que activa un overlay oscuro semitransparente (`::after`, ver `layout.css`) para mejorar el contraste del texto superpuesto. |
+| `noautoplay` | bool | `false` | Si está presente, el `<video>` no lleva el atributo `autoplay` nativo — queda a la espera de que `revealSlideCover()` (ver más abajo) llame a `.play()` manualmente. |
+| `webm` | bool | `false` | Añade también fuentes `.webm` (desktop y, si hay `mobile`, su variante). |
+| `align` | string | `center` | `object-position` del vídeo. |
+
+**Ejemplo:**
+```
+[video-bg overlayopacity="5.01" src="balanzia_hero" mobile="_mobile" poster="balanzia_hero"]
+```
+
+#### Reveal del `.slider-cover` y animación del header (`data-anim_any`)
+
+Patrón habitual de hero con vídeo de fondo (usado en la home dentro de `[hero-slider]` y en páginas sueltas como `/balanzia-financial-reporting/`):
+
+```
+<section class="slider anim-intro has-video-bg">
+  [video-bg src="..."]
+  <div class="slider-cover">…</div>       <!-- overlay negro a pantalla completa -->
+  <div class="content">
+    <h1 data-anim_any data-anim_any_autoplay="0" ...>…</h1>   <!-- ver animation_any.js -->
+  </div>
+</section>
+```
+
+- `.slider-cover` es un overlay negro (`position: absolute; inset: 0`) que oculta el contenido hasta que el vídeo está listo. Sus reglas de posicionamiento viven en `tailwind/custom/components/layout.css`, bajo el selector `.slider:not(:has(.hero-slider-fallback))` — **no dependen de ninguna clase relacionada con vídeo**, así que se aplican igual a un slide sin `[video-bg]`.
+- El `<h1>` (y su cadena `data-anim_any_nextanim` hacia el resto de elementos) normalmente lleva `data-anim_any_autoplay="0"`: `animation_any.js` no le crea un `ScrollTrigger` propio, así que se queda pausado hasta que algo externo llama a `.play()` sobre `header.headerAnimation`.
+
+**Módulo JS:** `javascript/script.js` — `activateHeroSlide(el)`:
+1. Reproduce la animación del primer `<h1 data-anim_any>` encontrado dentro de `el` (`el.querySelector('h1[data-anim_any]')?.headerAnimation?.play()`).
+2. Llama a `revealSlideCover(el)`, que:
+   - Si `el` no tiene `.video-bg`, hace fade de `.slider-cover` a `opacity: 0` inmediatamente.
+   - Si tiene vídeo, lo reproduce (si no tenía `autoplay` nativo) y espera a que esté listo (`video.readyState >= 3` o evento `loadeddata`/`error`) antes de hacer el fade.
+   - Marca `.slider-cover` con `dataset.covered = 'done'` para no repetir el fade si `el` se reactiva más tarde.
+
+`activateHeroSlide()` se invoca desde dos sitios, cubriendo los dos casos posibles:
+
+| Caso | Disparador | Dónde |
+|---|---|---|
+| Slide dentro de `[hero-slider]` (Splide) | `window.sliderInit(index, splide)` — callback del shortcode (`callback="sliderInit"`), disparado en el montaje inicial (`ready`) y en cada transición (`moved`). Identifica el slide activo por índice de Splide, no por orden en el DOM. | `javascript/script.js` |
+| Sección estática sin `[hero-slider]` (sin Splide) | `window.addEventListener('load', ...)`, una única vez por página. Recorre todo `.slider.anim-intro` que **no** contenga `[data-heroslider]` como descendiente (para no reprocesar los que ya gestiona `sliderInit`). | `javascript/script.js` |
+
+**Ejemplo de uso sin `[hero-slider]`** (`/balanzia-financial-reporting/`): un Group block con clase `slider anim-intro has-video-bg` conteniendo `[video-bg]` + `.slider-cover` + el `<h1 data-anim_any>` directamente, sin CPT `slide` ni Splide de por medio.
+
 ### `[image-random]`
 
 Renderiza una imagen aleatoria de una lista en un `<figure><img>`. Diseñado para usarse como hero image: emite automáticamente `<link rel="preload" as="image">` en `<head>` para optimizar el LCP. La aleatorización ocurre en el cliente (JS inline), por lo que el HTML es determinístico y compatible con cualquier sistema de caché (WP Super Cache, Varnish, CloudFlare, etc.).

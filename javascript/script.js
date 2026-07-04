@@ -65,20 +65,15 @@ import './modules/parallax'
 import { initImageLoaderCover } from './modules/imageLoaderCover'
 import { initCatalogMenu } from './modules/catalogMenu'
 import './modules/lang_switcher'
-import './modules/slider_videoBg_trigger_anim'
 
 document.addEventListener('DOMContentLoaded', () => {
-	// console.clear()
 	checkIfTouchDevice()
 	signature()
 	setScrollBars()
-	// initImageLoaderCover('.slider-cover', sliderInit)
 	initCatalogMenu()
 
 	if (!document.querySelector('#masthead')) return
-
 	// setPageTransitions()
-
 	const body = document.querySelector('body')
 
 	if (body.classList.contains('fixed-header')) {
@@ -86,20 +81,75 @@ document.addEventListener('DOMContentLoaded', () => {
 	} else if (body.classList.contains('fixed-autohide-header')) {
 		setupAutoHideHeader()
 	}
-
 	// setBackgrounds()
 })
 
 // Callbacks for CPT Slides (optional)
 const sliderInit = (window.sliderInit = (index, splide) => {
 	// Single-slide mode: splide is null — find the slide directly in the DOM
-	const activeSlide = splide?.root
-		? splide.Components.Slides.getAt(splide.index).slide
-		: document.querySelector('[data-heroslider] .splide__slide')
+	const activeSlide = splide?.root ? splide.Components.Slides.getAt(splide.index).slide : document.querySelector('[data-heroslider] .splide__slide')
 	if (!activeSlide) return
-	const slideStartAnimation = activeSlide.querySelector('#slider-start-animation')
-	if (slideStartAnimation) slideStartAnimation.headerAnimation?.play()
+	activateHeroSlide(activeSlide)
 })
+
+// Igual que arriba, pero para un ".slider.anim-intro" estático que no usa el shortcode
+// [hero-slider] (sin Splide, sin data-heroslider): páginas con un único hero fijo que
+// combina [video-bg] + .slider-cover + <h1 data-anim_any>. Se ejecuta una única vez, en
+// window.load, ya que aquí no hay transiciones de slide que reprocesar.
+window.addEventListener('load', () => {
+	document.querySelectorAll('.slider.anim-intro').forEach(section => {
+		// Las secciones envueltas por [hero-slider] ya las gestiona sliderInit por slide activo
+		if (section.querySelector('[data-heroslider]')) return
+		activateHeroSlide(section)
+	})
+})
+
+// Dispara la animación data-anim_any del <h1> del slide/sección (normalmente con
+// autoplay="0", a la espera de un .play() externo que arranque su cadena nextanim hacia el
+// resto de elementos) y revela su .slider-cover cuando el vídeo de fondo ([video-bg], si lo
+// hay) esté listo para reproducirse. Se llama tanto desde sliderInit (por cada slide del
+// hero-slider que se activa: montaje inicial + cada transición) como desde el fallback de
+// arriba para secciones ".slider.anim-intro" estáticas sin Splide. Solo se ejecuta una vez
+// por elemento (revealSlideCover se guarda en su propio dataset).
+const activateHeroSlide = el => {
+	el.querySelector('h1[data-anim_any]')?.headerAnimation?.play()
+	revealSlideCover(el)
+}
+
+// Revela el .slider-cover (overlay negro) de un slide/sección cuando su vídeo de fondo
+// ([video-bg]) ya está listo para reproducirse (o inmediatamente si no tiene vídeo).
+const revealSlideCover = activeSlide => {
+	const cover = activeSlide.querySelector('.slider-cover')
+	if (!cover || cover.dataset.covered === 'done') return
+
+	const fadeCover = () => {
+		if (cover.dataset.covered === 'done') return
+		cover.dataset.covered = 'done'
+		gsap.to(cover, {
+			opacity: 0,
+			duration: 1.2,
+			ease: 'power2.out',
+			onComplete: () => {
+				cover.style.pointerEvents = 'none'
+			},
+		})
+	}
+
+	const video = activeSlide.querySelector('.video-bg')
+	if (!video) {
+		fadeCover()
+		return
+	}
+
+	if (!video.autoplay) video.play()
+
+	if (video.readyState >= 3) {
+		fadeCover()
+	} else {
+		video.addEventListener('loadeddata', fadeCover, { once: true })
+		video.addEventListener('error', fadeCover, { once: true })
+	}
+}
 
 const setPageTransitions = () => {
 	window.addEventListener('load', () => {
