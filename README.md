@@ -564,6 +564,12 @@ Un hook `admin_notices` revisa en cada carga del admin si existe alguna página 
 
 La comprobación usa `post_status => 'publish'` explícito para evitar falsos negativos en contexto admin, donde `WP_Query` sin `post_status` incluye los borradores del usuario logueado.
 
+**Refresco tras Quick Edit / Edición en lote (sin recargar la página):** el listado de slides (`edit.php?post_type=slide`) cambia el estado de un slide vía AJAX (`action=inline-save` / `inline-save-bulk`), sin recarga de página, lo que dejaría el aviso ya pintado desactualizado. Para evitarlo:
+
+- `pictau_hero_slider_notice_html()` contiene la lógica de cálculo del aviso (extraída de `hero_slider_admin_notice_empty()`, que ahora solo la envuelve en `<div id="hero-slider-empty-notice">`).
+- Un endpoint AJAX propio (`wp_ajax_hero_slider_refresh_notice`) devuelve el HTML recalculado.
+- En la pantalla `edit-slide` se engancha un listener a `ajaxComplete` (vía `wp_add_inline_script` sobre el handle `inline-edit-post`) que, tras cada guardado por Quick Edit o Edición en lote, pide el HTML actualizado y sustituye el contenido de `#hero-slider-empty-notice` en el DOM.
+
 #### Pausa por visibilidad (IntersectionObserver)
 
 Cuando el slider tiene más de un slide, el módulo registra un `IntersectionObserver` sobre el contenedor `[data-heroslider]`. En cuanto el slider sale completamente del viewport se pausan:
