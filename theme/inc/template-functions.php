@@ -1710,19 +1710,23 @@ function hero_slider_preload()
 	$category  = isset($sc_atts['category']) ? sanitize_text_field($sc_atts['category']) : '';
 	$curr_lang = function_exists('pll_current_language') ? pll_current_language() : 'es';
 
-	// When random=yes: preload all slide images (order unknown, one will be LCP)
-	// When random=no: preload only the first slide with fetchpriority="high"
+	// Exclude slides whose caducidad datetime has already passed (same filter as shortcode).
+	// Pods saves '0000-00-00 00:00:00' when clearing a datetime field, so handle it alongside ''.
+	$expiry_filter = [
+		'relation' => 'OR',
+		['key' => 'caducidad', 'compare' => 'NOT EXISTS'],
+		['key' => 'caducidad', 'value' => ['', '0000-00-00 00:00:00'], 'compare' => 'IN'],
+		['key' => 'caducidad', 'value' => current_time('mysql'), 'compare' => '>', 'type' => 'DATETIME'],
+	];
+
 	$query_args = [
 		'post_type'      => 'slide',
-		'posts_per_page' => $is_random ? $limit : 1,
+		'posts_per_page' => -1,
 		'no_found_rows'  => true,
 		'lang'           => $curr_lang,
+		'meta_query'     => $expiry_filter,
 	];
-	if (!$is_random) {
-		$query_args['meta_key'] = 'orden';
-		$query_args['orderby']  = 'meta_value_num';
-		$query_args['order']    = 'ASC';
-	}
+
 	if ($category) {
 		$query_args['tax_query'] = [ [
 			'taxonomy' => 'slide_category',
@@ -1734,16 +1738,52 @@ function hero_slider_preload()
 	$query = new WP_Query($query_args);
 	if (!$query->have_posts()) return;
 
+	// Collect and sort slides the same way as the shortcode
+	$slides_data = [];
 	while ($query->have_posts()) {
 		$query->the_post();
-		$slide_content = get_the_content();
+		$pid       = get_the_ID();
+		$caducidad = get_post_meta($pid, 'caducidad', true);
+		if ($caducidad === '0000-00-00 00:00:00') $caducidad = '';
+		$orden_raw = get_post_meta($pid, 'orden', true);
+		$slides_data[] = [
+			'content'   => get_the_content(),
+			'caducidad' => $caducidad,
+			'orden'     => ($orden_raw !== '' && $orden_raw !== null) ? (int) $orden_raw : PHP_INT_MAX,
+		];
+	}
+	wp_reset_postdata();
+
+	$has_caducidad = !empty(array_filter($slides_data, fn($s) => !empty($s['caducidad'])));
+
+	if ($has_caducidad) {
+		usort($slides_data, function ($a, $b) {
+			$a_has = !empty($a['caducidad']);
+			$b_has = !empty($b['caducidad']);
+			if ($a_has !== $b_has) return $a_has ? -1 : 1;
+			if ($a_has) return strcmp($a['caducidad'], $b['caducidad']);
+			return $a['orden'] <=> $b['orden'];
+		});
+		// When caducidad ordering applies, preload only the first slide (known first position)
+		$slides_to_preload = array_slice($slides_data, 0, 1);
+		$priority = ' fetchpriority="high"';
+	} elseif ($is_random) {
+		// Random order: preload all visible slides (LCP candidate unknown)
+		$slides_to_preload = $limit > 0 ? array_slice($slides_data, 0, $limit) : $slides_data;
+		$priority = '';
+	} else {
+		usort($slides_data, fn($a, $b) => $a['orden'] <=> $b['orden']);
+		$slides_to_preload = array_slice($slides_data, 0, 1);
+		$priority = ' fetchpriority="high"';
+	}
+
+	foreach ($slides_to_preload as $slide) {
+		$slide_content = $slide['content'];
 		if (!preg_match('/<img[^>]+src=["\']([^"\']+)["\'][^>]*/i', $slide_content, $matches)) continue;
 		$img_src = $matches[1];
 		if (!$img_src) continue;
-		$priority = $is_random ? '' : ' fetchpriority="high"';
 		echo '<link rel="preload" as="image" href="' . esc_url($img_src) . '"' . $priority . '>';
 	}
-	wp_reset_postdata();
 }
 add_action('wp_head', 'hero_slider_preload', 2);
 

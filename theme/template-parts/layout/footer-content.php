@@ -11,8 +11,8 @@
 ?>
 
 <section id="footer">
+	<p class="bg-pattern-footer"></p>
 	<div>
-		<p class="bg-pattern-footer"></p>
 
 		<div class="footer-container">
 			<?php

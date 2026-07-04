@@ -455,7 +455,7 @@
       "show_in_nav_menus": "0",
       "show_in_admin_bar": "1",
       "can_export": "1",
-      "rest_enable": "0",
+      "rest_enable": "1",
       "dynamic_features_allow": "inherit",
       "capability_type": "page",
       "read_all": "1"
@@ -516,6 +516,22 @@
       "type": "text",
       "weight": 1,
       "text_max_length": "255"
+    }
+  },
+  {
+    "#": "37. Campo caducidad (datetime) en slide — fecha/hora de expiración automática del slide",
+    "action": "save_field",
+    "params": {
+      "pod": "slide",
+      "group": "datos_slide",
+      "name": "caducidad",
+      "label": "Caducidad",
+      "description": "Fecha y hora en que el slide se despublicará automáticamente y dejará de aparecer en el hero slider. Dejar vacío si el slide no caduca.",
+      "type": "datetime",
+      "weight": 2,
+      "datetime_format": "ymd_Hi",
+      "datetime_format_custom": "Y-m-d H:i:s",
+      "datetime_format_custom_js": "yy-mm-dd HH:mm:ss"
     }
   },
   {

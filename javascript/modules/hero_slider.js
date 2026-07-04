@@ -19,24 +19,75 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	const HeroSlider = class {
 		constructor(container, config = {}) {
-			const { delay = '5000', draggable = 'yes', arrows = 'no', bullets = 'yes', customarrows = false, callback = false, transition = 'slide', fadespeed = '0.8', pauseonfocus = 'no' } = config
+			const {
+				delay          = '5000',
+				draggable      = 'yes',
+				arrows         = 'no',
+				bullets        = 'yes',
+				customarrows   = false,
+				callback       = false,
+				transition     = 'slide',
+				fadespeed      = '0.8',
+				pauseonfocus   = 'no',
+			} = config
 
-			this.container = container
-			this.delay = Math.round(Number(delay) * 1000) // segundos → ms
-			this.draggable = draggable === 'yes' || draggable === 'true' || draggable === '1'
-			this.arrows = arrows === 'yes' || arrows === 'true' || arrows === '1'
-			this.bullets = bullets === 'yes' || bullets === 'true' || bullets === '1'
+			this.container    = container
+			this.delay        = Math.round(Number(delay) * 1000) // segundos → ms
+			this.draggable    = draggable === 'yes' || draggable === 'true' || draggable === '1'
+			this.arrows       = arrows === 'yes' || arrows === 'true' || arrows === '1'
+			this.bullets      = bullets === 'yes' || bullets === 'true' || bullets === '1'
 			this.customarrows = customarrows ? (document.querySelector(customarrows) ?? false) : false
-			this.callbackFn = callback || false
-			this.transition = transition === 'fade' ? 'fade' : 'slide'
-			this.fadeSpeed = Math.round(Number(fadespeed) * 1000) // segundos → ms
+			this.callbackFn   = callback || false
+			this.transition   = transition === 'fade' ? 'fade' : 'slide'
+			this.fadeSpeed    = Math.round(Number(fadespeed) * 1000) // segundos → ms
 			this.pauseOnFocus = pauseonfocus === 'yes' || pauseonfocus === 'true' || pauseonfocus === '1'
 
 			this.init()
 		}
 
 		init = () => {
+			// Remove slides expired since the page was cached (safety net for stale cache)
+			const now = new Date()
+			this.container.querySelectorAll('.splide__slide[data-slide-expiry]').forEach(slide => {
+				if (new Date(slide.dataset.slideExpiry) <= now) slide.remove()
+			})
+			const slides = [...this.container.querySelectorAll('.splide__slide')]
+			if (!slides.length) {
+				this.container.closest('.hero-slider-container')?.remove()
+				return
+			}
+			if (slides.length === 1) {
+				this.initSingle(slides[0])
+				return
+			}
 			this.setupDOM()
+		}
+
+		// Single slide: bypass Splide — render as static content block
+		initSingle = (slide) => {
+			this.container.closest('.hero-slider-container')?.classList.add('hero-slider-single')
+
+			if (this.callbackFn && typeof window[this.callbackFn] === 'function') {
+				window[this.callbackFn](0, null)
+			}
+			const slideFn = slide.dataset?.slideCallback
+			if (slideFn && typeof window[slideFn] === 'function') {
+				window[slideFn](0, null)
+			}
+
+			const revealSingle = () => this.container.classList.add('splide-ready')
+			const firstImg = slide.querySelector('img')
+			if (firstImg) {
+				if (firstImg.complete && firstImg.naturalWidth > 0) {
+					requestAnimationFrame(() => requestAnimationFrame(revealSingle))
+				} else {
+					firstImg.addEventListener('load',  revealSingle, { once: true })
+					firstImg.addEventListener('error', revealSingle, { once: true })
+				}
+			} else {
+				requestAnimationFrame(() => requestAnimationFrame(revealSingle))
+			}
+			window.addEventListener('load', () => revealSingle())
 		}
 
 		setupDOM = () => {
@@ -77,26 +128,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		initSplide = () => {
 			const isSingle = this.slideCount <= 1
-			const useFade = !isSingle && this.transition === 'fade'
+			const useFade  = !isSingle && this.transition === 'fade'
 
 			this.splide = new Splide(this.container, {
-				type: isSingle ? 'slide' : useFade ? 'fade' : 'loop',
-				rewind: useFade,
-				speed: useFade ? this.fadeSpeed : 400,
-				perPage: 1,
-				perMove: 1,
-				gap: 0,
-				padding: 0,
-				arrows: isSingle ? false : this.arrows,
-				pagination: isSingle ? false : this.bullets,
-				drag: isSingle ? false : this.draggable,
-				autoplay: !isSingle,
-				interval: this.delay,
-				pauseOnHover: this.pauseOnFocus,
-				pauseOnFocus: this.pauseOnFocus,
+				type:         isSingle ? 'slide' : (useFade ? 'fade' : 'loop'),
+				rewind:       useFade,
+				speed:        useFade ? this.fadeSpeed : 400,
+				perPage:      1,
+				perMove:      1,
+				gap:          0,
+				padding:      0,
+				arrows:       isSingle ? false : this.arrows,
+				pagination:   isSingle ? false : this.bullets,
+				drag:         isSingle ? false : this.draggable,
+				autoplay:      !isSingle,
+				interval:      this.delay,
+				pauseOnHover:  this.pauseOnFocus,
+				pauseOnFocus:  this.pauseOnFocus,
 			})
 
-			const fireCallbacks = index => {
+			const fireCallbacks = (index) => {
 				if (this.callbackFn && typeof window[this.callbackFn] === 'function') {
 					window[this.callbackFn](index, this.splide)
 				}
@@ -143,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				if (firstImg.complete && firstImg.naturalWidth > 0) {
 					requestAnimationFrame(() => requestAnimationFrame(revealSlider))
 				} else {
-					firstImg.addEventListener('load', revealSlider, { once: true })
+					firstImg.addEventListener('load',  revealSlider, { once: true })
 					firstImg.addEventListener('error', revealSlider, { once: true })
 				}
 			} else {

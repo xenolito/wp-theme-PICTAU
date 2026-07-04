@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.1.0
+- **Versión:** 7.2.0
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -482,9 +482,9 @@ Slider full-width above-the-fold basado en Splide.js y el CPT `slide`. El conten
 | `transition` | slide/fade | `slide` | Transición entre slides. `slide` = desplazamiento lateral con loop infinito; `fade` = crossfade con rewind |
 | `fade_speed` | float (s) | `0.8` | Duración del crossfade en segundos. Solo aplica cuando `transition="fade"` |
 | `category` | string | `''` | Slug de `slide_category` para filtrar los slides mostrados. Sin valor = todos los slides |
-| `pauseonfocus` | yes/no | `no` | Pausar el autoplay al pasar el cursor encima o al recibir foco de teclado |
-| `random` | yes/no | `no` | Aleatoriza el orden de los slides en cada carga (ignora el campo `orden`) |
-| `loader` | true/false/no/0 | `true` | Muestra u oculta el spinner SVG de carga |
+| `pauseonfocus` | yes/no | `no` | Pausar el autoplay al pasar el cursor encima o al recibir foco de teclado. `yes` = pausa al hacer hover o al recibir foco |
+| `random` | yes/no | `no` | Aleatoriza el orden de los slides en cada carga (ignora el campo `orden`). En lugar del preload del primer slide, emite un `<link rel="preload">` para la imagen de **todos** los slides (hasta `limit`), sin `fetchpriority`, para que el navegador los descargue en paralelo desde `<head>` y cualquier slide que aparezca primero ya esté en caché |
+| `loader` | true/false/no/0 | `true` | Muestra u oculta el spinner SVG de carga. Por defecto visible. Para ocultarlo: `loader="false"`, `loader="no"` o `loader="0"` |
 
 **CPT `slide` — estructura:**
 
@@ -494,22 +494,75 @@ Campo Pods adicional y taxonomía:
 
 | Campo / Taxonomía | Tipo | Descripción |
 |---|---|---|
-| `orden` | Número | Orden de aparición (menor = primero) |
+| `orden` | Número | Orden de aparición (menor = primero). El slide con menor `orden` es el primero. |
+| `caducidad` | Datetime | Fecha y hora de expiración automática del slide. Ver sección _Caducidad_ más abajo. |
 | `slide_category` | Taxonomía jerárquica | Categoría interna del slide (sólo visible en admin). Permite filtrar slides por contexto con el atributo `category` del shortcode. |
-| `slide_callback` | Texto | Nombre de función JS global (`window[fn]`) a ejecutar cuando este slide queda activo. |
+| `slide_callback` | Texto | Nombre de función JS global (`window[fn]`) a ejecutar cuando este slide queda activo. Firma: `fn(newIndex, splideInstance)`. Dispara en el montaje inicial (evento `ready`) y en cada transición posterior (evento `moved`). Se ejecuta después del `callback` global si ambos están definidos. |
 
 **Admin — Listado de slides:**
 
 El listado de slides en el panel de WordPress incluye:
 - Columna **Categoría**: muestra la `slide_category` asignada con enlace a filtro.
 - Columna **Orden**: muestra el valor del campo `orden` (ordenable).
+- Columna **Caducidad**: muestra la fecha/hora de expiración con indicadores visuales (⚠ rojo = ya expirado, ⏰ naranja = caduca en < 7 días).
 - Dropdown de filtro por categoría en la barra de filtros del listado.
+
+#### Caducidad — expiración automática de slides
+
+Cada slide puede tener una fecha+hora de caducidad en el campo Pods `caducidad` (formato `Y-m-d H:i:s`). El sistema es **triple capa** para garantizar que un slide no aparezca incluso con caché activa (WP Super Cache, WP Rocket, etc.):
+
+**Capa 1 — Filtro PHP (server-side):** el shortcode usa un `meta_query` que excluye slides cuya `caducidad` haya pasado. Garantiza que en cada carga fresca el slide ya no se renderiza. El filtro también incluye `0000-00-00 00:00:00` como valor equivalente a "sin caducidad" (Pods guarda ese valor cuando el usuario borra el campo datetime y guarda). Un hook `save_post_slide` (priority 100) normaliza ese valor a `''` en el momento del guardado para que la base de datos quede limpia.
+
+**Capa 2 — Filtro JS (client-side):** el módulo `hero_slider.js` elimina del DOM, antes de montar Splide, cualquier `.splide__slide[data-slide-expiry]` cuya fecha haya pasado. Esto cubre páginas servidas desde caché con HTML obsoleto.
+
+**Capa 3 — WP Cron (proactivo):** al guardar un slide publicado con `caducidad`, se programa un `wp_schedule_single_event()` en ese timestamp. Cuando el cron dispara:
+1. El slide pasa a estado `draft` (despublicado).
+2. Se limpia la caché del plugin de caché activo (WP Super Cache → `wp_cache_clear_cache()`, WP Rocket → `rocket_clean_domain()`, W3 Total Cache → `w3tc_flush_all`, Cache Enabler → `cache_enabler_clear_complete_cache`).
+
+Si el slide se despublica o elimina antes de su caducidad, el cron programado se cancela automáticamente.
+
+**Ordenación cuando hay slides con caducidad:**
+
+Cuando cualquier slide activo tiene `caducidad` fijada, el atributo `random` queda sin efecto y el orden sigue esta prioridad:
+1. Slides **con** caducidad: por fecha de caducidad ASC (el más próximo a expirar, primero).
+2. Slides **sin** caducidad: por campo `orden` ASC.
+
+Si ningún slide activo tiene caducidad: se respeta `random="yes"` o el orden por `orden`.
 
 **Módulo JS:** `javascript/modules/hero_slider.js`
 
 - Atributo de activación: `data-heroslider`
-- Con 1 slide: deshabilita autoplay, loop, arrows y bullets automáticamente.
 - Callbacks: evento `ready` para el slide inicial + evento `moved` en cada transición posterior.
+
+#### Modo single-slide (1 slide disponible)
+
+Cuando solo hay un slide activo, el módulo JS **omite Splide por completo**: no se instancia el carrusel ni se añaden arrows, bullets ni drag. El HTML wrapper se mantiene intacto para que el CSS siga funcionando, y se añade la clase `hero-slider-single` al `.hero-slider-container`. El reveal sigue ligado a la carga de la primera imagen, igual que en el modo multi-slide.
+
+CSS requerido para que el contenedor ocupe el 100% sin `.splide__track` (en `tailwind/custom/components/layout.css`):
+
+```css
+.hero-slider-single [data-heroslider] > div { width: 100%; height: 100%; }
+.hero-slider-single .splide__slide        { width: 100%; height: 100%; }
+```
+
+#### Estado vacío — sin slides disponibles
+
+Cuando ningún slide pasa los filtros de la query (todos en draft, todos expirados, ninguno en la categoría indicada), el shortcode devuelve contenido distinto según el usuario:
+
+| Situación | Output del shortcode |
+|---|---|
+| Usuario **no logueado** (o sin `edit_posts`) | `<div class="hero-slider-fallback"><h1>Descripción corta del sitio</h1></div>` — texto tomado de `get_bloginfo('description')` (campo **Descripción corta** en Ajustes → General). Si ese campo está vacío, no se renderiza nada. |
+| Usuario **editor / admin** (`edit_posts`) | Bloque rojo `.hero-slider-empty-warning` con el shortcode que falla como referencia y un enlace directo al listado de slides del CPT en el admin. |
+
+#### Aviso en el panel de administración
+
+Un hook `admin_notices` revisa en cada carga del admin si existe alguna página publicada que use `[hero-slider]` sin slides disponibles (publicados, no expirados). Si detecta el caso, muestra un aviso de error (`.notice.notice-error`) con:
+
+- El título de la página afectada con enlace a editar la página.
+- El shortcode exacto que no tiene slides.
+- Un enlace al listado de slides filtrado por la categoría correspondiente.
+
+La comprobación usa `post_status => 'publish'` explícito para evitar falsos negativos en contexto admin, donde `WP_Query` sin `post_status` incluye los borradores del usuario logueado.
 
 #### Pausa por visibilidad (IntersectionObserver)
 
@@ -548,13 +601,15 @@ El reveal está ligado a la carga real de la imagen del primer slide, no a tempo
 **CSS del componente** (en `tailwind/custom/components/layout.css`):
 
 ```css
+/* Reservar espacio — prevenir CLS */
 .hero-slider-container {
     aspect-ratio: 16 / 7;
     overflow: hidden;
     position: relative;
-    background: hsl(0, 0%, 47%);
+    background: hsl(0, 0%, 47%); /* placeholder mientras carga */
 }
 
+/* Ocultar hasta reveal; JS añade .splide-ready */
 [data-heroslider] {
     opacity: 0;
     transition: opacity 2s ease;
@@ -562,6 +617,7 @@ El reveal está ligado a la carga real de la imagen del primer slide, no a tempo
     &.splide-ready { opacity: 1; }
 }
 
+/* Loader: visible mientras [data-heroslider] no tenga .splide-ready */
 .hero-slider-loader {
     position: absolute;
     inset: 0;
@@ -579,6 +635,7 @@ El reveal está ligado a la carga real de la imagen del primer slide, no a tempo
 
 @keyframes hero-loader-spin { to { transform: rotate(360deg); } }
 
+/* Imagen full-bleed */
 .hero-slide-image { position: absolute; inset: 0; margin: 0; }
 .hero-slide-image img { width: 100%; height: 100%; object-fit: cover; }
 .splide__slide { position: relative; overflow: hidden; }
@@ -1063,7 +1120,7 @@ Entry: `javascript/script.js` → `theme/js/script.min.js`
 | `mobileMenuNav.js` | Menú móvil |
 | `darkMode.js` | Toggle dark/light |
 | `faqs.js` | Acordeón de FAQs |
-| `hero_slider.js` | Slider full-width above-the-fold (Splide). Atributo: `data-heroslider`. |
+| `hero_slider.js` | Slider full-width above-the-fold (Splide). Atributo: `data-heroslider`. Reveal ligado a carga de primera imagen. |
 | `imgcompare.js` | Comparador antes/después con slider. Atributo: `data-imgcompare`. |
 | `testimonials-splide.js` | Slider de testimonios (Splide). Atributo: `data-testimonials`. |
 | `animation_any.js` | Animaciones de entrada con GSAP + ScrollTrigger. Atributo: `data-anim_any`. |

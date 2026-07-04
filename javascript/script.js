@@ -92,16 +92,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Callbacks for CPT Slides (optional)
 const sliderInit = (window.sliderInit = (index, splide) => {
-	const splideRoot = splide.root
-
-	if (splide.root) {
-		const activeSlide = splide.Components.Slides.getAt(splide.index).slide
-		const slideStartAnimation = activeSlide.querySelector('#slider-start-animation')
-		if (slideStartAnimation) {
-			slideStartAnimation.headerAnimation.play()
-		}
-		// console.log(slideStartAnimation.headerAnimation)
-	}
+	// Single-slide mode: splide is null — find the slide directly in the DOM
+	const activeSlide = splide?.root
+		? splide.Components.Slides.getAt(splide.index).slide
+		: document.querySelector('[data-heroslider] .splide__slide')
+	if (!activeSlide) return
+	const slideStartAnimation = activeSlide.querySelector('#slider-start-animation')
+	if (slideStartAnimation) slideStartAnimation.headerAnimation?.play()
 })
 
 const setPageTransitions = () => {
