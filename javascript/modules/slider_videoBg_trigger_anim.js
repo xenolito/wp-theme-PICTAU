@@ -21,6 +21,10 @@ window.addEventListener('load', () => {
 	})
 
 	const firstHeader = slider.querySelector('h1:first-of-type')
+
+	if (!firstHeader) return
+
+	console.log('firstHeader', firstHeader)
 	const headersToAnim = slider.querySelectorAll('h1')
 
 	const cover = slider.querySelector('.slider-cover')

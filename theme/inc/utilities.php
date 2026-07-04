@@ -2230,12 +2230,12 @@ function hero_slider_shortcode($atts = [], $content = '')
 		if (!current_user_can('edit_posts')) {
 			$tagline = get_bloginfo('description');
 			if (!$tagline) return '';
-			return '<div class="hero-slider-fallback">'
+			return '<div class="hero-slider-container hero-slider-fallback">'
 				. '<h1>' . esc_html($tagline) . '</h1>'
 				. '</div>';
 		}
 		$cat_label = $category ? ' category="' . esc_html($category) . '"' : '';
-		return '<div class="hero-slider-empty-warning">'
+		return '<div class="hero-slider-container hero-slider-empty-warning">'
 			. '<p>' . sprintf(
 				/* translators: %s: shortcode example */
 				esc_html__('⚠ No hay slides disponibles para %s. Comprueba el CPT Slides.', 'pictau'),
@@ -2365,10 +2365,17 @@ function hero_slider_admin_notice_empty()
 	);
 	if (empty($pages)) return;
 
-	$warnings = [];
+	// Agrupado por página: una página con varios shortcodes [hero-slider] que fallan
+	// (p.ej. uno sin filtro y otro con category="x") debe listarse una sola vez, no una por shortcode.
+	$pages_with_failures = [];
 
 	foreach ($pages as $page) {
-		if (!preg_match_all('/\[hero-slider\b([^\]]*)\]/i', $page->post_content, $matches)) continue;
+		// Ignorar coincidencias dentro de comentarios de bloque (delimitadores <!-- wp:... -->):
+		// un bloque renombrado en el editor puede contener "[hero-slider]" como texto en su
+		// metadata (name), sin ser un shortcode real. Esos comentarios nunca llegan a
+		// do_shortcode() en el front-end, así que se descartan antes de buscar el shortcode.
+		$content = preg_replace('#<!--\s*/?wp:.*?-->#s', '', $page->post_content);
+		if (!preg_match_all('/\[hero-slider\b([^\]]*)\]/i', $content, $matches)) continue;
 
 		foreach ($matches[1] as $atts_str) {
 			$atts     = shortcode_parse_atts($atts_str);
@@ -2399,23 +2406,38 @@ function hero_slider_admin_notice_empty()
 			if ($check->post_count > 0) continue;
 
 			$cat_label  = $category ? ' category="' . esc_html($category) . '"' : '';
-			$edit_url   = get_edit_post_link($page->ID);
 			$slides_url = admin_url('edit.php?post_type=slide' . ($category ? '&slide_category=' . urlencode($category) : ''));
 
-			$warnings[] = sprintf(
-				'<li><strong>%s</strong> — %s <code>[hero-slider%s]</code>. <a href="%s">%s</a> | <a href="%s">%s</a></li>',
-				esc_html($page->post_title),
-				esc_html__('ningún slide disponible para', 'pictau'),
-				$cat_label,
-				esc_url($edit_url),
-				esc_html__('Editar página', 'pictau'),
-				esc_url($slides_url),
-				esc_html__('Ver slides', 'pictau')
-			);
+			$pages_with_failures[$page->ID]['title']     ??= $page->post_title;
+			$pages_with_failures[$page->ID]['edit_url']  ??= get_edit_post_link($page->ID);
+			// Evitar listar el mismo shortcode dos veces si aparece repetido en el contenido
+			$pages_with_failures[$page->ID]['shortcodes']["[hero-slider{$cat_label}]"] = $slides_url;
 		}
 	}
 
-	if (empty($warnings)) return;
+	if (empty($pages_with_failures)) return;
+
+	$warnings = [];
+	foreach ($pages_with_failures as $data) {
+		$shortcode_links = [];
+		foreach ($data['shortcodes'] as $code => $slides_url) {
+			$shortcode_links[] = sprintf(
+				'<code>%s</code> (<a href="%s">%s</a>)',
+				esc_html($code),
+				esc_url($slides_url),
+				esc_html__('ver slides', 'pictau')
+			);
+		}
+
+		$warnings[] = sprintf(
+			'<li><strong>%s</strong> — %s %s. <a href="%s">%s</a></li>',
+			esc_html($data['title']),
+			esc_html__('ningún slide disponible para', 'pictau'),
+			implode(', ', $shortcode_links),
+			esc_url($data['edit_url']),
+			esc_html__('Editar página', 'pictau')
+		);
+	}
 
 	echo '<div class="notice notice-error is-dismissible">';
 	echo '<p><strong>' . esc_html__('⚠ Hero Slider: sin slides disponibles', 'pictau') . '</strong></p>';
