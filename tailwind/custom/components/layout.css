@@ -316,6 +316,7 @@ figure {
 	}
 	.is-bg {
 		pointer-events: none;
+		padding: 0 !important;
 		z-index: 0;
 	}
 }
@@ -967,6 +968,7 @@ body.fixed-header {
 		@apply pt-[var(--whole-header-height)];
 		.slider-cover {
 			height: 100%;
+			padding: 0 !important;
 		}
 		.full-height {
 			min-height: calc(100svh - var(--whole-header-height));
@@ -3062,10 +3064,16 @@ section.category-grid-section {
 }
 
 /*! HERO SLIDER COMPONENT/SHORTCODE FOR LANDING PAGE */
+:has(> .hero-slider-container) {
+	padding-top: 0 !important;
+	height: 100svh;
+}
+
 .hero-slider-container {
-	--bg-color: hsl(0, 0%, 47%);
-	--bg-color: white;
+	--bg-color: hsl(0, 0%, 0%);
 	--loader-color: var(--cta-color);
+	width: 100vw;
+	max-width: unset !important;
 
 	position: relative;
 	height: 100%;
@@ -3098,6 +3106,14 @@ section.category-grid-section {
 			height: 100%;
 			padding: 0 var(--def-layout-x-padding);
 			z-index: 99;
+		}
+
+		.content {
+			max-width: var(--layout-max-width);
+			width: 100%;
+			margin: auto;
+			padding: 0 var(--def-layout-x-padding);
+			padding-top: var(--whole-header-height);
 		}
 
 		&::after {
@@ -3310,7 +3326,7 @@ section.category-grid-section {
 
 /*! HOME PAGE HERO SLIDER WITH VIDEO BACKGROUND */
 
-.slider.has-video-bg {
+.slider.has-video-bg:not(:has(.hero)-slider-fallback) {
 	position: relative;
 	color: white;
 	h1 {

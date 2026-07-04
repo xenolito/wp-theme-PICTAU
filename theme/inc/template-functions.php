@@ -1696,12 +1696,19 @@ function hero_slider_preload()
 {
 	global $post;
 	if (!is_singular() || empty($post->post_content)) return;
-	if (!has_shortcode($post->post_content, 'hero-slider')) return;
+
+	// Ignorar coincidencias dentro de comentarios de bloque (delimitadores <!-- wp:... -->):
+	// un bloque renombrado en el editor puede contener "[hero-slider]" como texto en su
+	// metadata (name), sin ser un shortcode real. Esos comentarios nunca llegan a
+	// do_shortcode() en el front-end, así que se descartan antes de buscar el shortcode.
+	$content = preg_replace('#<!--\s*/?wp:.*?-->#s', '', $post->post_content);
+
+	if (!has_shortcode($content, 'hero-slider')) return;
 	if (!post_type_exists('slide')) return;
 
 	$sc_atts   = [];
 	$is_random = false;
-	if (preg_match('/\[hero-slider\b([^\]]*)\]/i', $post->post_content, $sc_match)) {
+	if (preg_match('/\[hero-slider\b([^\]]*)\]/i', $content, $sc_match)) {
 		$sc_atts   = shortcode_parse_atts($sc_match[1] ?? '');
 		$is_random = isset($sc_atts['random']) && ($sc_atts['random'] === 'yes' || $sc_atts['random'] === '1');
 	}

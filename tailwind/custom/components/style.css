@@ -757,7 +757,8 @@ icon[class*="grad-"] {
 
 /*! HOME SLIDER STYLES */
 body.home,
-body:has(.home) {
+body:has(.home),
+:has(> .slider > .hero-slider-container) {
 	.slider {
 		> div:first-of-type {
 			figure {
@@ -2338,7 +2339,8 @@ canvas.anim-bg {
 	}
 }
 
-body.home .slider {
+body.home .slider,
+.slider:has(> .hero-slider-container) {
 	--button-font-size: clamp(1rem, 3.5vw, 1.2rem);
 	h1 {
 		font-family: var(--def-heading-font-family);

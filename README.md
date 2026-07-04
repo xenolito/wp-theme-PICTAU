@@ -556,11 +556,11 @@ Cuando ningún slide pasa los filtros de la query (todos en draft, todos expirad
 
 #### Aviso en el panel de administración
 
-Un hook `admin_notices` revisa en cada carga del admin si existe alguna página publicada que use `[hero-slider]` sin slides disponibles (publicados, no expirados). Si detecta el caso, muestra un aviso de error (`.notice.notice-error`) con:
+Un hook `admin_notices` revisa en cada carga del admin si existe alguna página publicada que use `[hero-slider]` sin slides disponibles (publicados, no expirados). Si detecta el caso, muestra un aviso de error (`.notice.notice-error`) agrupado **por página** (una única línea aunque la página contenga varios `[hero-slider]` con distintos atributos, p.ej. uno sin filtro y otro con `category="..."`) con:
 
-- El título de la página afectada con enlace a editar la página.
-- El shortcode exacto que no tiene slides.
-- Un enlace al listado de slides filtrado por la categoría correspondiente.
+- El título de la página afectada.
+- El o los shortcodes exactos que no tienen slides, cada uno con su propio enlace al listado de slides filtrado por su categoría.
+- Un enlace a editar la página.
 
 La comprobación usa `post_status => 'publish'` explícito para evitar falsos negativos en contexto admin, donde `WP_Query` sin `post_status` incluye los borradores del usuario logueado.
 

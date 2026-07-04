@@ -8751,6 +8751,7 @@ figure.size-full:not(.is-resized):not(.card-fake-cta-icon) svg {
 
 :has(.is-bg) .is-bg {
   pointer-events: none;
+  padding: 0 !important;
   z-index: 0;
 }
 
@@ -9513,6 +9514,7 @@ body.fixed-header .entry-content > .slider {
 
 body.fixed-header .entry-content > .slider .slider-cover {
   height: 100%;
+  padding: 0 !important;
 }
 
 body.fixed-header .entry-content > .slider .full-height {
@@ -11772,10 +11774,16 @@ section.category-grid-section > * {
 
 /*! HERO SLIDER COMPONENT/SHORTCODE FOR LANDING PAGE */
 
+:has(> .hero-slider-container) {
+  padding-top: 0 !important;
+  height: 100svh;
+}
+
 .hero-slider-container {
-  --bg-color: hsl(0, 0%, 47%);
-  --bg-color: white;
+  --bg-color: hsl(0, 0%, 0%);
   --loader-color: var(--cta-color);
+  width: 100vw;
+  max-width: unset !important;
   position: relative;
   height: 100%;
   /* height: calc(100svh - var(--whole-header-height)); */
@@ -11805,6 +11813,14 @@ section.category-grid-section > * {
   height: 100%;
   padding: 0 var(--def-layout-x-padding);
   z-index: 99;
+}
+
+.hero-slider-container .splide__slide .content {
+  max-width: var(--layout-max-width);
+  width: 100%;
+  margin: auto;
+  padding: 0 var(--def-layout-x-padding);
+  padding-top: var(--whole-header-height);
 }
 
 .hero-slider-container .splide__slide::after {
@@ -12021,12 +12037,12 @@ section.category-grid-section > * {
 
 /*! HOME PAGE HERO SLIDER WITH VIDEO BACKGROUND */
 
-.slider.has-video-bg {
+.slider.has-video-bg:not(:has(.hero)-slider-fallback) {
   position: relative;
   color: white;
 }
 
-.slider.has-video-bg h1 {
+.slider.has-video-bg:not(:has(.hero)-slider-fallback) h1 {
   font-size: clamp(3.4rem, 10vw, 7rem);
   color: white;
   text-align: center;
@@ -12035,16 +12051,16 @@ section.category-grid-section > * {
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
 }
 
-.slider.has-video-bg p {
+.slider.has-video-bg:not(:has(.hero)-slider-fallback) p {
   text-align: center;
 }
 
-.slider.has-video-bg p.description {
+.slider.has-video-bg:not(:has(.hero)-slider-fallback) p.description {
   font-size: clamp(1.2rem, 3vw, 1.6rem);
   font-weight: 500;
 }
 
-.slider.has-video-bg .slider-cover:not(.block-editor-block-list__block) {
+.slider.has-video-bg:not(:has(.hero)-slider-fallback) .slider-cover:not(.block-editor-block-list__block) {
   display: block;
   position: absolute;
   /* opacity: 0; */
@@ -12055,7 +12071,7 @@ section.category-grid-section > * {
   height: 100dvh;
 }
 
-.slider.has-video-bg .scene {
+.slider.has-video-bg:not(:has(.hero)-slider-fallback) .scene {
   justify-content: center;
 }
 
@@ -15155,37 +15171,37 @@ icon[class*="grad-"].icon-history-toggle {
 
 /*! HOME SLIDER STYLES */
 
-body.home .slider > div:first-of-type figure, body:has(.home) .slider > div:first-of-type figure {
+body.home .slider > div:first-of-type figure, body:has(.home) .slider > div:first-of-type figure, :has(> .slider > .hero-slider-container) .slider > div:first-of-type figure {
   display: flex;
   align-items: flex-end;
 }
 
 @media only screen and (max-width: 767px) {
-  body.home .slider .full-height, body:has(.home) .slider .full-height {
+  body.home .slider .full-height, body:has(.home) .slider .full-height, :has(> .slider > .hero-slider-container) .slider .full-height {
     height: auto
   }
 
-  body.home .slider .full-height > div:first-of-type, body:has(.home) .slider .full-height > div:first-of-type {
+  body.home .slider .full-height > div:first-of-type, body:has(.home) .slider .full-height > div:first-of-type, :has(> .slider > .hero-slider-container) .slider .full-height > div:first-of-type {
     /* display: none; */
     padding-bottom: var(--default-section-vert-padding);
   }
 }
 
-body.home .slider h1, body:has(.home) .slider h1 {
+body.home .slider h1, body:has(.home) .slider h1, :has(> .slider > .hero-slider-container) .slider h1 {
   margin-bottom: 0 !important;
 }
 
-body.home .slider h3, body:has(.home) .slider h3 {
+body.home .slider h3, body:has(.home) .slider h3, :has(> .slider > .hero-slider-container) .slider h3 {
   font-size: clamp(1.6rem, 5vw, 2rem) !important;
   font-weight: 400 !important;
 }
 
-body.home .slider h3 em, body:has(.home) .slider h3 em {
+body.home .slider h3 em, body:has(.home) .slider h3 em, :has(> .slider > .hero-slider-container) .slider h3 em {
   font-weight: bold !important;
   color: inherit !important;
 }
 
-body.home .slider p, body:has(.home) .slider p {
+body.home .slider p, body:has(.home) .slider p, :has(> .slider > .hero-slider-container) .slider p {
   font-size: clamp(1rem, 5vw, 1.1rem);
 }
 
@@ -16782,11 +16798,12 @@ canvas.anim-bg {
   line-height: 1.8ch;
 }
 
-body.home .slider {
+body.home .slider,
+.slider:has(> .hero-slider-container) {
   --button-font-size: clamp(1rem, 3.5vw, 1.2rem);
 }
 
-body.home .slider h1 {
+body.home .slider h1, .slider:has(> .hero-slider-container) h1 {
   font-family: var(--def-heading-font-family);
   font-size: clamp(3rem, 8vw, 6rem) !important;
   font-weight: 700;
@@ -16794,7 +16811,7 @@ body.home .slider h1 {
   line-height: 1.2;
 }
 
-body.home .slider h2 {
+body.home .slider h2, .slider:has(> .hero-slider-container) h2 {
   font-weight: 700;
 }
 
