@@ -2295,10 +2295,15 @@ function hero_slider_shortcode($atts = [], $content = '')
 		$exp_attr = !empty($slide['caducidad']) ? ' data-slide-expiry="' . esc_attr(str_replace(' ', 'T', $slide['caducidad'])) . '"' : '';
 		$slides_output .= '<div class="splide__slide"' . $cb_attr . $exp_attr . '>';
 		$slide_content  = apply_filters('the_content', get_the_content());
-		$slide_content  = preg_replace_callback('/<img\b[^>]+>/i', function ($m) {
-			$img = preg_replace('/\s*loading=["\'][^"\']*["\']/i', '', $m[0]);
+		// Solo la imagen de fondo real del slide (convención "is-bg") debe cargarse eager/high
+		// priority. Sin este filtro, un slide sin imagen de fondo (p.ej. uno con [video-bg])
+		// haría matchear cualquier otro <img> del contenido — como un icono oculto — y le
+		// aplicaría fetchpriority="high" sin necesidad.
+		$slide_content  = preg_replace_callback('/(<figure[^>]*\bclass="[^"]*\bis-bg\b[^"]*"[^>]*>\s*)(<img\b[^>]+>)/i', function ($m) {
+			$img = preg_replace('/\s*loading=["\'][^"\']*["\']/i', '', $m[2]);
 			$img = preg_replace('/\s*fetchpriority=["\'][^"\']*["\']/i', '', $img);
-			return preg_replace('/<img\b/i', '<img loading="eager" fetchpriority="high"', $img);
+			$img = preg_replace('/<img\b/i', '<img loading="eager" fetchpriority="high"', $img);
+			return $m[1] . $img;
 		}, $slide_content, 1);
 		$slides_output .= $slide_content;
 		$slides_output .= '</div>';
