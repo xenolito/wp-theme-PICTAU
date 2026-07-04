@@ -2199,20 +2199,22 @@ function hero_slider_shortcode($atts = [], $content = '')
 	$random    = $atts['random'] === 'yes' || $atts['random'] === '1';
 	$curr_lang = function_exists('pll_current_language') ? pll_current_language() : 'es';
 
-	$query_args = [
-		'post_type'      => 'slide',
-		'posts_per_page' => $limit,
-		'no_found_rows'  => true,
-		'lang'           => $curr_lang,
+	// Exclude slides whose caducidad datetime has already passed.
+	// Pods saves '0000-00-00 00:00:00' when clearing a datetime field, so handle it alongside ''.
+	$expiry_filter = [
+		'relation' => 'OR',
+		['key' => 'caducidad', 'compare' => 'NOT EXISTS'],
+		['key' => 'caducidad', 'value' => ['', '0000-00-00 00:00:00'], 'compare' => 'IN'],
+		['key' => 'caducidad', 'value' => current_time('mysql'), 'compare' => '>', 'type' => 'DATETIME'],
 	];
 
-	if ($random) {
-		$query_args['orderby'] = 'rand';
-	} else {
-		$query_args['meta_key'] = 'orden';
-		$query_args['orderby']  = 'meta_value_num';
-		$query_args['order']    = 'ASC';
-	}
+	$query_args = [
+		'post_type'      => 'slide',
+		'posts_per_page' => -1, // fetch all; limit applied after PHP sort
+		'no_found_rows'  => true,
+		'lang'           => $curr_lang,
+		'meta_query'     => $expiry_filter,
+	];
 
 	if ($category) {
 		$query_args['tax_query'] = [ [
@@ -2224,15 +2226,74 @@ function hero_slider_shortcode($atts = [], $content = '')
 
 	$query = new WP_Query($query_args);
 
-	if (!$query->have_posts()) return '';
+	if (!$query->have_posts()) {
+		if (!current_user_can('edit_posts')) {
+			$tagline = get_bloginfo('description');
+			if (!$tagline) return '';
+			return '<div class="hero-slider-fallback">'
+				. '<h1>' . esc_html($tagline) . '</h1>'
+				. '</div>';
+		}
+		$cat_label = $category ? ' category="' . esc_html($category) . '"' : '';
+		return '<div class="hero-slider-empty-warning">'
+			. '<p>' . sprintf(
+				/* translators: %s: shortcode example */
+				esc_html__('⚠ No hay slides disponibles para %s. Comprueba el CPT Slides.', 'pictau'),
+				'<code>[hero-slider' . $cat_label . ']</code>'
+			) . '</p>'
+			. '<p><a href="' . esc_url(admin_url('edit.php?post_type=slide' . ($category ? '&slide_category=' . urlencode($category) : ''))) . '">'
+			. esc_html__('Ver slides en el administrador →', 'pictau')
+			. '</a></p>'
+			. '</div>';
+	}
+
+	// Collect all slides with sorting metas for PHP-side ordering
+	$slides_data = [];
+	while ($query->have_posts()) {
+		$query->the_post();
+		$pid       = get_the_ID();
+		$caducidad = get_post_meta($pid, 'caducidad', true);
+		if ($caducidad === '0000-00-00 00:00:00') $caducidad = '';
+		$orden_raw = get_post_meta($pid, 'orden', true);
+		$slides_data[] = [
+			'post'      => get_post(),
+			'caducidad' => $caducidad,
+			'orden'     => ($orden_raw !== '' && $orden_raw !== null) ? (int) $orden_raw : PHP_INT_MAX,
+		];
+	}
+	wp_reset_postdata();
+
+	// When any active slide has a caducidad, order by nearest expiry first (overrides random)
+	$has_caducidad = !empty(array_filter($slides_data, fn($s) => !empty($s['caducidad'])));
+
+	if ($has_caducidad) {
+		usort($slides_data, function ($a, $b) {
+			$a_has = !empty($a['caducidad']);
+			$b_has = !empty($b['caducidad']);
+			if ($a_has !== $b_has) return $a_has ? -1 : 1;
+			if ($a_has) return strcmp($a['caducidad'], $b['caducidad']); // ISO datetime strings sort correctly
+			return $a['orden'] <=> $b['orden'];
+		});
+	} elseif ($random) {
+		shuffle($slides_data);
+	} else {
+		usort($slides_data, fn($a, $b) => $a['orden'] <=> $b['orden']);
+	}
+
+	if ($limit > 0) {
+		$slides_data = array_slice($slides_data, 0, $limit);
+	}
 
 	$slides_output = '';
 
-	while ($query->have_posts()) {
-		$query->the_post();
-		$slide_cb = preg_replace('/[^a-zA-Z0-9_$]/', '', get_post_meta(get_the_ID(), 'slide_callback', true));
+	foreach ($slides_data as $slide) {
+		$GLOBALS['post'] = $slide['post'];
+		setup_postdata($GLOBALS['post']);
+		$pid      = $slide['post']->ID;
+		$slide_cb = preg_replace('/[^a-zA-Z0-9_$]/', '', get_post_meta($pid, 'slide_callback', true));
 		$cb_attr  = $slide_cb ? ' data-slide-callback="' . esc_attr($slide_cb) . '"' : '';
-		$slides_output .= '<div class="splide__slide"' . $cb_attr . '>';
+		$exp_attr = !empty($slide['caducidad']) ? ' data-slide-expiry="' . esc_attr(str_replace(' ', 'T', $slide['caducidad'])) . '"' : '';
+		$slides_output .= '<div class="splide__slide"' . $cb_attr . $exp_attr . '>';
 		$slide_content  = apply_filters('the_content', get_the_content());
 		$slide_content  = preg_replace_callback('/<img\b[^>]+>/i', function ($m) {
 			$img = preg_replace('/\s*loading=["\'][^"\']*["\']/i', '', $m[0]);
@@ -2284,6 +2345,148 @@ function hero_slider_shortcode($atts = [], $content = '')
 }
 add_shortcode('hero-slider', 'hero_slider_shortcode');
 
+// =============================================================================
+// HERO SLIDER: Admin notice — aviso si alguna página usa [hero-slider] sin slides
+// =============================================================================
+
+add_action('admin_notices', 'hero_slider_admin_notice_empty');
+function hero_slider_admin_notice_empty()
+{
+	if (!current_user_can('edit_posts')) return;
+	if (!post_type_exists('slide')) return;
+
+	global $wpdb;
+	$pages = $wpdb->get_results(
+		"SELECT ID, post_title, post_content
+		 FROM {$wpdb->posts}
+		 WHERE post_status = 'publish'
+		   AND post_content LIKE '%[hero-slider%'
+		   AND post_type NOT IN ('revision', 'attachment')"
+	);
+	if (empty($pages)) return;
+
+	$warnings = [];
+
+	foreach ($pages as $page) {
+		if (!preg_match_all('/\[hero-slider\b([^\]]*)\]/i', $page->post_content, $matches)) continue;
+
+		foreach ($matches[1] as $atts_str) {
+			$atts     = shortcode_parse_atts($atts_str);
+			$category = isset($atts['category']) ? sanitize_text_field($atts['category']) : '';
+
+			$expiry_filter = [
+				'relation' => 'OR',
+				['key' => 'caducidad', 'compare' => 'NOT EXISTS'],
+				['key' => 'caducidad', 'value' => ['', '0000-00-00 00:00:00'], 'compare' => 'IN'],
+				['key' => 'caducidad', 'value' => current_time('mysql'), 'compare' => '>', 'type' => 'DATETIME'],
+			];
+			$query_args = [
+				'post_type'      => 'slide',
+				'post_status'    => 'publish',
+				'posts_per_page' => 1,
+				'fields'         => 'ids',
+				'meta_query'     => $expiry_filter,
+			];
+			if ($category) {
+				$query_args['tax_query'] = [[
+					'taxonomy' => 'slide_category',
+					'field'    => 'slug',
+					'terms'    => $category,
+				]];
+			}
+
+			$check = new WP_Query($query_args);
+			if ($check->post_count > 0) continue;
+
+			$cat_label  = $category ? ' category="' . esc_html($category) . '"' : '';
+			$edit_url   = get_edit_post_link($page->ID);
+			$slides_url = admin_url('edit.php?post_type=slide' . ($category ? '&slide_category=' . urlencode($category) : ''));
+
+			$warnings[] = sprintf(
+				'<li><strong>%s</strong> — %s <code>[hero-slider%s]</code>. <a href="%s">%s</a> | <a href="%s">%s</a></li>',
+				esc_html($page->post_title),
+				esc_html__('ningún slide disponible para', 'pictau'),
+				$cat_label,
+				esc_url($edit_url),
+				esc_html__('Editar página', 'pictau'),
+				esc_url($slides_url),
+				esc_html__('Ver slides', 'pictau')
+			);
+		}
+	}
+
+	if (empty($warnings)) return;
+
+	echo '<div class="notice notice-error is-dismissible">';
+	echo '<p><strong>' . esc_html__('⚠ Hero Slider: sin slides disponibles', 'pictau') . '</strong></p>';
+	echo '<ul>' . implode('', $warnings) . '</ul>';
+	echo '</div>';
+}
+
+// =============================================================================
+// HERO SLIDER: Saneamiento de caducidad — normaliza el zero-date de Pods
+// =============================================================================
+
+// Pods guarda '0000-00-00 00:00:00' al borrar un campo datetime. Lo convertimos a ''
+// para que las queries y columnas admin lo traten correctamente como "sin caducidad".
+add_action('save_post_slide', function ($post_id) {
+	if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+	$caducidad = get_post_meta($post_id, 'caducidad', true);
+	if ($caducidad === '0000-00-00 00:00:00') {
+		update_post_meta($post_id, 'caducidad', '');
+	}
+}, 100);
+
+// =============================================================================
+// HERO SLIDER: WP-Cron — despublicar slide en su fecha de caducidad y limpiar caché
+// =============================================================================
+
+add_action('save_post_slide', 'hero_slider_schedule_expiry', 20, 2);
+function hero_slider_schedule_expiry($post_id, $post)
+{
+	if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+	if (defined('DOING_CRON') && DOING_CRON) return;
+	if ($post->post_status !== 'publish') return;
+
+	$caducidad = get_post_meta($post_id, 'caducidad', true);
+
+	// Cancel any previously scheduled event for this slide
+	wp_clear_scheduled_hook('hero_slider_expire_slide', [$post_id]);
+
+	if (!$caducidad) return;
+
+	// Parse the stored datetime as WP timezone — same SOT as the meta_query filter
+	// which uses current_time('mysql') (WP local time) for comparison.
+	$dt = DateTime::createFromFormat('Y-m-d H:i:s', $caducidad, wp_timezone());
+	$ts = $dt ? $dt->getTimestamp() : false;
+	if ($ts && $ts > time()) {
+		wp_schedule_single_event($ts, 'hero_slider_expire_slide', [$post_id]);
+	}
+}
+
+add_action('hero_slider_expire_slide', 'hero_slider_do_expire');
+function hero_slider_do_expire($post_id)
+{
+	if (get_post_status($post_id) !== 'publish') return;
+
+	wp_update_post(['ID' => $post_id, 'post_status' => 'draft']);
+
+	// Clear cache — supports multiple common cache plugins
+	if (function_exists('wp_cache_clear_cache')) wp_cache_clear_cache();       // WP Super Cache
+	do_action('cache_enabler_clear_complete_cache');                            // Cache Enabler
+	do_action('w3tc_flush_all');                                                // W3 Total Cache
+	if (function_exists('rocket_clean_domain')) rocket_clean_domain();          // WP Rocket
+}
+
+// Cancel scheduled event when slide is taken out of publish
+add_action('transition_post_status', 'hero_slider_cancel_expiry_on_unpublish', 10, 3);
+function hero_slider_cancel_expiry_on_unpublish($new_status, $old_status, $post)
+{
+	if ($post->post_type !== 'slide') return;
+	if ($new_status !== 'publish' && $old_status === 'publish') {
+		wp_clear_scheduled_hook('hero_slider_expire_slide', [$post->ID]);
+	}
+}
 
 // =============================================================================
 // ADMIN: Columnas "Categoría" + "Orden" en el listado de Slides
@@ -2296,6 +2499,7 @@ add_filter( 'manage_slide_posts_columns', function ( $columns ) {
 		if ( 'title' === $key ) {
 			$new['slide_category'] = esc_html__( 'Categoría', 'pictau' );
 			$new['orden']          = esc_html__( 'Orden', 'pictau' );
+			$new['caducidad']      = esc_html__( 'Caducidad', 'pictau' );
 		}
 	}
 	return $new;
@@ -2324,6 +2528,36 @@ add_action( 'manage_slide_posts_custom_column', function ( $column, $post_id ) {
 		// data-orden used by Quick Edit JS to pre-populate the field
 		echo '<span class="hidden" data-orden="' . esc_attr( $valor ) . '"></span>';
 		echo $valor !== '' ? esc_html( $valor ) : '&mdash;';
+	}
+
+	if ( 'caducidad' === $column ) {
+		$caducidad = get_post_meta( $post_id, 'caducidad', true );
+		if ( $caducidad === '0000-00-00 00:00:00' ) $caducidad = '';
+		if ( $caducidad ) {
+			// Build display label using gmmktime + date_i18n($fmt, $ts, true) so no PHP/WP
+			// timezone offset is applied — the stored Y-m-d H:i:s value is shown as-is,
+			// matching what Pods displays in the edit form.
+			$ts_display = false;
+			if ( preg_match( '/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})$/', $caducidad, $m ) ) {
+				$ts_display = gmmktime( (int) $m[4], (int) $m[5], (int) $m[6], (int) $m[2], (int) $m[3], (int) $m[1] );
+			}
+			$label = $ts_display !== false
+				? date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $ts_display, true )
+				: esc_html( $caducidad );
+			// Parse stored datetime as WP timezone to get a real UTC timestamp for comparison
+			$dt_cad = DateTime::createFromFormat( 'Y-m-d H:i:s', $caducidad, wp_timezone() );
+			$ts  = $dt_cad ? $dt_cad->getTimestamp() : 0;
+			$now = time(); // UTC Unix timestamp
+			if ( $ts && $ts < $now ) {
+				echo '<span style="color:#b91c1c;font-weight:600;" title="' . esc_attr__( 'Expirado', 'pictau' ) . '">'. esc_html( $label ) . ' &#9888;</span>';
+			} elseif ( $ts && ( $ts - $now ) < 7 * DAY_IN_SECONDS ) {
+				echo '<span style="color:#b45309;font-weight:600;" title="' . esc_attr__( 'Próximo a caducar', 'pictau' ) . '">' . esc_html( $label ) . ' &#9200;</span>';
+			} else {
+				echo esc_html( $label );
+			}
+		} else {
+			echo '&mdash;';
+		}
 	}
 }, 10, 2 );
 

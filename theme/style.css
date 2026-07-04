@@ -4,7 +4,7 @@ Theme URI: https://pictau.com
 Author: Oscar Rey Tajes
 Author URI: https://www.pictau.com
 Description: PICTAU theme with optional "tailwind" support and customizations for BALANZIA.
-Version: 7.1.0
+Version: 7.2.0
 Tested up to: 6.8
 Requires PHP: 7.4
 License: GNU General Public License v2 or later
@@ -12320,6 +12320,82 @@ section.category-grid-section > * {
 [data-heroslider].splide-ready ~ .hero-slider-loader {
   opacity: 0;
   display: none;
+}
+
+/* Admin-only warning block when no slides are available */
+
+/* Fallback for non-logged-in users when no slides are available */
+
+:has(> .hero-slider-fallback) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: hsl(36, 5%, 21%);
+  color: white !important;
+}
+
+.hero-slider-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+  padding: 2rem var(--def-layout-x-padding);
+  text-align: center;
+}
+
+.hero-slider-fallback h1 {
+  color: white !important;
+  margin: 0;
+}
+
+.hero-slider-empty-warning {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 280px;
+  padding: 2rem var(--def-layout-x-padding);
+  background: #b91c1c;
+  color: white !important;
+  text-align: center;
+}
+
+.hero-slider-empty-warning p {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: white !important;
+}
+
+.hero-slider-empty-warning code {
+  background: rgba(255 255 255 / 0.15);
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+  font-size: 0.9em;
+  color: white !important;
+}
+
+.hero-slider-empty-warning a {
+  color: white !important;
+  text-decoration: underline;
+  font-weight: 400;
+}
+
+.hero-slider-empty-warning a:hover {
+  opacity: 0.8;
+}
+
+/* Single slide: no Splide — inner div fills container without .splide__track */
+
+.hero-slider-single [data-heroslider] > div {
+  width: 100%;
+  height: 100%;
+}
+
+.hero-slider-single .splide__slide {
+  width: 100%;
+  height: 100%;
 }
 
 [data-heroslider].slider-paused .ken-burns img {
