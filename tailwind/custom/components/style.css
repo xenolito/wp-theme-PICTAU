@@ -1228,7 +1228,7 @@ canvas.anim-bg {
 }
 
 #footer {
-	background-color: var(--secondary-color);
+	background-color: #272727;
 	background-image: var(--gradient-footer);
 	--gap: 3rem;
 	/* @apply bg-gradient-footer; */
@@ -1373,6 +1373,10 @@ canvas.anim-bg {
 
 	.copy {
 		@apply px-4;
+		ul {
+			justify-content: flex-end !important;
+			flex-flow: column;
+		}
 		li {
 			text-align: right;
 		}

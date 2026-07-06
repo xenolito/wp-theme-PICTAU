@@ -862,7 +862,7 @@ function pictau_copyright($atts)
 
 	// Tagline: WordPress native site description (Ajustes > General)
 	$tagline      = get_bloginfo('description');
-	$tagline_html = $tagline ? '<p class="company-logo-copy">' . esc_html($tagline) . '</p>' : '';
+	$tagline_html = $tagline ? '<p class="company-copy">' . esc_html($tagline) . '</p>' : '';
 
 	// Contact info: Customizer > Site Information, neutral placeholders when empty
 	$phone = get_theme_mod('pictau_contact_phone', '') ?: '+34 xxx xx xx xx';
@@ -871,15 +871,16 @@ function pictau_copyright($atts)
 	$phone_clean = preg_replace('/\s+/', '', $phone);
 
 	$output = '<div class="pct-copyright">
-								<div class="company-logo">' . $logo_html . $tagline_html . '
-								</div>
+								<div class="company-logo">'
+									. $logo_html .
+								'</div>
 								<div class="copy">
+									<ul>
+										<li>© ' . apply_shortcodes('[myYear]') . ' ' . get_bloginfo('name') . '</li>
+									</ul>
 									<ul class="copy-contact">
 											<li><a href="tel:' . esc_attr($phone_clean) . '">' . esc_html($phone) . '</a></li>
 											<li><a href="mailto:' . esc_attr($email) . '">' . esc_html($email) . '</a></li>
-									</ul>
-									<ul>
-										<li>© ' . apply_shortcodes('[myYear]') . ' ' . get_bloginfo('name') . '</li>
 									</ul>
 								</div>
 							</div>';
