@@ -1202,17 +1202,10 @@ body.single-evento {
 
 #footer .copyright-container {
 	position: relative;
-	width: 100vw;
 	max-width: unset;
 
 	.pct-copyright {
 		display: flex;
-
-		max-width: calc(var(--layout-max-width) - 2 * var(--def-layout-x-padding));
-		margin-right: auto;
-		margin-left: auto;
-		width: calc(100% - 2 * var(--def-layout-x-padding));
-
 		flex-flow: column;
 		gap: 0.5rem;
 		> * {
@@ -1236,7 +1229,6 @@ body.single-evento {
 				li,
 				a {
 					font-size: 0.9rem;
-					text-transform: capitalize;
 				}
 				display: flex;
 				flex-wrap: wrap;

@@ -10,7 +10,7 @@
 
 ?>
 
-<section id="footer">
+<section id="footer" class="theme-color-dark">
 	<p class="bg-pattern-footer"></p>
 	<div>
 
