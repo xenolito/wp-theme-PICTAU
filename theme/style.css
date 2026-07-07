@@ -9284,6 +9284,11 @@ figure {
   text-transform: capitalize;
 }
 
+.horiz-separator {
+  display: inline-flex;
+  padding-inline: 0.5ch;
+}
+
 .no-bg-color {
   background-color: transparent !important;
 }
@@ -16238,13 +16243,13 @@ canvas.anim-bg {
   display: flex;
   flex-flow: row;
   place-content: flex-start space-between !important;
-  align-items: flex-start !important;
+  align-items: flex-start;
 }
 
 /* justify-content: space-between; */
 
 #footer .copyright-container .pct-copyright .company-logo > * {
-  width: var(--logo-brand-width);
+  width: calc(var(--logo-brand-width) * 2);
   height: auto;
   max-width: unset;
 }
@@ -16267,21 +16272,27 @@ canvas.anim-bg {
   text-align: right;
 }
 
+#footer .copyright-container .copy .year-company {
+  text-transform: capitalize;
+}
+
 @media only screen and (max-width: 620px) {
   #footer .copyright-container .pct-copyright {
     flex-flow: column;
+    align-items: center;
+    justify-content: center;
   }
 
   #footer .copyright-container .pct-copyright .copy {
     display: flex;
     flex-flow: column;
-    align-items: flex-start;
+    align-items: center;
     padding-left: 0;
     margin-top: 1rem;
   }
 
   #footer .copyright-container .pct-copyright .copy li {
-    text-align: left;
+    text-align: center;
   }
 }
 

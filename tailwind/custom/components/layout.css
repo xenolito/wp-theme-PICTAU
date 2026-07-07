@@ -409,6 +409,11 @@ figure {
 	text-transform: capitalize;
 }
 
+.horiz-separator {
+	display: inline-flex;
+	padding-inline: 0.5ch;
+}
+
 .no-bg-color {
 	background-color: transparent !important;
 }
