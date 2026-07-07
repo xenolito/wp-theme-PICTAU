@@ -1,7 +1,7 @@
 :root {
 	--default-section-vert-padding: clamp(2.5rem, 10vw, 6rem);
 	--column-gap: var(--card-padding, var(--default-card-padding));
-	--row-gap: var(--card-padding);
+	--row-gap: calc(var(--card-padding) * 2.5);
 	--scroll-offset: 0px;
 }
 
@@ -22,17 +22,6 @@ body {
 	/* &.stop-scrolling {
 		overflow: hidden !important;
 	} */
-}
-
-body {
-	font-family: var(--def-font-family);
-	h1,
-	h2,
-	h3,
-	h4 {
-		font-family: var(--def-heading-font-family);
-		/* letter-spacing: -0.02ch; */
-	}
 }
 
 /*! config for programatically change/add a style rule to the body when is child of .temp-body-bg (@html tag / :root) and a --temp-body-bg exists */
@@ -3356,5 +3345,145 @@ section.category-grid-section {
 
 	.scene {
 		justify-content: center;
+	}
+}
+
+.media-container {
+	@apply rounded-[var(--def-border-radius)] overflow-clip;
+	background-color: rgb(0 0 0 / 0.75);
+	/* backdrop-filter: blur(3px); */
+	display: grid;
+	/* place-content: center; */
+	/* aspect-ratio: 16/9; */
+
+	* {
+		grid-area: 1 / 1;
+		justify-self: center;
+	}
+
+	box-shadow: var(--box-shadow-pop);
+
+	&.video-trigger {
+		cursor: pointer;
+
+		.has-play-ui {
+			scale: 1;
+			transition: scale 0.3s ease;
+			z-index: 10;
+		}
+
+		.is-bg {
+			z-index: 5;
+		}
+
+		&:hover {
+			.has-play-ui {
+				scale: 1.25;
+			}
+		}
+
+		/* &:has(.is-provider-vimeo) {
+			.is-provider-vimeo {
+				display: none !important;
+			}
+		} */
+
+		&.is-active {
+			.is-bg,
+			.has-play-ui {
+				/* display: none; */
+				opacity: 0;
+				pointer-events: none;
+			}
+		}
+
+		iframe {
+			width: 100% !important;
+			height: 100% !important;
+			pointer-events: all !important;
+		}
+	}
+
+	.has-pulsing-dot {
+		--dim: 80px;
+		--padd: calc(var(--dim) * 0.3);
+		--color: var(--main-color);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		position: relative;
+
+		* {
+			z-index: 5;
+		}
+
+		&::before,
+		&::after {
+			content: "";
+			display: block;
+			position: absolute;
+			width: var(--dim);
+			height: var(--dim);
+			border-radius: 50%;
+			background-color: var(--color);
+		}
+
+		&::before {
+			animation: ping-filled 2s ease-out infinite;
+		}
+
+		&::after {
+			animation: ping-filled 2s ease-out infinite 0.5s;
+		}
+	}
+
+	figure {
+		/* display: unset !important; */
+		position: relative;
+		/* width: fit-content !important;
+		height: fit-content !important; */
+		justify-self: center;
+		align-self: center;
+
+		&.play-ui {
+			/* --dim: 160px; */
+			display: flex;
+			width: var(--dim) !important;
+			height: var(--dim) !important;
+			background-color: var(--color);
+			padding: var(--padd) !important;
+			border-radius: 50%;
+			justify-content: center;
+			align-items: center;
+
+			svg {
+				color: white;
+				justify-self: center;
+				align-self: center;
+				/* width: calc(var(--dim) * 1);
+				height: calc(var(--dim) * 1); */
+
+				/* background-color: var(--main-color);
+ */
+			}
+		}
+
+		&.is-type-video {
+			width: 100% !important;
+			height: 100% !important;
+			padding: 0 !important;
+			/* pointer-events: none; */
+
+			display: block !important;
+
+			> * {
+				width: 100%;
+				height: 100%;
+			}
+		}
+	}
+
+	p {
+		@apply !my-0;
 	}
 }
