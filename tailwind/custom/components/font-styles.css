@@ -3,10 +3,14 @@
 	--def-font-family: "Outfit", Helvetica, Arial, sans-serif;
 	--txt-slider-heading: "Outfit", Helvetica, Arial, sans-serif;
 	--def-txt-color: #404040;
+	--def-heading-line-height: 1.6ch;
+	--def-heading-tracking: -0.02em;
+	--def-heading-font-weight: 700;
 }
 
 body {
-	@apply text-[var(--txt-color)];
+	font-family: var(--def-font-family);
+	color: var(--def-txt-color);
 	font-size: 1rem;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
@@ -16,17 +20,18 @@ body {
 h1,
 h2,
 h3,
-h4,
-h5 {
-	@apply font-[300] tracking-[-0.04em];
-}
+h4 {
+	font-family: var(--def-heading-font-family);
+	font-weight: var(--def-heading-font-weight);
+	letter-spacing: var(--def-heading-tracking);
+	line-height: var(--def-heading-line-height);
+	color: var(--heading-color);
 
-h1,
-h2,
-h3 {
-	letter-spacing: -0.04em;
 	margin-left: 0;
 	margin-right: 0;
+	padding-top: 0;
+	margin-top: 0;
+
 	&:not([data-anim_any]) {
 		text-wrap: balance;
 	}
@@ -36,16 +41,9 @@ h3 {
 	}
 }
 
-h3 {
-	letter-spacing: -0.01ch;
-	line-height: 1.6ch;
-}
-
 h1 {
-	@apply text-[var(--heading-color)] dark:text-[var(--heading-color-dark)] !mt-0 pb-[0.5ch];
+	@apply !mt-0 pb-[0.5ch];
 	font-size: clamp(2.2rem, 5vw, 3.5rem);
-	font-weight: 300;
-
 	&.smaller,
 	span.smaller {
 		font-size: clamp(1.4rem, 5vw, 2rem);
@@ -53,8 +51,12 @@ h1 {
 }
 
 h2 {
-	@apply text-[var(--heading-color)] !mt-0 !pb-[.7ch] pt-[0.3ch];
-	font-size: clamp(2.2rem, 5vw, 3.4rem);
+	margin-top: 0;
+	padding-bottom: 0.7ch;
+	line-height: 1.4ch;
+
+	font-size: clamp(2.2rem, 8vw, 4.5rem);
+
 	&.smaller {
 		font-size: clamp(2rem, 3vw, 2.75rem);
 	}
@@ -105,25 +107,6 @@ h3 {
 		vertical-align: middle;
 		margin-bottom: 0.4ex;
 	}
-}
-
-.over-heading {
-	font-weight: 300;
-	margin-bottom: 0 !important;
-
-	&:has(+ h1) {
-		font-size: clamp(1.2rem, 8vw, 1.8rem);
-	}
-	&:has(+ h2) {
-		font-size: clamp(1.2rem, 5vw, 1.35rem);
-	}
-	& + h2 {
-		padding-top: 0.2ch;
-	}
-}
-
-.section-heading:has(+ .sub-heading) {
-	padding-bottom: 0;
 }
 
 h2,
@@ -178,8 +161,7 @@ h1,
 h2,
 h3,
 h4 {
-	&.gradient,
-	i {
+	&.gradient {
 		background-color: var(--main-color);
 		background-image: var(--heading-gradient);
 		background-size: 150% 100%;
@@ -236,35 +218,11 @@ h3 {
 	}
 }
 
-ul.wp-block-list {
-	li {
-		font-size: clamp(0.9rem, 2vw, 1rem);
-		font-weight: 300;
-		strong {
-			font-weight: 600;
-		}
-	}
-}
-
-:root.dark {
-	h1,
-	h2,
-	h3 {
-		em {
-			background-image: var(--heading-highlight-grad-dark);
-		}
-	}
-}
-
 .uppercase {
 	text-transform: uppercase !important;
 	* {
 		text-transform: uppercase !important;
 	}
-}
-
-.wrap-default {
-	text-wrap: initial !important;
 }
 
 /*! STYLES FOR POSTS CONTENT */
