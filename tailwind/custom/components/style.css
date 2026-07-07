@@ -1351,16 +1351,17 @@ canvas.anim-bg {
 
 #footer .copyright-container {
 	padding-top: calc(var(--default-section-vert-padding) * 1.75);
+
 	.pct-copyright {
 		display: flex;
 		flex-flow: row;
 		place-content: flex-start space-between !important;
-		align-items: flex-start !important;
+		align-items: flex-start;
 		/* justify-content: space-between; */
 
 		.company-logo {
 			> * {
-				width: var(--logo-brand-width);
+				width: calc(var(--logo-brand-width) * 2);
 				height: auto;
 				max-width: unset;
 			}
@@ -1380,19 +1381,25 @@ canvas.anim-bg {
 		li {
 			text-align: right;
 		}
+
+		.year-company {
+			text-transform: capitalize;
+		}
 	}
 
 	@media only screen and (max-width: 620px) {
 		.pct-copyright {
 			flex-flow: column;
+			align-items: center;
+			justify-content: center;
 			.copy {
 				display: flex;
 				flex-flow: column;
-				align-items: flex-start;
+				align-items: center;
 				padding-left: 0;
 				margin-top: 1rem;
 				li {
-					text-align: left;
+					text-align: center;
 				}
 			}
 		}

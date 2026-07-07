@@ -875,13 +875,11 @@ function pictau_copyright($atts)
 									. $logo_html .
 								'</div>
 								<div class="copy">
-									<ul>
-										<li>© ' . apply_shortcodes('[myYear]') . ' ' . get_bloginfo('name') . '</li>
-									</ul>
 									<ul class="copy-contact">
-											<li><a href="tel:' . esc_attr($phone_clean) . '">' . esc_html($phone) . '</a></li>
-											<li><a href="mailto:' . esc_attr($email) . '">' . esc_html($email) . '</a></li>
+											<li class="phone"><a href="tel:' . esc_attr($phone_clean) . '">' . esc_html($phone) . '</a><span class="horiz-separator">|</span> <a href="mailto:' . esc_attr($email) . '">' . esc_html($email) . '</a></li>
+											<li class="year-company">© ' . apply_shortcodes('[myYear]') . ' ' . get_bloginfo('name') . '</li>
 									</ul>
+
 								</div>
 							</div>';
 

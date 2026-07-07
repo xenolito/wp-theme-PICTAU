@@ -73,15 +73,12 @@ document.addEventListener('DOMContentLoaded', () => {
 		return (origin === linkElement.origin && pathname === linkElement.pathname) ?? false
 	}
 
-	const doScrollToAnchor = target => {
+	const doScrollToAnchor = (target) => {
 		const filteredTarget = target === 'top' ? false : target
 		if (document.querySelector(`#${target}`) || !filteredTarget) {
 			scrollWithEngine({
 				target: filteredTarget ? `#${filteredTarget}` : 0,
 				offset: 0,
-				onComplete: () => {
-					history.pushState(null, null, `#${target}`)
-				},
 			})
 		}
 	}
