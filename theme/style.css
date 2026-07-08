@@ -1878,6 +1878,7 @@ sup {
   --txt-color-theme-light: var(--txt-color);
   --txt-color-theme-dark: hsl(0, 100%, 100%);
   --txt-color-theme-custom: var(--txt-color);
+  --tag-color: var(--main-color);
   --link-color: var(--main-color);
   --link-color-content: var(--cta-color, var(--link-color));
   --heading-color: var(--main-color);
@@ -6659,7 +6660,7 @@ h1.smaller,
 h2 {
   margin-top: 0;
   padding-bottom: 1ch;
-  line-height: 1.5ch;
+  line-height: 1.38ch;
   font-size: clamp(3rem, 8vw, 4.5rem);
 }
 
@@ -9019,11 +9020,11 @@ figure.size-full:not(.is-resized):not(.card-fake-cta-icon) svg {
 	margin-bottom: 2ch;
 } */
 
-.header-tag,
+/* .header-tag,
 .above-header {
-  font-size: clamp(0.875rem, 2vw, 1.25rem);
-  text-transform: uppercase;
-}
+	font-size: clamp(0.875rem, 2vw, 1.25rem);
+	text-transform: uppercase;
+} */
 
 .lh-1 {
   line-height: 1;
@@ -9159,13 +9160,6 @@ figure.size-full:not(.is-resized):not(.card-fake-cta-icon) svg {
   /* background: red; */
   -webkit-mask-image: radial-gradient(50% 60% at 70% 55%, black 70%, transparent);
           mask-image: radial-gradient(50% 60% at 70% 55%, black 70%, transparent);
-}
-
-.sticky {
-  position: sticky !important;
-  /* top: calc(var(--whole-header-height) + var(--card-padding)); */
-  top: var(--whole-header-height);
-  /* z-index: 100; */
 }
 
 .center-y,
@@ -9333,6 +9327,21 @@ figure {
 .pct-2cols.same-height > * {
   display: flex;
   height: 100%;
+}
+
+.pct-2cols .sticky {
+  position: sticky !important;
+  /* top: calc(var(--whole-header-height) + (var(--def-layout-x-padding) * 0.5)); */
+  top: calc(var(--whole-header-height) + var(--card-padding));
+  height: -moz-fit-content;
+  height: fit-content;
+}
+
+@media only screen and (max-width: 767px) {
+  .pct-2cols .sticky {
+    position: relative !important;
+    top: inherit
+  }
 }
 
 .span-2 {
@@ -9869,11 +9878,21 @@ body.fixed-header #main > article header.entry-header {
   border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 0.5ch 1.5ch;
-  font-size: clamp(0.75rem, 2.5vw, 0.9rem);
 }
+
+/* font-size: clamp(0.875rem, 2vw, 1.25rem); */
 
 .header-tag + h3 {
   padding-top: 0.3ch;
+}
+
+.header-tag:has(+ h2) {
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+}
+
+.header-tag:has(+ h3) {
+  text-transform: uppercase;
+  font-size: clamp(0.75rem, 2.5vw, 0.9rem);
 }
 
 .header-tag.glassy {

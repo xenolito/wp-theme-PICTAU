@@ -15,6 +15,8 @@
 	--txt-color-theme-dark: hsl(0, 100%, 100%);
 	--txt-color-theme-custom: var(--txt-color);
 
+	--tag-color: var(--main-color);
+
 	--link-color: var(--main-color);
 	--link-color-content: var(--cta-color, var(--link-color));
 	--heading-color: var(--main-color);
