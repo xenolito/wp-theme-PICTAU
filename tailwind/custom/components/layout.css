@@ -472,12 +472,12 @@ figure {
 	grid-column: span 3;
 }
 
-.pct-2cols-nested {
-	/*! 2cols at small sapce because is inside anoter narrower container */
+:has(> .pct-2cols-nested) {
 	container-type: inline-size;
 	container-name: pct-2cols-nested;
 
-	> * {
+	.pct-2cols-nested {
+		/*! 2cols at small sapce because is inside anoter narrower container */
 		display: grid !important;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 2rem !important;
@@ -486,7 +486,7 @@ figure {
 		}
 	}
 
-	@container pct-2cols-nested (max-width: 480px) {
+	@container pct-2cols-nested (max-width: 380px) {
 		> * {
 			grid-template-columns: 1fr !important;
 			> * {
@@ -895,6 +895,32 @@ body.fixed-header {
 }
 
 /*! SECTION HEADINGS */
+
+.header-tag {
+	display: flex;
+	width: fit-content !important;
+	/* margin-left: unset !important;
+	margin-right: unset !important; */
+	margin-bottom: 0.5ch !important;
+	background-color: rgb(255 255 255 / 0.45);
+
+	border-radius: var(--button-border-radius);
+	border-radius: 6px;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	padding: 0.5ch 1.5ch;
+	font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+
+	& + h3 {
+		padding-top: 0.3ch;
+	}
+
+	&.glassy {
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		background-color: rgb(255 255 255 / 0.1) !important;
+		color: white !important;
+	}
+}
+
 .section-heading {
 	@apply text-[var(--txt-color)] dark:text-[var(--txt-color-dark)];
 	padding-bottom: 2rem;
@@ -3349,10 +3375,14 @@ section.category-grid-section {
 }
 
 .media-container {
+	display: grid;
 	@apply rounded-[var(--def-border-radius)] overflow-clip;
 	background-color: rgb(0 0 0 / 0.75);
+
+	margin-bottom: calc(var(--card-padding) * 0.5);
+
 	/* backdrop-filter: blur(3px); */
-	display: grid;
+
 	/* place-content: center; */
 	/* aspect-ratio: 16/9; */
 

@@ -1885,10 +1885,9 @@ sup {
   --heading-color-theme-light: var(--txt-color);
   --heading-color-theme-dark: hsl(0, 100%, 100%);
   --heading-color-theme-custom: var(--heading-color);
-  --bg-color-theme-light: red;
   --bg-color-theme-light: #f7f5f0;
-  --bg-color-theme-dark: rgb(162, 162, 162);
   --bg-color-theme-dark: hsl(0, 1%, 20%);
+  --bg-color-theme-dark: hsl(0deg 0.33% 14.44%);
   --bg-gradient-theme-dark: linear-gradient(174deg, rgba(21, 33, 46, 1) 0%, rgb(17, 32, 48) 100%);
   --bg-gradient-theme-dark: linear-gradient(174deg, rgba(21, 33, 46, 1) 0%, rgb(30, 65, 103) 100%);
   --bg-color-theme-custom: #e2e6eb;
@@ -1898,6 +1897,15 @@ sup {
   --icon-gradient-4: linear-gradient(174deg, rgba(0, 159, 12, 1) 0%, rgba(0, 247, 255, 1) 100%);
   --icon-gradient-5: linear-gradient(174deg, rgba(1, 251, 255, 1) 0%, rgba(224, 1, 255, 1) 100%);
   --icon-gradient-6: linear-gradient(174deg, rgba(106, 255, 1, 1) 0%, rgba(255, 233, 1, 1) 100%);
+}
+
+.bg-transparent {
+  background-color: transparent !important;
+}
+
+.bg-lighter {
+  --lighter-color: white;
+  background-color: hsl(0deg 0% 100% / 0.03) !important;
 }
 
 h1,
@@ -1915,7 +1923,7 @@ figure figcaption {
 
 .theme-color-light {
   --border-color: var(--heading-color-theme-light);
-  --border-color-dark: var(--heading-color-theme-light-dark);
+  --card-background: rgba(255, 255, 255, 1);
 }
 
 .theme-color-light:is(.pct-card, section) {
@@ -1932,10 +1940,6 @@ figure figcaption {
 	.theme-color-light h3,
 	.theme-color-light h4 {
   color: var(--heading-color-theme-light);
-}
-
-.theme-color-light .card:not(.transparent) {
-  --card-background: rgba(255, 255, 255, 1);
 }
 
 .theme-color-light .card-icon p {
@@ -1956,11 +1960,25 @@ figure figcaption {
   color: var(--tag-color, #343434);
 }
 
+.theme-color-light.theme-color-white {
+  --card-background: rgba(255, 255, 255, 1);
+}
+
+.theme-color-light.theme-color-white:is(.pct-card, section) {
+  background: white;
+}
+
 /*! THEME COLOR DARK */
 
 .theme-color-dark {
   --border-color: var(--heading-color-theme-dark);
   --link-color: var(--main-color);
+  --card-background: var(--bg-color-theme-dark);
+  background-color: var(--bg-color-theme-dark);
+}
+
+.theme-color-dark .card:not(.transparent) {
+  --card-background: var(--bg-color-theme-dark);
 }
 
 .theme-color-dark:is(.pct-card, section) {
@@ -1979,11 +1997,8 @@ figure figcaption {
   color: var(--heading-color-theme-dark);
 }
 
-.theme-color-dark h1:is(.dark *),
-	.theme-color-dark h2:is(.dark *),
-	.theme-color-dark h3:is(.dark *),
-	.theme-color-dark h4:is(.dark *) {
-  color: var(--heading-color-theme-dark);
+.theme-color-dark h1.figure, .theme-color-dark h2.figure, .theme-color-dark h3.figure, .theme-color-dark h4.figure {
+  color: var(--main-color) !important;
 }
 
 .theme-color-dark p,
@@ -2011,8 +2026,7 @@ figure figcaption {
 }
 
 .theme-color-dark .header-tag {
-  background: white;
-  color: var(--main-color);
+  color: var(--main-color) !important;
 }
 
 .theme-color-dark .card:not(.transparent) {
@@ -2103,7 +2117,7 @@ figure figcaption {
 }
 
 [class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-light p {
-  color: var(--txt-color-theme-light) !important;
+  color: var(--txt-color-theme-light);
 }
 
 [class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-light h1,
@@ -2111,11 +2125,11 @@ figure figcaption {
 				[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-light h3,
 				[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-light h4,
 				[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-light ul {
-  color: var(--heading-color-theme-light) !important;
+  color: var(--heading-color-theme-light);
 }
 
 [class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-dark p {
-  color: var(--txt-color-theme-dark) !important;
+  color: var(--txt-color-theme-dark);
 }
 
 [class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-dark h1,
@@ -2123,11 +2137,11 @@ figure figcaption {
 				[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-dark h3,
 				[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-dark h4,
 				[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-dark ul {
-  color: var(--heading-color-theme-dark) !important;
+  color: var(--heading-color-theme-dark);
 }
 
 [class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-custom p {
-  color: var(--txt-color-theme-custom) !important;
+  color: var(--txt-color-theme-custom);
 }
 
 [class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-custom h1,
@@ -2135,7 +2149,7 @@ figure figcaption {
 				[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-custom h3,
 				[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-custom h4,
 				[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-custom ul {
-  color: var(--heading-color-theme-custom) !important;
+  color: var(--heading-color-theme-custom);
 }
 
 :root {
@@ -4234,6 +4248,13 @@ button#submit:has(svg) {
   padding: var(--card-padding);
   background: var(--card-background, white);
   border: var(--card-border-width) solid var(--card-border-color);
+}
+
+.card .card {
+  padding: calc(var(--card-padding) * 0.44);
+}
+
+.card {
   container-type: inline-size;
   container-name: pctcard;
 }
@@ -4302,7 +4323,6 @@ button#submit:has(svg) {
 
 .card.bordered {
   --border-padding: 0.4rem;
-  /* background-color: transparent !important; */
   padding: var(--border-padding);
   background: rgb(from var(--card-background) r g b / 25%);
   -webkit-backdrop-filter: blur(2px);
@@ -4318,6 +4338,25 @@ button#submit:has(svg) {
   background: var(--card-background, white);
   border-radius: calc(max(var(--card-border-radius) - var(--border-padding), 0.25rem));
   border: var(--card-border-width) solid var(--card-border-color);
+}
+
+.card[class*="decoration-"] {
+  --decoration-width: 3px;
+}
+
+.card[class*="decoration-"].decoration-top {
+  border: 0;
+}
+
+.card[class*="decoration-"].decoration-top::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--decoration-width);
+  background-color: var(--main-color);
 }
 
 .card:has(.is-card-icon) {
@@ -4608,7 +4647,6 @@ button#submit:has(svg) {
   border-radius: calc(var(--border-radius) - (var(--inner-padding) * 0.66));
   -webkit-backdrop-filter: blur(10px);
           backdrop-filter: blur(10px);
-  /* background-color: rgba(255, 255, 255, 0.15); */
   background-color: rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: white;
@@ -5268,16 +5306,6 @@ button#submit:has(svg) {
   display: inline-flex;
 }
 
-:root.dark .card.cta h2 em,
-		:root.dark .card.cta h3 em {
-  /* @apply text-[var(--main-color)]; */
-  color: var(--main-color);
-  background-image: unset;
-  background-clip: unset;
-  -webkit-text-fill-color: unset;
-  font-size: 1.5em;
-}
-
 /*! CARD DECORATIONS (SHADOW, GLOW, BACKGROUND) */
 
 .card-decoration {
@@ -5649,12 +5677,12 @@ button#submit:has(svg) {
   align-items: center;
   justify-content: center;
   border-width: 0px;
-  background-color: transparent;
   --tw-text-opacity: 1;
   color: rgb(156 163 175 / var(--tw-text-opacity));
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
+  background-color: transparent;
 }
 
 .catalog-menu-toggle:hover {
@@ -6630,9 +6658,9 @@ h1.smaller,
 
 h2 {
   margin-top: 0;
-  padding-bottom: 0.7ch;
-  line-height: 1.4ch;
-  font-size: clamp(2.2rem, 8vw, 4.5rem);
+  padding-bottom: 1ch;
+  line-height: 1.5ch;
+  font-size: clamp(3rem, 8vw, 4.5rem);
 }
 
 h2.smaller {
@@ -6655,7 +6683,6 @@ h3:is(.dark *) {
 h3 {
   margin-bottom: 0.6ch;
   font-size: clamp(1.6rem, 5vw, 2rem);
-  font-weight: 300;
 }
 
 h3.bigger {
@@ -6669,6 +6696,16 @@ h3.medium {
 
 h3.smaller {
   font-size: clamp(1.45rem, 5vw, 1.5rem);
+  line-height: 1.2;
+}
+
+h3.figure {
+  font-size: clamp(1.8rem, 5vw, 2.75rem);
+  margin-bottom: 0.15ch;
+}
+
+h3.figure + p {
+  font-size: clamp(0.8rem, 2vw, 14px);
   line-height: 1.2;
 }
 
@@ -6722,16 +6759,9 @@ sup {
 }
 
 p {
-  margin-bottom: 1.2ch;
+  font-size: clamp(1rem, 2vw, 18px);
   color: var(--txt-color);
-}
-
-p:is(.dark *) {
-  color: var(--txt-color-dark);
-}
-
-p {
-  font-size: clamp(0.9rem, 2vw, 1rem);
+  margin-bottom: 1.2ch;
   font-weight: 300;
   letter-spacing: -0.01em;
   line-height: 1.6;
@@ -6748,7 +6778,7 @@ p {
 }
 
 p strong {
-  font-weight: 500;
+  font-weight: 700;
   color: black;
 }
 
@@ -6810,13 +6840,6 @@ h2 span, h3 span {
 }
 
 /*! STYLES FOR POSTS CONTENT */
-
-h3,
-h4,
-h5,
-h6 {
-  padding-top: 1.5ch;
-}
 
 .max-reading-width {
   width: 100%;
@@ -9320,28 +9343,28 @@ figure {
   grid-column: span 3;
 }
 
-.pct-2cols-nested {
-  /*! 2cols at small sapce because is inside anoter narrower container */
+:has(> .pct-2cols-nested) {
   container-type: inline-size;
   container-name: pct-2cols-nested;
 }
 
-.pct-2cols-nested > * {
+:has(> .pct-2cols-nested) .pct-2cols-nested {
+  /*! 2cols at small sapce because is inside anoter narrower container */
   display: grid !important;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 2rem !important;
 }
 
-.pct-2cols-nested > * * {
+:has(> .pct-2cols-nested) .pct-2cols-nested * {
   align-items: flex-start !important;
 }
 
-@container pct-2cols-nested (max-width: 480px) {
-  .pct-2cols-nested > * {
+@container pct-2cols-nested (max-width: 380px) {
+  :has(> .pct-2cols-nested) > * {
     grid-template-columns: 1fr !important;
   }
 
-  .pct-2cols-nested > * > * {
+  :has(> .pct-2cols-nested) > * > * {
     width: 100% !important;
   }
 }
@@ -9833,6 +9856,31 @@ body.fixed-header #main > article header.entry-header {
 }
 
 /*! SECTION HEADINGS */
+
+.header-tag {
+  display: flex;
+  width: -moz-fit-content !important;
+  width: fit-content !important;
+  /* margin-left: unset !important;
+	margin-right: unset !important; */
+  margin-bottom: 0.5ch !important;
+  background-color: rgb(255 255 255 / 0.45);
+  border-radius: var(--button-border-radius);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.5ch 1.5ch;
+  font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+}
+
+.header-tag + h3 {
+  padding-top: 0.3ch;
+}
+
+.header-tag.glassy {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgb(255 255 255 / 0.1) !important;
+  color: white !important;
+}
 
 .section-heading {
   color: var(--txt-color);
@@ -12452,12 +12500,14 @@ section.category-grid-section > * {
 }
 
 .media-container {
+  display: grid;
   overflow: clip;
   border-radius: var(--def-border-radius);
   background-color: rgb(0 0 0 / 0.75);
-  /* backdrop-filter: blur(3px); */
-  display: grid;
+  margin-bottom: calc(var(--card-padding) * 0.5);
 }
+
+/* backdrop-filter: blur(3px); */
 
 /* place-content: center; */
 
@@ -14941,18 +14991,18 @@ html::-webkit-scrollbar-track {
   background-color: var(--bg-color-theme-white);
 }
 
-.theme-color-white:is(.dark *) {
-  background-color: var(--bg-color-theme-white-dark);
-}
-
 .theme-color-white h1,
 	.theme-color-white h2 {
   color: var(--heading-color-theme-white);
 }
 
-.theme-color-white h1:is(.dark *),
-	.theme-color-white h2:is(.dark *) {
-  color: var(--heading-color-theme-white-dark);
+.header-tag {
+  background-color: transparent;
+  border: 0;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding: 0;
+  /* font-weight: 700; */
 }
 
 /*! DEFAULT PAGE HEADER STYLES */
@@ -16592,31 +16642,6 @@ canvas.anim-bg {
 /*! TILES + CONTAINERS */
 
 /*! HEADERS */
-
-.header-tag {
-  display: flex;
-  width: -moz-fit-content !important;
-  width: fit-content !important;
-  /* margin-left: unset !important;
-	margin-right: unset !important; */
-  margin-bottom: 0.5ch !important;
-  background-color: rgb(255 255 255 / 0.45);
-  border-radius: var(--button-border-radius);
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 0.5ch 1.5ch;
-  font-size: clamp(0.75rem, 2.5vw, 0.9rem);
-}
-
-.header-tag + h3 {
-  padding-top: 0.3ch;
-}
-
-.header-tag.glassy {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background-color: rgb(255 255 255 / 0.1) !important;
-  color: white !important;
-}
 
 /*! PAGE HEADINGS */
 

@@ -51,6 +51,10 @@
 	background: var(--card-background, white);
 	border: var(--card-border-width) solid var(--card-border-color);
 
+	.card {
+		padding: calc(var(--card-padding) * 0.44);
+	}
+
 	container-type: inline-size;
 	container-name: pctcard;
 
@@ -107,7 +111,6 @@
 
 	&.bordered {
 		--border-padding: 0.4rem;
-		/* background-color: transparent !important; */
 		padding: var(--border-padding);
 		background: rgb(from var(--card-background) r g b / 25%);
 		backdrop-filter: blur(2px);
@@ -121,6 +124,24 @@
 			background: var(--card-background, white);
 			border-radius: calc(max(var(--card-border-radius) - var(--border-padding), 0.25rem));
 			border: var(--card-border-width) solid var(--card-border-color);
+		}
+	}
+
+	&[class*="decoration-"] {
+		--decoration-width: 3px;
+		&.decoration-top {
+			border: 0;
+
+			&::before {
+				content: "";
+				display: block;
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: var(--decoration-width);
+				background-color: var(--main-color);
+			}
 		}
 	}
 
@@ -380,7 +401,6 @@
 						padding: calc(var(--card-padding) * 0.66);
 						border-radius: calc(var(--border-radius) - (var(--inner-padding) * 0.66));
 						backdrop-filter: blur(10px);
-						/* background-color: rgba(255, 255, 255, 0.15); */
 						background-color: rgba(0, 0, 0, 0.15);
 						border: 1px solid rgba(255, 255, 255, 0.1);
 
@@ -1002,20 +1022,6 @@
 
 		em {
 			display: inline-flex;
-		}
-	}
-}
-
-:root.dark {
-	.card.cta {
-		h2 em,
-		h3 em {
-			/* @apply text-[var(--main-color)]; */
-			@apply text-[var(--main-color)];
-			background-image: unset;
-			background-clip: unset;
-			-webkit-text-fill-color: unset;
-			font-size: 1.5em;
 		}
 	}
 }
