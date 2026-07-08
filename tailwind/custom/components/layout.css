@@ -458,7 +458,6 @@ figure {
 
 	.sticky {
 		position: sticky !important;
-		/* top: calc(var(--whole-header-height) + (var(--def-layout-x-padding) * 0.5)); */
 		top: calc(var(--whole-header-height) + var(--card-padding));
 		height: fit-content;
 

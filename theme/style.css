@@ -6765,7 +6765,7 @@ p {
   margin-bottom: 1.2ch;
   font-weight: 300;
   letter-spacing: -0.01em;
-  line-height: 1.6;
+  line-height: 1.4;
 }
 
 p.bigger {
@@ -9331,7 +9331,6 @@ figure {
 
 .pct-2cols .sticky {
   position: sticky !important;
-  /* top: calc(var(--whole-header-height) + (var(--def-layout-x-padding) * 0.5)); */
   top: calc(var(--whole-header-height) + var(--card-padding));
   height: -moz-fit-content;
   height: fit-content;
