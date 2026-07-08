@@ -176,11 +176,11 @@ figure {
 	margin-bottom: 2ch;
 } */
 
-.header-tag,
+/* .header-tag,
 .above-header {
 	font-size: clamp(0.875rem, 2vw, 1.25rem);
 	text-transform: uppercase;
-}
+} */
 
 .lh-1 {
 	line-height: 1;
@@ -313,13 +313,6 @@ figure {
 .mask-radial-grad {
 	/* background: red; */
 	mask-image: radial-gradient(50% 60% at 70% 55%, black 70%, transparent);
-}
-
-.sticky {
-	position: sticky !important;
-	/* top: calc(var(--whole-header-height) + var(--card-padding)); */
-	top: var(--whole-header-height);
-	/* z-index: 100; */
 }
 
 .center-y,
@@ -460,6 +453,18 @@ figure {
 		> * {
 			display: flex;
 			height: 100%;
+		}
+	}
+
+	.sticky {
+		position: sticky !important;
+		/* top: calc(var(--whole-header-height) + (var(--def-layout-x-padding) * 0.5)); */
+		top: calc(var(--whole-header-height) + var(--card-padding));
+		height: fit-content;
+
+		@media only screen and (max-width: 767px) {
+			position: relative !important;
+			top: inherit;
 		}
 	}
 }
@@ -908,10 +913,20 @@ body.fixed-header {
 	border-radius: 6px;
 	border: 1px solid rgba(255, 255, 255, 0.1);
 	padding: 0.5ch 1.5ch;
-	font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+
+	/* font-size: clamp(0.875rem, 2vw, 1.25rem); */
 
 	& + h3 {
 		padding-top: 0.3ch;
+	}
+
+	&:has(+ h2) {
+		font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+	}
+
+	&:has(+ h3) {
+		text-transform: uppercase;
+		font-size: clamp(0.75rem, 2.5vw, 0.9rem);
 	}
 
 	&.glassy {
