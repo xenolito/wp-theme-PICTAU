@@ -23,10 +23,9 @@
 	--heading-color-theme-dark: hsl(0, 100%, 100%);
 	--heading-color-theme-custom: var(--heading-color);
 
-	--bg-color-theme-light: red;
 	--bg-color-theme-light: #f7f5f0;
-	--bg-color-theme-dark: rgb(162, 162, 162);
 	--bg-color-theme-dark: hsl(0, 1%, 20%);
+	--bg-color-theme-dark: hsl(0deg 0.33% 14.44%);
 
 	--bg-gradient-theme-dark: linear-gradient(174deg, rgba(21, 33, 46, 1) 0%, rgb(17, 32, 48) 100%);
 	--bg-gradient-theme-dark: linear-gradient(174deg, rgba(21, 33, 46, 1) 0%, rgb(30, 65, 103) 100%);
@@ -39,6 +38,15 @@
 	--icon-gradient-4: linear-gradient(174deg, rgba(0, 159, 12, 1) 0%, rgba(0, 247, 255, 1) 100%);
 	--icon-gradient-5: linear-gradient(174deg, rgba(1, 251, 255, 1) 0%, rgba(224, 1, 255, 1) 100%);
 	--icon-gradient-6: linear-gradient(174deg, rgba(106, 255, 1, 1) 0%, rgba(255, 233, 1, 1) 100%);
+}
+
+.bg-transparent {
+	background-color: transparent !important;
+}
+
+.bg-lighter {
+	--lighter-color: white;
+	background-color: hsl(0deg 0% 100% / 0.03) !important;
 }
 
 h1,
@@ -55,7 +63,7 @@ figure figcaption {
 /*! THEME COLOR LIGHT */
 .theme-color-light {
 	--border-color: var(--heading-color-theme-light);
-	--border-color-dark: var(--heading-color-theme-light-dark);
+	--card-background: rgba(255, 255, 255, 1);
 
 	&:is(.pct-card, section) {
 		background: var(--bg-color-theme-light);
@@ -71,10 +79,6 @@ figure figcaption {
 	h3,
 	h4 {
 		@apply text-[var(--heading-color-theme-light)];
-	}
-
-	.card:not(.transparent) {
-		--card-background: rgba(255, 255, 255, 1);
 	}
 
 	.card-icon {
@@ -95,12 +99,27 @@ figure figcaption {
 	.header-tag {
 		color: var(--tag-color, #343434);
 	}
+
+	&.theme-color-white {
+		--card-background: rgba(255, 255, 255, 1);
+
+		&:is(.pct-card, section) {
+			background: white;
+		}
+	}
 }
 
 /*! THEME COLOR DARK */
 .theme-color-dark {
 	--border-color: var(--heading-color-theme-dark);
 	--link-color: var(--main-color);
+	--card-background: var(--bg-color-theme-dark);
+
+	background-color: var(--bg-color-theme-dark);
+
+	.card:not(.transparent) {
+		--card-background: var(--bg-color-theme-dark);
+	}
 
 	&:is(.pct-card, section) {
 		background: var(--bg-color-theme-dark);
@@ -115,7 +134,10 @@ figure figcaption {
 	h2,
 	h3,
 	h4 {
-		@apply text-[var(--heading-color-theme-dark)] dark:text-[var(--heading-color-theme-dark)];
+		color: var(--heading-color-theme-dark);
+		&.figure {
+			color: var(--main-color) !important;
+		}
 	}
 
 	p,
@@ -144,8 +166,7 @@ figure figcaption {
 	}
 
 	.header-tag {
-		background: white;
-		color: var(--main-color);
+		color: var(--main-color) !important;
 	}
 
 	.card:not(.transparent) {
@@ -233,38 +254,38 @@ figure figcaption {
 		[class*="theme-color-"] {
 			.theme-color-light {
 				p {
-					color: var(--txt-color-theme-light) !important;
+					color: var(--txt-color-theme-light);
 				}
 				h1,
 				h2,
 				h3,
 				h4,
 				ul {
-					color: var(--heading-color-theme-light) !important;
+					color: var(--heading-color-theme-light);
 				}
 			}
 			.theme-color-dark {
 				p {
-					color: var(--txt-color-theme-dark) !important;
+					color: var(--txt-color-theme-dark);
 				}
 				h1,
 				h2,
 				h3,
 				h4,
 				ul {
-					color: var(--heading-color-theme-dark) !important;
+					color: var(--heading-color-theme-dark);
 				}
 			}
 			.theme-color-custom {
 				p {
-					color: var(--txt-color-theme-custom) !important;
+					color: var(--txt-color-theme-custom);
 				}
 				h1,
 				h2,
 				h3,
 				h4,
 				ul {
-					color: var(--heading-color-theme-custom) !important;
+					color: var(--heading-color-theme-custom);
 				}
 			}
 		}

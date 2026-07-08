@@ -768,7 +768,7 @@ function theme_color()
 	}
 }
 
-add_action('wp_head', 'theme_color');
+// add_action('wp_head', 'theme_color');
 
 
 

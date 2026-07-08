@@ -52,10 +52,10 @@ h1 {
 
 h2 {
 	margin-top: 0;
-	padding-bottom: 0.7ch;
-	line-height: 1.4ch;
+	padding-bottom: 1ch;
+	line-height: 1.5ch;
 
-	font-size: clamp(2.2rem, 8vw, 4.5rem);
+	font-size: clamp(3rem, 8vw, 4.5rem);
 
 	&.smaller {
 		font-size: clamp(2rem, 3vw, 2.75rem);
@@ -70,7 +70,6 @@ h3 {
 	@apply text-[var(--heading-color)] dark:text-[var(--heading-color-dark)] !mt-0;
 	margin-bottom: 0.6ch;
 	font-size: clamp(1.6rem, 5vw, 2rem);
-	font-weight: 300;
 
 	&.bigger {
 		font-size: clamp(1.8rem, 5vw, 2.75rem);
@@ -84,6 +83,16 @@ h3 {
 	&.smaller {
 		font-size: clamp(1.45rem, 5vw, 1.5rem);
 		line-height: 1.2;
+	}
+
+	&.figure {
+		font-size: clamp(1.8rem, 5vw, 2.75rem);
+		margin-bottom: 0.15ch;
+
+		& + p {
+			font-size: clamp(0.8rem, 2vw, 14px);
+			line-height: 1.2;
+		}
 	}
 }
 
@@ -137,8 +146,9 @@ sup {
 }
 
 p {
-	@apply text-[var(--txt-color)] dark:text-[var(--txt-color-dark)] mb-[1.2ch];
-	font-size: clamp(0.9rem, 2vw, 1rem);
+	font-size: clamp(1rem, 2vw, 18px);
+	color: var(--txt-color);
+	margin-bottom: 1.2ch;
 	font-weight: 300;
 	letter-spacing: -0.01em;
 	line-height: 1.6;
@@ -151,7 +161,7 @@ p {
 	color: currentColor;
 
 	strong {
-		font-weight: 500;
+		font-weight: 700;
 		color: black;
 	}
 }
@@ -226,13 +236,6 @@ h3 {
 }
 
 /*! STYLES FOR POSTS CONTENT */
-
-h3,
-h4,
-h5,
-h6 {
-	padding-top: 1.5ch;
-}
 
 .max-reading-width {
 	width: 100%;

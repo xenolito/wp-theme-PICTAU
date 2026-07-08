@@ -30,11 +30,20 @@
 }
 
 .theme-color-white {
-	@apply bg-[var(--bg-color-theme-white)] dark:bg-[var(--bg-color-theme-white-dark)];
+	@apply bg-[var(--bg-color-theme-white)];
 	h1,
 	h2 {
-		@apply text-[var(--heading-color-theme-white)] dark:text-[var(--heading-color-theme-white-dark)];
+		@apply text-[var(--heading-color-theme-white)];
 	}
+}
+
+.header-tag {
+	background-color: transparent;
+	border: 0;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+	padding: 0;
+	/* font-weight: 700; */
 }
 
 /*! DEFAULT PAGE HEADER STYLES */
@@ -1632,31 +1641,6 @@ canvas.anim-bg {
 /*! TILES + CONTAINERS */
 
 /*! HEADERS */
-
-.header-tag {
-	display: flex;
-	width: fit-content !important;
-	/* margin-left: unset !important;
-	margin-right: unset !important; */
-	margin-bottom: 0.5ch !important;
-	background-color: rgb(255 255 255 / 0.45);
-
-	border-radius: var(--button-border-radius);
-	border-radius: 6px;
-	border: 1px solid rgba(255, 255, 255, 0.1);
-	padding: 0.5ch 1.5ch;
-	font-size: clamp(0.75rem, 2.5vw, 0.9rem);
-
-	& + h3 {
-		padding-top: 0.3ch;
-	}
-
-	&.glassy {
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		background-color: rgb(255 255 255 / 0.1) !important;
-		color: white !important;
-	}
-}
 
 /*! PAGE HEADINGS */
 .header-canvas {
