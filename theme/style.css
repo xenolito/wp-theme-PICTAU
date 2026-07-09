@@ -8845,7 +8845,8 @@ body.header-width-centered .main-header-content {
   --submenu-text-color: rgba(0, 0, 0, 0.75);
   --submenu-text-description-color: rgb(from var(var(--submenu-text-color) r g b / 75%));
   --submenu-text-hover-color: black;
-  --default-section-vert-padding: clamp(2.5rem, 10vw, 6rem);
+  /* --default-section-vert-padding: clamp(2.5rem, 10vw, 6rem); */
+  --default-section-vert-padding: clamp(2.5rem, 15vw, 10rem);
   --column-gap: var(--card-padding, var(--default-card-padding));
   --row-gap: calc(var(--card-padding) * 2.5);
   --scroll-offset: 0px;

@@ -1,5 +1,6 @@
 :root {
-	--default-section-vert-padding: clamp(2.5rem, 10vw, 6rem);
+	/* --default-section-vert-padding: clamp(2.5rem, 10vw, 6rem); */
+	--default-section-vert-padding: clamp(2.5rem, 15vw, 10rem);
 	--column-gap: var(--card-padding, var(--default-card-padding));
 	--row-gap: calc(var(--card-padding) * 2.5);
 	--scroll-offset: 0px;
