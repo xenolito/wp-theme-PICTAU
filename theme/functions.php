@@ -171,7 +171,44 @@ add_action('widgets_init', 'pictau_widgets_init');
 add_action('after_switch_theme', function () {
 	update_option('upload_path', 'xen_media');
 	update_option('upload_url_path', set_url_scheme(get_option('siteurl'), 'https') . '/xen_media');
+
+	pictau_ensure_xen_media_permissions();
 });
+
+/**
+ * Creates xen_media (if missing) and forces standard WP permissions (755/644).
+ *
+ * xen_media lives outside wp-content, directly in ABSPATH, so it's never
+ * pre-created by a standard WP install. If UpdraftPlus has to create it
+ * during a restore, it inherits the permissions of its parent (the site
+ * root), which on this Plesk setup is 750 — that blocks nginx from serving
+ * the static files directly (403), since nginx runs outside the site's
+ * own user/group. Forcing 755/644 here keeps it readable regardless of
+ * how/when the directory was created.
+ */
+function pictau_ensure_xen_media_permissions()
+{
+	$dir = trailingslashit(ABSPATH) . 'xen_media';
+
+	if (!file_exists($dir)) {
+		wp_mkdir_p($dir);
+	}
+
+	if (!is_dir($dir)) {
+		return;
+	}
+
+	chmod($dir, 0755);
+
+	foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS)) as $item) {
+		chmod($item->getPathname(), $item->isDir() ? 0755 : 0644);
+	}
+}
+
+// Safety net: UpdraftPlus restores can recreate xen_media with restrictive
+// permissions inherited from the site root (see pictau_ensure_xen_media_permissions).
+// Re-normalize permissions after every restore.
+add_action('updraftplus_restore_completed', 'pictau_ensure_xen_media_permissions');
 
 
 /**
