@@ -50,6 +50,69 @@ npm run bundle       # Generar .zip para despliegue
 
 ---
 
+## Despliegue a producción — subtree publish a repo separado
+
+Este proyecto usa dos repos de GitHub:
+
+- **Repo de desarrollo** (`origin`) — el monorepo completo: `theme/` (PHP + assets compilados), `javascript/` y `tailwind/` (fuentes), tooling, etc. Es donde se trabaja y se hace `npm run production`.
+- **Repo de despliegue** (`deploy-origin`, p. ej. `web-balanzia.git`) — contiene **solo** el contenido de `theme/`, aplanado a la raíz (sin `javascript/`, `tailwind/`, `node_modules/`...). Es lo que se clona/actualiza en el servidor de producción, en `wp-content/themes/<slug>/`.
+
+La sincronización entre ambos es automática: un hook de git local publica un snapshot de `theme/` en el repo de despliegue en cada commit a `main`.
+
+### Cómo replicarlo en un proyecto nuevo
+
+1. Crea el repo de despliegue vacío en GitHub (p. ej. `web-<proyecto>.git`) y añádelo como remote:
+   ```bash
+   git remote add deploy-origin git@github.com:usuario/web-<proyecto>.git
+   ```
+
+2. Crea `.git/hooks/post-commit` (no se versiona — hay que crearlo a mano en cada máquina/checkout) con este contenido, ajustando `--prefix` al nombre de la carpeta del tema si no se llama `theme`:
+
+   ```sh
+   #!/bin/sh
+   # Tras cada commit en main, publica un snapshot de theme/ en la rama deploy
+   # y la sube a su propio remote (deploy-origin).
+   #
+   # No usamos "git subtree split": recorre TODO el historial de main en cada
+   # ejecucion (coste creciente con cada commit, sin cache real entre llamadas).
+   # Como deploy solo necesita el estado actual de theme/ (no su historial
+   # replicado), usamos "git commit-tree" para crear el commit directamente a
+   # partir del arbol de theme/ en HEAD: coste O(1), no depende del numero de
+   # commits en main.
+   branch=$(git symbolic-ref --short HEAD)
+   if [ "$branch" = "main" ]; then
+     tree=$(git rev-parse HEAD:theme)
+     parent=$(git rev-parse deploy 2>/dev/null)
+     msg=$(git log -1 --pretty=%s)
+
+     if [ -n "$parent" ]; then
+       new_commit=$(git commit-tree "$tree" -p "$parent" -m "$msg")
+     else
+       new_commit=$(git commit-tree "$tree" -m "$msg")
+     fi
+
+     git branch -f deploy "$new_commit" >/dev/null
+     git push deploy-origin deploy:main
+   fi
+   ```
+
+3. Dale permisos de ejecución:
+   ```bash
+   chmod +x .git/hooks/post-commit
+   ```
+
+4. En el servidor de producción, clona el repo de despliegue **directamente** en `wp-content/themes/<slug>/` (estructura plana — `style.css` y `functions.php` deben quedar directamente ahí, no anidados en una subcarpeta `theme/`).
+
+### Por qué `git commit-tree` y no `git subtree split`
+
+`git subtree split --prefix=theme` recorre **todo** el historial de `main` en cada ejecución (sin cache real entre llamadas), así que el coste crece con cada commit nuevo del proyecto. Como el repo de despliegue no necesita el historial replicado — solo el estado actual de `theme/` para publicarlo/sincronizarlo con el servidor — `git commit-tree` logra el mismo resultado (mismo árbol de archivos, mismo mensaje de commit) en tiempo constante, tomando directamente el árbol de `theme/` en el `HEAD` actual (`git rev-parse HEAD:theme`) y encadenándolo al último commit de `deploy`.
+
+### Al restaurar backups (UpdraftPlus u otro) en producción
+
+**No restaurar nunca el componente "Themes"** de un backup sobre un servidor que use este pipeline. El código del tema debe sincronizarse *solo* vía este mecanismo de git — un restore de "Themes" desde un backup hecho en local recrearía la estructura de desarrollo (con `theme/` anidado) encima de la estructura plana esperada en producción, duplicando archivos y rompiendo la ruta que WordPress tiene activada (`template`/`stylesheet`). Usa UpdraftPlus solo para base de datos y `uploads`.
+
+---
+
 ## Estructura
 
 ```
