@@ -169,8 +169,13 @@ add_action('widgets_init', 'pictau_widgets_init');
 
 // Set the upload directory to xen_media on theme activation.
 add_action('after_switch_theme', function () {
-	update_option('upload_path', 'xen_media');
-	update_option('upload_url_path', set_url_scheme(get_option('siteurl'), 'https') . '/xen_media');
+	// If UPLOADS is defined in wp-config.php, it already forces this path and
+	// takes precedence over the options below — updating them would only
+	// trigger a _doing_it_wrong() notice from WP without changing anything.
+	if (!defined('UPLOADS')) {
+		update_option('upload_path', 'xen_media');
+		update_option('upload_url_path', set_url_scheme(get_option('siteurl'), 'https') . '/xen_media');
+	}
 
 	pictau_ensure_xen_media_permissions();
 });
