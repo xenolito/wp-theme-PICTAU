@@ -1868,7 +1868,6 @@ sup {
 
 :root {
   --main-color: hsl(26, 100%, 50%);
-  --main-color: yellow;
   --brand-color-rgb: 49, 93, 158;
   --line-color: hsl(0, 0%, 92%);
   --grey-color: hsla(0, 1.42%, 75%, 1);
