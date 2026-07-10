@@ -50,6 +50,37 @@ function add_custom_content_to_cf7_email($contact_form)
 $logo = get_theme_mod('custom_logo');
 $image = $logo ? wp_get_attachment_image_src($logo, 'full') : false;
 $image_url = $image ? $image[0] : '';
+$is_svg_logo = $logo && get_post_mime_type($logo) === 'image/svg+xml';
+
+// Outlook y la mayoría de webmails no renderizan SVG en el cuerpo del email.
+// Si el logo del sitio está subido como SVG, se genera automáticamente (y se
+// cachea en disco) un PNG de alternativa para usar en emails. Ver pct_cf7_get_email_logo_png().
+if ($is_svg_logo) {
+	$email_logo = pct_cf7_get_email_logo_png($logo);
+	if ($email_logo) {
+		$image_url = $email_logo[0];
+		$image = $email_logo;
+		$is_svg_logo = false; // ya tenemos un PNG utilizable, no hace falta el fallback de texto
+	}
+}
+
+// Ancho fijo del logo en el email + alto proporcional real, calculados en px numéricos
+// (Outlook/Word ignora atributos width/height inválidos como "200px" o "auto"
+// y renderiza la imagen a su tamaño nativo)
+$logo_email_width = 200;
+$logo_email_height = ($image && !empty($image[1]) && !empty($image[2]))
+	? (int) round($logo_email_width * ($image[2] / $image[1]))
+	: 40;
+
+// Último fallback: si no hay logo, o es SVG y no se pudo generar/encontrar un PNG
+// (servidor sin Imagick ni binarios de conversión), no hay imagen fiable para el
+// email, así que mostramos el nombre del sitio como texto en vez de una imagen rota.
+$logo_email_text_color = apply_filters('pct_cf7_email_logo_color', '#ffffff');
+if ($image_url && !$is_svg_logo) {
+	$logo_markup = '<img class="brand-logo" src="' . $image_url . '" width="' . $logo_email_width . '" height="' . $logo_email_height . '" alt="' . esc_attr(get_bloginfo('name')) . '" style="display:block; margin: auto; width: ' . $logo_email_width . 'px; max-width: ' . $logo_email_width . 'px; height: ' . $logo_email_height . 'px;">';
+} else {
+	$logo_markup = '<h1 style="margin:0; padding:0; color:' . esc_attr($logo_email_text_color) . '; font-family:\'Outfit\', sans-serif; font-size:24px; font-weight:700; letter-spacing:1px; text-transform:uppercase;">' . esc_html(get_bloginfo('name')) . '</h1>';
+}
 
 
 $brandColor = get_theme_mod('colorThemeMobile', '#19222a');
@@ -191,7 +222,7 @@ $htmlEmailTemplateCssStyles = '
 ';
 
 $htmlEmailTemplateHeader = '
-<!DOCTYPE html><html lang="es"><head> <meta charset="utf-8"> <!-- utf-8 works for most cases --> <meta name="viewport" content="width=device-width"> <!-- Forcing initial-scale shouldnt be necessary --> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Use the latest (edge) version of IE rendering engine --> <meta name="x-apple-disable-message-reformatting"> <!-- Disable auto-scale in iOS 10 Mail entirely --> <title>[_site_title]</title> <!-- The title tag shows in email notifications, like Android 4.4. --> <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet"> <!-- CSS Reset : BEGIN -->' . $htmlEmailTemplateCssStyles . ' </head>';
+<!DOCTYPE html><html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office"><head> <meta charset="utf-8"> <!-- utf-8 works for most cases --> <meta name="viewport" content="width=device-width"> <!-- Forcing initial-scale shouldnt be necessary --> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Use the latest (edge) version of IE rendering engine --> <meta name="x-apple-disable-message-reformatting"> <!-- Disable auto-scale in iOS 10 Mail entirely --> <title>[_site_title]</title> <!-- The title tag shows in email notifications, like Android 4.4. --> <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet"> <!-- CSS Reset : BEGIN -->' . $htmlEmailTemplateCssStyles . ' </head>';
 
 $htmlEmailTemplateBodyContentHeader = '
 	<body width="100%" style="margin: 0; padding: 0 !important; mso-line-height-rule: exactly; background-color: #f1f1f1;">
@@ -199,16 +230,19 @@ $htmlEmailTemplateBodyContentHeader = '
 			<div style="display: none; font-size: 1px;max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all; font-family: sans-serif;">
 				&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
 			</div>
+			<!--[if mso]>
+			<table role="presentation" align="center" width="768" cellpadding="0" cellspacing="0" border="0"><tr><td>
+			<![endif]-->
 			<div style="max-width: 768px; margin: 2rem auto; border-radius:8px;overflow:hidden;" class="email-container no-bradius-mobile">
 			<!-- BEGIN BODY -->
 				<table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: auto;">
 					<tr>
-						<td valign="center" style="padding:2em 2.5em; background-color: ' . $brandColor . '" class="header">
+						<td valign="middle" style="padding:2em 2.5em; background-color: ' . $brandColor . '" class="header">
 							<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
 								<tr>
 									<td width="100%" style="text-align: center;" align="center">
-										<a href="https://[_site_domain]" style="text-align: center;">
-											<img class="brand-logo" src="' . $image_url . '" width="200px" height="auto" style="display:block; margin: auto;">
+										<a href="https://[_site_domain]" style="text-align: center; text-decoration: none;">
+											' . $logo_markup . '
 										</a>
 									</td>
 								</tr>
@@ -234,12 +268,12 @@ $htmlEmailTemplateBodyContentFooter = '
 				<table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: auto;">
 					<tr>
 						<td valign="middle" class="footer email-section" style="background-color: ' . $brandColor . '">
-							<table width="100%" role="presentation" cellspacing="0" cellpadding="0" border="0">
+							<table width="100%" align="center" role="presentation" cellspacing="0" cellpadding="0" border="0">
 								<tr>
 									<td valign="top" width="100%" align="center">
-										<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+										<table role="presentation" align="center" cellspacing="0" cellpadding="0" border="0" width="100%">
 											<tr>
-												<td align="center" width="100%" cellpadding="25" style="padding: 0 25px; text-align: center;">
+												<td align="center" width="100%" style="padding: 0 25px; text-align: center;">
 													<p style="color: white;">&copy; ' . date('Y') . ' [_site_title]<br>
 														<a style="color:white !important; text-decoration: none !important;" href="https://[_site_domain]" target="_blank">[_site_domain]</a>
 													</p>
@@ -253,6 +287,9 @@ $htmlEmailTemplateBodyContentFooter = '
 					</tr>
 				</table>
 			</div>
+			<!--[if mso]>
+			</td></tr></table>
+			<![endif]-->
 		</center>
 	</body>
 </html>';
@@ -272,6 +309,134 @@ function email_HTMLtemplate_1($message, $isMail2 = false)
 
 	return $html;
 }
+
+
+//! LOGO SVG -> PNG para emails (Outlook/webmails no renderizan SVG en el cuerpo del email)
+
+// Devuelve [url, width, height] del PNG de email para un logo SVG, generándolo
+// (y cacheándolo en disco junto al SVG, como "<nombre-svg>-email.png") si no
+// existe o si el SVG ha cambiado desde la última vez (nuevo logo subido).
+// Si el servidor no puede generar el PNG (sin Imagick ni binarios de conversión),
+// devuelve false y se sigue usando el SVG original (comportamiento previo).
+function pct_cf7_get_email_logo_png($logo_attachment_id, $width = 400)
+{
+	$svg_path = get_attached_file($logo_attachment_id);
+	if (!$svg_path || !file_exists($svg_path)) {
+		return false;
+	}
+
+	$png_path = dirname($svg_path) . '/' . pathinfo($svg_path, PATHINFO_FILENAME) . '-email.png';
+
+	if (!file_exists($png_path) || filemtime($svg_path) > filemtime($png_path)) {
+		// Evitamos reintentar la generación en cada email si ya sabemos que este
+		// servidor no puede hacerlo (sin Imagick ni binarios de conversión disponibles).
+		if (!get_transient('pct_cf7_email_logo_png_unsupported')) {
+			$generated = pct_cf7_generate_email_logo_png($svg_path, $png_path, $width);
+			if ($generated) {
+				delete_transient('pct_cf7_email_logo_png_unsupported');
+			} else {
+				set_transient('pct_cf7_email_logo_png_unsupported', 1, 12 * HOUR_IN_SECONDS);
+			}
+		}
+	}
+
+	if (!file_exists($png_path)) {
+		return false;
+	}
+
+	$png_size = getimagesize($png_path);
+	if (!$png_size) {
+		return false;
+	}
+
+	$svg_url = wp_get_attachment_url($logo_attachment_id);
+	$png_url = dirname($svg_url) . '/' . pathinfo($svg_url, PATHINFO_FILENAME) . '-email.png';
+
+	return array($png_url, $png_size[0], $png_size[1]);
+}
+
+// Genera el PNG a partir del SVG. Intenta primero con la extensión Imagick
+// (habitual en muchos hostings WordPress); si no está disponible, intenta con
+// un binario de conversión del sistema (rsvg-convert o ImageMagick), solo si
+// exec()/shell_exec() están habilitados en el servidor.
+function pct_cf7_generate_email_logo_png($svg_path, $png_path, $width = 400)
+{
+	$svg_content = file_get_contents($svg_path);
+	if ($svg_content === false) {
+		return false;
+	}
+
+	// Muchos logos SVG usan fill/stroke="currentColor" para heredar el color por
+	// CSS al renderizarse inline en la web. Fuera de ese contexto (rasterizado a
+	// PNG) no hay CSS que lo resuelva, así que forzamos un color fijo configurable.
+	$logo_color = apply_filters('pct_cf7_email_logo_color', '#ffffff');
+	if (stripos($svg_content, 'currentColor') !== false) {
+		$svg_content = str_ireplace('currentColor', $logo_color, $svg_content);
+	}
+
+	if (class_exists('Imagick')) {
+		try {
+			$im = new Imagick();
+			$im->setResolution(300, 300);
+			$im->setBackgroundColor(new ImagickPixel('transparent'));
+			$im->readImageBlob($svg_content);
+			$im->setImageFormat('png32');
+			$src_width = $im->getImageWidth();
+			if ($src_width > 0) {
+				$im->scaleImage($width, (int) round($im->getImageHeight() * ($width / $src_width)));
+			}
+			$ok = $im->writeImage($png_path);
+			$im->clear();
+			if ($ok && file_exists($png_path)) {
+				return true;
+			}
+		} catch (\Throwable $e) {
+			// seguimos con el siguiente método disponible
+		}
+	}
+
+	if (function_exists('shell_exec')) {
+		$tmp_svg = trailingslashit(get_temp_dir()) . 'pct-email-logo-' . wp_generate_uuid4() . '.svg';
+		file_put_contents($tmp_svg, $svg_content);
+
+		$commands = array(
+			'rsvg-convert' => 'rsvg-convert -w ' . (int) $width . ' %s -o %s',
+			'convert'      => 'convert -background none -density 300 %s -resize ' . (int) $width . 'x %s',
+			'magick'       => 'magick -background none -density 300 %s -resize ' . (int) $width . 'x %s',
+		);
+
+		foreach ($commands as $binary => $cmd_template) {
+			if (!pct_cf7_shell_binary_exists($binary)) {
+				continue;
+			}
+			shell_exec(sprintf($cmd_template, escapeshellarg($tmp_svg), escapeshellarg($png_path)) . ' 2>&1');
+			if (file_exists($png_path)) {
+				break;
+			}
+		}
+
+		@unlink($tmp_svg);
+	}
+
+	return file_exists($png_path);
+}
+
+function pct_cf7_shell_binary_exists($binary)
+{
+	$path = @shell_exec('command -v ' . escapeshellarg($binary) . ' 2>/dev/null');
+	return !empty(trim((string) $path));
+}
+
+// Aviso en el admin si el servidor no pudo generar el PNG del logo para emails
+// (sin Imagick ni binarios de conversión disponibles): hay que subir uno a mano.
+add_action('admin_notices', function () {
+	if (!current_user_can('manage_options') || !get_transient('pct_cf7_email_logo_png_unsupported')) {
+		return;
+	}
+	echo '<div class="notice notice-warning is-dismissible"><p>' .
+		esc_html__('El logo del sitio está en formato SVG y este servidor no puede generar automáticamente la versión PNG para los emails de Contact Form 7 (Outlook no renderiza SVG). Sube manualmente un PNG junto al SVG del logo, con el mismo nombre y el sufijo "-email.png".', 'pictau') .
+		'</p></div>';
+});
 
 
 
