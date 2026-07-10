@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.2.1
+- **Versión:** 7.2.2
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1340,6 +1340,44 @@ Aparece el enlace **Clonar** en la fila de cada contenido y como **bulk action**
 **Seguridad:** nonce por post ID (`pictau_clone_{post_id}`) + `current_user_can('edit_post')`.
 
 > Reemplaza el plugin **Yoast Duplicate Post** — desinstalarlo si estaba activo.
+
+---
+
+## Contact Form 7 — Plantilla HTML de email (compatibilidad Outlook)
+
+Implementado en `theme/inc/cf7_html_email_templates.php`. Envuelve el cuerpo de los emails de CF7 (`mail` y `mail_2`, hook `wpcf7_before_send_mail`) en una plantilla HTML basada en tablas, compatible con Outlook (motor de renderizado Word) y el resto de clientes de correo.
+
+### Fixes de compatibilidad Outlook aplicados
+
+- Envoltorio condicional `<!--[if mso]>...<![endif]-->` con tabla de ancho fijo (768px), ya que Outlook ignora `max-width` en `<div>`.
+- Atributos `width`/`height` del logo en valores numéricos (Outlook ignora atributos inválidos como `width="200px"` o `height="auto"` y renderiza la imagen a su tamaño nativo).
+- `valign="middle"` en vez de valores inválidos (el único valor válido en tablas es `top`/`middle`/`bottom`/`baseline`).
+- `align="center"` + `role="presentation"` en todas las tablas anidadas del footer.
+- Namespaces `xmlns:v` / `xmlns:o` en el `<html>` para condicionales MSO.
+
+### Logo del email: SVG → PNG automático
+
+Outlook y la mayoría de webmails (Gmail, Outlook.com) no renderizan SVG en el cuerpo de un email. Si el `custom_logo` del sitio (Personalizar → Identidad del sitio) está subido en formato SVG, el tema genera automáticamente una versión PNG para usar en el email — sin intervención manual y funcionando igual en cualquier proyecto/cliente que use este tema:
+
+1. **Caché en disco**: se guarda como `<nombre-del-svg>-email.png`, junto al SVG original.
+2. **Regeneración automática**: si el SVG es más reciente que el PNG cacheado (p. ej. tras subir un logo nuevo desde el Customizer), se regenera solo en el siguiente email enviado.
+3. **Motor de conversión** (`pct_cf7_generate_email_logo_png()`), por orden de preferencia:
+   - **Imagick** (extensión PHP) — vía preferida, presente en la mayoría de hostings WordPress gestionados.
+   - **Binario del sistema** (`rsvg-convert`, o `convert`/`magick` de ImageMagick) — solo si `shell_exec()` está habilitado y el binario existe en el `PATH` del servidor (comprobado con `command -v` antes de ejecutar nada).
+4. **Color del logo**: si el SVG usa `fill`/`stroke="currentColor"` (habitual en logos pensados para heredar color por CSS al renderizarse inline en la web), se sustituye por un color fijo antes de rasterizar, ya que fuera de un documento HTML no hay contexto CSS que lo resuelva. Color por defecto: blanco. Configurable por sitio:
+   ```php
+   add_filter('pct_cf7_email_logo_color', function () {
+       return '#000000';
+   });
+   ```
+
+### Último fallback: sin logo utilizable → `<h1>` con el nombre del sitio
+
+Si no hay logo configurado, o es SVG y no se pudo generar/encontrar un PNG (servidor sin Imagick ni binarios de conversión disponibles), el header del email muestra `<h1>{nombre del sitio}</h1>` en vez de una imagen rota. Usa el mismo color configurable (`pct_cf7_email_logo_color`) y la tipografía del resto de la plantilla.
+
+### Aviso en el admin
+
+Si el servidor no puede generar el PNG (sin Imagick ni binarios de conversión disponibles), aparece un aviso en el panel de administración (visible solo para `manage_options`) indicando que hay que subir manualmente un PNG junto al SVG del logo, con el sufijo `-email.png`. El estado se cachea en un transient (`pct_cf7_email_logo_png_unsupported`, 12h) para no reintentar la generación en cada email enviado.
 
 ---
 
