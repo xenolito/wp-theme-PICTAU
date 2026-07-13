@@ -34,8 +34,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			if (activeLenisTween) activeLenisTween.kill()
 
+			// Detiene Lenis mientras dura el tween: si el usuario acaba de soltar un
+			// gesto de trackpad, el navegador sigue disparando eventos wheel de inercia
+			// (momentum scroll) durante uno o dos segundos más. Sin esto, Lenis procesa
+			// esos eventos residuales con su scrollTo normal y compite con nuestro
+			// scrollTo({ force: true }) de cada frame, desplazando la página tras
+			// aterrizar en el ancla. Con isStopped, Lenis ignora wheel/touch por
+			// completo (ver onWheel en node_modules/lenis/dist/lenis.mjs), pero
+			// nuestras llamadas siguen funcionando porque pasan force:true. Mismo
+			// patrón que Modal.jsx usa para bloquear el scroll de fondo (ver CLAUDE.md §14).
+			window.lenis.stop()
+
 			const tweenState = {
 				y: window.lenis.animatedScroll ?? window.lenis.actualScroll ?? window.scrollY,
+			}
+
+			const resumeLenis = () => {
+				activeLenisTween = null
+				window.lenis.start()
 			}
 
 			activeLenisTween = gsap.to(tweenState, {
@@ -47,12 +63,10 @@ document.addEventListener('DOMContentLoaded', () => {
 					window.lenis.scrollTo(tweenState.y, { immediate: true, force: true })
 				},
 				onComplete: () => {
-					activeLenisTween = null
+					resumeLenis()
 					if (typeof onComplete === 'function') onComplete()
 				},
-				onInterrupt: () => {
-					activeLenisTween = null
-				},
+				onInterrupt: resumeLenis,
 			})
 			return
 		}
