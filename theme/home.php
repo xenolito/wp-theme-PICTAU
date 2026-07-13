@@ -14,7 +14,7 @@ $view_transition = false; //! Post Thumbnails will get a view-transition-name cs
 
 if (function_exists('pods')) {
 	$pods = pods($post_type, get_the_id());
-	$subheader = $pods->field('subheader') !== '' ? $pods->field('subheader') : false;
+	$subheader = $pods && $pods->field('subheader') !== '' ? $pods->field('subheader') : false;
 }
 
 
