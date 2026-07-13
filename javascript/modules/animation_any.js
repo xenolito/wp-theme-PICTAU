@@ -1,8 +1,9 @@
 /**
  * Animation any for WP based on GSAP
- * version: 4.9.2
+ * version: 4.9.3
  *
  * ? changelog:
+ * ? v4.9.3 — Fixed repeat not working at all: `repeat` was destructured from config in the constructor but never assigned to `this.repeat`, so the `onLeaveBack` check (`if (this.repeat)`) always read `undefined` and animations never reversed on scrolling back up past the trigger, regardless of the data-anim_any_repeat value. This was the root cause of the TODO below, which is now resolved and removed.
  * ? v4.9.2 — Fixed nextanim timing: chained targets (no explicit data-anim_any_delay) now get delay=0 in pre-pass, so nextAnimDelay controls the visual overlap directly without the default 0.33s shifting the start. Explicit delay attributes are preserved. Also improved absolutePos fallback from tlDuration to Math.max(0.001, rawPos) to maximise overlap on very short animations.
  * ? v4.9.1 — Fixed nextanim callback not firing when animation duration <= |nextAnimDelay|: position clamped to tlDuration instead of t=0 (GSAP skips callbacks at t=0 on play())
  * ? v4.9.0 — Added nextanim param: chain an element's animation after this one fires ('.selector' or '.selector,-0.5' to start 0.5s before end)
@@ -16,8 +17,6 @@
  * © @xenolito 2026
  *
  */
-
-// TODO When animation is set to autoplay=false, and is chained to another animation, it does not make a reverse animation on exit the viewport (repeat=true not working??)
 
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -97,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.delay = Number(delay)
 			this.duration = Number(duration)
 			this.autoplay = Number(autoplay)
+			this.repeat = repeat === 'false' ? false : Boolean(repeat)
 			this.stagger = stagger
 			this.scaleStart = Number(scalestart)
 			this.zoomStartScale = animParam !== undefined ? Number(animParam) : 1.2
