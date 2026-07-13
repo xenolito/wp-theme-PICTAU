@@ -8843,7 +8843,7 @@ body.header-width-centered .main-header-content {
   --submenu-item-hover-bg-color: rgba(0, 0, 0, 0.05);
   --submenu-text-size: var(--nav-text-size);
   --submenu-text-color: rgba(0, 0, 0, 0.75);
-  --submenu-text-description-color: rgb(from var(var(--submenu-text-color) r g b / 75%));
+  --submenu-text-description-color: rgb(from var(--submenu-text-color) r g b / 75%);
   --submenu-text-hover-color: black;
   /* --default-section-vert-padding: clamp(2.5rem, 10vw, 6rem); */
   --default-section-vert-padding: clamp(2.5rem, 15vw, 10rem);
