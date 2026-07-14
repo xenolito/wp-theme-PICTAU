@@ -104,6 +104,36 @@ get_header();
 
 							?>
 						</section>
+						<?php
+						//! Get posts marked as "featured" (custom field 'featured'), excluding the hero post above
+						$featured_query = new WP_Query(array(
+							'post_type'           => 'post',
+							'posts_per_page'      => 4,
+							'meta_query'          => array(
+								array('key' => 'featured', 'value' => '1', 'compare' => '=')
+							),
+							'post__not_in'        => array($featured_post_id),
+							'orderby'             => 'date',
+							'order'               => 'DESC',
+							'ignore_sticky_posts' => 1,
+							'post_status'         => 'publish',
+						));
+
+						$excluded_ids = array($featured_post_id);
+
+						if ($featured_query->have_posts()) :
+						?>
+							<section class="pct-section featured-posts latest-entries no-pt theme-color-A" data-anim_any data-anim_any_delay="0.45" data-anim_any_duration="1" data-anim_any_slideamount="50">
+								<?php
+								while ($featured_query->have_posts()) :
+									$featured_query->the_post();
+									$excluded_ids[] = get_the_ID();
+									get_template_part('template-parts/content/content', 'excerpt', array('show_category' => true, 'view_transition' => $view_transition, 'thumbnail_size' => 'medium'));
+								endwhile;
+								wp_reset_postdata();
+								?>
+							</section>
+						<?php endif; ?>
 						<section class="pct-section latest-entries no-pt theme-color-A" data-anim_any data-anim_any_delay="0.6" data-anim_any_duration="1" data-anim_any_slideamount="50">
 							<!-- <section class="pct-section latest-entries no-pt"> -->
 							<?php
@@ -115,7 +145,7 @@ get_header();
 								'order'			=> 'DESC',
 								'ignore_sticky_posts' => 1,
 								// 'offset'			=> 1,
-								'post__not_in'   => array($featured_post_id), // Excluimos el post que hemos destacado visualmente mas arriba
+								'post__not_in'   => $excluded_ids, // Excluimos el post destacado visualmente y las entradas ya mostradas en la fila de destacadas
 								'post_status'			=> 'publish'
 							));
 

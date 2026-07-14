@@ -959,7 +959,40 @@ add_action('admin_head', function () {
 
 
 
-//! BLOG SECTION ANYWHERE, WITH FEATURED POST, PODS FEATURED POSTS, AND GRID OF LATEST POSTS
+//! BLOG/POSTS: METABOX NATIVO "DESTACADA" (sustituye al campo booleano 'featured' de Pods)
+function featured_post_metabox()
+{
+	add_meta_box(
+		'featured_post_metabox',
+		esc_html__('Entrada destacada', 'pictau'),
+		'render_featured_post_metabox',
+		'post',
+		'side',
+		'default'
+	);
+}
+add_action('add_meta_boxes', 'featured_post_metabox');
+
+function render_featured_post_metabox($post)
+{
+	$is_featured = get_post_meta($post->ID, 'featured', true);
+	echo '<label><input type="checkbox" name="featured_post" value="1" ' . checked($is_featured, '1', false) . '> ' . esc_html__('Marcar como destacada', 'pictau') . '</label>';
+	wp_nonce_field('guardar_featured_post', 'featured_post_nonce');
+}
+
+function guardar_featured_post($post_id)
+{
+	if (!isset($_POST['featured_post_nonce']) || !wp_verify_nonce($_POST['featured_post_nonce'], 'guardar_featured_post')) return;
+	if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+	if (!current_user_can('edit_post', $post_id)) return;
+
+	update_post_meta($post_id, 'featured', isset($_POST['featured_post']) ? '1' : '0');
+}
+add_action('save_post', 'guardar_featured_post', 100);
+
+
+
+//! BLOG SECTION ANYWHERE, WITH FEATURED POST, FEATURED POSTS ROW (metabox nativo), AND GRID OF LATEST POSTS
 
 // Shortcode: [blog_section]
 add_shortcode('blog_section', function ($atts = []) {
@@ -970,8 +1003,8 @@ add_shortcode('blog_section', function ($atts = []) {
 		'featured_source'         => 'auto',
 		'featured_thumb'          => 'medium_large',
 
-		// Featured "Pods" (NUEVA fila 2)
-		'pods_featured_count'     => 4,
+		// Fila 2 — entradas marcadas como destacadas (metabox nativo, ver featured_post_metabox())
+		'featured_count'          => 4,
 
 		// Grid (fila 3)
 		'count'                   => 4,
@@ -1061,19 +1094,19 @@ add_shortcode('blog_section', function ($atts = []) {
 		</section>
 		<?php
 		/*!-- -----------------------------------------------------------
-		     //! Fila 2 — Posts con campo Pods "featured" = true
+		     //! Fila 2 — Posts con campo nativo "featured" = true (metabox "Entrada destacada")
 		     ----------------------------------------------------------- --*/
 		?>
 
 
 		<?php
-		$pods_q = new WP_Query([
+		$featured_posts_q = new WP_Query([
 			'post_type'      => 'post',
-			'posts_per_page' => (int) $a['pods_featured_count'],
+			'posts_per_page' => (int) $a['featured_count'],
 			'meta_query'     => [
 				[
 					'key'     => 'featured',
-					'value'   => '1',   // Valor típico guardado por Pods boolean Yes/No
+					'value'   => '1',   // Guardado por guardar_featured_post() (metabox nativo, ya no depende de Pods)
 					'compare' => '='
 				]
 			],
@@ -1083,16 +1116,16 @@ add_shortcode('blog_section', function ($atts = []) {
 			'order'          => 'DESC',
 		]);
 
-		$pods_featured_ids = [];
+		$featured_ids = [];
 
 
-		if ($pods_q->have_posts()) {
+		if ($featured_posts_q->have_posts()) {
 			echo '<section class="pct-section featured-posts latest-entries no-pt theme-color-A" data-anim_any data-anim_any_delay="0.45" data-anim_any_duration="1" data-anim_any_slideamount="50">';
-			while ($pods_q->have_posts()) {
-				$pods_q->the_post();
+			while ($featured_posts_q->have_posts()) {
+				$featured_posts_q->the_post();
 				$id = get_the_ID();
-				$pods_featured_ids[] = $id;
-				$exclude_ids[]       = $id;
+				$featured_ids[] = $id;
+				$exclude_ids[]  = $id;
 
 				get_template_part(
 					'template-parts/content/content',
@@ -1191,7 +1224,7 @@ add_filter('display_post_states', function ($states, $post) {
 		return $states;
 	}
 
-	// Comprobar el custom field 'featured' (Pods lo guarda como 0/1)
+	// Comprobar el custom field 'featured' (guardado por el metabox nativo "Entrada destacada", ver guardar_featured_post())
 	$is_featured = get_post_meta($post->ID, 'featured', true);
 
 	// Si está marcado, añadimos el estado
