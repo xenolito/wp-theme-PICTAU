@@ -1235,6 +1235,33 @@ El listado de WP Admin para el CPT `producto` incluye:
 
 ---
 
+## Blog — Entradas destacadas
+
+Las entradas (`post`) tienen un campo booleano nativo `featured` (sin depender de Pods),
+gestionado desde un metabox en el editor:
+
+- **Metabox "Entrada destacada"** — checkbox "Marcar como destacada" en la barra lateral
+  del editor de entradas. Guarda `update_post_meta($post_id, 'featured', '1'|'0')`
+  (`theme/inc/utilities.php`, funciones `featured_post_metabox()` / `guardar_featured_post()`).
+- **Listado de WP Admin** — las entradas marcadas muestran un tag amarillo "Destacada"
+  junto al título (filtro `display_post_states`, `theme/inc/utilities.php`).
+- **Home del blog** (`theme/home.php`) — estructura de tres bloques:
+  1. **Destacada principal**: la entrada fijada (sticky) si existe, si no la más reciente.
+     El campo `featured` no interviene aquí.
+  2. **Fila de destacadas**: hasta 4 entradas con `featured = 1` (excluyendo la del punto
+     1), ordenadas por fecha. Solo se renderiza si existe al menos una.
+  3. **Últimas entradas**: rejilla de las 4 últimas, excluyendo las ya mostradas arriba.
+
+`archive.php` (categorías/etiquetas) no usa esta lógica; es un listado estándar.
+
+- **Shortcode `[blog_section]`** (`theme/inc/utilities.php`) — misma estructura de tres
+  filas para insertar en cualquier página. Atributos: `featured_source` (`auto`|`sticky`|`latest`),
+  `featured_thumb`, `featured_count` (nº de destacadas en la fila 2, antes `pods_featured_count`),
+  `count`, `grid_thumb`, `category`, `tag`, `show_category`, `view_transition`, `wrapper_class`.
+  Usa el mismo campo nativo `featured` que el home del blog (ya no depende de Pods).
+
+---
+
 ## CSS
 
 Fuente en `tailwind/` → `theme/style.css`.
