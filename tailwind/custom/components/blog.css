@@ -101,12 +101,17 @@ body.home {
 		margin-bottom: var(--gap-default);
 	}
 
-	.entry-content:has(.category-entries) {
-		/* padding-top: 0 !important; */
-		padding-top: var(--card-padding) !important;
+	&:not(.archive) {
+		.entry-content:has(.category-entries) {
+			padding-top: 0 !important;
+			@media only screen and (min-width: 1024px) {
+				padding-top: var(--card-padding) !important;
+			}
+		}
 	}
 
 	.category-entries {
+		padding-top: var(--def-layout-x-padding) !important;
 		> h2 {
 			/* margin-bottom: calc(var(--gap-default) * 0.5) !important; */
 			margin-bottom: clamp(3rem, 8vw, 4rem) !important;

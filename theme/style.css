@@ -3141,9 +3141,18 @@ body.blog .featured-posts, body.single-post .featured-posts, body.archive .featu
   margin-bottom: var(--gap-default);
 }
 
-body.blog .entry-content:has(.category-entries), body.single-post .entry-content:has(.category-entries), body.archive .entry-content:has(.category-entries), body.home .entry-content:has(.category-entries) {
-  /* padding-top: 0 !important; */
-  padding-top: var(--card-padding) !important;
+body.blog:not(.archive) .entry-content:has(.category-entries), body.single-post:not(.archive) .entry-content:has(.category-entries), body.archive:not(.archive) .entry-content:has(.category-entries), body.home:not(.archive) .entry-content:has(.category-entries) {
+  padding-top: 0 !important;
+}
+
+@media only screen and (min-width: 1024px) {
+  body.blog:not(.archive) .entry-content:has(.category-entries), body.single-post:not(.archive) .entry-content:has(.category-entries), body.archive:not(.archive) .entry-content:has(.category-entries), body.home:not(.archive) .entry-content:has(.category-entries) {
+    padding-top: var(--card-padding) !important
+  }
+}
+
+body.blog .category-entries, body.single-post .category-entries, body.archive .category-entries, body.home .category-entries {
+  padding-top: var(--def-layout-x-padding) !important;
 }
 
 body.blog .category-entries > h2, body.single-post .category-entries > h2, body.archive .category-entries > h2, body.home .category-entries > h2 {
