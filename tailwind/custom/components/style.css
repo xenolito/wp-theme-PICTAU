@@ -1762,13 +1762,13 @@ canvas.anim-bg {
 .mmenu-footer {
 	.brand {
 		color: white;
-		filter: invert(1);
 		display: flex;
 		justify-content: center;
 		margin-bottom: 1.5rem !important;
 
-		img {
-			width: 180px;
+		img,
+		svg {
+			width: 180px !important;
 		}
 	}
 }
