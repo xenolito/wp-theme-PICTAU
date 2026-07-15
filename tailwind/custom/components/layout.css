@@ -801,7 +801,9 @@ body .is-layout-constrained:not(.alignfull) > * {
 #main > article {
 	header.entry-header {
 		/* --paddV: calc(var(--def-layout-x-padding) * 2); */
-		@apply flex justify-center min-h-[var(--page-header-min-height)];
+		/* @apply flex justify-center min-h-[var(--page-header-min-height)]; */
+		@apply flex justify-center;
+		padding-bottom: 1rem;
 		position: relative;
 		width: 100vw;
 		left: calc(50% - 100vw * 0.5);
@@ -892,13 +894,13 @@ body .is-layout-constrained:not(.alignfull) > * {
 	}
 }
 
-body.fixed-header {
+/* body.fixed-header {
 	#main > article {
 		header.entry-header {
 			padding-top: calc(var(--whole-header-height) + (var(--def-layout-x-padding) * 0.33));
 		}
 	}
-}
+} */
 
 /*! SECTION HEADINGS */
 
