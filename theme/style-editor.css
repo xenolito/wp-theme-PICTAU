@@ -7432,6 +7432,20 @@ header.entry-header .entry-header-content .glassy-card {
 
 /*! Transparent header styles */
 
+#page:has(.transparent-header) #masthead .above-header-wrap * {
+  color: var(--nav-text-color-transparent) !important;
+}
+
+#page:has(.transparent-header) #masthead .above-header-wrap .menu-bt a {
+  background-color: white !important;
+  color: var(--nav-text-color) !important;
+}
+
+#page:has(.transparent-header) #masthead .above-header-wrap .menu-bt a:hover {
+  background-color: var(--bg-color-hover) !important;
+  color: white !important;
+}
+
 #page:has(.transparent-header) #masthead .main-header-wrap {
   background-color: var(--header-bg-color-transparent);
   color: var(--nav-text-color-transparent);
@@ -7792,6 +7806,10 @@ body.header-width-centered .main-header-content {
   display: none !important;
 }
 
+.above-header-wrap .menu-bt a, .main-nav-desktop .menu-bt a {
+  min-width: var(--menu-bt-min-width, 150px);
+}
+
 .main-nav-mobile {
   position: relative;
   display: flex;
@@ -8129,12 +8147,15 @@ body.header-width-centered .main-header-content {
   padding: 1.5rem;
   margin: 0 !important;
   margin-top: 0.8rem !important;
-  background: #23303c;
+  background: var(--bg-color-theme-dark);
   width: 100%;
 }
 
-.main-nav-mobile .mmenu-footer .svg-bg-pattern {
-  background-image: var(--bg-pattern-cross-dark);
+.main-nav-mobile .mmenu-footer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--bg-pattern-dot-light);
   opacity: 0.3;
   -webkit-mask-image: radial-gradient(80% 60% at 80% 80%, black, transparent);
           mask-image: radial-gradient(80% 60% at 80% 80%, black, transparent);
@@ -8151,8 +8172,8 @@ body.header-width-centered .main-header-content {
   padding-top: 0;
 }
 
-.main-nav-mobile .mmenu-footer .wp-block-buttons a {
-  min-width: 160px;
+.main-nav-mobile .mmenu-footer .wp-block-buttons .wp-block-button {
+  width: 100%;
   font-size: 0.9rem !important;
 }
 
@@ -8385,6 +8406,7 @@ body.header-width-centered .main-header-content {
   --menu-item-hover-bg-color: rgba(0, 0, 0, 0.08);
   --menu-item-hover-bg-color-scrolled: rgba(0, 0, 0, 0.08);
   --menu-item-hover-bg-color-transparent: rgba(255, 255, 255, 0.08);
+  --menu-bt-min-width: 140px;
   --desktop-space-top: 0rem;
   --menu-items-gap: 1.2rem;
   --submenu-safety-horizontal-padding: 1.5rem;
@@ -16341,14 +16363,14 @@ canvas.anim-bg {
 
 .mmenu-footer .brand {
   color: white;
-  filter: invert(1);
   display: flex;
   justify-content: center;
   margin-bottom: 1.5rem !important;
 }
 
-.mmenu-footer .brand img {
-  width: 180px;
+.mmenu-footer .brand img,
+		.mmenu-footer .brand svg {
+  width: 180px !important;
 }
 
 /*! COUNTER AUTOINCREMENT ANIMATION */

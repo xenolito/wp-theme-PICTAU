@@ -32,6 +32,19 @@
 #page {
 	&:has(.transparent-header) {
 		#masthead {
+			.above-header-wrap {
+				* {
+					color: var(--nav-text-color-transparent) !important;
+				}
+				.menu-bt a {
+					background-color: white !important;
+					color: var(--nav-text-color) !important;
+					&:hover {
+						background-color: var(--bg-color-hover) !important;
+						color: white !important;
+					}
+				}
+			}
 			.main-header-wrap {
 				background-color: var(--header-bg-color-transparent);
 				color: var(--nav-text-color-transparent);
@@ -368,6 +381,13 @@ body.header-width-centered {
 	}
 }
 
+.above-header-wrap,
+.main-nav-desktop {
+	.menu-bt a {
+		min-width: var(--menu-bt-min-width, 150px);
+	}
+}
+
 .main-nav-mobile {
 	@apply flex lg:hidden relative;
 
@@ -666,11 +686,14 @@ body.header-width-centered {
 		margin: 0 !important;
 		margin-top: 0.8rem !important;
 
-		background: #23303c;
+		background: var(--bg-color-theme-dark);
 		width: 100%;
 
-		.svg-bg-pattern {
-			background-image: var(--bg-pattern-cross-dark);
+		&::before {
+			content: "";
+			position: absolute;
+			inset: 0;
+			background-image: var(--bg-pattern-dot-light);
 			opacity: 0.3;
 			mask-image: radial-gradient(80% 60% at 80% 80%, black, transparent);
 		}
@@ -686,8 +709,8 @@ body.header-width-centered {
 				padding-top: 0;
 			}
 
-			a {
-				min-width: 160px;
+			.wp-block-button {
+				width: 100%;
 				font-size: 0.9rem !important;
 			}
 		}
@@ -924,6 +947,7 @@ body.header-width-centered {
 	--menu-item-hover-bg-color: rgba(0, 0, 0, 0.08);
 	--menu-item-hover-bg-color-scrolled: rgba(0, 0, 0, 0.08);
 	--menu-item-hover-bg-color-transparent: rgba(255, 255, 255, 0.08);
+	--menu-bt-min-width: 140px;
 
 	/*? NavigationLayout */
 	--desktop-space-top: 0rem;
