@@ -32,19 +32,6 @@
 #page {
 	&:has(.transparent-header) {
 		#masthead {
-			.above-header-wrap {
-				* {
-					color: var(--nav-text-color-transparent) !important;
-				}
-				.menu-bt a {
-					background-color: white !important;
-					color: var(--nav-text-color) !important;
-					&:hover {
-						background-color: var(--bg-color-hover) !important;
-						color: white !important;
-					}
-				}
-			}
 			.main-header-wrap {
 				background-color: var(--header-bg-color-transparent);
 				color: var(--nav-text-color-transparent);
@@ -69,6 +56,21 @@ body.fixed-header {
 	#page {
 		#masthead {
 			.above-header-wrap {
+				* {
+					color: var(--nav-text-color-transparent) !important;
+				}
+				.menu-bt a {
+					--bg-color: white;
+					background-color: var(--bg-color) !important;
+					border-color: var(--nav-text-color) !important;
+					color: var(--nav-text-color) !important;
+					&:hover {
+						background-color: var(--bg-color-hover) !important;
+						border-color: var(--bg-color-hover) !important;
+						color: white !important;
+					}
+				}
+
 				.menu-item a {
 					@apply text-[var(--nav-text-color-above-header)] dark:text-[var(--nav-text-color-above-header-dark)] no-underline;
 				}
@@ -123,6 +125,22 @@ body.fixed-header {
 		&.scrolledHeader {
 			.main-header-wrap {
 				@apply !border-t-[var(--header-border-color-scrolled)] dark:border-t-[var(--header-border-color-scrolled-dark)];
+			}
+		}
+	}
+
+	&.home {
+		#page {
+			#masthead {
+				.above-header-wrap {
+					.menu-bt a {
+						--bg-color: white !important;
+						border-color: var(--bg-color) !important;
+						&:hover {
+							border-color: var(--bg-color-hover) !important;
+						}
+					}
+				}
 			}
 		}
 	}
