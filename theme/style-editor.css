@@ -8365,17 +8365,41 @@ body.header-width-centered .main-header-content {
 
 :root {
   /*? Layout Navigation */
-  --header-x-padding-min: 2.5rem;
-  /*? Brand Logo */
-  --desktop-logo-brand-width: 190px;
-  --mobile-logo-brand-width: 160px;
-  --logo-brand-width: var(--desktop-logo-brand-width);
+  --mobile-switcher-dim: 13px;
+  --mobile-switcher-borderDim: 6px;
+  --mobile-header-height: 45px;
+  --desktop-header-height: 60px;
+  --desktop-above-header-height: 0px;
   /*? Navigation Default Backgrounds */
   /*? Navigation Default texts */
   /*? NavigationLayout */
   /*? Submenus styles */
   /* Submenu safety horizontal padding when the submenu can not be centered because is too wide */
 }
+
+:root:has(.above-header-wrap) {
+  --desktop-above-header-height: 50px;
+}
+
+:root {
+  --mobile-above-header-height: 0px;
+  --whole-header-height: calc(var(--desktop-header-height) + var(--desktop-above-header-height) + var(--desktop-space-top));
+}
+
+@media only screen and (max-width: 1024px) {
+  :root {
+    --whole-header-height: calc(var(--mobile-header-height) + var(--mobile-above-header-height));
+  }
+}
+
+:root {
+  --header-x-padding-min: 2.5rem;
+  --desktop-logo-brand-width: 190px;
+  --mobile-logo-brand-width: 160px;
+  --logo-brand-width: var(--desktop-logo-brand-width);
+}
+
+/*? Brand Logo */
 
 @media only screen and (max-width: 1023px) {
   :root {
@@ -8420,7 +8444,8 @@ body.header-width-centered .main-header-content {
   --submenu-text-color: rgba(0, 0, 0, 0.75);
   --submenu-text-description-color: rgb(from var(--submenu-text-color) r g b / 75%);
   --submenu-text-hover-color: black;
-  /* --default-section-vert-padding: clamp(2.5rem, 10vw, 6rem); */
+  --layout-max-width: 1500px;
+  --def-layout-x-padding: clamp(1rem, 5.5vw, 8rem);
   --default-section-vert-padding: clamp(2.5rem, 15vw, 10rem);
   --column-gap: var(--card-padding, var(--default-card-padding));
   --row-gap: calc(var(--card-padding) * 2.5);
@@ -18599,41 +18624,13 @@ button.swiper-pagination-bullet {
   --gradient-highlight-primary: radial-gradient(50vw 100% at calc(80% - 5vw) 100%, hsl(25deg 100% 93% / 93%) 25%, hsl(57deg 98% 100% / 0%) 120%);
   --footer-bg-color: transparent;
   --ui-color: #eaeaea;
-  /* ! DIMENSIONS CONSTANTS */
-  --layout-max-width: 1500px;
-  --def-layout-x-padding: clamp(1rem, 5.5vw, 8rem);
-  --mobile-switcher-dim: 13px;
-  --mobile-switcher-borderDim: 6px;
-  --mobile-header-height: 45px;
-  --desktop-header-height: 80px;
-  --desktop-above-header-height: 0px;
+  --form-max-width: 320px;
+  /* ! SINGLE PAGE HEADER */
+  --page-header-min-height: 250px;
+  /* ! SLIDER DIMENSIONS */
+  --slider-min-height-base: 500px;
   /*! SECTIONS OVERLAP */
 }
-
-:root:has(.above-header-wrap) {
-  --desktop-above-header-height: 46px;
-}
-
-:root {
-  --mobile-above-header-height: 0px;
-  --whole-header-height: calc(var(--desktop-header-height) + var(--desktop-above-header-height) + var(--desktop-space-top));
-}
-
-@media only screen and (max-width: 1024px) {
-  :root {
-    --whole-header-height: calc(var(--mobile-header-height) + var(--mobile-above-header-height));
-  }
-}
-
-:root {
-  --form-max-width: 320px;
-  --page-header-min-height: 250px;
-  --slider-min-height-base: 500px;
-}
-
-/* ! SINGLE PAGE HEADER */
-
-/* ! SLIDER DIMENSIONS */
 
 @media only screen and (max-width: 980px) {
   :root {

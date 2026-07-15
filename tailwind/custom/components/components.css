@@ -119,24 +119,6 @@
 
 	--ui-color: #eaeaea;
 
-	/* ! DIMENSIONS CONSTANTS */
-	--layout-max-width: 1500px;
-	--def-layout-x-padding: clamp(1rem, 5.5vw, 8rem);
-	--mobile-switcher-dim: 13px;
-	--mobile-switcher-borderDim: 6px;
-	--mobile-header-height: 45px;
-	--desktop-header-height: 80px;
-	--desktop-above-header-height: 0px;
-	&:has(.above-header-wrap) {
-		--desktop-above-header-height: 46px;
-	}
-
-	--mobile-above-header-height: 0px;
-	--whole-header-height: calc(var(--desktop-header-height) + var(--desktop-above-header-height) + var(--desktop-space-top));
-	@media only screen and (max-width: 1024px) {
-		--whole-header-height: calc(var(--mobile-header-height) + var(--mobile-above-header-height));
-	}
-
 	--form-max-width: 320px;
 
 	/* ! SINGLE PAGE HEADER */

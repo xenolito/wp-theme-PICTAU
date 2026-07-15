@@ -908,6 +908,19 @@ body.header-width-centered {
 
 :root {
 	/*? Layout Navigation */
+	--mobile-switcher-dim: 13px;
+	--mobile-switcher-borderDim: 6px;
+	--mobile-header-height: 45px;
+	--desktop-header-height: 60px;
+	--desktop-above-header-height: 0px;
+	&:has(.above-header-wrap) {
+		--desktop-above-header-height: 50px;
+	}
+	--mobile-above-header-height: 0px;
+	--whole-header-height: calc(var(--desktop-header-height) + var(--desktop-above-header-height) + var(--desktop-space-top));
+	@media only screen and (max-width: 1024px) {
+		--whole-header-height: calc(var(--mobile-header-height) + var(--mobile-above-header-height));
+	}
 	--header-x-padding-min: 2.5rem;
 
 	/*? Brand Logo */

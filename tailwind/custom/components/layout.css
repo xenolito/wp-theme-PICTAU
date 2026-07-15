@@ -1,5 +1,6 @@
 :root {
-	/* --default-section-vert-padding: clamp(2.5rem, 10vw, 6rem); */
+	--layout-max-width: 1500px;
+	--def-layout-x-padding: clamp(1rem, 5.5vw, 8rem);
 	--default-section-vert-padding: clamp(2.5rem, 15vw, 10rem);
 	--column-gap: var(--card-padding, var(--default-card-padding));
 	--row-gap: calc(var(--card-padding) * 2.5);
