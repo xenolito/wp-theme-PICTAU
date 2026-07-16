@@ -1187,6 +1187,7 @@ En el editor Gutenberg: panel **Atributos HTML** → preset **Anim Any**.
 | `zoomIn` | Zoom-in sobre el elemento completo. Param: `zoomIn,<escala>` (default 1.2) |
 | `rotateX` | Rotación sobre el eje X. Params: `rotateX,<grados>[,bottom]` (default 90°) |
 | `zoomBounce` | Zoom-in con rebote elástico suave por char/word (por defecto `words`). Param: `zoomBounce,<escala inicial>` (default 0.35) |
+| `reveal` | Fade-in de solo opacidad (sin transform) por char/word/line, según `whattoanim` |
 
 ### Encadenamiento (`nextanim`)
 

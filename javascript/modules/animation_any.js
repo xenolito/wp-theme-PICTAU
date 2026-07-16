@@ -1,8 +1,9 @@
 /**
  * Animation any for WP based on GSAP
- * version: 4.10.0
+ * version: 4.11.0
  *
  * ? changelog:
+ * ? v4.11.0 — Added reveal animation: opacity-only fade-in (no transform) per char/word/line, same split-by-whattoanim pattern as clippedFromBottom.
  * ? v4.10.0 — Added zoomBounce animation: per-word zoom-in with a mild elastic bounce (opacity/scale split into two aligned tweens so opacity doesn't oscillate with the elastic ease). Inline param sets the starting scale, e.g. 'zoomBounce,0.35'.
  * ? v4.9.3 — Fixed repeat not working at all: `repeat` was destructured from config in the constructor but never assigned to `this.repeat`, so the `onLeaveBack` check (`if (this.repeat)`) always read `undefined` and animations never reversed on scrolling back up past the trigger, regardless of the data-anim_any_repeat value. This was the root cause of the TODO below, which is now resolved and removed.
  * ? v4.9.2 — Fixed nextanim timing: chained targets (no explicit data-anim_any_delay) now get delay=0 in pre-pass, so nextAnimDelay controls the visual overlap directly without the default 0.33s shifting the start. Explicit delay attributes are preserved. Also improved absolutePos fallback from tlDuration to Math.max(0.001, rawPos) to maximise overlap on very short animations.
@@ -46,6 +47,7 @@ gsap.registerPlugin(CustomEase)
  * 			'zoomIn'				--> zoom in from scale. param: 'zoomIn,1.2' (default scale 1.2)
  * 			'rotateX'				--> rotate from X axis. params: 'rotateX,90' or 'rotateX,90,bottom'
  * 			'zoomBounce'			--> zoom in per char / word with a mild elastic bounce. param: 'zoomBounce,0.35' (default start scale 0.35)
+ * 			'reveal'				--> opacity-only fade in per char / word / line, no transform
  *TODO 	'blurOut' 				--> Random start blur out each char / word
  */
 
@@ -199,6 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.animation === 'zoomIn' && this.setZoomInAnimation()
 			this.animation === 'rotateX' && this.setRotateXAnimation()
 			this.animation === 'zoomBounce' && this.setZoomBounceWords()
+			this.animation === 'reveal' && this.setReveal()
 
 			// Add nextanim call after tweens so ">" resolves to the end of the last tween
 			if (this.nextanim && this.nextToAnimate) {
@@ -519,6 +522,28 @@ document.addEventListener('DOMContentLoaded', () => {
 					ease: 'power3.out',
 				}
 			)
+		}
+
+		setReveal = () => {
+			this.typeSplit = new SplitType(this.header, {
+				tagName: 'span',
+			})
+
+			if (this.header.hasAttribute('data-dot_pulsing')) {
+				this.typeSplit.chars.push(this.addDotPulsing(this.typeSplit))
+			}
+
+			let elementsToAnim = this.typeSplit[this.whattoanim]
+			gsap.set(this.header, { opacity: 1 })
+			gsap.set(elementsToAnim, { opacity: 0 })
+
+			this.timeLine.to(elementsToAnim, {
+				opacity: 1,
+				duration: this.duration,
+				delay: this.delay,
+				stagger: this.stagger,
+				ease: 'power1.out',
+			})
 		}
 
 		setZoomBounceWords = () => {
