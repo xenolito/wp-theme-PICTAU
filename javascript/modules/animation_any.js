@@ -1,8 +1,13 @@
 /**
  * Animation any for WP based on GSAP
- * version: 4.11.0
+ * version: 4.13.1
  *
  * ? changelog:
+ * ? v4.13.1 — Fixed cyclecontent transform-origin going stale on resize: it was measured once when the animation was set up, so a viewport resize afterwards (e.g. a long child rewrapping to more lines on mobile) left the pivot point pointing at its old, no-longer-correct position. Now recalculated in each tween's onStart (entrance + every loop exit/enter), so it always reflects the current layout — no resize listener or matchMedia needed since it self-corrects on every cycle.
+ * ? v4.13.0 — Reworked cyclecontent transform-origin fix (superseding v4.12.2's justifySelf/width:auto approach, which fought WP/Tailwind's constrained-layout CSS — width:100% *and* a max-width var on direct children — and still ended up centering items regardless of justify-self). Each child now keeps its own natural size/alignment (whatever text-align or layout it already had) untouched; instead, getCycleContentOrigin() measures the child's actually-rendered content via a DOM Range and sets transform-origin to its measured center in px. Works regardless of alignment or content type (text, a div with arbitrary content, etc).
+ * ? v4.12.2 — Fixed cyclecontent transform-origin: grid items stretch to fill the shared cell by default, so a left-aligned short child's visual center didn't match its box's 50%/50% transform-origin (scale/rotate presets like zoomBounce looked off-center). Added justifySelf/alignSelf 'start' plus an explicit width:'auto' override (WP/Tailwind's constrained-layout CSS forces width:100% on direct children regardless of justifySelf) so each child shrinks to its own natural size within the cell.
+ * ? v4.12.1 — Fixed cyclecontent double-reveal: the one-time entrance tween for the first child was inside the same timeline as `repeat(-1)`, so every loop iteration re-fired it right after the loop's own last step had already brought that child back, causing two near-instant reveals instead of respecting the stagger hold. Moved the infinite loop into its own nested timeline so the entrance tween never repeats.
+ * ? v4.12.0 — Added cyclecontent animation: cycles a target's direct children one at a time in an infinite loop, all stacked at the same grid cell (no layout shift regardless of each child's height). Reuses another anim_any animation's from/to/ease as the enter/exit transition via data-anim_any_cyclecontentanim (default 'reveal'). data-anim_any_stagger is repurposed here as the hold time each child stays fully visible.
  * ? v4.11.0 — Added reveal animation: opacity-only fade-in (no transform) per char/word/line, same split-by-whattoanim pattern as clippedFromBottom.
  * ? v4.10.0 — Added zoomBounce animation: per-word zoom-in with a mild elastic bounce (opacity/scale split into two aligned tweens so opacity doesn't oscillate with the elastic ease). Inline param sets the starting scale, e.g. 'zoomBounce,0.35'.
  * ? v4.9.3 — Fixed repeat not working at all: `repeat` was destructured from config in the constructor but never assigned to `this.repeat`, so the `onLeaveBack` check (`if (this.repeat)`) always read `undefined` and animations never reversed on scrolling back up past the trigger, regardless of the data-anim_any_repeat value. This was the root cause of the TODO below, which is now resolved and removed.
@@ -48,6 +53,7 @@ gsap.registerPlugin(CustomEase)
  * 			'rotateX'				--> rotate from X axis. params: 'rotateX,90' or 'rotateX,90,bottom'
  * 			'zoomBounce'			--> zoom in per char / word with a mild elastic bounce. param: 'zoomBounce,0.35' (default start scale 0.35)
  * 			'reveal'				--> opacity-only fade in per char / word / line, no transform
+ * 			'cyclecontent'			--> cycles the target's direct children (e.g. several h2), one at a time in an infinite loop, all stacked at the same position (CSS grid). param via data-anim_any_cyclecontentanim: name of another anim_any animation reused as the enter/exit transition (default 'reveal')
  *TODO 	'blurOut' 				--> Random start blur out each char / word
  */
 
@@ -83,6 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				slideamount = 100,
 				scalestart = 3, // blurIn: initial scale per character before animating to 1
 				matchmedia = false, // disable animation if matchmedia query does not match (e.g. "min-width: 1024px")
+				cyclecontentanim = 'reveal', // cyclecontent: name of the anim_any animation to reuse for each item's enter/exit
 				log = false,
 			} = config
 
@@ -110,6 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.rotateXStartAngle = animParam !== undefined ? Number(animParam) : 90
 			this.zoomBounceStartScale = animParam !== undefined ? Number(animParam) : 0.35
 			this.rotateXOriginY = originParam === 'bottom' ? '100%' : '0%'
+			this.cycleContentAnim = cyclecontentanim
 			this.chainanim = chainanim
 			this.matchmedia = matchmedia ?? false
 
@@ -202,6 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.animation === 'rotateX' && this.setRotateXAnimation()
 			this.animation === 'zoomBounce' && this.setZoomBounceWords()
 			this.animation === 'reveal' && this.setReveal()
+			this.animation === 'cyclecontent' && this.setCycleContent()
 
 			// Add nextanim call after tweens so ">" resolves to the end of the last tween
 			if (this.nextanim && this.nextToAnimate) {
@@ -522,6 +531,159 @@ document.addEventListener('DOMContentLoaded', () => {
 					ease: 'power3.out',
 				}
 			)
+		}
+
+		getCycleContentPreset = name => {
+			const presets = {
+				reveal: {
+					from: { opacity: 0 },
+					to: { opacity: 1 },
+					ease: 'power1.out',
+				},
+				slideFromBottom: {
+					from: { y: this.slideamount, opacity: 0 },
+					to: { y: 0, opacity: 1 },
+					ease: 'power4.out',
+				},
+				slideFromTop: {
+					from: { y: this.slideamount * -1, opacity: 0 },
+					to: { y: 0, opacity: 1 },
+					ease: 'power4.out',
+				},
+				slideFromLeft: {
+					from: { x: this.slideamount * -1, opacity: 0 },
+					to: { x: 0, opacity: 1 },
+					ease: 'power4.out',
+				},
+				slideFromRight: {
+					from: { x: this.slideamount, opacity: 0 },
+					to: { x: 0, opacity: 1 },
+					ease: 'power4.out',
+				},
+				zoomIn: {
+					from: { opacity: 0, scale: this.zoomStartScale },
+					to: { opacity: 1, scale: 1 },
+					ease: 'power3.out',
+				},
+				zoomBounce: {
+					from: { opacity: 0, scale: this.zoomBounceStartScale },
+					to: { opacity: 1, scale: 1 },
+					ease: 'elastic.out(1, 0.5)',
+				},
+				rotateX: {
+					from: { opacity: 0, rotationX: this.rotateXStartAngle },
+					to: { opacity: 1, rotationX: 0 },
+					// Solo fija transformPerspective aquí: la X del transform-origin la
+					// calcula setCycleContent a partir del contenido real (getCycleContentOrigin),
+					// para respetar la alineación de cada hijo; aquí solo se ajusta la Y
+					// (arriba/abajo) según el parámetro rotateX,<grados>,<top|bottom>.
+					setup: items => gsap.set(items, { transformPerspective: 800 }),
+					originY: this.rotateXOriginY,
+					ease: 'power3.out',
+				},
+				clippedFromBottom: {
+					from: { yPercent: 150, opacity: 0 },
+					to: { yPercent: 0, opacity: 1 },
+					setup: items =>
+						items.forEach(item => {
+							item.style.clipPath = 'inset(-0.4em 0 0 0)'
+							item.style.userSelect = 'none'
+						}),
+					ease: CustomEase.create('custom', 'M0,0 C0.104,0.204 -0.267,1.054 1,1 '),
+				},
+			}
+
+			return presets[name]
+		}
+
+		// Mide dónde cae realmente el contenido renderizado de un hijo (un Range
+		// sobre sus nodos da el rectángulo visual real, sirva lo que sirva de
+		// contenido: texto alineado a cualquier lado, un <div> con lo que sea
+		// dentro...) y lo expresa en px relativos a la propia caja del hijo. Así el
+		// transform-origin siempre pivota sobre lo que se ve, sin importar que la
+		// caja del hijo ocupe todo el ancho de la fila (layouts "constrained" de WP
+		// suelen forzar width:100% en los hijos directos) ni cómo esté alineado.
+		getCycleContentOrigin = item => {
+			const itemRect = item.getBoundingClientRect()
+			const range = document.createRange()
+			range.selectNodeContents(item)
+			const contentRect = range.getBoundingClientRect()
+
+			if (!contentRect.width || !contentRect.height) {
+				return { x: itemRect.width / 2, y: itemRect.height / 2 }
+			}
+
+			return {
+				x: contentRect.left + contentRect.width / 2 - itemRect.left,
+				y: contentRect.top + contentRect.height / 2 - itemRect.top,
+			}
+		}
+
+		setCycleContent = () => {
+			const items = Array.from(this.header.children)
+
+			if (items.length < 2) {
+				console.warn('anim_any cyclecontent: se necesitan al menos 2 elementos hijos para ciclar')
+				return
+			}
+
+			let preset = this.getCycleContentPreset(this.cycleContentAnim)
+			if (!preset) {
+				console.warn(`anim_any cyclecontent: la animación "${this.cycleContentAnim}" no está soportada para ciclar, se usa "reveal"`)
+				preset = this.getCycleContentPreset('reveal')
+			}
+
+			// Todos los hijos apilados en la misma celda de grid: el contenedor se
+			// dimensiona automáticamente al más alto (sigue "en flujo", solo cambia
+			// opacidad/transform), así que no hay layout shift al ciclar. No se toca
+			// el tamaño/alineación propios de cada hijo (cada uno conserva su
+			// text-align o el que traiga), solo se centra el transform-origin sobre
+			// su contenido real (ver getCycleContentOrigin).
+			gsap.set(this.header, { opacity: 1, display: 'grid' })
+			gsap.set(items, { gridRow: 1, gridColumn: 1 })
+
+			// El origin se recalcula en el onStart de cada tween (ver applyOrigin más
+			// abajo), no solo aquí una vez: si la ventana cambia de ancho entre medias
+			// (p.ej. el texto largo del hijo 3 pasa a ocupar más líneas en móvil), la
+			// posición guardada al montar la animación quedaría obsoleta y el zoom/
+			// rotación pivotaría fuera de donde está ahora el texto. Al recalcular justo
+			// antes de que cada hijo entre o salga, siempre usa el layout actual.
+			const applyOrigin = item => {
+				const origin = this.getCycleContentOrigin(item)
+				item.style.transformOrigin = `${origin.x}px ${preset.originY ?? `${origin.y}px`}`
+			}
+
+			items.forEach(applyOrigin)
+			preset.setup?.(items)
+			gsap.set(items, { ...preset.from, pointerEvents: 'none' })
+
+			// Entrada única del primer elemento (respeta duration/delay como el resto de
+			// animaciones). Va fuera del timeline que se repite: si estuviera dentro,
+			// cada vuelta del bucle la volvería a disparar justo después de que el
+			// último paso del bucle ya hubiera vuelto a mostrar este mismo elemento,
+			// produciendo un doble "reveal" seguido en vez de esperar el stagger.
+			this.timeLine.to(items[0], {
+				...preset.to,
+				pointerEvents: 'auto',
+				duration: this.duration,
+				delay: this.delay,
+				ease: preset.ease,
+				onStart: () => applyOrigin(items[0]),
+			})
+
+			// Bucle infinito independiente: hold (stagger = tiempo visible) -> sale el
+			// actual -> entra el siguiente. Al repetirse, retoma en su propio t=0 (el
+			// "hold" del elemento que el paso anterior ya dejó visible), sin re-disparar
+			// ninguna entrada extra.
+			const loopTimeLine = gsap.timeline({ repeat: -1 })
+			items.forEach((item, i) => {
+				const nextItem = items[(i + 1) % items.length]
+				loopTimeLine.to({}, { duration: Number(this.stagger) })
+				loopTimeLine.to(item, { ...preset.from, pointerEvents: 'none', duration: this.duration, ease: preset.ease, onStart: () => applyOrigin(item) })
+				loopTimeLine.to(nextItem, { ...preset.to, pointerEvents: 'auto', duration: this.duration, ease: preset.ease, onStart: () => applyOrigin(nextItem) })
+			})
+
+			this.timeLine.add(loopTimeLine)
 		}
 
 		setReveal = () => {
