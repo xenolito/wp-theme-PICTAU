@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.2.2
+- **Versión:** 7.3.0
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1188,6 +1188,7 @@ En el editor Gutenberg: panel **Atributos HTML** → preset **Anim Any**.
 | `rotateX` | Rotación sobre el eje X. Params: `rotateX,<grados>[,bottom]` (default 90°) |
 | `zoomBounce` | Zoom-in con rebote elástico suave por char/word (por defecto `words`). Param: `zoomBounce,<escala inicial>` (default 0.35) |
 | `reveal` | Fade-in de solo opacidad (sin transform) por char/word/line, según `whattoanim` |
+| `cyclecontent` | Cicla los hijos directos del target uno a uno, en bucle infinito. Ver sección dedicada más abajo |
 
 ### Encadenamiento (`nextanim`)
 
@@ -1226,6 +1227,40 @@ data-anim_any_callback="<nombre_función>[, <delay_ms>]"
 ```
 
 Llama a `window[nombre_función]()` al terminar la animación. El delay opcional es en **milisegundos**.
+
+### Rotador de contenido (`cyclecontent`)
+
+Cicla los **hijos directos** del target (p.ej. varios `<h2>` dentro de un `<div data-anim_any>`) uno a uno, en bucle infinito, todos apilados en la misma posición mediante CSS Grid (`display:grid` + todos los hijos en `grid-row:1/grid-column:1`). El contenedor se dimensiona automáticamente a la altura del hijo más alto — como ninguno usa `display:none` (solo cambian opacidad/transform), no hay layout shift al pasar de un hijo más bajo a uno más alto.
+
+```html
+<div data-anim_any
+     data-anim_any_animation="cyclecontent"
+     data-anim_any_cyclecontentanim="reveal"
+     data-anim_any_duration="0.5"
+     data-anim_any_stagger="1.5"
+     data-anim_any_repeat="false">
+  <h2>Texto 1</h2>
+  <h2>Texto 2</h2>
+  <h2>Texto 3</h2>
+</div>
+```
+
+| Atributo | Default | Descripción |
+|---|---|---|
+| `data-anim_any_cyclecontentanim` | `reveal` | Nombre de **otra** animación de `anim_any` a reutilizar como transición de entrada/salida de cada hijo (aplicada al elemento completo, sin split de chars/words/lines) |
+| `data-anim_any_duration` | `1.5` | Duración de la transición de entrada y de salida de cada hijo |
+| `data-anim_any_stagger` | `0.1` | Aquí no hay elementos en paralelo: se reutiliza como **tiempo que cada hijo permanece visible** antes de empezar a desaparecer |
+| `data-anim_any_delay` | `0.33` | Retardo antes de la entrada del primer hijo |
+
+**Animaciones soportadas para `cyclecontentanim`:** `reveal`, `slideFromBottom`, `slideFromTop`, `slideFromLeft`, `slideFromRight`, `zoomIn`, `zoomBounce`, `rotateX`, `clippedFromBottom`. Un nombre no soportado (p.ej. `clippedFromLeft`, `blurIn`) cae a `reveal` con un aviso en consola.
+
+**Notas:**
+- La transición es siempre secuencial (el hijo visible desaparece del todo antes de que el siguiente empiece a aparecer), sin solape.
+- Se recomienda `data-anim_any_repeat="false"`: el comportamiento de reversa al hacer scroll hacia atrás (`data-anim_any_repeat`) no está pensado para timelines en bucle infinito.
+- No combinar con `data-anim_any_nextanim`: al repetirse el timeline entero, el elemento encadenado se relanzaría en cada vuelta del bucle, no solo una vez.
+- Cada hijo conserva su propia alineación/estilo tal cual (texto a la izquierda, centrado, un `<div>` con cualquier contenido...) — `cyclecontent` no toca su tamaño ni posición. Para los presets con transform (`zoomIn`, `zoomBounce`, `rotateX`), el `transform-origin` se calcula automáticamente midiendo dónde cae el contenido ya renderizado de cada hijo, así que el zoom/rotación siempre pivota sobre lo que se ve — no sobre el centro de la caja completa — sea cual sea su alineación o ancho.
+- Ese cálculo se repite justo antes de cada entrada/salida (no solo una vez al cargar), así que si la ventana cambia de ancho entre medias (p.ej. un texto largo pasa a ocupar más líneas en móvil), el `transform-origin` se autocorrige solo en el siguiente turno del ciclo — no hace falta escuchar `resize` ni usar `matchMedia`.
+- `data-anim_any_whattoanim` no aplica a esta animación (no usa SplitType).
 
 ---
 
