@@ -1,8 +1,9 @@
 /**
  * Animation any for WP based on GSAP
- * version: 4.9.3
+ * version: 4.10.0
  *
  * ? changelog:
+ * ? v4.10.0 — Added zoomBounce animation: per-word zoom-in with a mild elastic bounce (opacity/scale split into two aligned tweens so opacity doesn't oscillate with the elastic ease). Inline param sets the starting scale, e.g. 'zoomBounce,0.35'.
  * ? v4.9.3 — Fixed repeat not working at all: `repeat` was destructured from config in the constructor but never assigned to `this.repeat`, so the `onLeaveBack` check (`if (this.repeat)`) always read `undefined` and animations never reversed on scrolling back up past the trigger, regardless of the data-anim_any_repeat value. This was the root cause of the TODO below, which is now resolved and removed.
  * ? v4.9.2 — Fixed nextanim timing: chained targets (no explicit data-anim_any_delay) now get delay=0 in pre-pass, so nextAnimDelay controls the visual overlap directly without the default 0.33s shifting the start. Explicit delay attributes are preserved. Also improved absolutePos fallback from tlDuration to Math.max(0.001, rawPos) to maximise overlap on very short animations.
  * ? v4.9.1 — Fixed nextanim callback not firing when animation duration <= |nextAnimDelay|: position clamped to tlDuration instead of t=0 (GSAP skips callbacks at t=0 on play())
@@ -44,6 +45,7 @@ gsap.registerPlugin(CustomEase)
  * 			'slideFromRight'		--> slide from Right in each char / word
  * 			'zoomIn'				--> zoom in from scale. param: 'zoomIn,1.2' (default scale 1.2)
  * 			'rotateX'				--> rotate from X axis. params: 'rotateX,90' or 'rotateX,90,bottom'
+ * 			'zoomBounce'			--> zoom in per char / word with a mild elastic bounce. param: 'zoomBounce,0.35' (default start scale 0.35)
  *TODO 	'blurOut' 				--> Random start blur out each char / word
  */
 
@@ -90,6 +92,9 @@ document.addEventListener('DOMContentLoaded', () => {
 			if (this.animation === 'blurIn' && this.whattoanim === 'self') {
 				this.whattoanim = 'chars'
 			}
+			if (this.animation === 'zoomBounce' && this.whattoanim === 'self') {
+				this.whattoanim = 'words'
+			}
 			this.markers = markers === 'true' || markers === '1' ? true : false
 			this.slideamount = slideamount
 			this.log = log === 'true' || log === '1' ? true : false
@@ -101,6 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.scaleStart = Number(scalestart)
 			this.zoomStartScale = animParam !== undefined ? Number(animParam) : 1.2
 			this.rotateXStartAngle = animParam !== undefined ? Number(animParam) : 90
+			this.zoomBounceStartScale = animParam !== undefined ? Number(animParam) : 0.35
 			this.rotateXOriginY = originParam === 'bottom' ? '100%' : '0%'
 			this.chainanim = chainanim
 			this.matchmedia = matchmedia ?? false
@@ -192,6 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.animation === 'slideFromRight' && this.setSlideTo('left')
 			this.animation === 'zoomIn' && this.setZoomInAnimation()
 			this.animation === 'rotateX' && this.setRotateXAnimation()
+			this.animation === 'zoomBounce' && this.setZoomBounceWords()
 
 			// Add nextanim call after tweens so ">" resolves to the end of the last tween
 			if (this.nextanim && this.nextToAnimate) {
@@ -511,6 +518,46 @@ document.addEventListener('DOMContentLoaded', () => {
 					delay: this.delay,
 					ease: 'power3.out',
 				}
+			)
+		}
+
+		setZoomBounceWords = () => {
+			this.typeSplit = new SplitType(this.header, {
+				tagName: 'span',
+			})
+
+			if (this.header.hasAttribute('data-dot_pulsing')) {
+				this.typeSplit.chars.push(this.addDotPulsing(this.typeSplit))
+			}
+
+			let elementsToAnim = this.typeSplit[this.whattoanim]
+			gsap.set(this.header, { opacity: 1 })
+			gsap.set(elementsToAnim, {
+				opacity: 0,
+				scale: this.zoomBounceStartScale,
+				transformOrigin: 'center center',
+			})
+
+			// Fade rápido y sin ease elástico: si la opacidad usara la misma ease que
+			// el scale, oscilaría junto con el rebote y parpadearía.
+			this.timeLine.to(elementsToAnim, {
+				opacity: 1,
+				duration: Math.min(this.duration * 0.45, 0.4),
+				delay: this.delay,
+				stagger: this.stagger,
+				ease: 'power2.out',
+			})
+
+			// Zoom con rebote elástico suave, arrancando a la vez que el fade anterior
+			this.timeLine.to(
+				elementsToAnim,
+				{
+					scale: 1,
+					duration: this.duration,
+					stagger: this.stagger,
+					ease: 'elastic.out(1, 0.5)',
+				},
+				'<'
 			)
 		}
 

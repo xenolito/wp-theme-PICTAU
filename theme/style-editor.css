@@ -8167,6 +8167,10 @@ body.header-width-centered .main-header-content {
           mask-image: radial-gradient(80% 60% at 80% 80%, black, transparent);
 }
 
+.main-nav-mobile .mmenu-footer .brand {
+  margin-bottom: var(--card-padding);
+}
+
 .main-nav-mobile .mmenu-footer .wp-block-buttons {
   display: flex;
   justify-content: center;

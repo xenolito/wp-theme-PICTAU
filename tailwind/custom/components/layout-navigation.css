@@ -716,6 +716,10 @@ body.header-width-centered {
 			mask-image: radial-gradient(80% 60% at 80% 80%, black, transparent);
 		}
 
+		.brand {
+			margin-bottom: var(--card-padding);
+		}
+
 		.wp-block-buttons {
 			display: flex;
 			justify-content: center;
