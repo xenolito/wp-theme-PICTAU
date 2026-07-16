@@ -1184,6 +1184,9 @@ En el editor Gutenberg: panel **Atributos HTML** → preset **Anim Any**.
 | `clippedFromLeft` | Clip-path + deslizamiento desde la izquierda, con soporte para `.left-border` |
 | `clippedFromTop` | Clip-path + deslizamiento desde arriba, con soporte para `.top-border` |
 | `blurIn` | Desenfoque + escala aleatorio por char/word, fade-in |
+| `zoomIn` | Zoom-in sobre el elemento completo. Param: `zoomIn,<escala>` (default 1.2) |
+| `rotateX` | Rotación sobre el eje X. Params: `rotateX,<grados>[,bottom]` (default 90°) |
+| `zoomBounce` | Zoom-in con rebote elástico suave por char/word (por defecto `words`). Param: `zoomBounce,<escala inicial>` (default 0.35) |
 
 ### Encadenamiento (`nextanim`)
 
