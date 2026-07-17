@@ -1248,6 +1248,7 @@ Cicla los **hijos directos** del target (p.ej. varios `<h2>` dentro de un `<div 
 | Atributo | Default | Descripción |
 |---|---|---|
 | `data-anim_any_cyclecontentanim` | `reveal` | Nombre de **otra** animación de `anim_any` a reutilizar como transición de entrada/salida de cada hijo (aplicada al elemento completo, sin split de chars/words/lines) |
+| `data-anim_any_cyclecontentrandom` | — | Cualquier valor no vacío (`"1"`, `"true"`, lo que sea) baraja el orden de aparición de los hijos. Sin el atributo (o vacío), sigue el orden del DOM |
 | `data-anim_any_duration` | `1.5` | Duración de la transición de entrada y de salida de cada hijo |
 | `data-anim_any_stagger` | `0.1` | Aquí no hay elementos en paralelo: se reutiliza como **tiempo que cada hijo permanece visible** antes de empezar a desaparecer |
 | `data-anim_any_delay` | `0.33` | Retardo antes de la entrada del primer hijo |
@@ -1256,11 +1257,12 @@ Cicla los **hijos directos** del target (p.ej. varios `<h2>` dentro de un `<div 
 
 **Notas:**
 - La transición es siempre secuencial (el hijo visible desaparece del todo antes de que el siguiente empiece a aparecer), sin solape.
-- Se recomienda `data-anim_any_repeat="false"`: el comportamiento de reversa al hacer scroll hacia atrás (`data-anim_any_repeat`) no está pensado para timelines en bucle infinito.
+- **Scroll**: igual que el resto de animaciones, arranca al entrar en el viewport. A diferencia de las animaciones de una sola pasada, `cyclecontent` además **se pausa** al salir de pantalla por abajo (no sigue animando en bucle infinito fuera de la vista) y **se reanuda** donde se quedó al volver a entrar desde abajo. Al salir por arriba (scroll hacia atrás, antes del punto de inicio): con `data-anim_any_repeat="true"` (default) vuelve al estado inicial oculto, lista para repetirse si se vuelve a entrar; con `data-anim_any_repeat="false"` se queda congelada tal cual estaba.
 - No combinar con `data-anim_any_nextanim`: al repetirse el timeline entero, el elemento encadenado se relanzaría en cada vuelta del bucle, no solo una vez.
 - Cada hijo conserva su propia alineación/estilo tal cual (texto a la izquierda, centrado, un `<div>` con cualquier contenido...) — `cyclecontent` no toca su tamaño ni posición. Para los presets con transform (`zoomIn`, `zoomBounce`, `rotateX`), el `transform-origin` se calcula automáticamente midiendo dónde cae el contenido ya renderizado de cada hijo, así que el zoom/rotación siempre pivota sobre lo que se ve — no sobre el centro de la caja completa — sea cual sea su alineación o ancho.
 - Ese cálculo se repite justo antes de cada entrada/salida (no solo una vez al cargar), así que si la ventana cambia de ancho entre medias (p.ej. un texto largo pasa a ocupar más líneas en móvil), el `transform-origin` se autocorrige solo en el siguiente turno del ciclo — no hace falta escuchar `resize` ni usar `matchMedia`.
 - `data-anim_any_whattoanim` no aplica a esta animación (no usa SplitType).
+- El barajado (`cyclecontentrandom`) se sortea **una sola vez** al montar la animación (Fisher-Yates); el bucle repite siempre esa misma secuencia, no se reordena en cada vuelta.
 
 ---
 
