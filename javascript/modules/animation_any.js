@@ -1,8 +1,10 @@
 /**
  * Animation any for WP based on GSAP
- * version: 4.13.1
+ * version: 4.14.1
  *
  * ? changelog:
+ * ? v4.14.1 — Fixed cyclecontent never pausing when scrolled out of view: it relied solely on the default ScrollTrigger toggleAction ("play" on enter), so once started its repeat:-1 nested loop kept animating forever in the background regardless of scroll position. Added explicit onLeave (pause) / onEnterBack (play) handlers, and made onLeaveBack pause(0) (repeat=true) or pause() (repeat=false) instead of the generic progress(0.7)+reverse() hack, which isn't meaningful for an infinite timeline.
+ * ? v4.14.0 — Added data-anim_any_cyclecontentrandom: any non-empty value ('1', 'true', anything) shuffles the cycling order of cyclecontent's children once at setup (Fisher-Yates), instead of following DOM order.
  * ? v4.13.1 — Fixed cyclecontent transform-origin going stale on resize: it was measured once when the animation was set up, so a viewport resize afterwards (e.g. a long child rewrapping to more lines on mobile) left the pivot point pointing at its old, no-longer-correct position. Now recalculated in each tween's onStart (entrance + every loop exit/enter), so it always reflects the current layout — no resize listener or matchMedia needed since it self-corrects on every cycle.
  * ? v4.13.0 — Reworked cyclecontent transform-origin fix (superseding v4.12.2's justifySelf/width:auto approach, which fought WP/Tailwind's constrained-layout CSS — width:100% *and* a max-width var on direct children — and still ended up centering items regardless of justify-self). Each child now keeps its own natural size/alignment (whatever text-align or layout it already had) untouched; instead, getCycleContentOrigin() measures the child's actually-rendered content via a DOM Range and sets transform-origin to its measured center in px. Works regardless of alignment or content type (text, a div with arbitrary content, etc).
  * ? v4.12.2 — Fixed cyclecontent transform-origin: grid items stretch to fill the shared cell by default, so a left-aligned short child's visual center didn't match its box's 50%/50% transform-origin (scale/rotate presets like zoomBounce looked off-center). Added justifySelf/alignSelf 'start' plus an explicit width:'auto' override (WP/Tailwind's constrained-layout CSS forces width:100% on direct children regardless of justifySelf) so each child shrinks to its own natural size within the cell.
@@ -53,7 +55,7 @@ gsap.registerPlugin(CustomEase)
  * 			'rotateX'				--> rotate from X axis. params: 'rotateX,90' or 'rotateX,90,bottom'
  * 			'zoomBounce'			--> zoom in per char / word with a mild elastic bounce. param: 'zoomBounce,0.35' (default start scale 0.35)
  * 			'reveal'				--> opacity-only fade in per char / word / line, no transform
- * 			'cyclecontent'			--> cycles the target's direct children (e.g. several h2), one at a time in an infinite loop, all stacked at the same position (CSS grid). param via data-anim_any_cyclecontentanim: name of another anim_any animation reused as the enter/exit transition (default 'reveal')
+ * 			'cyclecontent'			--> cycles the target's direct children (e.g. several h2), one at a time in an infinite loop, all stacked at the same position (CSS grid). param via data-anim_any_cyclecontentanim: name of another anim_any animation reused as the enter/exit transition (default 'reveal'). data-anim_any_cyclecontentrandom: any non-empty value randomizes the cycling order (shuffled once at setup)
  *TODO 	'blurOut' 				--> Random start blur out each char / word
  */
 
@@ -63,6 +65,15 @@ const hyphenToCamelcase = str => {
 
 const getRandom = (min, max) => {
 	return Math.random() * (max - min) + min
+}
+
+const shuffle = arr => {
+	const shuffled = arr.slice()
+	for (let i = shuffled.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1))
+		;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+	}
+	return shuffled
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -90,6 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				scalestart = 3, // blurIn: initial scale per character before animating to 1
 				matchmedia = false, // disable animation if matchmedia query does not match (e.g. "min-width: 1024px")
 				cyclecontentanim = 'reveal', // cyclecontent: name of the anim_any animation to reuse for each item's enter/exit
+				cyclecontentrandom = false, // cyclecontent: any non-empty value ('1', 'true', anything) randomizes the cycling order
 				log = false,
 			} = config
 
@@ -118,6 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.zoomBounceStartScale = animParam !== undefined ? Number(animParam) : 0.35
 			this.rotateXOriginY = originParam === 'bottom' ? '100%' : '0%'
 			this.cycleContentAnim = cyclecontentanim
+			this.cycleContentRandom = Boolean(cyclecontentrandom)
 			this.chainanim = chainanim
 			this.matchmedia = matchmedia ?? false
 
@@ -182,12 +195,31 @@ document.addEventListener('DOMContentLoaded', () => {
 			if (this.markers) console.log(this.triggerstart)
 
 			if (this.autoplay && !this.chainedTo) {
+				// cyclecontent es un timeline infinito (repeat:-1 anidado): el truco
+				// progress(0.7)+reverse() de más abajo asume una animación de duración
+				// finita y no tiene un resultado sensato aquí (progress() sobre un
+				// timeline con un hijo infinito no representa una fracción útil). Por
+				// eso, para cyclecontent, se controla con play()/pause() directos en
+				// vez de dejar que el toggleAction por defecto ("play" en onEnter) sea
+				// lo único que lo toque: si no, seguiría animando en bucle para
+				// siempre aunque el usuario haya hecho scroll mucho más abajo.
+				const isCycleContent = this.animation === 'cyclecontent'
+
 				this.trigger = ScrollTrigger.create({
 					trigger: this.header,
 					start: this.triggerstart,
 					end: 'top top',
 					animation: this.masterTimeLine ? this.masterTimeLine : this.timeLine,
+					onLeave: isCycleContent ? () => this.timeLine.pause() : undefined,
+					onEnterBack: isCycleContent ? () => this.timeLine.play() : undefined,
 					onLeaveBack: st => {
+						if (isCycleContent) {
+							// repeat=true: vuelve al estado inicial (oculto), lista para
+							// repetirse si se vuelve a entrar. repeat=false: se queda
+							// congelada donde esté, igual que el resto de animaciones.
+							this.repeat ? this.timeLine.pause(0) : this.timeLine.pause()
+							return
+						}
 						if (this.repeat) {
 							st.animation.progress(0.7) //! Check and test this...
 							st.animation.reverse()
@@ -657,18 +689,23 @@ document.addEventListener('DOMContentLoaded', () => {
 			preset.setup?.(items)
 			gsap.set(items, { ...preset.from, pointerEvents: 'none' })
 
+			// Orden de aparición: el del DOM salvo que data-anim_any_cyclecontentrandom
+			// pida barajarlo. Se sortea una sola vez al montar la animación y el bucle
+			// repite siempre esa misma secuencia (no se reordena en cada vuelta).
+			const sequence = this.cycleContentRandom ? shuffle(items) : items
+
 			// Entrada única del primer elemento (respeta duration/delay como el resto de
 			// animaciones). Va fuera del timeline que se repite: si estuviera dentro,
 			// cada vuelta del bucle la volvería a disparar justo después de que el
 			// último paso del bucle ya hubiera vuelto a mostrar este mismo elemento,
 			// produciendo un doble "reveal" seguido en vez de esperar el stagger.
-			this.timeLine.to(items[0], {
+			this.timeLine.to(sequence[0], {
 				...preset.to,
 				pointerEvents: 'auto',
 				duration: this.duration,
 				delay: this.delay,
 				ease: preset.ease,
-				onStart: () => applyOrigin(items[0]),
+				onStart: () => applyOrigin(sequence[0]),
 			})
 
 			// Bucle infinito independiente: hold (stagger = tiempo visible) -> sale el
@@ -676,8 +713,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			// "hold" del elemento que el paso anterior ya dejó visible), sin re-disparar
 			// ninguna entrada extra.
 			const loopTimeLine = gsap.timeline({ repeat: -1 })
-			items.forEach((item, i) => {
-				const nextItem = items[(i + 1) % items.length]
+			sequence.forEach((item, i) => {
+				const nextItem = sequence[(i + 1) % sequence.length]
 				loopTimeLine.to({}, { duration: Number(this.stagger) })
 				loopTimeLine.to(item, { ...preset.from, pointerEvents: 'none', duration: this.duration, ease: preset.ease, onStart: () => applyOrigin(item) })
 				loopTimeLine.to(nextItem, { ...preset.to, pointerEvents: 'auto', duration: this.duration, ease: preset.ease, onStart: () => applyOrigin(nextItem) })
