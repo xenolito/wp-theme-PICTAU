@@ -582,3 +582,46 @@
 		opacity: 0;
 	}
 }
+
+/* cyclecontentinline: el wrapper que contiene el texto fijo + el target del ciclo
+   necesita quedar en fila para que ambos aparezcan en la misma línea. Se
+   selecciona por el propio atributo data-anim_any_animation="cyclecontentinline"
+   (la marca real de esta animación, siempre presente sea cual sea el className
+   que el usuario le ponga al bloque) en vez de una clase concreta como
+   .cycle-inline — así funciona con cualquier nombre de bloque/clase. */
+:has(> [data-anim_any_animation="cyclecontentinline"]) {
+	display: flex;
+	/* WP aplica flex-direction:column por defecto a los grupos de bloque (así
+	   apila hijos verticalmente con blockGap) — hay que forzar fila aquí. */
+	flex-direction: row !important;
+	align-items: baseline;
+	flex-wrap: wrap;
+
+	/* Ojo: NO usar column-gap aquí. Un gap en `ch`/`em` en el propio wrapper
+	   escala con el font-size del WRAPPER, que no tiene relación con el
+	   font-size (con clamp()) del texto fijo ni del ciclo — de ahí que un valor
+	   fijo quedara bien para un tag y mal para otro (p.ej. correcto en h2 pero
+	   enorme en p, o al revés). El espaciado real va como margin en `em` sobre
+	   el propio texto fijo (ver regla de abajo), así escala con SU font-size
+	   real, sea cual sea el tag/clamp() que use. */
+
+	/* WP fuerza width:100% en los hijos directos de un layout "constrained"
+	   (body .is-layout-constrained:not(.alignfull) > *), lo que haría que cada
+	   hijo ocupara toda la fila y "Qlik" y el ciclo cayeran en líneas distintas
+	   pese al flex-wrap. Esa regla incluye "body" en el selector, así que gana
+	   por especificidad a cualquier override sin !important. Necesitamos que
+	   cada hijo se ajuste a su contenido. */
+	> * {
+		width: auto !important;
+		max-width: none !important;
+		margin: 0 !important;
+	}
+
+	/* Espaciado entre el texto fijo y el ciclo: en `em` sobre el propio texto
+	   fijo (el primer hijo), no sobre el wrapper — así escala automáticamente
+	   con SU font-size real (h2 con clamp(3rem,8vw,4.5rem), p con
+	   clamp(1rem,2vw,18px), o cualquier otro), sea cual sea el tag usado. */
+	> :first-child {
+		margin-right: 0.25em !important;
+	}
+}

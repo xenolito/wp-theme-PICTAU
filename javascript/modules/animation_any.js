@@ -1,8 +1,11 @@
 /**
  * Animation any for WP based on GSAP
- * version: 4.14.1
+ * version: 4.15.2
  *
  * ? changelog:
+ * ? v4.15.2 — Changed cyclecontentinline's data-anim_any_holdtime default from 1.5 to 2.
+ * ? v4.15.1 — Fixed cyclecontentinline's typewriter "backspace" exit: chars faded out over `duration` while the cursor jumped to its final (post-deletion) position right at onStart, so the cursor visually got ahead of a char that was still mid-fade. Chars now disappear instantly (gsap.set, no fade) on exit, with the cursor moved in that same onComplete — entrance (fade-in) is unchanged, only the backspace side was affected.
+ * ? v4.15.0 — Added cyclecontentinline animation: a sibling of cyclecontent for inline text cycles that follow other static text on the same line (e.g. "Qlik <cycling phrase>"). Container stacks via display:inline-grid (same no-layout-shift grid trick), and each phrase's enter/exit is split per data-anim_any_whattoanim (words/chars, no lines) instead of animating the whole child at once. data-anim_any_holdtime replaces stagger's block-cyclecontent meaning here, since stagger reclaims its standard "time between split elements" meaning. Also added typewriter, a new standalone animation (data-anim_any_animation="typewriter") that reveals chars sequentially with a blinking cursor (data-anim_any_cursorchar / data-anim_any_cursorblink), reusable both on its own and as data-anim_any_cyclecontentanim="typewriter" inside cyclecontentinline (renders as a "backspace" effect on exit).
  * ? v4.14.1 — Fixed cyclecontent never pausing when scrolled out of view: it relied solely on the default ScrollTrigger toggleAction ("play" on enter), so once started its repeat:-1 nested loop kept animating forever in the background regardless of scroll position. Added explicit onLeave (pause) / onEnterBack (play) handlers, and made onLeaveBack pause(0) (repeat=true) or pause() (repeat=false) instead of the generic progress(0.7)+reverse() hack, which isn't meaningful for an infinite timeline.
  * ? v4.14.0 — Added data-anim_any_cyclecontentrandom: any non-empty value ('1', 'true', anything) shuffles the cycling order of cyclecontent's children once at setup (Fisher-Yates), instead of following DOM order.
  * ? v4.13.1 — Fixed cyclecontent transform-origin going stale on resize: it was measured once when the animation was set up, so a viewport resize afterwards (e.g. a long child rewrapping to more lines on mobile) left the pivot point pointing at its old, no-longer-correct position. Now recalculated in each tween's onStart (entrance + every loop exit/enter), so it always reflects the current layout — no resize listener or matchMedia needed since it self-corrects on every cycle.
@@ -56,6 +59,8 @@ gsap.registerPlugin(CustomEase)
  * 			'zoomBounce'			--> zoom in per char / word with a mild elastic bounce. param: 'zoomBounce,0.35' (default start scale 0.35)
  * 			'reveal'				--> opacity-only fade in per char / word / line, no transform
  * 			'cyclecontent'			--> cycles the target's direct children (e.g. several h2), one at a time in an infinite loop, all stacked at the same position (CSS grid). param via data-anim_any_cyclecontentanim: name of another anim_any animation reused as the enter/exit transition (default 'reveal'). data-anim_any_cyclecontentrandom: any non-empty value randomizes the cycling order (shuffled once at setup)
+ * 			'cyclecontentinline'	--> like cyclecontent, but for inline text cycles (display:inline-grid) split per word/char via data-anim_any_whattoanim, so it can follow other static text on the same line. Same data-anim_any_cyclecontentanim/cyclecontentrandom as cyclecontent; data-anim_any_holdtime sets the time each phrase stays visible (stagger here means time between words/chars, its standard meaning)
+ * 			'typewriter'			--> reveals chars one by one with a blinking cursor. params: data-anim_any_cursorchar (cursor character, default '|'), data-anim_any_cursorblink (blink half-cycle seconds, default 0.5). Also usable as data-anim_any_cyclecontentanim="typewriter" inside cyclecontentinline
  *TODO 	'blurOut' 				--> Random start blur out each char / word
  */
 
@@ -100,8 +105,11 @@ document.addEventListener('DOMContentLoaded', () => {
 				slideamount = 100,
 				scalestart = 3, // blurIn: initial scale per character before animating to 1
 				matchmedia = false, // disable animation if matchmedia query does not match (e.g. "min-width: 1024px")
-				cyclecontentanim = 'reveal', // cyclecontent: name of the anim_any animation to reuse for each item's enter/exit
-				cyclecontentrandom = false, // cyclecontent: any non-empty value ('1', 'true', anything) randomizes the cycling order
+				cyclecontentanim = 'reveal', // cyclecontent/cyclecontentinline: name of the anim_any animation to reuse for each item's enter/exit
+				cyclecontentrandom = false, // cyclecontent/cyclecontentinline: any non-empty value ('1', 'true', anything) randomizes the cycling order
+				holdtime = 2, // cyclecontentinline: time each phrase stays fully visible before exiting
+				cursorchar = '|', // typewriter: character used as the blinking cursor
+				cursorblink = 0.5, // typewriter: seconds per blink half-cycle
 				log = false,
 			} = config
 
@@ -115,6 +123,9 @@ document.addEventListener('DOMContentLoaded', () => {
 			}
 			if (this.animation === 'zoomBounce' && this.whattoanim === 'self') {
 				this.whattoanim = 'words'
+			}
+			if (this.animation === 'typewriter') {
+				this.whattoanim = 'chars'
 			}
 			this.markers = markers === 'true' || markers === '1' ? true : false
 			this.slideamount = slideamount
@@ -131,6 +142,9 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.rotateXOriginY = originParam === 'bottom' ? '100%' : '0%'
 			this.cycleContentAnim = cyclecontentanim
 			this.cycleContentRandom = Boolean(cyclecontentrandom)
+			this.holdTime = Number(holdtime)
+			this.cursorChar = cursorchar
+			this.cursorBlink = Number(cursorblink)
 			this.chainanim = chainanim
 			this.matchmedia = matchmedia ?? false
 
@@ -203,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				// vez de dejar que el toggleAction por defecto ("play" en onEnter) sea
 				// lo único que lo toque: si no, seguiría animando en bucle para
 				// siempre aunque el usuario haya hecho scroll mucho más abajo.
-				const isCycleContent = this.animation === 'cyclecontent'
+				const isCycleContent = this.animation === 'cyclecontent' || this.animation === 'cyclecontentinline'
 
 				this.trigger = ScrollTrigger.create({
 					trigger: this.header,
@@ -243,6 +257,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.animation === 'zoomBounce' && this.setZoomBounceWords()
 			this.animation === 'reveal' && this.setReveal()
 			this.animation === 'cyclecontent' && this.setCycleContent()
+			this.animation === 'cyclecontentinline' && this.setCycleContentInline()
+			this.animation === 'typewriter' && this.setTypewriter()
 
 			// Add nextanim call after tweens so ">" resolves to the end of the last tween
 			if (this.nextanim && this.nextToAnimate) {
@@ -623,6 +639,15 @@ document.addEventListener('DOMContentLoaded', () => {
 						}),
 					ease: CustomEase.create('custom', 'M0,0 C0.104,0.204 -0.267,1.054 1,1 '),
 				},
+				typewriter: {
+					from: { opacity: 0 },
+					to: { opacity: 1 },
+					ease: 'none',
+					// Marca que setCycleContentInline() debe montar el cursor y animar
+					// char a char (con salida en orden inverso, efecto "backspace") en
+					// vez de un tween en paralelo con stagger como reveal/zoomBounce.
+					isTypewriter: true,
+				},
 			}
 
 			return presets[name]
@@ -721,6 +746,179 @@ document.addEventListener('DOMContentLoaded', () => {
 			})
 
 			this.timeLine.add(loopTimeLine)
+		}
+
+		// Nodo de cursor único, compartido entre todas las frases de un
+		// cyclecontentinline (solo una es visible a la vez, por el stacking de
+		// grid) o el único target de un typewriter suelto. Se reubica con
+		// insertAdjacentElement junto a cada char en vez de crearse/destruirse,
+		// así nunca añade ni quita contenido de la caja (no hay layout shift).
+		// El tween de parpadeo (repeat:-1) se devuelve sin añadir todavía al
+		// timeline: hay que añadirlo el último, en this.timeLine.add(blink, 0),
+		// después de construir el resto de tweens/timelines — un hijo con
+		// duración infinita antes que otros rompería el posicionamiento por
+		// defecto ("al final del timeline") de cualquier .add() posterior.
+		createCursorElement = () => {
+			const cursor = document.createElement('span')
+			cursor.textContent = this.cursorChar
+			cursor.style.display = 'inline-block'
+			this.header.appendChild(cursor)
+
+			const blink = gsap.to(cursor, {
+				opacity: 0,
+				duration: this.cursorBlink,
+				repeat: -1,
+				yoyo: true,
+				ease: 'none',
+			})
+
+			return { cursor, blink }
+		}
+
+		// Construye el tween/timeline de entrada o salida de una frase de
+		// cyclecontentinline ya splitteada (elements = words o chars de un hijo
+		// concreto). Para presets normales (reveal/zoomBounce/...) es un stagger
+		// tween igual que setReveal/setZoomBounceWords, aplicado solo a los
+		// elementos de ese hijo. Para typewriter, anima char a char (en orden
+		// inverso en la salida, efecto "backspace") moviendo el cursor junto a
+		// cada uno.
+		tweenCycleInlineItem = (elements, preset, { entering, cursor, delay = 0 } = {}) => {
+			if (preset.isTypewriter) {
+				const ordered = entering ? elements : [...elements].reverse()
+				const tl = gsap.timeline()
+
+				ordered.forEach((el, i) => {
+					const position = i === 0 ? delay : `+=${this.stagger}`
+
+					if (entering) {
+						// El cursor se coloca al arrancar el fade-in: así ya está
+						// esperando en la posición donde va a aparecer el char,
+						// igual que el punto de inserción de una máquina de escribir real.
+						tl.to(
+							el,
+							{
+								opacity: 1,
+								duration: this.duration,
+								ease: preset.ease,
+								onStart: () => cursor && el.insertAdjacentElement('afterend', cursor),
+							},
+							position
+						)
+					} else {
+						// Borrado instantáneo (sin fade): si el char desaparecía con
+						// duration/ease y el cursor se movía en el mismo onStart, el
+						// cursor quedaba a la izquierda de un char que técnicamente
+						// aún seguía visible (mid-fade), como si "adelantara" al
+						// borrado real. Al quitarlo de golpe, cursor y desaparición
+						// del char quedan sincronizados.
+						tl.set(
+							el,
+							{
+								opacity: 0,
+								onComplete: () => cursor && el.insertAdjacentElement('beforebegin', cursor),
+							},
+							position
+						)
+					}
+				})
+
+				return tl
+			}
+
+			return gsap.to(elements, {
+				...(entering ? preset.to : preset.from),
+				duration: this.duration,
+				delay,
+				stagger: Number(this.stagger),
+				ease: preset.ease,
+			})
+		}
+
+		setCycleContentInline = () => {
+			const items = Array.from(this.header.children)
+
+			if (items.length < 2) {
+				console.warn('anim_any cyclecontentinline: se necesitan al menos 2 elementos hijos para ciclar')
+				return
+			}
+
+			let preset = this.getCycleContentPreset(this.cycleContentAnim)
+			if (!preset) {
+				console.warn(`anim_any cyclecontentinline: la animación "${this.cycleContentAnim}" no está soportada, se usa "reveal"`)
+				preset = this.getCycleContentPreset('reveal')
+			}
+
+			// Igual truco de stacking que cyclecontent, pero inline-grid en vez de
+			// grid: el contenedor no fuerza ancho de bloque, así puede seguir a
+			// otro texto en la misma línea (p.ej. "Qlik <frase cíclica>").
+			gsap.set(this.header, { opacity: 1, display: 'inline-grid' })
+			gsap.set(items, { gridRow: 1, gridColumn: 1 })
+
+			// typewriter siempre trabaja char a char, sea cual sea whattoanim.
+			const splitType = preset.isTypewriter ? 'chars' : this.whattoanim
+
+			// Split una sola vez por frase (no en cada vuelta). Cada span de
+			// SplitType ya envuelve justo su propio contenido (igual que en
+			// setZoomBounceWords), así que transformOrigin:'center center' ya
+			// queda centrado sin medir nada — a diferencia del cyclecontent de
+			// bloque, aquí no hace falta getCycleContentOrigin.
+			const splitOf = new Map(items.map(item => [item, new SplitType(item, { tagName: 'span' })]))
+			const elementsOf = item => splitOf.get(item)[splitType]
+
+			items.forEach(item => gsap.set(elementsOf(item), { transformOrigin: 'center center', ...preset.from }))
+
+			const { cursor, blink } = preset.isTypewriter ? this.createCursorElement() : { cursor: null, blink: null }
+			const sequence = this.cycleContentRandom ? shuffle(items) : items
+
+			const enter = (item, delay = 0) => this.tweenCycleInlineItem(elementsOf(item), preset, { entering: true, cursor, delay })
+			const exit = item => this.tweenCycleInlineItem(elementsOf(item), preset, { entering: false, cursor })
+
+			// Entrada inicial fuera del timeline que se repite, mismo motivo que en
+			// cyclecontent: si estuviera dentro, cada vuelta del bucle la volvería a
+			// disparar justo después de que el último paso ya hubiera vuelto a
+			// mostrar esta misma frase.
+			this.timeLine.add(enter(sequence[0], this.delay))
+
+			const loopTimeLine = gsap.timeline({ repeat: -1 })
+			sequence.forEach((item, i) => {
+				const nextItem = sequence[(i + 1) % sequence.length]
+				loopTimeLine.to({}, { duration: Number(this.holdTime) })
+				loopTimeLine.add(exit(item))
+				loopTimeLine.add(enter(nextItem))
+			})
+
+			this.timeLine.add(loopTimeLine)
+
+			// Se añade el último y en posición absoluta 0 (ver nota en createCursorElement).
+			if (blink) this.timeLine.add(blink, 0)
+		}
+
+		setTypewriter = () => {
+			this.typeSplit = new SplitType(this.header, {
+				tagName: 'span',
+			})
+
+			let elementsToAnim = this.typeSplit.chars
+			gsap.set(this.header, { opacity: 1 })
+			gsap.set(elementsToAnim, { opacity: 0 })
+
+			const { cursor, blink } = this.createCursorElement()
+
+			elementsToAnim.forEach((char, i) => {
+				this.timeLine.to(
+					char,
+					{
+						opacity: 1,
+						duration: this.duration,
+						ease: 'none',
+						onStart: () => char.insertAdjacentElement('afterend', cursor),
+					},
+					i === 0 ? this.delay : `+=${this.stagger}`
+				)
+			})
+
+			// Se añade el último y en posición absoluta 0 (ver nota en createCursorElement).
+			this.timeLine.add(blink, 0)
 		}
 
 		setReveal = () => {

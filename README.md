@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.3.0
+- **Versión:** 7.4.0
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1189,6 +1189,8 @@ En el editor Gutenberg: panel **Atributos HTML** → preset **Anim Any**.
 | `zoomBounce` | Zoom-in con rebote elástico suave por char/word (por defecto `words`). Param: `zoomBounce,<escala inicial>` (default 0.35) |
 | `reveal` | Fade-in de solo opacidad (sin transform) por char/word/line, según `whattoanim` |
 | `cyclecontent` | Cicla los hijos directos del target uno a uno, en bucle infinito. Ver sección dedicada más abajo |
+| `cyclecontentinline` | Como `cyclecontent`, pero para ciclos de texto inline (sigue a otro texto en la misma línea), con split por word/char. Ver sección dedicada más abajo |
+| `typewriter` | Revela los chars uno a uno tipo máquina de escribir, con cursor parpadeante. Params: `data-anim_any_cursorchar` (default `\|`), `data-anim_any_cursorblink` (default 0.5s). También reutilizable como `data-anim_any_cyclecontentanim="typewriter"` dentro de `cyclecontentinline` |
 
 ### Encadenamiento (`nextanim`)
 
@@ -1263,6 +1265,74 @@ Cicla los **hijos directos** del target (p.ej. varios `<h2>` dentro de un `<div 
 - Ese cálculo se repite justo antes de cada entrada/salida (no solo una vez al cargar), así que si la ventana cambia de ancho entre medias (p.ej. un texto largo pasa a ocupar más líneas en móvil), el `transform-origin` se autocorrige solo en el siguiente turno del ciclo — no hace falta escuchar `resize` ni usar `matchMedia`.
 - `data-anim_any_whattoanim` no aplica a esta animación (no usa SplitType).
 - El barajado (`cyclecontentrandom`) se sortea **una sola vez** al montar la animación (Fisher-Yates); el bucle repite siempre esa misma secuencia, no se reordena en cada vuelta.
+
+### Ciclo de texto inline (`cyclecontentinline`)
+
+Como `cyclecontent`, pero pensado para un ciclo de **frases cortas** que sigue a otro texto estático en la **misma línea** (p.ej. `Qlik <frase que cambia>`). El contenedor pasa a `display:inline-grid` (mismo truco de stacking sin layout shift que `cyclecontent`, pero sin forzar ancho de bloque), y cada frase se anima **por palabra o char** en vez de como un bloque completo — vía `data-anim_any_whattoanim` (`words` por defecto, o `chars`; `lines` no aplica aquí).
+
+Estructura recomendada en Gutenberg: un bloque grupo con el texto fijo + un grupo anidado (el target del ciclo) con las frases alternativas como hijos directos — igual patrón que ya usa `cyclecontent` para el rotador de bloque, solo que el grupo target lleva además una regla CSS para quedar en la misma fila que el texto fijo (ver nota de layout más abajo).
+
+```html
+<div class="cycle-inline-wrapper">
+  <h2>Qlik</h2>
+  <div data-anim_any
+       data-anim_any_animation="cyclecontentinline"
+       data-anim_any_whattoanim="words"
+       data-anim_any_cyclecontentanim="zoomBounce"
+       data-anim_any_duration="0.5"
+       data-anim_any_stagger="0.08"
+       data-anim_any_holdtime="2"
+       data-anim_any_repeat="false">
+    <h2>para vender mejor.</h2>
+    <h2>para controlar márgenes.</h2>
+    <h2>para entender tus datos.</h2>
+  </div>
+</div>
+```
+
+| Atributo | Default | Descripción |
+|---|---|---|
+| `data-anim_any_whattoanim` | `words` | `words` \| `chars`. Split de cada frase para su transición de entrada/salida (no soporta `lines`) |
+| `data-anim_any_cyclecontentanim` | `reveal` | Nombre de otra animación de `anim_any` a reutilizar para la transición de cada frase — misma idea que en `cyclecontent`. Soportados: `reveal`, `zoomBounce`, `typewriter` |
+| `data-anim_any_cyclecontentrandom` | — | Misma semántica que en `cyclecontent`: cualquier valor no vacío baraja el orden de las frases |
+| `data-anim_any_holdtime` | `2` | Tiempo que cada frase permanece visible antes de empezar a desaparecer. A diferencia de `cyclecontent`, aquí `stagger` **no** se repurpone como hold-time — recupera su significado estándar (tiempo entre words/chars), porque siempre hay elementos en paralelo que espaciar |
+| `data-anim_any_duration` | `1.5` | Duración de la transición de cada word/char |
+| `data-anim_any_stagger` | `0.1` | Tiempo entre words/chars (significado estándar) |
+| `data-anim_any_delay` | `0.33` | Retardo antes de la primera frase |
+
+**Notas:**
+- Igual comportamiento de scroll que `cyclecontent` (arranca al entrar en viewport, se pausa al salir por abajo, se reanuda donde se quedó, y al salir por arriba respeta `data-anim_any_repeat`).
+- No hace falta `getCycleContentOrigin`: cada word/char de SplitType ya envuelve justo su propio contenido, así que el `transform-origin` centrado no necesita medirse ni recalcularse en resize.
+- **Layout**: el wrapper que contiene el texto fijo + el grupo `cyclecontentinline` necesita ser una fila (`display:flex; flex-direction:row`) para que ambos queden en la misma línea — los bloques de Gutenberg apilan verticalmente por defecto. En este tema, la regla ya viene añadida en `tailwind/custom/components/animations.css` con el selector `:has(> [data-anim_any_animation="cyclecontentinline"])` (se aplica automáticamente a cualquier wrapper que contenga un target de `cyclecontentinline` como hijo directo, sea cual sea el className del bloque — no depende de ninguna clase concreta como `.cycle-inline`). Esa misma regla neutraliza el `width:100%`/`margin` que WP fuerza en los hijos directos de un layout "constrained", y fija el espaciado entre el texto fijo y el ciclo con `column-gap: 1ch` (en `ch` para que escale con `clamp()` si el font-size cambia en responsive).
+- No combinar con `data-anim_any_nextanim` (misma limitación que `cyclecontent`: el bucle infinito relanzaría el encadenado en cada vuelta).
+
+### Máquina de escribir (`typewriter`)
+
+Revela los chars del target uno a uno, con un cursor parpadeante que se desplaza junto al último char revelado. Usable suelto o como `data-anim_any_cyclecontentanim="typewriter"` dentro de `cyclecontentinline` (en ese caso, la salida de cada frase es un efecto "backspace": los chars desaparecen uno a uno en orden inverso).
+
+```html
+<p data-anim_any
+   data-anim_any_animation="typewriter"
+   data-anim_any_duration="0.05"
+   data-anim_any_stagger="0.05"
+   data-anim_any_cursorchar="_"
+   data-anim_any_cursorblink="0.4">
+  Texto que se escribe solo
+</p>
+```
+
+| Atributo | Default | Descripción |
+|---|---|---|
+| `data-anim_any_duration` | `1.5` | Duración de la transición de aparición de cada char |
+| `data-anim_any_stagger` | `0.1` | Tiempo de espera entre la aparición de un char y el siguiente (velocidad de tecleo) |
+| `data-anim_any_delay` | `0.33` | Retardo antes del primer char |
+| `data-anim_any_cursorchar` | `\|` | Carácter usado como cursor |
+| `data-anim_any_cursorblink` | `0.5` | Duración en segundos de cada medio-ciclo de parpadeo del cursor (yoyo infinito) |
+
+**Notas:**
+- `data-anim_any_whattoanim` se ignora — siempre trabaja por `chars`.
+- El cursor es un único nodo que se reubica junto al char actual (`insertAdjacentElement`) en vez de crearse/destruirse, así nunca cambia el ancho reservado por el texto y no hay layout shift.
+- El parpadeo del cursor está enganchado al propio timeline de la animación (no al timeline global), así se pausa/reanuda igual que el resto de la animación en scroll.
 
 ---
 
