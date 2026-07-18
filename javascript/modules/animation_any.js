@@ -1,8 +1,9 @@
 /**
  * Animation any for WP based on GSAP
- * version: 4.15.2
+ * version: 4.15.3
  *
  * ? changelog:
+ * ? v4.15.3 — cyclecontentinline's exit stagger now always runs in reverse word/char order for every cyclecontentanim preset (reveal, zoomBounce, ...), not just typewriter: the last word/char to appear is the first to disappear, so the exit always "undoes" the entrance in the same order it was built, instead of fading out 0..N while the entrance revealed 0..N (previously only typewriter's backspace reversed order).
  * ? v4.15.2 — Changed cyclecontentinline's data-anim_any_holdtime default from 1.5 to 2.
  * ? v4.15.1 — Fixed cyclecontentinline's typewriter "backspace" exit: chars faded out over `duration` while the cursor jumped to its final (post-deletion) position right at onStart, so the cursor visually got ahead of a char that was still mid-fade. Chars now disappear instantly (gsap.set, no fade) on exit, with the cursor moved in that same onComplete — entrance (fade-in) is unchanged, only the backspace side was affected.
  * ? v4.15.0 — Added cyclecontentinline animation: a sibling of cyclecontent for inline text cycles that follow other static text on the same line (e.g. "Qlik <cycling phrase>"). Container stacks via display:inline-grid (same no-layout-shift grid trick), and each phrase's enter/exit is split per data-anim_any_whattoanim (words/chars, no lines) instead of animating the whole child at once. data-anim_any_holdtime replaces stagger's block-cyclecontent meaning here, since stagger reclaims its standard "time between split elements" meaning. Also added typewriter, a new standalone animation (data-anim_any_animation="typewriter") that reveals chars sequentially with a blinking cursor (data-anim_any_cursorchar / data-anim_any_cursorblink), reusable both on its own and as data-anim_any_cyclecontentanim="typewriter" inside cyclecontentinline (renders as a "backspace" effect on exit).
@@ -779,9 +780,12 @@ document.addEventListener('DOMContentLoaded', () => {
 		// cyclecontentinline ya splitteada (elements = words o chars de un hijo
 		// concreto). Para presets normales (reveal/zoomBounce/...) es un stagger
 		// tween igual que setReveal/setZoomBounceWords, aplicado solo a los
-		// elementos de ese hijo. Para typewriter, anima char a char (en orden
-		// inverso en la salida, efecto "backspace") moviendo el cursor junto a
-		// cada uno.
+		// elementos de ese hijo. En la salida, el orden del stagger se invierte
+		// (el último word/char en aparecer es el primero en desaparecer) para
+		// cualquier preset, no solo typewriter — así la desaparición siempre
+		// "deshace" la entrada en el mismo orden en que se construyó. Para
+		// typewriter, además anima char a char (en vez de un único stagger
+		// tween) moviendo el cursor junto a cada uno.
 		tweenCycleInlineItem = (elements, preset, { entering, cursor, delay = 0 } = {}) => {
 			if (preset.isTypewriter) {
 				const ordered = entering ? elements : [...elements].reverse()
@@ -825,7 +829,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				return tl
 			}
 
-			return gsap.to(elements, {
+			return gsap.to(entering ? elements : [...elements].reverse(), {
 				...(entering ? preset.to : preset.from),
 				duration: this.duration,
 				delay,
