@@ -1,37 +1,10 @@
 /**
  * Animation any for WP based on GSAP
- * version: 4.16.4
+ * version: 4.17.2
  *
  * ? changelog:
- * ? v4.16.4 — Fixed typewriter cursor appearing displaced below the fixed words before the first cycle starts: createCursorElement() just appends the cursor as a plain child of the grid container (this.header) with no explicit grid placement, so until the first char's onComplete repositions it, the grid auto-flows it into a new implicit row below the stacked items. Now positioned right before the first char of the first item to enter as soon as it's created, instead of relying on the default appendChild placement.
- * ? v4.16.3 — Added data-anim_any_blankpause to cyclecontentinline: with cyclecontentanim="typewriter", after a phrase finishes backspacing (cursor back at the start, no chars left) the cursor now keeps blinking alone there for this many seconds before the next phrase starts typing, instead of jumping straight into the next entrance. Only applies when the preset is typewriter (reveal/zoomBounce have no cursor).
- * ? v4.16.2 — Fixed fixedwords losing the theme's tag-based styles (font-size clamp(), weight...): applyFixedWords() always created a <span> for the extracted element, but this theme styles text by tag selector (h1/h2/h3/h4 {...}, p {...}), so a generic span rendered with default/unstyled text instead of matching the original h1/h2/p it came from. Now creates the element with the same tagName as the first child, only forcing display:inline (via the .cyclecontentinline-fixedwords CSS class) for the row layout.
- * ? v4.16.1 — Fixed fixedwords hiding/getting eaten by the first child's own typewriter cycle: applyFixedWords() filtered the first child's leftover .chars with `document.body.contains(c)`, but the fixed-word chars are *moved* (not removed) into the new sibling element, so they're still "in the document" and the filter never excluded them — the first child's own opacity/backspace animation kept operating on them too, hiding the fixed words on setup and letting the backspace effect delete past them into the fixed area. Now filters with `firstItem.contains(c)` (still a descendant of the child vs. moved out to the sibling), which correctly excludes them.
- * ? v4.16.0 — Added data-anim_any_fixedwords to cyclecontentinline: extracts the first N words (read only from the first child) into a new static element (class cyclecontentinline-fixedwords, unstyled by default so it can be styled per-project) inserted once as a sibling before the target, same pattern as an already-authored static prefix like "Qlik". The rest of the children must be authored without those words — this avoids re-typing/validating them per child and guarantees the fixed words never re-render or shift position between cycles (each child is otherwise an independent grid-stacked element with its own line-wrapping).
- * ? v4.15.4 — typewriter's char reveal (both standalone and as cyclecontentinline's cyclecontentanim) is now instant (gsap.set, no fade), like typing in a real terminal, instead of fading in over `duration` — that attribute no longer applies to typewriter, only `stagger` (typing speed) and `delay` (initial wait) do. The "backspace" exit was already instant (v4.15.1); entrance now matches it.
- * ? v4.15.3 — cyclecontentinline's exit stagger now always runs in reverse word/char order for every cyclecontentanim preset (reveal, zoomBounce, ...), not just typewriter: the last word/char to appear is the first to disappear, so the exit always "undoes" the entrance in the same order it was built, instead of fading out 0..N while the entrance revealed 0..N (previously only typewriter's backspace reversed order).
- * ? v4.15.2 — Changed cyclecontentinline's data-anim_any_holdtime default from 1.5 to 2.
- * ? v4.15.1 — Fixed cyclecontentinline's typewriter "backspace" exit: chars faded out over `duration` while the cursor jumped to its final (post-deletion) position right at onStart, so the cursor visually got ahead of a char that was still mid-fade. Chars now disappear instantly (gsap.set, no fade) on exit, with the cursor moved in that same onComplete — entrance (fade-in) is unchanged, only the backspace side was affected.
- * ? v4.15.0 — Added cyclecontentinline animation: a sibling of cyclecontent for inline text cycles that follow other static text on the same line (e.g. "Qlik <cycling phrase>"). Container stacks via display:inline-grid (same no-layout-shift grid trick), and each phrase's enter/exit is split per data-anim_any_whattoanim (words/chars, no lines) instead of animating the whole child at once. data-anim_any_holdtime replaces stagger's block-cyclecontent meaning here, since stagger reclaims its standard "time between split elements" meaning. Also added typewriter, a new standalone animation (data-anim_any_animation="typewriter") that reveals chars sequentially with a blinking cursor (data-anim_any_cursorchar / data-anim_any_cursorblink), reusable both on its own and as data-anim_any_cyclecontentanim="typewriter" inside cyclecontentinline (renders as a "backspace" effect on exit).
- * ? v4.14.1 — Fixed cyclecontent never pausing when scrolled out of view: it relied solely on the default ScrollTrigger toggleAction ("play" on enter), so once started its repeat:-1 nested loop kept animating forever in the background regardless of scroll position. Added explicit onLeave (pause) / onEnterBack (play) handlers, and made onLeaveBack pause(0) (repeat=true) or pause() (repeat=false) instead of the generic progress(0.7)+reverse() hack, which isn't meaningful for an infinite timeline.
- * ? v4.14.0 — Added data-anim_any_cyclecontentrandom: any non-empty value ('1', 'true', anything) shuffles the cycling order of cyclecontent's children once at setup (Fisher-Yates), instead of following DOM order.
- * ? v4.13.1 — Fixed cyclecontent transform-origin going stale on resize: it was measured once when the animation was set up, so a viewport resize afterwards (e.g. a long child rewrapping to more lines on mobile) left the pivot point pointing at its old, no-longer-correct position. Now recalculated in each tween's onStart (entrance + every loop exit/enter), so it always reflects the current layout — no resize listener or matchMedia needed since it self-corrects on every cycle.
- * ? v4.13.0 — Reworked cyclecontent transform-origin fix (superseding v4.12.2's justifySelf/width:auto approach, which fought WP/Tailwind's constrained-layout CSS — width:100% *and* a max-width var on direct children — and still ended up centering items regardless of justify-self). Each child now keeps its own natural size/alignment (whatever text-align or layout it already had) untouched; instead, getCycleContentOrigin() measures the child's actually-rendered content via a DOM Range and sets transform-origin to its measured center in px. Works regardless of alignment or content type (text, a div with arbitrary content, etc).
- * ? v4.12.2 — Fixed cyclecontent transform-origin: grid items stretch to fill the shared cell by default, so a left-aligned short child's visual center didn't match its box's 50%/50% transform-origin (scale/rotate presets like zoomBounce looked off-center). Added justifySelf/alignSelf 'start' plus an explicit width:'auto' override (WP/Tailwind's constrained-layout CSS forces width:100% on direct children regardless of justifySelf) so each child shrinks to its own natural size within the cell.
- * ? v4.12.1 — Fixed cyclecontent double-reveal: the one-time entrance tween for the first child was inside the same timeline as `repeat(-1)`, so every loop iteration re-fired it right after the loop's own last step had already brought that child back, causing two near-instant reveals instead of respecting the stagger hold. Moved the infinite loop into its own nested timeline so the entrance tween never repeats.
- * ? v4.12.0 — Added cyclecontent animation: cycles a target's direct children one at a time in an infinite loop, all stacked at the same grid cell (no layout shift regardless of each child's height). Reuses another anim_any animation's from/to/ease as the enter/exit transition via data-anim_any_cyclecontentanim (default 'reveal'). data-anim_any_stagger is repurposed here as the hold time each child stays fully visible.
- * ? v4.11.0 — Added reveal animation: opacity-only fade-in (no transform) per char/word/line, same split-by-whattoanim pattern as clippedFromBottom.
- * ? v4.10.0 — Added zoomBounce animation: per-word zoom-in with a mild elastic bounce (opacity/scale split into two aligned tweens so opacity doesn't oscillate with the elastic ease). Inline param sets the starting scale, e.g. 'zoomBounce,0.35'.
- * ? v4.9.3 — Fixed repeat not working at all: `repeat` was destructured from config in the constructor but never assigned to `this.repeat`, so the `onLeaveBack` check (`if (this.repeat)`) always read `undefined` and animations never reversed on scrolling back up past the trigger, regardless of the data-anim_any_repeat value. This was the root cause of the TODO below, which is now resolved and removed.
- * ? v4.9.2 — Fixed nextanim timing: chained targets (no explicit data-anim_any_delay) now get delay=0 in pre-pass, so nextAnimDelay controls the visual overlap directly without the default 0.33s shifting the start. Explicit delay attributes are preserved. Also improved absolutePos fallback from tlDuration to Math.max(0.001, rawPos) to maximise overlap on very short animations.
- * ? v4.9.1 — Fixed nextanim callback not firing when animation duration <= |nextAnimDelay|: position clamped to tlDuration instead of t=0 (GSAP skips callbacks at t=0 on play())
- * ? v4.9.0 — Added nextanim param: chain an element's animation after this one fires ('.selector' or '.selector,-0.5' to start 0.5s before end)
- * ? v4.8.1 — Added callback function after animation complete (must exist at window scope)
- * ? Added matchmedia param: disable animation if query doesn't match (e.g. "min-width: 1024px")
- * ? Added zoomIn and rotateX animations from v3.1
- * ? Added chainanim param from v3.1
- * ? Merged animation_any_V1.js (v4.8.1) as single canonical file
- * ? setClippedFromBottom: replaced clipPath polygon with clip-path inset(-0.4em 0 0 0) for diacritic-safe masking
+ * ? v4.17.2 — Fixed v4.17.1's fix being incomplete: it still used a temporary SplitType (even words-only) to capture the fixed HTML, but pre-existing .word spans get wrapped in a *second* layer by the real split that runs afterward (SplitType doesn't recognize its own previously-generated markup), leaving duplicate nested words/chars for the fixed prefix in every child but the first. prepareFixedWordsHTML() no longer uses SplitType at all: it counts words by walking the original text nodes directly (TreeWalker) and extracts clean HTML via a Range, with zero SplitType markup involved before the single real split runs.
+
  *
  * © @xenolito 2026
  *
@@ -541,19 +514,29 @@ document.addEventListener('DOMContentLoaded', () => {
 				const offset = gsap.utils.random(0, staggerWindow)
 
 				// Posición absoluta en el timeline (no delay interno) para garantizar sincronía
-				this.timeLine.to(elem, {
-					scale: 1,
-					opacity: 1,
-					duration: this.duration,
-					ease: entryEase,
-				}, offset)
+				this.timeLine.to(
+					elem,
+					{
+						scale: 1,
+						opacity: 1,
+						duration: this.duration,
+						ease: entryEase,
+					},
+					offset
+				)
 
-				this.timeLine.to(elem, {
-					filter: 'blur(0px)',
-					duration: this.duration * 1.5,
-					ease: 'expo.out',
-					onComplete: () => { elem.style.willChange = 'auto' },
-				}, offset)
+				this.timeLine.to(
+					elem,
+					{
+						filter: 'blur(0px)',
+						duration: this.duration * 1.5,
+						ease: 'expo.out',
+						onComplete: () => {
+							elem.style.willChange = 'auto'
+						},
+					},
+					offset
+				)
 			})
 		}
 
@@ -830,64 +813,108 @@ document.addEventListener('DOMContentLoaded', () => {
 			})
 		}
 
-		// data-anim_any_fixedwords: extrae las N primeras palabras del PRIMER
-		// hijo (items[0]) a un elemento compartido, real y estilable por CSS,
-		// insertado como sibling estático antes de this.header (mismo patrón
-		// que ya usa "Qlik" hoy). El resto de hijos NO deben repetir esas
-		// palabras — se escriben ya solo con su parte variable — así no hace
-		// falta comparar ni limpiar duplicados en ellos. Al vivir una sola vez
-		// fuera del área que se cicla, nunca se re-renderiza ni puede saltar
-		// de posición entre hijos, a diferencia de si cada hijo tuviera su
-		// propia copia (independientes en el grid stacking, con su propio
-		// wrapping de línea).
-		applyFixedWords = (items, splitOf) => {
+		// data-anim_any_fixedwords: duplica las N primeras palabras del PRIMER
+		// hijo (items[0]) al principio del resto de hijos (que se escriben ya
+		// sin ellas), y las excluye del array de elementos animables en TODOS
+		// los hijos para que el efecto de escribir/borrar nunca las toque.
+		//
+		// No se extraen a un elemento aparte (como hacía la v1 de esta
+		// función): this.header es inline-grid, y un inline-grid/inline-block
+		// es una caja atómica — participa en el flujo de línea de fuera como
+		// un bloque indivisible, pero su contenido interno NUNCA se entremezcla
+		// palabra a palabra con texto de fuera de esa caja. Por eso un
+		// elemento "Qlik"/"para" fuera de this.header podía acabar saltando a
+		// su propia línea entero en vez de dejar hueco a que siguiera "vender
+		// mejor." a continuación, aunque cupiera. La única forma de que todo
+		// haga line-wrap junto como un párrafo normal es que el texto fijo
+		// viva DENTRO de esa misma caja atómica, en cada hijo.
+		//
+		// Se hace en DOS pasos separados por el único SplitType real de cada
+		// item (el de la línea `new SplitType(item, ...)` en
+		// setCycleContentInline). No se usa SplitType para nada aquí — ni
+		// siquiera de forma temporal: cualquier marcado .word/.char suyo que
+		// se cuele en el HTML clonado se volvería a envolver por el split
+		// real posterior (SplitType no reconoce sus propios spans ya
+		// existentes, los trata como contenido normal y los anida dentro de
+		// unos nuevos), duplicando la estructura y dejando algunos chars sin
+		// animar correctamente. Por eso este primer paso cuenta las palabras
+		// recorriendo directamente los nodos de texto originales (TreeWalker)
+		// y usa un Range para extraer el HTML limpio — sin ningún .word/.char
+		// de por medio — antes de que exista ningún split.
+
+		// Paso 1 (antes del split real): prepara el HTML de cada hijo para que
+		// todos, incluido el primero, contengan ya el prefijo fijo.
+		prepareFixedWordsHTML = items => {
 			const firstItem = items[0]
-			const words = splitOf.get(firstItem).words
-			const n = Math.min(this.fixedWords, words.length)
+			const walker = document.createTreeWalker(firstItem, NodeFilter.SHOW_TEXT)
+
+			let totalWords = 0
+			const textNodes = []
+			while (walker.nextNode()) {
+				textNodes.push(walker.currentNode)
+				const matches = walker.currentNode.textContent.match(/\S+/g)
+				if (matches) totalWords += matches.length
+			}
+
+			const n = Math.min(this.fixedWords, totalWords)
 			if (n < this.fixedWords) {
-				console.warn(`anim_any cyclecontentinline: data-anim_any_fixedwords pide ${this.fixedWords} palabra(s) pero el primer hijo solo tiene ${words.length}, se usan ${n}`)
-			}
-			const boundaryNode = words[n] || null // primera palabra variable (o null si n cubre todas las palabras)
-
-			// SplitType anida las .word dentro de un span .line (siempre, aunque
-			// la frase quepa en una sola línea) — hay que recorrer los hijos de
-			// ESE contenedor real, no los de firstItem directamente, o se movería
-			// la línea entera de golpe en vez de solo las N primeras palabras.
-			const container = (boundaryNode ?? words[n - 1]).parentElement
-
-			// Mismo tagName que firstItem (h1, h2, p...), no un <span> genérico:
-			// los estilos del tema para el texto (font-size con clamp(),
-			// font-weight, etc.) se aplican por selector de tag (h2 {...}, p
-			// {...}), así que un <span> perdería ese estilado. Solo se cambia
-			// el display a inline (ver .cyclecontentinline-fixedwords en
-			// animations.css) para que encaje en la fila junto al resto.
-			const fixedWrapper = document.createElement(firstItem.tagName)
-			fixedWrapper.className = 'cyclecontentinline-fixedwords'
-
-			// Mueve, en orden, todos los nodos hasta (sin incluir) la palabra
-			// frontera — no solo los .word, también los nodos de texto en
-			// blanco entre ellos, para conservar el espaciado interno ("Qlik
-			// para", no "Qlikpara"). Al parar justo en boundaryNode, lo que
-			// queda en el contenedor ya empieza limpio, sin espacio sobrante
-			// delante.
-			let node = container.firstChild
-			while (node && node !== boundaryNode) {
-				const next = node.nextSibling
-				fixedWrapper.appendChild(node)
-				node = next
+				console.warn(`anim_any cyclecontentinline: data-anim_any_fixedwords pide ${this.fixedWords} palabra(s) pero el primer hijo solo tiene ${totalWords}, se usan ${n}`)
 			}
 
-			this.header.parentElement.insertBefore(fixedWrapper, this.header)
+			let fixedHTML = ''
+			if (n > 0) {
+				let wordCount = 0
+				let boundaryNode = null
+				let boundaryOffset = 0
 
-			// Mantener splitOf.get(firstItem).words/.chars en sync con lo que
-			// queda realmente DENTRO de firstItem: los chars de las palabras
-			// fijas se MUEVEN (no se eliminan) a fixedWrapper, así que siguen
-			// "en el documento" — document.body.contains(c) seguiría dando
-			// true para ellos. Hay que comprobar que siguen siendo
-			// descendientes de firstItem en concreto, no solo que existan en
-			// algún sitio del documento.
-			words.splice(0, n)
-			splitOf.get(firstItem).chars = splitOf.get(firstItem).chars.filter(c => firstItem.contains(c))
+				outer: for (const textNode of textNodes) {
+					const re = /\S+/g
+					let match
+					while ((match = re.exec(textNode.textContent))) {
+						wordCount++
+						if (wordCount === n) {
+							boundaryNode = textNode
+							boundaryOffset = match.index + match[0].length
+							break outer
+						}
+					}
+				}
+
+				const range = document.createRange()
+				range.setStart(firstItem, 0)
+				if (boundaryNode) {
+					range.setEnd(boundaryNode, boundaryOffset)
+				} else {
+					range.selectNodeContents(firstItem) // n cubre todo el contenido de firstItem
+				}
+				const div = document.createElement('div')
+				div.appendChild(range.cloneContents())
+				// Un espacio de separación fijo entre el prefijo y la parte
+				// variable de cada hijo, independiente del espacio en blanco
+				// original (que el Range no incluye, al cortar justo al final
+				// de la última palabra fija).
+				fixedHTML = div.innerHTML + ' '
+			}
+
+			// Al resto de hijos (que se escriben ya sin el prefijo) se les
+			// antepone una copia del mismo HTML.
+			items.slice(1).forEach(item => item.insertAdjacentHTML('afterbegin', fixedHTML))
+
+			this.fixedWordsCount = n
+		}
+
+		// Paso 2 (después del split real): en cada hijo (incluido el
+		// primero, que ya lo llevaba de fábrica), las N primeras palabras
+		// quedan fijas: se sacan del array de animables (elementsOf() ya no
+		// las ve) y se dejan tal cual — nunca se les toca opacidad ni
+		// transform, así que se quedan siempre a la vista.
+		excludeFixedWordsFromAnimation = (items, splitOf) => {
+			const n = this.fixedWordsCount
+			items.forEach(item => {
+				const itemWords = splitOf.get(item).words
+				const fixedItemWords = itemWords.splice(0, n)
+				splitOf.get(item).chars = splitOf.get(item).chars.filter(c => !fixedItemWords.some(w => w.contains(c)))
+			})
 		}
 
 		setCycleContentInline = () => {
@@ -913,13 +940,18 @@ document.addEventListener('DOMContentLoaded', () => {
 			// typewriter siempre trabaja char a char, sea cual sea whattoanim.
 			const splitType = preset.isTypewriter ? 'chars' : this.whattoanim
 
+			// Si hay palabras fijas, preparar el HTML de cada hijo ANTES del
+			// split real (ver nota en prepareFixedWordsHTML sobre por qué no
+			// se puede splittear dos veces el mismo elemento).
+			if (this.fixedWords > 0) this.prepareFixedWordsHTML(items)
+
 			// Split una sola vez por frase (no en cada vuelta). Cada span de
 			// SplitType ya envuelve justo su propio contenido (igual que en
 			// setZoomBounceWords), así que transformOrigin:'center center' ya
 			// queda centrado sin medir nada — a diferencia del cyclecontent de
 			// bloque, aquí no hace falta getCycleContentOrigin.
 			const splitOf = new Map(items.map(item => [item, new SplitType(item, { tagName: 'span' })]))
-			if (this.fixedWords > 0) this.applyFixedWords(items, splitOf)
+			if (this.fixedWords > 0) this.excludeFixedWordsFromAnimation(items, splitOf)
 			const elementsOf = item => splitOf.get(item)[splitType]
 
 			items.forEach(item => gsap.set(elementsOf(item), { transformOrigin: 'center center', ...preset.from }))
