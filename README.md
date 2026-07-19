@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.4.0
+- **Versión:** 7.5.0
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1299,14 +1299,40 @@ Estructura recomendada en Gutenberg: un bloque grupo con el texto fijo + un grup
 | `data-anim_any_duration` | `1.5` | Duración de la transición de cada word/char. **No aplica si `cyclecontentanim="typewriter"`**: ahí cada char aparece/desaparece de golpe, sin fade |
 | `data-anim_any_stagger` | `0.1` | Tiempo entre words/chars (significado estándar). Con `typewriter`, es la velocidad de tecleo/borrado |
 | `data-anim_any_delay` | `0.33` | Retardo antes de la primera frase |
+| `data-anim_any_fixedwords` | `0` (desactivado) | Número de palabras fijas al principio, leídas **solo del primer hijo** — ver sección dedicada más abajo |
 
 **Notas:**
 - Igual comportamiento de scroll que `cyclecontent` (arranca al entrar en viewport, se pausa al salir por abajo, se reanuda donde se quedó, y al salir por arriba respeta `data-anim_any_repeat`).
 - No hace falta `getCycleContentOrigin`: cada word/char de SplitType ya envuelve justo su propio contenido, así que el `transform-origin` centrado no necesita medirse ni recalcularse en resize.
 - **Orden de salida**: para cualquier `cyclecontentanim` (no solo `typewriter`), el word/char que apareció **último** es el primero en desaparecer, y así sucesivamente hacia atrás — la salida siempre "deshace" la entrada en el mismo orden en que se construyó, en vez de desvanecerse en el mismo orden en que apareció.
 - Con `cyclecontentanim="typewriter"`, cada char aparece y desaparece **de golpe** (sin fade), igual que al escribir en una terminal — ver la sección de `typewriter` más abajo.
-- **Layout**: el wrapper que contiene el texto fijo + el grupo `cyclecontentinline` necesita ser una fila (`display:flex; flex-direction:row`) para que ambos queden en la misma línea — los bloques de Gutenberg apilan verticalmente por defecto. En este tema, la regla ya viene añadida en `tailwind/custom/components/animations.css` con el selector `:has(> [data-anim_any_animation="cyclecontentinline"])` (se aplica automáticamente a cualquier wrapper que contenga un target de `cyclecontentinline` como hijo directo, sea cual sea el className del bloque — no depende de ninguna clase concreta como `.cycle-inline`). Esa misma regla neutraliza el `width:100%`/`margin` que WP fuerza en los hijos directos de un layout "constrained". El espaciado entre el texto fijo y el ciclo **no** usa `column-gap` en el wrapper (escalaría con el font-size del wrapper, sin relación con el `clamp()` del texto fijo — quedaría bien para un tag y mal para otro, p.ej. correcto en un `h2` pero desproporcionado en un `p`); en su lugar es un `margin-right: 0.25em` sobre el propio texto fijo (primer hijo del wrapper), así escala con el font-size real de ese elemento concreto, sea `h2`, `p` o cualquier otro con su propio `clamp()`.
+- **Layout**: el wrapper que contiene el texto fijo + el grupo `cyclecontentinline` necesita ser una fila (`display:flex; flex-direction:row`) para que ambos queden en la misma línea — los bloques de Gutenberg apilan verticalmente por defecto. En este tema, la regla ya viene añadida en `tailwind/custom/components/animations.css` con el selector `:has(> [data-anim_any_animation="cyclecontentinline"])` (se aplica automáticamente a cualquier wrapper que contenga un target de `cyclecontentinline` como hijo directo, sea cual sea el className del bloque — no depende de ninguna clase concreta como `.cycle-inline`). Esa misma regla neutraliza el `width:100%`/`margin` que WP fuerza en los hijos directos de un layout "constrained". El espaciado entre las piezas fijas y el ciclo **no** usa `column-gap` en el wrapper (escalaría con el font-size del wrapper, sin relación con el `clamp()` de cada pieza — quedaría bien para un tag y mal para otro, p.ej. correcto en un `h2` pero desproporcionado en un `p`); en su lugar es un `margin-right: 0.25em` sobre cada pieza (`> *:not(:last-child)`, no solo la primera — puede haber más de una pieza fija, p.ej. "Qlik" + el prefijo de `fixedwords`), así escala con el font-size real de cada una, sea `h2`, `p` o cualquier otro con su propio `clamp()`.
 - No combinar con `data-anim_any_nextanim` (misma limitación que `cyclecontent`: el bucle infinito relanzaría el encadenado en cada vuelta).
+
+#### Palabras fijas (`data-anim_any_fixedwords`)
+
+Marca que las **N primeras palabras** de la frase queden fijas y visibles siempre, iguales para todos los hijos — pensado para casos como "para vender mejor.", "para controlar márgenes.", "para entender tus datos.", donde todas las variantes comparten un inicio común ("para") que no tiene sentido animar en cada ciclo.
+
+**Patrón de autoría: las N palabras fijas se leen exclusivamente del primer hijo.** El resto de hijos se escriben ya sin ellas — no hace falta repetirlas:
+
+```html
+<div data-anim_any
+     data-anim_any_animation="cyclecontentinline"
+     data-anim_any_cyclecontentanim="zoomBounce"
+     data-anim_any_fixedwords="1">
+  <h2>para vender mejor.</h2>
+  <h2>controlar márgenes.</h2>
+  <h2>entender tus datos.</h2>
+</div>
+```
+
+En el setup, se extraen (no se clonan) las N primeras palabras del primer hijo a un nuevo elemento con clase `cyclecontentinline-fixedwords`, insertado una sola vez como sibling estático antes del target — igual patrón que un texto fijo escrito a mano (p.ej. "Qlik"), pero generado automáticamente. El elemento se crea con el **mismo tagName que el primer hijo** (`h1`, `h2`, `p`...), no un `<span>` genérico: como este tema estila el texto por selector de tag (`h1, h2, h3, h4 {...}`, `p {...}`), un `<span>` perdería ese estilado (font-size con `clamp()`, peso, etc.) y se vería con el estilo por defecto. Solo se fuerza `display:inline` (vía la clase) para que encaje en la fila; sin más estilos propios por defecto, se deja para que cada proyecto la estile a su gusto (color...), ya que no puede pasarse como valor de un atributo si se quiere controlar con CSS independientemente.
+
+**Por qué no basta con dejar que cada hijo repita la palabra fija:** cada hijo cíclico es un elemento independiente apilado en el grid, con su propio wrapping de línea — si una frase ocupa 1 línea y otra 2, la copia de la palabra fija en cada hijo podría no caer exactamente en el mismo píxel que la de otro, aunque el texto sea idéntico. Al existir una sola vez, fuera del área que se cicla, no hay forma de que salte de posición ni de que desaparezca entre ciclos.
+
+**Notas:**
+- Si `data-anim_any_fixedwords` pide más palabras de las que tiene el primer hijo, se usa el máximo disponible (aviso en consola).
+- Compatible con cualquier `cyclecontentanim` (`reveal`, `zoomBounce`, `typewriter`).
 
 ### Máquina de escribir (`typewriter`)
 
@@ -1328,6 +1354,7 @@ Revela los chars del target uno a uno **de golpe** (sin fade, como al escribir e
 | `data-anim_any_delay` | `0.33` | Retardo antes del primer char |
 | `data-anim_any_cursorchar` | `\|` | Carácter usado como cursor |
 | `data-anim_any_cursorblink` | `0.5` | Duración en segundos de cada medio-ciclo de parpadeo del cursor (yoyo infinito) |
+| `data-anim_any_blankpause` | `0.4` | Solo dentro de `cyclecontentinline`: segundos que el cursor sigue parpadeando solo, ya en la posición inicial (sin chars), después de terminar el "backspace" de una frase y antes de que empiece a escribirse la siguiente |
 
 **Nota:** `data-anim_any_duration` no aplica — cada char aparece/desaparece instantáneamente (`gsap.set`, no `gsap.to`), no hay transición que durar. Solo `stagger` (velocidad) y `delay` (espera inicial) controlan el ritmo.
 

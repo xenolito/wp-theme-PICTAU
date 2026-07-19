@@ -617,11 +617,28 @@
 		margin: 0 !important;
 	}
 
-	/* Espaciado entre el texto fijo y el ciclo: en `em` sobre el propio texto
-	   fijo (el primer hijo), no sobre el wrapper — así escala automáticamente
-	   con SU font-size real (h2 con clamp(3rem,8vw,4.5rem), p con
-	   clamp(1rem,2vw,18px), o cualquier otro), sea cual sea el tag usado. */
-	> :first-child {
+	/* Espaciado entre las piezas de texto fijo y el ciclo: en `em` sobre cada
+	   pieza (no sobre el wrapper) — así escala automáticamente con SU
+	   font-size real (h2 con clamp(3rem,8vw,4.5rem), p con clamp(1rem,2vw,18px),
+	   o cualquier otro), sea cual sea el tag usado. Puede haber más de una
+	   pieza fija antes del target (p.ej. "Qlik" + el prefijo extraído por
+	   data-anim_any_fixedwords), así que el margen va en todas menos la
+	   última (el propio target cíclico), no solo en la primera. */
+	> *:not(:last-child) {
 		margin-right: 0.25em !important;
 	}
+}
+
+/* .cyclecontentinline-fixedwords: clase del elemento extraído por
+   data-anim_any_fixedwords (ver applyFixedWords() en animation_any.js) —
+   contiene las N primeras palabras del primer hijo del ciclo, movidas aquí
+   una sola vez para que nunca se re-rendericen ni puedan saltar de posición
+   entre hijos. Se crea con el mismo tagName que el hijo original (h1, h2,
+   p...), no un <span>, para heredar los estilos de tema por tag (font-size
+   con clamp(), peso, etc.); solo se fuerza el display a inline para que
+   encaje en la fila junto al resto de piezas fijas y el ciclo. Sin más
+   estilos propios por defecto: se deja para que cada proyecto/bloque la
+   estile a su gusto (color...). */
+.cyclecontentinline-fixedwords {
+	display: inline;
 }
