@@ -991,6 +991,7 @@ La sección **Presets GSAP** (colapsable, cerrada por defecto) ofrece acceso rá
 | **AnimMask Config** | `data-animask=""` + `data-animask_points="8"` + `data-animask_intensity="0.12"` + `data-animask_speed="1"` |
 | **Split Text** | `data-split_text=""` |
 | **Counter** | `class="pct-counter"` |
+| **Typewriter** | `data-anim_any=""` + `data-anim_any_animation="cyclecontentinline"` + `data-anim_any_cyclecontentanim="typewriter"` + `data-anim_any_fixedwords="1"` + `data-anim_any_duration="0.5"` + `data-anim_any_stagger="0.08"` + `data-anim_any_holdtime="2"` + `data-anim_any_repeat="false"` + `data-anim_any_cursorchar="_"` (misma configuración que `.cycle-inline-2`; aplicar al bloque grupo que contiene los ciclos — ver [Ciclo de texto inline](#ciclo-de-texto-inline-cyclecontentinline)) |
 
 ### Bloques no soportados
 
