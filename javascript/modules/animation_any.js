@@ -1,8 +1,13 @@
 /**
  * Animation any for WP based on GSAP
- * version: 4.15.4
+ * version: 4.16.4
  *
  * ? changelog:
+ * ? v4.16.4 — Fixed typewriter cursor appearing displaced below the fixed words before the first cycle starts: createCursorElement() just appends the cursor as a plain child of the grid container (this.header) with no explicit grid placement, so until the first char's onComplete repositions it, the grid auto-flows it into a new implicit row below the stacked items. Now positioned right before the first char of the first item to enter as soon as it's created, instead of relying on the default appendChild placement.
+ * ? v4.16.3 — Added data-anim_any_blankpause to cyclecontentinline: with cyclecontentanim="typewriter", after a phrase finishes backspacing (cursor back at the start, no chars left) the cursor now keeps blinking alone there for this many seconds before the next phrase starts typing, instead of jumping straight into the next entrance. Only applies when the preset is typewriter (reveal/zoomBounce have no cursor).
+ * ? v4.16.2 — Fixed fixedwords losing the theme's tag-based styles (font-size clamp(), weight...): applyFixedWords() always created a <span> for the extracted element, but this theme styles text by tag selector (h1/h2/h3/h4 {...}, p {...}), so a generic span rendered with default/unstyled text instead of matching the original h1/h2/p it came from. Now creates the element with the same tagName as the first child, only forcing display:inline (via the .cyclecontentinline-fixedwords CSS class) for the row layout.
+ * ? v4.16.1 — Fixed fixedwords hiding/getting eaten by the first child's own typewriter cycle: applyFixedWords() filtered the first child's leftover .chars with `document.body.contains(c)`, but the fixed-word chars are *moved* (not removed) into the new sibling element, so they're still "in the document" and the filter never excluded them — the first child's own opacity/backspace animation kept operating on them too, hiding the fixed words on setup and letting the backspace effect delete past them into the fixed area. Now filters with `firstItem.contains(c)` (still a descendant of the child vs. moved out to the sibling), which correctly excludes them.
+ * ? v4.16.0 — Added data-anim_any_fixedwords to cyclecontentinline: extracts the first N words (read only from the first child) into a new static element (class cyclecontentinline-fixedwords, unstyled by default so it can be styled per-project) inserted once as a sibling before the target, same pattern as an already-authored static prefix like "Qlik". The rest of the children must be authored without those words — this avoids re-typing/validating them per child and guarantees the fixed words never re-render or shift position between cycles (each child is otherwise an independent grid-stacked element with its own line-wrapping).
  * ? v4.15.4 — typewriter's char reveal (both standalone and as cyclecontentinline's cyclecontentanim) is now instant (gsap.set, no fade), like typing in a real terminal, instead of fading in over `duration` — that attribute no longer applies to typewriter, only `stagger` (typing speed) and `delay` (initial wait) do. The "backspace" exit was already instant (v4.15.1); entrance now matches it.
  * ? v4.15.3 — cyclecontentinline's exit stagger now always runs in reverse word/char order for every cyclecontentanim preset (reveal, zoomBounce, ...), not just typewriter: the last word/char to appear is the first to disappear, so the exit always "undoes" the entrance in the same order it was built, instead of fading out 0..N while the entrance revealed 0..N (previously only typewriter's backspace reversed order).
  * ? v4.15.2 — Changed cyclecontentinline's data-anim_any_holdtime default from 1.5 to 2.
@@ -112,6 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
 				holdtime = 2, // cyclecontentinline: time each phrase stays fully visible before exiting
 				cursorchar = '|', // typewriter: character used as the blinking cursor
 				cursorblink = 0.5, // typewriter: seconds per blink half-cycle
+				blankpause = 0.4, // typewriter inside cyclecontentinline: seconds the cursor keeps blinking alone at the start position after backspacing, before the next phrase starts typing
+				fixedwords = 0, // cyclecontentinline: number of leading words (read from the first child only) extracted once into a static shared element before the target
 				log = false,
 			} = config
 
@@ -147,6 +154,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.holdTime = Number(holdtime)
 			this.cursorChar = cursorchar
 			this.cursorBlink = Number(cursorblink)
+			this.blankPause = Number(blankpause)
+			this.fixedWords = Number(fixedwords)
 			this.chainanim = chainanim
 			this.matchmedia = matchmedia ?? false
 
@@ -821,6 +830,66 @@ document.addEventListener('DOMContentLoaded', () => {
 			})
 		}
 
+		// data-anim_any_fixedwords: extrae las N primeras palabras del PRIMER
+		// hijo (items[0]) a un elemento compartido, real y estilable por CSS,
+		// insertado como sibling estático antes de this.header (mismo patrón
+		// que ya usa "Qlik" hoy). El resto de hijos NO deben repetir esas
+		// palabras — se escriben ya solo con su parte variable — así no hace
+		// falta comparar ni limpiar duplicados en ellos. Al vivir una sola vez
+		// fuera del área que se cicla, nunca se re-renderiza ni puede saltar
+		// de posición entre hijos, a diferencia de si cada hijo tuviera su
+		// propia copia (independientes en el grid stacking, con su propio
+		// wrapping de línea).
+		applyFixedWords = (items, splitOf) => {
+			const firstItem = items[0]
+			const words = splitOf.get(firstItem).words
+			const n = Math.min(this.fixedWords, words.length)
+			if (n < this.fixedWords) {
+				console.warn(`anim_any cyclecontentinline: data-anim_any_fixedwords pide ${this.fixedWords} palabra(s) pero el primer hijo solo tiene ${words.length}, se usan ${n}`)
+			}
+			const boundaryNode = words[n] || null // primera palabra variable (o null si n cubre todas las palabras)
+
+			// SplitType anida las .word dentro de un span .line (siempre, aunque
+			// la frase quepa en una sola línea) — hay que recorrer los hijos de
+			// ESE contenedor real, no los de firstItem directamente, o se movería
+			// la línea entera de golpe en vez de solo las N primeras palabras.
+			const container = (boundaryNode ?? words[n - 1]).parentElement
+
+			// Mismo tagName que firstItem (h1, h2, p...), no un <span> genérico:
+			// los estilos del tema para el texto (font-size con clamp(),
+			// font-weight, etc.) se aplican por selector de tag (h2 {...}, p
+			// {...}), así que un <span> perdería ese estilado. Solo se cambia
+			// el display a inline (ver .cyclecontentinline-fixedwords en
+			// animations.css) para que encaje en la fila junto al resto.
+			const fixedWrapper = document.createElement(firstItem.tagName)
+			fixedWrapper.className = 'cyclecontentinline-fixedwords'
+
+			// Mueve, en orden, todos los nodos hasta (sin incluir) la palabra
+			// frontera — no solo los .word, también los nodos de texto en
+			// blanco entre ellos, para conservar el espaciado interno ("Qlik
+			// para", no "Qlikpara"). Al parar justo en boundaryNode, lo que
+			// queda en el contenedor ya empieza limpio, sin espacio sobrante
+			// delante.
+			let node = container.firstChild
+			while (node && node !== boundaryNode) {
+				const next = node.nextSibling
+				fixedWrapper.appendChild(node)
+				node = next
+			}
+
+			this.header.parentElement.insertBefore(fixedWrapper, this.header)
+
+			// Mantener splitOf.get(firstItem).words/.chars en sync con lo que
+			// queda realmente DENTRO de firstItem: los chars de las palabras
+			// fijas se MUEVEN (no se eliminan) a fixedWrapper, así que siguen
+			// "en el documento" — document.body.contains(c) seguiría dando
+			// true para ellos. Hay que comprobar que siguen siendo
+			// descendientes de firstItem en concreto, no solo que existan en
+			// algún sitio del documento.
+			words.splice(0, n)
+			splitOf.get(firstItem).chars = splitOf.get(firstItem).chars.filter(c => firstItem.contains(c))
+		}
+
 		setCycleContentInline = () => {
 			const items = Array.from(this.header.children)
 
@@ -850,12 +919,25 @@ document.addEventListener('DOMContentLoaded', () => {
 			// queda centrado sin medir nada — a diferencia del cyclecontent de
 			// bloque, aquí no hace falta getCycleContentOrigin.
 			const splitOf = new Map(items.map(item => [item, new SplitType(item, { tagName: 'span' })]))
+			if (this.fixedWords > 0) this.applyFixedWords(items, splitOf)
 			const elementsOf = item => splitOf.get(item)[splitType]
 
 			items.forEach(item => gsap.set(elementsOf(item), { transformOrigin: 'center center', ...preset.from }))
 
 			const { cursor, blink } = preset.isTypewriter ? this.createCursorElement() : { cursor: null, blink: null }
 			const sequence = this.cycleContentRandom ? shuffle(items) : items
+
+			// createCursorElement() cuelga el cursor de this.header sin más (un
+			// hijo de más en el grid), así que hasta que arranca el primer char
+			// (y su onComplete lo reposiciona) el propio grid lo auto-coloca en
+			// una fila implícita nueva -- se ve "caído" debajo de las palabras
+			// fijas antes de que empiece el primer ciclo. Se posiciona ya desde
+			// el principio justo donde entrará el primer char, para que nunca
+			// haya un instante con el cursor mal situado.
+			if (cursor) {
+				const firstEl = elementsOf(sequence[0])[0]
+				if (firstEl) firstEl.insertAdjacentElement('beforebegin', cursor)
+			}
 
 			const enter = (item, delay = 0) => this.tweenCycleInlineItem(elementsOf(item), preset, { entering: true, cursor, delay })
 			const exit = item => this.tweenCycleInlineItem(elementsOf(item), preset, { entering: false, cursor })
@@ -871,6 +953,13 @@ document.addEventListener('DOMContentLoaded', () => {
 				const nextItem = sequence[(i + 1) % sequence.length]
 				loopTimeLine.to({}, { duration: Number(this.holdTime) })
 				loopTimeLine.add(exit(item))
+				// Con typewriter, el borrado deja el cursor ya en la posición
+				// inicial (sin chars). Una pequeña pausa aquí hace que el
+				// cursor siga parpadeando ahí unos milisegundos antes de que
+				// empiece a escribirse la siguiente frase, en vez de saltar
+				// directamente de un ciclo a otro. No aplica a otros presets
+				// (reveal/zoomBounce no tienen cursor).
+				if (preset.isTypewriter) loopTimeLine.to({}, { duration: this.blankPause })
 				loopTimeLine.add(enter(nextItem))
 			})
 
