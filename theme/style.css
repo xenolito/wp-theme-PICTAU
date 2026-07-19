@@ -2752,26 +2752,6 @@ figure figcaption {
   }
 }
 
-/* cyclecontentinline: el texto fijo (p.ej. "Qlik") y el target del ciclo
-   tienen que fluir como un ÚNICO párrafo continuo — que se reparta y ajuste
-   de línea juntos donde no quepan, como haría cualquier texto normal — no
-   como cajas independientes que envuelven su propio contenido cada una por
-   su lado. display:flex NO sirve para esto: un flex row nunca fusiona sus
-   hijos en la misma línea de texto compartida, cada flex item es su propia
-   caja aparte (de ahí que "Qlik" acabara partiéndose en su propia columna
-   estrecha en vez de fluir junto al resto). Hace falta flujo inline normal:
-   el wrapper vuelve a comportarse como bloque (anula el display:flex que WP
-   aplica por defecto a los grupos de bloque para el espaciado con blockGap),
-   y cada pieza estática (Qlik, el prefijo de data-anim_any_fixedwords...)
-   pasa a display:inline. El propio target del ciclo ya es inline-grid
-   (puesto por JS) — por sí solo ya es una caja de nivel inline y encaja sin
-   más en ese mismo flujo, sin tocarlo aquí.
-
-   Se selecciona por el propio atributo data-anim_any_animation="cyclecontentinline"
-   (la marca real de esta animación, siempre presente sea cual sea el className
-   que el usuario le ponga al bloque) en vez de una clase concreta como
-   .cycle-inline — así funciona con cualquier nombre de bloque/clase. */
-
 :has(> [data-anim_any_animation="cyclecontentinline"]) {
   display: block;
 }
@@ -2781,31 +2761,9 @@ figure figcaption {
 }
 
 :has(> [data-anim_any_animation="cyclecontentinline"]) > * {
-  /* WP fuerza width:100% en los hijos directos de un layout "constrained"
-	   (body .is-layout-constrained:not(.alignfull) > *). Para las piezas ya
-	   en display:inline esto da igual (width no aplica a una caja inline, se
-	   ignora por spec), pero el target del ciclo sigue siendo inline-grid —
-	   una caja que sí respeta width — así que hace falta anularlo ahí. Se
-	   deja el reset en todos por simplicidad/robustez. */
   width: auto !important;
   max-width: none !important;
   margin: 0 !important;
-}
-
-/* Espaciado entre las piezas de texto fijo y el ciclo: en `em` sobre cada
-   pieza (no sobre el wrapper) — así escala automáticamente con SU font-size
-   real (h2 con clamp(3rem,8vw,4.5rem), p con clamp(1rem,2vw,18px), o
-   cualquier otro), sea cual sea el tag usado. Puede haber más de una pieza
-   estática fuera del target (p.ej. un "Qlik" escrito a mano como sibling),
-   así que el margen va en todas menos la última (el propio target cíclico),
-   no solo en la primera. Nota: data-anim_any_fixedwords ya NO genera una
-   pieza aparte — duplica el prefijo dentro de cada hijo del ciclo (ver
-   applyFixedWords() en animation_any.js), precisamente para que pueda hacer
-   line-wrap junto con el resto de la frase como un párrafo normal, algo que
-   un elemento fuera de la caja atómica inline-grid nunca podría. */
-
-:has(> [data-anim_any_animation="cyclecontentinline"]) > *:not(:last-child) {
-  margin-right: 0.25em !important;
 }
 
 /**
