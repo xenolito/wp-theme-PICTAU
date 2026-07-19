@@ -1296,25 +1296,25 @@ Estructura recomendada en Gutenberg: un bloque grupo con el texto fijo + un grup
 | `data-anim_any_cyclecontentanim` | `reveal` | Nombre de otra animación de `anim_any` a reutilizar para la transición de cada frase — misma idea que en `cyclecontent`. Soportados: `reveal`, `zoomBounce`, `typewriter` |
 | `data-anim_any_cyclecontentrandom` | — | Misma semántica que en `cyclecontent`: cualquier valor no vacío baraja el orden de las frases |
 | `data-anim_any_holdtime` | `2` | Tiempo que cada frase permanece visible antes de empezar a desaparecer. A diferencia de `cyclecontent`, aquí `stagger` **no** se repurpone como hold-time — recupera su significado estándar (tiempo entre words/chars), porque siempre hay elementos en paralelo que espaciar |
-| `data-anim_any_duration` | `1.5` | Duración de la transición de cada word/char |
-| `data-anim_any_stagger` | `0.1` | Tiempo entre words/chars (significado estándar) |
+| `data-anim_any_duration` | `1.5` | Duración de la transición de cada word/char. **No aplica si `cyclecontentanim="typewriter"`**: ahí cada char aparece/desaparece de golpe, sin fade |
+| `data-anim_any_stagger` | `0.1` | Tiempo entre words/chars (significado estándar). Con `typewriter`, es la velocidad de tecleo/borrado |
 | `data-anim_any_delay` | `0.33` | Retardo antes de la primera frase |
 
 **Notas:**
 - Igual comportamiento de scroll que `cyclecontent` (arranca al entrar en viewport, se pausa al salir por abajo, se reanuda donde se quedó, y al salir por arriba respeta `data-anim_any_repeat`).
 - No hace falta `getCycleContentOrigin`: cada word/char de SplitType ya envuelve justo su propio contenido, así que el `transform-origin` centrado no necesita medirse ni recalcularse en resize.
 - **Orden de salida**: para cualquier `cyclecontentanim` (no solo `typewriter`), el word/char que apareció **último** es el primero en desaparecer, y así sucesivamente hacia atrás — la salida siempre "deshace" la entrada en el mismo orden en que se construyó, en vez de desvanecerse en el mismo orden en que apareció.
+- Con `cyclecontentanim="typewriter"`, cada char aparece y desaparece **de golpe** (sin fade), igual que al escribir en una terminal — ver la sección de `typewriter` más abajo.
 - **Layout**: el wrapper que contiene el texto fijo + el grupo `cyclecontentinline` necesita ser una fila (`display:flex; flex-direction:row`) para que ambos queden en la misma línea — los bloques de Gutenberg apilan verticalmente por defecto. En este tema, la regla ya viene añadida en `tailwind/custom/components/animations.css` con el selector `:has(> [data-anim_any_animation="cyclecontentinline"])` (se aplica automáticamente a cualquier wrapper que contenga un target de `cyclecontentinline` como hijo directo, sea cual sea el className del bloque — no depende de ninguna clase concreta como `.cycle-inline`). Esa misma regla neutraliza el `width:100%`/`margin` que WP fuerza en los hijos directos de un layout "constrained". El espaciado entre el texto fijo y el ciclo **no** usa `column-gap` en el wrapper (escalaría con el font-size del wrapper, sin relación con el `clamp()` del texto fijo — quedaría bien para un tag y mal para otro, p.ej. correcto en un `h2` pero desproporcionado en un `p`); en su lugar es un `margin-right: 0.25em` sobre el propio texto fijo (primer hijo del wrapper), así escala con el font-size real de ese elemento concreto, sea `h2`, `p` o cualquier otro con su propio `clamp()`.
 - No combinar con `data-anim_any_nextanim` (misma limitación que `cyclecontent`: el bucle infinito relanzaría el encadenado en cada vuelta).
 
 ### Máquina de escribir (`typewriter`)
 
-Revela los chars del target uno a uno, con un cursor parpadeante que se desplaza junto al último char revelado. Usable suelto o como `data-anim_any_cyclecontentanim="typewriter"` dentro de `cyclecontentinline` (en ese caso, la salida de cada frase es un efecto "backspace": los chars desaparecen uno a uno en orden inverso).
+Revela los chars del target uno a uno **de golpe** (sin fade, como al escribir en una terminal real), con un cursor parpadeante que se desplaza junto al último char revelado. Usable suelto o como `data-anim_any_cyclecontentanim="typewriter"` dentro de `cyclecontentinline` (en ese caso, la salida de cada frase es un efecto "backspace": los chars desaparecen uno a uno en orden inverso, también de golpe).
 
 ```html
 <p data-anim_any
    data-anim_any_animation="typewriter"
-   data-anim_any_duration="0.05"
    data-anim_any_stagger="0.05"
    data-anim_any_cursorchar="_"
    data-anim_any_cursorblink="0.4">
@@ -1324,11 +1324,12 @@ Revela los chars del target uno a uno, con un cursor parpadeante que se desplaza
 
 | Atributo | Default | Descripción |
 |---|---|---|
-| `data-anim_any_duration` | `1.5` | Duración de la transición de aparición de cada char |
 | `data-anim_any_stagger` | `0.1` | Tiempo de espera entre la aparición de un char y el siguiente (velocidad de tecleo) |
 | `data-anim_any_delay` | `0.33` | Retardo antes del primer char |
 | `data-anim_any_cursorchar` | `\|` | Carácter usado como cursor |
 | `data-anim_any_cursorblink` | `0.5` | Duración en segundos de cada medio-ciclo de parpadeo del cursor (yoyo infinito) |
+
+**Nota:** `data-anim_any_duration` no aplica — cada char aparece/desaparece instantáneamente (`gsap.set`, no `gsap.to`), no hay transición que durar. Solo `stagger` (velocidad) y `delay` (espera inicial) controlan el ritmo.
 
 **Notas:**
 - `data-anim_any_whattoanim` se ignora — siempre trabaja por `chars`.

@@ -1,8 +1,9 @@
 /**
  * Animation any for WP based on GSAP
- * version: 4.15.3
+ * version: 4.15.4
  *
  * ? changelog:
+ * ? v4.15.4 — typewriter's char reveal (both standalone and as cyclecontentinline's cyclecontentanim) is now instant (gsap.set, no fade), like typing in a real terminal, instead of fading in over `duration` — that attribute no longer applies to typewriter, only `stagger` (typing speed) and `delay` (initial wait) do. The "backspace" exit was already instant (v4.15.1); entrance now matches it.
  * ? v4.15.3 — cyclecontentinline's exit stagger now always runs in reverse word/char order for every cyclecontentanim preset (reveal, zoomBounce, ...), not just typewriter: the last word/char to appear is the first to disappear, so the exit always "undoes" the entrance in the same order it was built, instead of fading out 0..N while the entrance revealed 0..N (previously only typewriter's backspace reversed order).
  * ? v4.15.2 — Changed cyclecontentinline's data-anim_any_holdtime default from 1.5 to 2.
  * ? v4.15.1 — Fixed cyclecontentinline's typewriter "backspace" exit: chars faded out over `duration` while the cursor jumped to its final (post-deletion) position right at onStart, so the cursor visually got ahead of a char that was still mid-fade. Chars now disappear instantly (gsap.set, no fade) on exit, with the cursor moved in that same onComplete — entrance (fade-in) is unchanged, only the backspace side was affected.
@@ -784,8 +785,9 @@ document.addEventListener('DOMContentLoaded', () => {
 		// (el último word/char en aparecer es el primero en desaparecer) para
 		// cualquier preset, no solo typewriter — así la desaparición siempre
 		// "deshace" la entrada en el mismo orden en que se construyó. Para
-		// typewriter, además anima char a char (en vez de un único stagger
-		// tween) moviendo el cursor junto a cada uno.
+		// typewriter, cada char aparece/desaparece de golpe (sin fade, `duration`
+		// no aplica aquí — solo `stagger` como velocidad de tecleo/borrado),
+		// igual que al escribir en una terminal, moviendo el cursor junto a cada uno.
 		tweenCycleInlineItem = (elements, preset, { entering, cursor, delay = 0 } = {}) => {
 			if (preset.isTypewriter) {
 				const ordered = entering ? elements : [...elements].reverse()
@@ -794,36 +796,17 @@ document.addEventListener('DOMContentLoaded', () => {
 				ordered.forEach((el, i) => {
 					const position = i === 0 ? delay : `+=${this.stagger}`
 
-					if (entering) {
-						// El cursor se coloca al arrancar el fade-in: así ya está
-						// esperando en la posición donde va a aparecer el char,
-						// igual que el punto de inserción de una máquina de escribir real.
-						tl.to(
-							el,
-							{
-								opacity: 1,
-								duration: this.duration,
-								ease: preset.ease,
-								onStart: () => cursor && el.insertAdjacentElement('afterend', cursor),
+					tl.set(
+						el,
+						{
+							opacity: entering ? 1 : 0,
+							onComplete: () => {
+								if (!cursor) return
+								entering ? el.insertAdjacentElement('afterend', cursor) : el.insertAdjacentElement('beforebegin', cursor)
 							},
-							position
-						)
-					} else {
-						// Borrado instantáneo (sin fade): si el char desaparecía con
-						// duration/ease y el cursor se movía en el mismo onStart, el
-						// cursor quedaba a la izquierda de un char que técnicamente
-						// aún seguía visible (mid-fade), como si "adelantara" al
-						// borrado real. Al quitarlo de golpe, cursor y desaparición
-						// del char quedan sincronizados.
-						tl.set(
-							el,
-							{
-								opacity: 0,
-								onComplete: () => cursor && el.insertAdjacentElement('beforebegin', cursor),
-							},
-							position
-						)
-					}
+						},
+						position
+					)
 				})
 
 				return tl
@@ -908,14 +891,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			const { cursor, blink } = this.createCursorElement()
 
+			// Cada char aparece de golpe (sin fade, `duration` no aplica aquí),
+			// igual que al escribir en una terminal — consistente con el mismo
+			// comportamiento cuando typewriter se usa como cyclecontentanim
+			// dentro de cyclecontentinline (ver tweenCycleInlineItem).
 			elementsToAnim.forEach((char, i) => {
-				this.timeLine.to(
+				this.timeLine.set(
 					char,
 					{
 						opacity: 1,
-						duration: this.duration,
-						ease: 'none',
-						onStart: () => char.insertAdjacentElement('afterend', cursor),
+						onComplete: () => char.insertAdjacentElement('afterend', cursor),
 					},
 					i === 0 ? this.delay : `+=${this.stagger}`
 				)
