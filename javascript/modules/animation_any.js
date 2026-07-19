@@ -1,8 +1,9 @@
 /**
  * Animation any for WP based on GSAP
- * version: 4.17.2
+ * version: 4.17.3
  *
  * ? changelog:
+ * ? v4.17.3 — cyclecontentinline's typewriter backspace now runs at 0.7x the stagger of the typing speed (a fixed ratio, not a separate attribute), so erasing a phrase feels a bit quicker than typing it, like a real backspace.
  * ? v4.17.2 — Fixed v4.17.1's fix being incomplete: it still used a temporary SplitType (even words-only) to capture the fixed HTML, but pre-existing .word spans get wrapped in a *second* layer by the real split that runs afterward (SplitType doesn't recognize its own previously-generated markup), leaving duplicate nested words/chars for the fixed prefix in every child but the first. prepareFixedWordsHTML() no longer uses SplitType at all: it counts words by walking the original text nodes directly (TreeWalker) and extracts clean HTML via a Range, with zero SplitType markup involved before the single real split runs.
 
  *
@@ -128,6 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.cursorChar = cursorchar
 			this.cursorBlink = Number(cursorblink)
 			this.blankPause = Number(blankpause)
+			this.eraseSpeedRatio = 0.7 // typewriter: el borrado va este ratio más rápido que la escritura (sin atributo propio, es una regla fija del efecto)
 			this.fixedWords = Number(fixedwords)
 			this.chainanim = chainanim
 			this.matchmedia = matchmedia ?? false
@@ -785,8 +787,13 @@ document.addEventListener('DOMContentLoaded', () => {
 				const ordered = entering ? elements : [...elements].reverse()
 				const tl = gsap.timeline()
 
+				// El borrado va algo más rápido que la escritura (como al
+				// borrar de verdad): mismo stagger pero con un ratio fijo,
+				// sin necesidad de un atributo aparte para esto.
+				const stagger = entering ? Number(this.stagger) : Number(this.stagger) * this.eraseSpeedRatio
+
 				ordered.forEach((el, i) => {
-					const position = i === 0 ? delay : `+=${this.stagger}`
+					const position = i === 0 ? delay : `+=${stagger}`
 
 					tl.set(
 						el,
