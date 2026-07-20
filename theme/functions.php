@@ -321,6 +321,11 @@ require get_template_directory() . '/inc/block-attributes.php';
 require get_template_directory() . '/inc/clone-post.php';
 
 /**
+ * Importa assets del tema (theme/assets/) a la biblioteca de medios al activar el tema.
+ */
+require get_template_directory() . '/inc/default-media.php';
+
+/**
  * Pictau Blocks — CPT, widget, shortcode y página de ajustes (reemplaza el plugin wordpress-pictau-blocks-plugin).
  * Si el plugin sigue activo, se omite el require para evitar colisión de funciones y se muestra un aviso de admin.
  */

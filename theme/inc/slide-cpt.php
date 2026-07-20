@@ -88,6 +88,16 @@ function pictau_register_slide_category_taxonomy() {
 	) );
 }
 
+// Al activar el tema, crear la categoría "home" por defecto si no existe (idempotente).
+// 'init' (prioridad 99, check_theme_switched) ya ha registrado la taxonomía arriba
+// (prioridad 0) cuando WordPress dispara after_switch_theme en la misma pasada.
+add_action( 'after_switch_theme', 'pictau_create_default_slide_category' );
+function pictau_create_default_slide_category() {
+	if ( ! term_exists( 'home', 'slide_category' ) ) {
+		wp_insert_term( 'home', 'slide_category', array( 'slug' => 'home' ) );
+	}
+}
+
 // =============================================================================
 // META BOX: Datos del slide — sustituye el grupo de campos Pods "datos_slide"
 // (orden, slide_callback, caducidad)
