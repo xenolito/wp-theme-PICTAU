@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.6.0
+- **Versión:** 7.7.0
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -570,6 +570,8 @@ Campos y taxonomía (meta box nativo en `theme/inc/slide-cpt.php`, sin Pods):
 | `caducidad` | Datetime | Fecha y hora de expiración automática del slide. Ver sección _Caducidad_ más abajo. |
 | `slide_category` | Taxonomía jerárquica | Categoría interna del slide (sólo visible en admin). Permite filtrar slides por contexto con el atributo `category` del shortcode. |
 | `slide_callback` | Texto | Nombre de función JS global (`window[fn]`) a ejecutar cuando este slide queda activo. Firma: `fn(newIndex, splideInstance)`. Dispara en el montaje inicial (evento `ready`) y en cada transición posterior (evento `moved`). Se ejecuta después del `callback` global si ambos están definidos. |
+
+Al activar el tema, se crea automáticamente el término `home` en `slide_category` si no existe ya (hook `after_switch_theme`, idempotente — no duplica el término en reactivaciones posteriores). Así el sitio queda listo para usar `[hero-slider category="home"]` sin tener que crear la categoría a mano.
 
 **Admin — Listado de slides:**
 
@@ -1598,6 +1600,14 @@ La importación busca los archivos `.mo` de CF7 en:
 Para locales no ingleses, construye un mapa inverso (traducción → msgid inglés) para poder buscar correctamente en el `.mo` del idioma destino.
 
 ---
+
+## Biblioteca de medios — assets por defecto (`theme/inc/default-media.php`)
+
+Al activar el tema, se importan automáticamente a la biblioteca de medios todas las imágenes que haya en `theme/assets/` (extensiones `svg`, `png`, `jpg`, `jpeg`, `gif`, `webp`; otros ficheros de esa carpeta, como `inter2.ttf`, se ignoran). El título del adjunto se genera a partir del nombre de fichero (p.ej. `flag-en.svg` → "Flag En").
+
+**Idempotente:** cada import queda marcado con el meta `_pictau_bundled_asset` en el adjunto; en reactivaciones posteriores del tema no se duplica. Si el fichero ya existía previamente en la biblioteca con el mismo nombre (subido a mano antes de existir esta funcionalidad), se reutiliza ese adjunto en vez de crear uno nuevo con sufijo `-1`. Si el usuario borra el adjunto de la biblioteca, se vuelve a crear en la siguiente activación del tema (mismo comportamiento que la categoría `home` de `slide_category`, ver arriba).
+
+Para añadir una nueva imagen por defecto al framework, basta con colocar el fichero en `theme/assets/` — no requiere tocar código.
 
 ## Notas
 
