@@ -14,49 +14,6 @@ const GSAP_PRESETS = [
 		attributes: { 'data-anim_any': '' },
 	},
 	{
-		id: 'blur-chars-in',
-		label: 'Blur In',
-		attributes: { 'data-blur_chars': '' },
-	},
-	{
-		id: 'blur-chars-out',
-		label: 'Blur Out',
-		attributes: { 'data-blur_chars': 'out' },
-	},
-	{
-		id: 'scroll-triggered',
-		label: 'ScrollTrigger',
-		attributes: { 'data-anim_scrolltriggered': '' },
-	},
-	{
-		id: 'scroll-pin',
-		label: 'ScrollTrigger + Pin',
-		attributes: {
-			'data-anim_scrolltriggered': '',
-			'data-anim_scrolltriggered_pin': '',
-		},
-	},
-	{
-		id: 'animask',
-		label: 'AnimMask',
-		attributes: { 'data-animask': '' },
-	},
-	{
-		id: 'animask-config',
-		label: 'AnimMask Config',
-		attributes: {
-			'data-animask': '',
-			'data-animask_points': '8',
-			'data-animask_intensity': '0.12',
-			'data-animask_speed': '1',
-		},
-	},
-	{
-		id: 'split-text',
-		label: 'Split Text',
-		attributes: { 'data-split_text': '' },
-	},
-	{
 		id: 'counter',
 		label: 'Counter',
 		attributes: { class: 'pct-counter' },

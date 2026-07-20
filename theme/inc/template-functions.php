@@ -2595,3 +2595,4 @@ add_action('deleted_term', function ($term_id, $tt_id, $taxonomy) {
 
 
 require get_template_directory() . '/inc/catalog.php';
+require get_template_directory() . '/inc/slide-cpt.php';
