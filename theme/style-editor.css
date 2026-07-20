@@ -7814,6 +7814,12 @@ body.header-width-centered .main-header-content {
   padding-block: 1px;
 }
 
+.main-header-content .logo-brand h1,
+		.main-header-content .logo-brand h2,
+		.main-header-content .logo-brand h3 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
 .above-header-wrap .above-header-content {
   display: flex;
   height: var(--desktop-above-header-height);

@@ -74,7 +74,7 @@ $brandLogo = ( has_custom_logo() ) ? '<img src="' . esc_url( $logo[0] ) . '" alt
 				</div>
 				<div class="main-navigation-wrap flex justify-end">
 					<?php
-					if ( has_nav_menu('menu-1') ): wp_nav_menu( $mainNavMenu); else: echo '⛔️ Please, create a "Primary" menu'; endif;
+					if ( has_nav_menu('menu-1') ): wp_nav_menu( $mainNavMenu); else: echo '⛔️ Please, create a "Desktop" menu'; endif;
 					if ( has_nav_menu('menu-1-mobile') ): wp_nav_menu( $mainNavMenuMobile ); else: echo '  ⛔️ Please, create a "Mobile" menu'; endif;
 					?>
 				</div>
