@@ -379,6 +379,11 @@ body.header-width-centered {
 			display: flex;
 			padding-block: 1px;
 		}
+		h1,
+		h2,
+		h3 {
+			font-size: clamp(1.5rem, 3vw, 2rem);
+		}
 	}
 }
 
