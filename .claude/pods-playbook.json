@@ -430,109 +430,7 @@
     }
   },
   {
-    "#": "29. Crear CPT slide (slider hero, con editor Gutenberg y thumbnail, sin archive ni frontend público)",
-    "action": "save_pod",
-    "params": {
-      "name": "slide",
-      "label": "Slides",
-      "label_singular": "Slide",
-      "type": "post_type",
-      "storage": "meta",
-      "public": "1",
-      "show_ui": "1",
-      "publicly_queryable": "0",
-      "has_archive": "0",
-      "rewrite": "0",
-      "supports_title": "1",
-      "supports_editor": "1",
-      "supports_thumbnail": "1",
-      "supports_revisions": "1",
-      "supports_page_attributes": "1",
-      "show_in_menu": "1",
-      "menu_name": "Slides",
-      "menu_position": "26",
-      "menu_icon": "dashicons-images-alt2",
-      "show_in_nav_menus": "0",
-      "show_in_admin_bar": "1",
-      "can_export": "1",
-      "rest_enable": "1",
-      "dynamic_features_allow": "inherit",
-      "capability_type": "page",
-      "read_all": "1"
-    }
-  },
-  {
-    "#": "30. Grupo de campos para slide",
-    "action": "save_group",
-    "params": {
-      "pod": "slide",
-      "name": "datos_slide",
-      "label": "Datos del slide",
-      "weight": 0
-    }
-  },
-  {
-    "#": "31. Campo orden (number) en slide — orden de aparición (menor = primero, LCP priority)",
-    "action": "save_field",
-    "params": {
-      "pod": "slide",
-      "group": "datos_slide",
-      "name": "orden",
-      "label": "Orden",
-      "type": "number",
-      "weight": 0,
-      "number_format": "9999.99",
-      "number_decimals": "0"
-    }
-  },
-  {
-    "#": "34. Crear taxonomía slide_category (jerárquica, con UI admin y REST, sin rewrite público)",
-    "action": "save_pod",
-    "params": {
-      "name": "slide_category",
-      "label": "Categorías de slide",
-      "label_singular": "Categoría de slide",
-      "type": "taxonomy",
-      "storage": "meta",
-      "public": "1",
-      "show_ui": "1",
-      "publicly_queryable": "0",
-      "hierarchical": "1",
-      "rewrite": "0",
-      "show_in_nav_menus": "0",
-      "rest_enable": "1",
-      "dynamic_features_allow": "inherit"
-    }
-  },
-  {
-    "#": "36. Campo slide_callback (text) en slide — nombre de función JS por slide",
-    "action": "save_field",
-    "params": {
-      "pod": "slide",
-      "group": "datos_slide",
-      "name": "slide_callback",
-      "label": "Callback JS",
-      "description": "Nombre de función JS global (window[fn]) a llamar cuando este slide queda activo. Misma firma que el callback global: fn(newIndex, splide).",
-      "type": "text",
-      "weight": 1,
-      "text_max_length": "255"
-    }
-  },
-  {
-    "#": "37. Campo caducidad (datetime) en slide — fecha/hora de expiración automática del slide",
-    "action": "save_field",
-    "params": {
-      "pod": "slide",
-      "group": "datos_slide",
-      "name": "caducidad",
-      "label": "Caducidad",
-      "description": "Fecha y hora en que el slide se despublicará automáticamente y dejará de aparecer en el hero slider. Dejar vacío si el slide no caduca.",
-      "type": "datetime",
-      "weight": 2,
-      "datetime_format": "ymd_Hi",
-      "datetime_format_custom": "Y-m-d H:i:s",
-      "datetime_format_custom_js": "yy-mm-dd HH:mm:ss"
-    }
+    "#": "29-37 (CPT slide, grupo datos_slide, campos orden/slide_callback/caducidad, taxonomía slide_category y su vínculo a slide) migrados a registro nativo 2026-07 — ver theme/inc/slide-cpt.php. Pod Pods retirado via pods_api()->delete_pod(), contenido/postmeta existentes intactos."
   },
   {
     "#": "36. Campo faqs_intro (wysiwyg/quill) en product_category — introducción antes de las FAQs",
@@ -546,14 +444,6 @@
       "type": "wysiwyg",
       "weight": 4.9,
       "wysiwyg_editor": "quill"
-    }
-  },
-  {
-    "#": "35. Vincular taxonomía slide_category al CPT slide",
-    "action": "save_pod",
-    "params": {
-      "name": "slide",
-      "built_in_taxonomies_slide_category": "1"
     }
   },
   {

@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.5.0
+- **Versión:** 7.6.0
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -147,9 +147,9 @@ pictau/
 
 ---
 
-## Custom Post Types y taxonomías (Pods)
+## Custom Post Types y taxonomías
 
-Los CPTs y taxonomías se crean y gestionan mediante el plugin Pods. Las operaciones se documentan en `.claude/pods-playbook.json` y se ejecutan via WP-CLI.
+La mayoría de CPTs y taxonomías del proyecto se crean y gestionan mediante el plugin Pods. Las operaciones se documentan en `.claude/pods-playbook.json` y se ejecutan via WP-CLI.
 
 El tema incluye soporte nativo para el catálogo de productos:
 
@@ -157,6 +157,15 @@ El tema incluye soporte nativo para el catálogo de productos:
 |------|------|-------------|
 | `producto` | CPT | Productos del catálogo |
 | `product_category` | Taxonomía | Categorías de producto (jerárquica) |
+
+Además, dos CPTs se registran de forma **nativa en el tema** (sin depender de ningún plugin):
+
+| Slug | Tipo | Descripción |
+|------|------|-------------|
+| `pictau_blocks` | CPT | Bloques estáticos reutilizables (`theme/inc/pictau-blocks-gutenberg.php`) |
+| `slide` (+ `slide_category`) | CPT + Taxonomía | Slides del hero slider `[hero-slider]` (`theme/inc/slide-cpt.php`) |
+
+`slide` se migró desde Pods en 2026-07 precisamente para que `[hero-slider]` funcione con solo activar el tema, sin depender de que Pods esté instalado. Ver la sección [`[hero-slider]`](#hero-slider) para el detalle de sus campos.
 
 El resto de CPTs del proyecto se definen según las necesidades de cada cliente.
 
@@ -529,7 +538,7 @@ Megamenú jerárquico de taxonomías para cualquier CPT. Muestra las categorías
 
 ### `[hero-slider]`
 
-Slider full-width above-the-fold basado en Splide.js y el CPT `slide`. El contenido de cada slide se edita con el editor de bloques de WordPress. Los slides se ordenan por el campo Pods `orden`.
+Slider full-width above-the-fold basado en Splide.js y el CPT `slide` (registrado nativamente en el tema, `theme/inc/slide-cpt.php` — sin dependencia de plugins). El contenido de cada slide se edita con el editor de bloques de WordPress. Los slides se ordenan por el campo `orden`.
 
 **Atributos:**
 
@@ -553,7 +562,7 @@ Slider full-width above-the-fold basado en Splide.js y el CPT `slide`. El conten
 
 El contenido de cada slide se edita con el editor de bloques de WordPress (Gutenberg). El shortcode renderiza directamente `get_the_content()` de cada post de tipo `slide`.
 
-Campo Pods adicional y taxonomía:
+Campos y taxonomía (meta box nativo en `theme/inc/slide-cpt.php`, sin Pods):
 
 | Campo / Taxonomía | Tipo | Descripción |
 |---|---|---|
@@ -572,9 +581,9 @@ El listado de slides en el panel de WordPress incluye:
 
 #### Caducidad — expiración automática de slides
 
-Cada slide puede tener una fecha+hora de caducidad en el campo Pods `caducidad` (formato `Y-m-d H:i:s`). El sistema es **triple capa** para garantizar que un slide no aparezca incluso con caché activa (WP Super Cache, WP Rocket, etc.):
+Cada slide puede tener una fecha+hora de caducidad en el campo `caducidad` (formato `Y-m-d H:i:s`). El sistema es **triple capa** para garantizar que un slide no aparezca incluso con caché activa (WP Super Cache, WP Rocket, etc.):
 
-**Capa 1 — Filtro PHP (server-side):** el shortcode usa un `meta_query` que excluye slides cuya `caducidad` haya pasado. Garantiza que en cada carga fresca el slide ya no se renderiza. El filtro también incluye `0000-00-00 00:00:00` como valor equivalente a "sin caducidad" (Pods guarda ese valor cuando el usuario borra el campo datetime y guarda). Un hook `save_post_slide` (priority 100) normaliza ese valor a `''` en el momento del guardado para que la base de datos quede limpia.
+**Capa 1 — Filtro PHP (server-side):** el shortcode usa un `meta_query` que excluye slides cuya `caducidad` haya pasado. Garantiza que en cada carga fresca el slide ya no se renderiza. El filtro también incluye `0000-00-00 00:00:00` como valor equivalente a "sin caducidad" (sentinel heredado de la época en que el campo se gestionaba con Pods, previo a la migración a CPT nativo; se mantiene por compatibilidad con datos antiguos). Un hook `save_post_slide` (priority 100) normaliza ese valor a `''` en el momento del guardado para que la base de datos quede limpia.
 
 **Capa 2 — Filtro JS (client-side):** el módulo `hero_slider.js` elimina del DOM, antes de montar Splide, cualquier `.splide__slide[data-slide-expiry]` cuya fecha haya pasado. Esto cubre páginas servidas desde caché con HTML obsoleto.
 
@@ -983,13 +992,6 @@ La sección **Presets GSAP** (colapsable, cerrada por defecto) ofrece acceso rá
 | Preset | Atributos añadidos |
 |---|---|
 | **Anim Any** | `data-anim_any=""` |
-| **Blur In** | `data-blur_chars=""` |
-| **Blur Out** | `data-blur_chars="out"` |
-| **ScrollTrigger** | `data-anim_scrolltriggered=""` |
-| **ScrollTrigger + Pin** | `data-anim_scrolltriggered=""` + `data-anim_scrolltriggered_pin=""` |
-| **AnimMask** | `data-animask=""` |
-| **AnimMask Config** | `data-animask=""` + `data-animask_points="8"` + `data-animask_intensity="0.12"` + `data-animask_speed="1"` |
-| **Split Text** | `data-split_text=""` |
 | **Counter** | `class="pct-counter"` |
 | **Typewriter** | `data-anim_any=""` + `data-anim_any_animation="cyclecontentinline"` + `data-anim_any_cyclecontentanim="typewriter"` + `data-anim_any_fixedwords="1"` + `data-anim_any_duration="0.5"` + `data-anim_any_stagger="0.08"` + `data-anim_any_holdtime="2"` + `data-anim_any_repeat="false"` + `data-anim_any_cursorchar="_"` (misma configuración que `.cycle-inline-2`; aplicar al bloque grupo que contiene los ciclos — ver [Ciclo de texto inline](#ciclo-de-texto-inline-cyclecontentinline)) |
 

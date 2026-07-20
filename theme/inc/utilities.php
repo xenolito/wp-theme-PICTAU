@@ -2632,8 +2632,7 @@ add_action( 'manage_slide_posts_custom_column', function ( $column, $post_id ) {
 	}
 
 	if ( 'orden' === $column ) {
-		$pods  = pods( 'slide', $post_id );
-		$orden = $pods ? $pods->field( 'orden' ) : '';
+		$orden = get_post_meta( $post_id, 'orden', true );
 		$valor = ( $orden !== '' && $orden !== null ) ? (int) $orden : '';
 		// data-orden used by Quick Edit JS to pre-populate the field
 		echo '<span class="hidden" data-orden="' . esc_attr( $valor ) . '"></span>';
@@ -2693,7 +2692,7 @@ add_action( 'quick_edit_custom_box', function ( $column_name, $post_type ) {
 	<?php
 }, 10, 2 );
 
-// Quick Edit: guardar el campo via Pods
+// Quick Edit: guardar el campo "Orden" como post meta nativo
 add_action( 'save_post_slide', function ( $post_id ) {
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 		return;
@@ -2704,11 +2703,8 @@ add_action( 'save_post_slide', function ( $post_id ) {
 	if ( ! current_user_can( 'edit_post', $post_id ) ) {
 		return;
 	}
-	$valor = $_POST['pictau_orden_slide'];
-	$pods  = pods( 'slide', $post_id );
-	if ( $pods ) {
-		$pods->save( 'orden', $valor !== '' ? (int) $valor : null );
-	}
+	$valor = sanitize_text_field( wp_unslash( $_POST['pictau_orden_slide'] ) );
+	update_post_meta( $post_id, 'orden', $valor !== '' ? (int) $valor : '' );
 } );
 
 // Al guardar un slide, sincronizar la featured image con el primer bloque core/image del contenido

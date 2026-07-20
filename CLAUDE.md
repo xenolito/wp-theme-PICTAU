@@ -53,9 +53,13 @@ pictau/
 
 ---
 
-## Custom Post Types (via Pods)
+## Custom Post Types
 
-_Sin CPTs personalizados registrados aún. Añadir aquí cuando se creen._
+**Nativos (registrados en `theme/inc/*.php`, sin dependencia de plugins):**
+- `pictau_blocks` — bloques estáticos reutilizables (`theme/inc/pictau-blocks-gutenberg.php`).
+- `slide` (+ taxonomía `slide_category`) — slides del hero slider `[hero-slider]` (`theme/inc/slide-cpt.php`). Migrado desde Pods en 2026-07 para que `[hero-slider]` funcione sin depender de ningún plugin externo; el shortcode y su lógica siguen en `theme/inc/utilities.php`.
+
+**Vía Pods** (`.claude/pods-playbook.json`): `producto`, `ambiente`, sus taxonomías (`product_category`, etc.) y campos asociados — documentados y creados con el playbook de Pods, ver `.claude/pods-playbook.json`.
 
 ---
 
