@@ -47,7 +47,7 @@ final class Pictau_CF7_Form_Template {
 	 */
 	public function add_editor_panel( array $panels ): array {
 		$panels['pct-form-template'] = [
-			'title'    => esc_html__( 'Plantilla', 'pictau' ),
+			'title'    => esc_html__( 'Plantilla Base', 'pictau' ),
 			'callback' => [ $this, 'render_editor_panel' ],
 		];
 		return $panels;
@@ -128,7 +128,7 @@ final class Pictau_CF7_Form_Template {
 	}
 
 	// =========================================================================
-	// Plantilla base — copia del formulario "Contacto General" (post 76446)
+	//! Plantilla base
 	// =========================================================================
 
 	private function get_form_template(): string {
