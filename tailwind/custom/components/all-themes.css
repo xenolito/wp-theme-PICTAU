@@ -43,7 +43,7 @@
 }
 
 .bg-transparent {
-	background-color: transparent !important;
+	background: transparent !important;
 }
 
 .bg-lighter {
