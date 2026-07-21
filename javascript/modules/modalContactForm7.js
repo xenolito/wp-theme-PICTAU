@@ -44,7 +44,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			this.form = this.modal.popupContent.querySelector('form')
 
-			if (!this.form) return
+			if (!this.form) {
+				console.warn(`⚠️ El modal "${this.modalID}" (data-modalform="${this.modalID}") no contiene ningún <form>. Comprueba que el formulario de Contact Form 7 referenciado dentro de este bloque exista y no haya sido borrado. Los triggers data-modalform_target="${this.modalID}" no abrirán este modal.`, this.modal.modal)
+				return
+			}
 
 			// this.setupModal()
 			this.bindFoundLinks()
