@@ -5,8 +5,8 @@
  *
  *
  * The trigger (button / anchor) element should have the attribute data-modalform_target="<modal unique ID>" which will be used to identify the modal to open.
- * the trigger (button / anchor) element should also need the attribute data-form_input_name="<form input name target>, <content to set/pass in the form input target>".
- * the trigger (button / anchor) element should also need the attribute data-form_input_data="<content to set/pass to the form input target>".
+ * the trigger (button / anchor) element should also need the attribute data-modalform_input_name="<form input name target>".
+ * the trigger (button / anchor) element should also need the attribute data-modalform_input_data="<content to set/pass to the form input target>".
  *
  * @license Copyright 2025, Oscar Rey Tajes. All rights reserved.
  * @author: Oscar Rey Tajes, oscar.rey.tajes@gmail.com
@@ -94,16 +94,22 @@ document.addEventListener('DOMContentLoaded', () => {
 				const formInputData = link.dataset['modalform_input_data'] ? link.dataset['modalform_input_data'] : false
 				const formInputTargetName = link.dataset['modalform_input_name'] ? link.dataset['modalform_input_name'] : false
 
-				const processedData = this.replaceTemplateTags(formInputData, tags)
-				const dataToPass = processedData !== false ? processedData : formInputData
+				if (formInputTargetName) {
+					const processedData = this.replaceTemplateTags(formInputData, tags)
+					const dataToPass = processedData !== false ? processedData : formInputData
 
-				this.passDataToForm(formInputTargetName, dataToPass)
+					this.passDataToForm(formInputTargetName, dataToPass)
+				}
+
 				this.modal.show({ closecallback: this.resetPassedDataToForm })
 			})
 		}
 
 		passDataToForm = (inputFieldTargetName, data) => {
 			this.inputTarget = this.form.querySelector(`input[name="${inputFieldTargetName}"]`)
+
+			if (!this.inputTarget) return
+
 			this.inputTarget.value = data ? data : ''
 		}
 

@@ -650,6 +650,11 @@ if ( class_exists( 'WPCF7_ContactForm' ) && function_exists( 'pll_register_strin
 	require get_template_directory() . '/inc/cf7-polylang.php';
 }
 
+//! PLANTILLA BASE PARA NUEVOS FORMULARIOS CF7
+if ( class_exists( 'WPCF7_ContactForm' ) ) {
+	require get_template_directory() . '/inc/cf7-form-template.php';
+}
+
 
 
 //! FEATURERD AREAS CARDS FOR HOMEPAGE WITH POD TEMPLATE

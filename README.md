@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.7.0
+- **Versión:** 7.8.0
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1437,8 +1437,39 @@ Entry: `javascript/script.js` → `theme/js/script.min.js`
 | `animation_any.js` | Animaciones de entrada con GSAP + ScrollTrigger. Atributo: `data-anim_any`. |
 | `parallax.js` | Efecto parallax vertical. Atributo: `data-parallax="<depth>"`. |
 | `navigation_dot.js` | Navegación lateral por puntos para páginas one-page. Atributo: `data-dotnav`. |
+| `ModalWP.js` | Clase genérica de modal (OverlayScrollbars). Construye la estructura DOM del modal a partir de cualquier elemento pasado por constructor. No conoce `data-modalform`; solo lee `data-modal` como fallback de ID. Ver [Modales con formulario (Contact Form 7)](#modales-con-formulario-contact-form-7--modalwpjs--modalcontactform7js). |
+| `modalContactForm7.js` | Consumidor de `ModalWP.js` para modales con formulario CF7 disparados por click. Atributos: `data-modalform`, `data-modalform_target`, `data-modalform_input_name`, `data-modalform_input_data`. |
+| `contactForm7.js` | Eventos de formularios CF7 (validación, envío, checkboxes/radios custom). También usa `ModalWP.js` (sin formulario) para mostrar el mensaje de éxito tras el envío. |
 
 Librerías: GSAP + ScrollTrigger, Splide, OverlayScrollbars, Split Type, CountUp.js
+
+---
+
+## Modales con formulario (Contact Form 7) — `ModalWP.js` / `modalContactForm7.js`
+
+Sistema de modales disparados por click para alojar un formulario de Contact Form 7, sin depender de plugins de terceros.
+
+**`ModalWP.js`** es una clase de modal genérica y agnóstica al formulario: recibe un `targetDOMElement` y un `config` (`id`, `nested`, `form`, `onclose`, `autoclose`) y construye la estructura DOM (backdrop, wrapper con `OverlayScrollbars`, botón de cierre). No escanea el documento por sí misma.
+
+**`modalContactForm7.js`** es el módulo consumidor que detecta los modales y sus disparadores:
+
+- El **modal** es cualquier elemento con `data-modalform="<id>"`.
+- El **disparador** (botón/enlace) necesita `data-modalform_target="<id>"` para abrir el modal cuyo ID coincida.
+- Opcionalmente, el disparador puede pasar datos al formulario contenido en el modal:
+  - `data-modalform_input_name="<name del input hidden>"`
+  - `data-modalform_input_data="<valor a asignar>"`, que admite tags de plantilla `{{title}}` (título del `<h1>` del documento), sustituidos vía `replaceTemplateTags`.
+- Ambos atributos de datos son **opcionales**: si el formulario no necesita input hidden (formulario genérico), el disparador puede omitirlos y el modal se abre igualmente sin tocar el formulario.
+- Al cerrar el modal, el input hidden rellenado se resetea a vacío (`resetPassedDataToForm`).
+
+Ejemplo de uso (ver `theme/inc/catalog.php`):
+
+```php
+<div data-modalform_input_name="producto" data-modalform_input_data="Información sobre {{title}}" data-modalform_target="lead">
+	<a href="#modal-lead">Solicita información</a>
+</div>
+```
+
+`contactForm7.js` usa `ModalWP.js` de forma independiente (sin `form: true`) para mostrar el mensaje de confirmación/error tras el envío del formulario, no como modal disparado por click.
 
 ---
 
@@ -1587,6 +1618,8 @@ Cada formulario tiene una pestaña **Polylang** en el editor con:
 - **"Importar mensajes de error desde CF7"** — importa las traducciones de los mensajes de error directamente desde los archivos `.mo` del plugin CF7 a Polylang, sin salida de pantalla. Muestra el resultado inline (importadas / omitidas por idioma).
 - **"Limpiar strings huérfanas"** — elimina del registro interno las strings que ya no existen en ningún formulario, sin recargar la página.
 
+El panel y sus botones funcionan tanto al editar un formulario existente como en la pantalla **"Añadir nuevo"** de CF7 (el script se encola comprobando que `$screen->id` contiene `wpcf7`, no una comparación exacta contra `toplevel_page_wpcf7`, ya que ambas pantallas tienen screen ids distintos).
+
 ### Página Polylang > String Translations
 
 Cuando se filtra por el grupo "Contact Form 7 Error Messages", aparece un aviso con el botón **"Importar mensajes de error desde CF7"** que ejecuta la misma importación masiva para todos los idiomas configurados en Polylang.
@@ -1598,6 +1631,23 @@ La importación busca los archivos `.mo` de CF7 en:
 2. `WP_PLUGIN_DIR/contact-form-7/languages/contact-form-7-{locale}.mo`
 
 Para locales no ingleses, construye un mapa inverso (traducción → msgid inglés) para poder buscar correctamente en el `.mo` del idioma destino.
+
+---
+
+## Contact Form 7 — Pestaña "Plantilla" (`theme/inc/cf7-form-template.php`)
+
+Añade una pestaña **Plantilla** en el editor de CF7 (al mismo nivel que Formulario/Correo/Mensajes), cargada condicionalmente desde `theme/inc/utilities.php` solo si CF7 está activo.
+
+Contiene un botón **"Rellenar con plantilla base"** que, sin necesidad de guardar ni recargar, rellena directamente:
+
+- El textarea de la pestaña **Formulario** (`#wpcf7-form`).
+- El textarea de **Cuerpo del mensaje** de la pestaña Correo (`#wpcf7-mail-body`, solo Mail 1).
+
+Si alguno de los dos ya tiene contenido, pide confirmación antes de sobrescribir.
+
+El contenido de la plantilla está hardcodeado en dos métodos privados (`get_form_template()` y `get_mail_template()`) del propio archivo — es una copia del formulario **"Contacto General"** (el que alimenta el modal `lead` del sitio). Para actualizar la plantilla cuando ese formulario cambie, basta con volver a copiar su contenido en esos dos métodos.
+
+Disponible tanto al editar un formulario existente (`admin.php?page=wpcf7&post=X&action=edit`) como en la pantalla **"Añadir nuevo"** (`admin.php?page=wpcf7-new`) — el script se encola comprobando que `$screen->id` contiene `wpcf7`, en vez de una comparación exacta contra `toplevel_page_wpcf7`, porque ambas pantallas usan screen ids distintos.
 
 ---
 
