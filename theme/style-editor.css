@@ -1454,7 +1454,7 @@ sup {
 }
 
 .bg-transparent {
-  background-color: transparent !important;
+  background: transparent !important;
 }
 
 .bg-lighter {
@@ -5239,12 +5239,13 @@ button#submit:has(svg) {
   align-items: center;
   justify-content: center;
   border-width: 0px;
+  background-color: transparent;
   --tw-text-opacity: 1;
   color: rgb(156 163 175 / var(--tw-text-opacity));
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
-  background-color: transparent;
+  background: transparent;
 }
 
 .catalog-menu-toggle:hover {
