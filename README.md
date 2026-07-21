@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.9.1
+- **Versión:** 7.10.0
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -987,15 +987,17 @@ Al seleccionar cualquier bloque, el panel **Atributos HTML** aparece en la barra
 
 **Editor CSS visual para `style`:** al hacer clic en el botón ✏ de la fila `style`, se despliega una sub-tabla de pares `propiedad / valor` que compila y sincroniza el atributo `style` en tiempo real.
 
-### Presets GSAP
+### Presets
 
-La sección **Presets GSAP** (colapsable, cerrada por defecto) ofrece acceso rápido a los `data-attributes` de los módulos de animación del tema. Al hacer clic en un preset, sus atributos se añaden o fusionan con los existentes.
+La sección **Presets** (colapsable, cerrada por defecto) ofrece acceso rápido a combinaciones de `data-attributes` ya usadas en el tema (animaciones GSAP, modales CF7, etc.) — no está limitada a un solo tipo de funcionalidad. Al hacer clic en un preset, sus atributos se añaden o fusionan con los existentes.
 
 | Preset | Atributos añadidos |
 |---|---|
 | **Anim Any** | `data-anim_any=""` |
 | **Counter** | `class="pct-counter"` |
 | **Typewriter** | `data-anim_any=""` + `data-anim_any_animation="cyclecontentinline"` + `data-anim_any_cyclecontentanim="typewriter"` + `data-anim_any_fixedwords="1"` + `data-anim_any_duration="0.5"` + `data-anim_any_stagger="0.08"` + `data-anim_any_holdtime="2"` + `data-anim_any_repeat="false"` + `data-anim_any_cursorchar="_"` (misma configuración que `.cycle-inline-2`; aplicar al bloque grupo que contiene los ciclos — ver [Ciclo de texto inline](#ciclo-de-texto-inline-cyclecontentinline)) |
+| **Open Modal trigger** | `data-modalform_target="lead"` + `data-modalform_input_name="producto"` + `data-modalform_input_data="Estoy interesado en: {{title}}"` — mismos atributos que el botón "Más información" de la home. Aplicar al bloque botón/enlace que debe abrir el modal (ver [Modales con formulario](#modales-con-formulario-contact-form-7--modalwpjs--modalcontactform7js)) |
+| **Is CF7 modal** | `data-modalform="lead"` — marca el bloque (normalmente un Grupo) como modal CF7; su valor debe coincidir con el `data-modalform_target` de los triggers que lo abren |
 
 ### Bloques no soportados
 

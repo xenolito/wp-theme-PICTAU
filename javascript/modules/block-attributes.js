@@ -7,7 +7,7 @@
 
 const UNSUPPORTED_BLOCKS = ['core/freeform', 'core/html', 'core/shortcode', 'core/legacy-widget']
 
-const GSAP_PRESETS = [
+const ATTRIBUTE_PRESETS = [
 	{
 		id: 'anim-any',
 		label: 'Anim Any',
@@ -36,6 +36,26 @@ const GSAP_PRESETS = [
 			'data-anim_any_repeat': 'false',
 			'data-anim_any_cursorchar': '_',
 		},
+	},
+	{
+		id: 'modal-trigger',
+		label: 'Open Modal trigger',
+		// Mismos atributos que el botón "Más información" de la home: dispara
+		// la apertura del modal CF7 con id=data-modalform_target y, si el
+		// formulario destino tiene el input hidden correspondiente, le pasa
+		// un valor (admite tags de plantilla como {{title}}).
+		attributes: {
+			'data-modalform_target': 'lead',
+			'data-modalform_input_name': 'producto',
+			'data-modalform_input_data': 'Estoy interesado en: {{title}}',
+		},
+	},
+	{
+		id: 'cf7-modal',
+		label: 'Is CF7 modal',
+		// Marca el bloque (normalmente un Grupo) como modal CF7: su ID debe
+		// coincidir con el data-modalform_target de los triggers que lo abren.
+		attributes: { 'data-modalform': 'lead' },
 	},
 ]
 
@@ -425,14 +445,14 @@ wp.hooks.addFilter('editor.BlockEdit', 'pictau/block-attributes-panel', function
 			)
 		)
 
-		// ---- Render de presets GSAP ----
+		// ---- Render de presets ----
 		const presetButtons = el(
 			PanelBody,
-			{ title: __('Presets GSAP', 'pictau'), initialOpen: false, className: 'pct-ba-presets' },
+			{ title: __('Presets', 'pictau'), initialOpen: false, className: 'pct-ba-presets' },
 			el(
 				'div',
 				{ className: 'pct-ba-presets-grid' },
-				GSAP_PRESETS.map(preset =>
+				ATTRIBUTE_PRESETS.map(preset =>
 					el(
 						Button,
 						{
