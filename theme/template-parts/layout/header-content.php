@@ -70,7 +70,9 @@ $brandLogo = ( has_custom_logo() ) ? '<img src="' . esc_url( $logo[0] ) . '" alt
 		<div class="main-header-wrap">
 			<div class="main-header-content">
 				<div class="logo-brand">
-					<a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home" aria-label="home page"><?php echo wp_svg_inline_filter($brandLogo); ?></a>
+					<a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home" aria-label="home page">
+						<?php echo wp_svg_inline_filter($brandLogo); ?>
+					</a>
 				</div>
 				<div class="main-navigation-wrap flex justify-end">
 					<?php

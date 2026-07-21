@@ -596,7 +596,7 @@ final class Pictau_CF7_Polylang {
 	 */
 	public function enqueue_editor_scripts(): void {
 		$screen = get_current_screen();
-		if ( ! $screen || 'toplevel_page_wpcf7' !== $screen->id ) {
+		if ( ! $screen || false === strpos( $screen->id, 'wpcf7' ) ) {
 			return;
 		}
 
