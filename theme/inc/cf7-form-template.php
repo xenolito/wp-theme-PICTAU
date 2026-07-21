@@ -2,7 +2,7 @@
 /**
  * Plantilla base para nuevos formularios Contact Form 7
  *
- * Añade una pestaña "Plantilla" al editor de CF7 con un botón que rellena
+ * Añade una pestaña "Plantilla Base" al editor de CF7 con un botón que rellena
  * el contenido de las pestañas Formulario y Correo con una plantilla base
  * predefinida, para agilizar la creación de formularios nuevos.
  *
@@ -40,7 +40,7 @@ final class Pictau_CF7_Form_Template {
 	// =========================================================================
 
 	/**
-	 * Añade la pestaña "Plantilla" en el editor de formularios CF7.
+	 * Añade la pestaña "Plantilla Base" en el editor de formularios CF7.
 	 *
 	 * @param array $panels
 	 * @return array
@@ -78,8 +78,27 @@ final class Pictau_CF7_Form_Template {
 				<span id="pct-cf7-template-feedback" style="margin-left: 0.75em; display: none; font-style: italic;"></span>
 			</p>
 
+			<?php if ( $this->is_polylang_active() ) : ?>
+				<p>
+					<button type="button" id="pct-cf7-template-fill-multilang" class="button button-secondary">
+						<?php esc_html_e( 'Rellenar con plantilla base Multiidioma', 'pictau' ); ?>
+					</button>
+					<span id="pct-cf7-template-feedback-multilang" style="margin-left: 0.75em; display: none; font-style: italic;"></span>
+				</p>
+				<p class="description">
+					<?php esc_html_e( 'Igual que la anterior, pero con los textos envueltos en {llaves} para que sean traducibles con Polylang (ver pestaña Polylang).', 'pictau' ); ?>
+				</p>
+			<?php endif; ?>
+
 		</div>
 		<?php
+	}
+
+	/**
+	 * Comprueba si Polylang está activo, mismo criterio que cf7-polylang.php.
+	 */
+	private function is_polylang_active(): bool {
+		return function_exists( 'pll_register_string' );
 	}
 
 	// =========================================================================
@@ -92,14 +111,35 @@ final class Pictau_CF7_Form_Template {
 			return;
 		}
 
-		$form_template = $this->get_form_template();
-		$mail_template = $this->get_mail_template();
+		$blocks = $this->build_fill_button_script(
+			'pct-cf7-template-fill',
+			'pct-cf7-template-feedback',
+			$this->get_form_template(),
+			$this->get_mail_template()
+		);
 
+		if ( $this->is_polylang_active() ) {
+			$blocks .= $this->build_fill_button_script(
+				'pct-cf7-template-fill-multilang',
+				'pct-cf7-template-feedback-multilang',
+				$this->get_form_template_multilang(),
+				$this->get_mail_template_multilang()
+			);
+		}
+
+		wp_add_inline_script( 'wpcf7-admin', "document.addEventListener('DOMContentLoaded', function () {\n{$blocks}});" );
+	}
+
+	/**
+	 * Genera el bloque JS que engancha el click de un botón "rellenar plantilla"
+	 * a un par de textareas (Formulario / Correo) del editor CF7.
+	 */
+	private function build_fill_button_script( string $button_id, string $feedback_id, string $form_template, string $mail_template ): string {
 		$confirm_msg = esc_js( __( 'Esto sobrescribirá el contenido actual de las pestañas Formulario y Correo con la plantilla base. ¿Continuar?', 'pictau' ) );
 		$done_msg    = esc_js( __( 'Plantilla aplicada. Revisa las pestañas Formulario y Correo, y recuerda guardar.', 'pictau' ) );
 
-		$script = "document.addEventListener('DOMContentLoaded', function () {
-	var btn = document.getElementById('pct-cf7-template-fill');
+		return "(function () {
+	var btn = document.getElementById('{$button_id}');
 	if (!btn) return;
 
 	btn.addEventListener('click', function () {
@@ -116,15 +156,14 @@ final class Pictau_CF7_Form_Template {
 		formEl.dispatchEvent(new Event('change', { bubbles: true }));
 		mailEl.dispatchEvent(new Event('change', { bubbles: true }));
 
-		var feedback = document.getElementById('pct-cf7-template-feedback');
+		var feedback = document.getElementById('{$feedback_id}');
 		if (feedback) {
 			feedback.textContent = '{$done_msg}';
 			feedback.style.display = 'inline';
 		}
 	});
-});";
-
-		wp_add_inline_script( 'wpcf7-admin', $script );
+})();
+";
 	}
 
 	// =========================================================================
@@ -151,6 +190,46 @@ FORM;
 	}
 
 	private function get_mail_template(): string {
+		return <<<'MAIL'
+<strong>De:</strong> [nombre] --> [email]<br>
+<strong>Interés en:</strong> [interes]<br>
+<strong>Teléfono:</strong> [telefono]<br>
+<strong>Comentarios:</strong> [mensaje]<br>
+<br><br>
+<hr><br>
+Has recibido esta información desde: [_post_url]
+MAIL;
+	}
+
+	// =========================================================================
+	//! Plantilla base — versión Multiidioma (tokens {} para Polylang)
+	// =========================================================================
+
+	/**
+	 * Copia del formulario "Contacto General -- MULTIIDIOMA" (post 76611, hash 0031d46),
+	 * con los textos envueltos en {llaves} para que theme/inc/cf7-polylang.php los
+	 * registre automáticamente como strings traducibles en Polylang.
+	 */
+	private function get_form_template_multilang(): string {
+		return <<<'FORM'
+<div class="pct-form-pasti">
+[select* interes class:pct-select first_as_label "{¿Qué te interesa?*}" "{Participar}" "{Colaborar}" "{Crear Proyectos}"]
+  [text* nombre placeholder "{Nombre y Apellidos}*"]
+  [email* email placeholder "Email*"]
+  [text* telefono placeholder "{Teléfono}*"]
+
+  <div>[textarea mensaje placeholder "{¿En qué más podemos ayudarte?}"]</div>
+  <div class="legal-content"><span class="pct-form-element pct-legal">[checkbox* legal-check id:legal-input class:pct-legal-acceptance "legal-acceptance"]<label class="pct-label-for-legal" for="legalinput-cf"><span class="display-as-block"><i class="ico-unchecked"></i><i class="ico-checked"></i></span><span class="display-as-block">{Al enviar este formulario confirmo que he leído y acepto la}  <a class="pct-lk-privacidad" {href="/politica-privacidad"} style="text-decoration:underline">{Política de Privacidad}</a></span></label></span></div><div><button id="submit" class="wpcf7-form-control wpcf7-submit bg-bt-submit"><span>{Enviar}</span> <i class="fas fa-cog fa-spin"></i></button></div>[response]</div>
+
+
+<div data-modal="contacto-msg-sent-ok">
+  <h3>{Gracias por tu Mensaje}</h3>
+  <p>{¡Nos pondremos en contacto contigo lo antes posible!}</p>
+</div>
+FORM;
+	}
+
+	private function get_mail_template_multilang(): string {
 		return <<<'MAIL'
 <strong>De:</strong> [nombre] --> [email]<br>
 <strong>Interés en:</strong> [interes]<br>
