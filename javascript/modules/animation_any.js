@@ -917,10 +917,24 @@ document.addEventListener('DOMContentLoaded', () => {
 		// transform, así que se quedan siempre a la vista.
 		excludeFixedWordsFromAnimation = (items, splitOf) => {
 			const n = this.fixedWordsCount
-			items.forEach(item => {
+			items.forEach((item, i) => {
 				const itemWords = splitOf.get(item).words
 				const fixedItemWords = itemWords.splice(0, n)
-				splitOf.get(item).chars = splitOf.get(item).chars.filter(c => !fixedItemWords.some(w => w.contains(c)))
+				const fixedChars = splitOf.get(item).chars.filter(c => fixedItemWords.some(w => w.contains(c)))
+				splitOf.get(item).chars = splitOf.get(item).chars.filter(c => !fixedChars.includes(c))
+
+				// La copia del prefijo fijo del primer hijo es la única que se deja
+				// visible (nunca se toca, ver comentario más arriba). Las copias del
+				// resto de hijos son puramente estructurales -- están ahí solo para
+				// que el line-wrap funcione dentro de la caja atómica inline-grid --
+				// pero como todos los hijos están apilados en la misma celda de grid,
+				// si se dejaran visibles se verían todas a la vez, superpuestas
+				// (efecto fantasma/duplicado, especialmente notorio con texto
+				// centrado y frases de ancho distinto). Se ocultan de una vez aquí
+				// mismo: nunca vuelven a tocarse porque quedan fuera de `chars`.
+				if (i > 0 && fixedChars.length) {
+					gsap.set(fixedChars, { opacity: 0 })
+				}
 			})
 		}
 
@@ -942,7 +956,14 @@ document.addEventListener('DOMContentLoaded', () => {
 			// grid: el contenedor no fuerza ancho de bloque, así puede seguir a
 			// otro texto en la misma línea (p.ej. "Qlik <frase cíclica>").
 			gsap.set(this.header, { opacity: 1, display: 'inline-grid' })
-			gsap.set(items, { gridRow: 1, gridColumn: 1 })
+			// A diferencia de cyclecontent (bloque), aquí SÍ se fuerza text-align:left
+			// en los hijos pase lo que pase en el CSS ambiente. La técnica entera
+			// (prefijo fijo compartido + frases apiladas en la misma celda) asume
+			// flujo natural izquierda-a-derecha: si el contenedor hereda
+			// text-align:center (p.ej. dentro de un hero-slider), cada frase se
+			// centraría según su propio ancho, desalineando el prefijo fijo -- que
+			// nunca se mueve -- respecto a la parte variable de la frase activa.
+			gsap.set(items, { gridRow: 1, gridColumn: 1, textAlign: 'left' })
 
 			// typewriter siempre trabaja char a char, sea cual sea whattoanim.
 			const splitType = preset.isTypewriter ? 'chars' : this.whattoanim
