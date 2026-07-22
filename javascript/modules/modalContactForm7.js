@@ -77,15 +77,14 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 
 		bindFoundLinks = () => {
-			const documentTitle = document.querySelector('h1') ? document.querySelector('h1').textContent : null
+			const h1 = document.querySelector('h1')
 
-			if (!documentTitle) {
-				console.warn(`⚠️ No se encontró un elemento <h1> para extraer el título del documento. Las plantillas de tags como {{title}} no funcionarán correctamente.`)
-				return
+			if (!h1) {
+				console.warn(`⚠️ No se encontró un elemento <h1> para extraer el título del documento. Se usará el título de la página (document.title) como alternativa para las plantillas de tags como {{title}}.`)
 			}
 
 			const tags = {
-				title: document.querySelector('h1').textContent,
+				title: h1 ? h1.textContent : document.title,
 			}
 
 			document.addEventListener('click', e => {
