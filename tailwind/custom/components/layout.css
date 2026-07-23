@@ -5,6 +5,8 @@
 	--column-gap: var(--card-padding, var(--default-card-padding));
 	--row-gap: calc(var(--card-padding) * 2.5);
 	--scroll-offset: 0px;
+	--def-border-radius: 0px;
+	--min-border-radius: 0px;
 }
 
 [id] {

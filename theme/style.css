@@ -8928,6 +8928,8 @@ body.header-width-centered .main-header-content {
   --column-gap: var(--card-padding, var(--default-card-padding));
   --row-gap: calc(var(--card-padding) * 2.5);
   --scroll-offset: 0px;
+  --def-border-radius: 0px;
+  --min-border-radius: 0px;
 }
 
 [id] {
@@ -12745,7 +12747,6 @@ section.category-grid-section > * {
 
 :root {
   --amb-radius: 8px;
-  --def-border-radius: 4px;
   --amb-panel-width: 390px;
   --amb-panel-columns: 4;
   --amb-panel-columns-mobile: 4;
@@ -19023,8 +19024,6 @@ button.swiper-pagination-bullet {
 
 :root {
   /* ! SHAPES */
-  --def-border-radius: 0px;
-  --min-border-radius: 0px;
   --box-shadow-pop: 0px 51px 78px rgba(17, 7, 53, 0.05), 0px 21.3066px 35.4944px rgba(17, 7, 53, 0.0359427), 0px 11.3915px 18.9418px rgba(17, 7, 53, 0.0298054),
 		0px 6.38599px 9.8801px rgba(17, 7, 53, 0.025), 0px 3.39155px 4.58665px rgba(17, 7, 53, 0.0201946), 0px 1.4113px 1.55262px rgba(17, 7, 53, 0.0140573), inset 0px 1px 0px rgba(41, 56, 78, 0.05);
   --tw-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
