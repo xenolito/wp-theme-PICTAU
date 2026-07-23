@@ -68,7 +68,7 @@ import './modules/lang_switcher'
 
 document.addEventListener('DOMContentLoaded', () => {
 	checkIfTouchDevice()
-	signature()
+	signature({ url: 'https://www.thinkingmark.com' })
 	setScrollBars()
 	initCatalogMenu()
 
