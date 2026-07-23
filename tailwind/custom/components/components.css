@@ -14,8 +14,6 @@
 
 :root {
 	/* ! SHAPES */
-	--def-border-radius: 0px;
-	--min-border-radius: 0px;
 
 	--box-shadow-pop: 0px 51px 78px rgba(17, 7, 53, 0.05), 0px 21.3066px 35.4944px rgba(17, 7, 53, 0.0359427), 0px 11.3915px 18.9418px rgba(17, 7, 53, 0.0298054),
 		0px 6.38599px 9.8801px rgba(17, 7, 53, 0.025), 0px 3.39155px 4.58665px rgba(17, 7, 53, 0.0201946), 0px 1.4113px 1.55262px rgba(17, 7, 53, 0.0140573), inset 0px 1px 0px rgba(41, 56, 78, 0.05);
