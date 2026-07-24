@@ -6915,6 +6915,8 @@ p.quote {
   --form-placeholder-color: #9ca3af;
   --form-input-padding-x: 1.25rem;
   --form-input-padding-y: 0.33rem;
+  --cols-min-width: 120px;
+  /* Columns min width for pct-form-2cols */
   position: relative;
 }
 
@@ -7488,7 +7490,7 @@ form.wpcf7-form:has(.pct-form-2cols) {
 .pct-form-2cols > p {
   display: grid;
   grid-auto-rows: auto;
-  grid-template-columns: repeat(auto-fit, minmax(340px, auto));
+  grid-template-columns: repeat(auto-fit, minmax(var(--cols-min-width), auto));
   -moz-column-gap: calc(var(--card-padding) * 0.75);
        column-gap: calc(var(--card-padding) * 0.75);
   row-gap: 0;

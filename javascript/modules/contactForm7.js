@@ -230,7 +230,7 @@ if (checkList.length) {
 		targetList.forEach(item => {
 			const target = item.querySelector('.wpcf7-list-item-label')
 
-			const iconContainer = document.createElement('div')
+			const iconContainer = document.createElement('span')
 			iconContainer.classList.add('check-icon-container')
 			iconContainer.setAttribute('tabindex', '0')
 			target.prepend(iconContainer)
@@ -258,7 +258,7 @@ if (radioList.length) {
 		targetList.forEach(item => {
 			const target = item.querySelector('.wpcf7-list-item-label')
 
-			const iconContainer = document.createElement('div')
+			const iconContainer = document.createElement('span')
 			iconContainer.classList.add('radio-icon-container')
 			iconContainer.setAttribute('tabindex', '0')
 			target.prepend(iconContainer)
