@@ -1,8 +1,9 @@
 /**
  * Animation any for WP based on GSAP
- * version: 4.17.3
+ * version: 4.17.4
  *
  * ? changelog:
+ * ? v4.17.4 — Fixed cyclecontentinline's fixedwords prefix showing up before its chained animation actually starts: the container's initial reveal (gsap.set opacity:1) ran synchronously at setup regardless of autoplay/pause state, and the fixed prefix was never added to the hidden "from" elements (it was meant to stay untouched forever), so it appeared immediately on page load even when the whole block was paused waiting for another element's nextanim to trigger it. It now starts hidden like the rest and is revealed once, together with the very first phrase's entrance, then stays untouched for the rest of the loop. Also fixed the prefix always being pulled from `.chars` regardless of whattoanim: with whattoanim="words" it now reveals as a single word (fixedItemWords) instead of animating letter by letter, matching the granularity of the rest of the phrase.
  * ? v4.17.3 — cyclecontentinline's typewriter backspace now runs at 0.7x the stagger of the typing speed (a fixed ratio, not a separate attribute), so erasing a phrase feels a bit quicker than typing it, like a real backspace.
  * ? v4.17.2 — Fixed v4.17.1's fix being incomplete: it still used a temporary SplitType (even words-only) to capture the fixed HTML, but pre-existing .word spans get wrapped in a *second* layer by the real split that runs afterward (SplitType doesn't recognize its own previously-generated markup), leaving duplicate nested words/chars for the fixed prefix in every child but the first. prepareFixedWordsHTML() no longer uses SplitType at all: it counts words by walking the original text nodes directly (TreeWalker) and extracts clean HTML via a Range, with zero SplitType markup involved before the single real split runs.
 
@@ -913,29 +914,49 @@ document.addEventListener('DOMContentLoaded', () => {
 		// Paso 2 (después del split real): en cada hijo (incluido el
 		// primero, que ya lo llevaba de fábrica), las N primeras palabras
 		// quedan fijas: se sacan del array de animables (elementsOf() ya no
-		// las ve) y se dejan tal cual — nunca se les toca opacidad ni
-		// transform, así que se quedan siempre a la vista.
-		excludeFixedWordsFromAnimation = (items, splitOf) => {
+		// las ve). Las copias del hijo 0 en adelante nunca se vuelven a tocar
+		// tras la entrada inicial, pero su primer estado (oculto hasta que
+		// arranca la animación, ver setCycleContentInline) lo gestiona el
+		// llamante, no esta función: aquí solo se devuelven para que pueda
+		// incluirlas en el tween de la primera entrada.
+		excludeFixedWordsFromAnimation = (items, splitOf, splitType) => {
 			const n = this.fixedWordsCount
+			let visibleFixedElements = []
 			items.forEach((item, i) => {
 				const itemWords = splitOf.get(item).words
 				const fixedItemWords = itemWords.splice(0, n)
 				const fixedChars = splitOf.get(item).chars.filter(c => fixedItemWords.some(w => w.contains(c)))
 				splitOf.get(item).chars = splitOf.get(item).chars.filter(c => !fixedChars.includes(c))
 
-				// La copia del prefijo fijo del primer hijo es la única que se deja
-				// visible (nunca se toca, ver comentario más arriba). Las copias del
-				// resto de hijos son puramente estructurales -- están ahí solo para
-				// que el line-wrap funcione dentro de la caja atómica inline-grid --
-				// pero como todos los hijos están apilados en la misma celda de grid,
-				// si se dejaran visibles se verían todas a la vez, superpuestas
-				// (efecto fantasma/duplicado, especialmente notorio con texto
-				// centrado y frases de ancho distinto). Se ocultan de una vez aquí
-				// mismo: nunca vuelven a tocarse porque quedan fuera de `chars`.
-				if (i > 0 && fixedChars.length) {
-					gsap.set(fixedChars, { opacity: 0 })
+				// El prefijo fijo se maneja al mismo nivel de granularidad que
+				// el resto de la animación (splitType): con whattoanim="words"
+				// debe tratarse como palabra entera (fixedItemWords) para que
+				// aparezca de una vez, no letra a letra -- si se usaran
+				// siempre los chars, el prefijo se revelaría con un stagger
+				// char a char aunque el resto de la frase se mueva por
+				// palabras. Con splitType==='chars' (whattoanim="chars" o
+				// cyclecontentanim="typewriter", que siempre trabaja char a
+				// char) sí se usan los chars, igual que antes.
+				const fixedElements = splitType === 'words' ? fixedItemWords : fixedChars
+
+				// La copia del prefijo fijo del primer hijo es la única que
+				// queda visible de forma permanente tras su reveal inicial
+				// (ver comentario más arriba). Las copias del resto de hijos
+				// son puramente estructurales -- están ahí solo para que el
+				// line-wrap funcione dentro de la caja atómica inline-grid --
+				// pero como todos los hijos están apilados en la misma celda
+				// de grid, si se dejaran visibles se verían todas a la vez,
+				// superpuestas (efecto fantasma/duplicado, especialmente
+				// notorio con texto centrado y frases de ancho distinto). Se
+				// ocultan de una vez aquí mismo: nunca vuelven a tocarse
+				// porque quedan fuera de `chars`/`words`.
+				if (i > 0 && fixedElements.length) {
+					gsap.set(fixedElements, { opacity: 0 })
+				} else if (i === 0) {
+					visibleFixedElements = fixedElements
 				}
 			})
+			return visibleFixedElements
 		}
 
 		setCycleContentInline = () => {
@@ -979,10 +1000,18 @@ document.addEventListener('DOMContentLoaded', () => {
 			// queda centrado sin medir nada — a diferencia del cyclecontent de
 			// bloque, aquí no hace falta getCycleContentOrigin.
 			const splitOf = new Map(items.map(item => [item, new SplitType(item, { tagName: 'span' })]))
-			if (this.fixedWords > 0) this.excludeFixedWordsFromAnimation(items, splitOf)
+			const fixedWordsRevealElements = this.fixedWords > 0 ? this.excludeFixedWordsFromAnimation(items, splitOf, splitType) : []
 			const elementsOf = item => splitOf.get(item)[splitType]
 
 			items.forEach(item => gsap.set(elementsOf(item), { transformOrigin: 'center center', ...preset.from }))
+			// El prefijo fijo arranca oculto igual que el resto: si se dejara
+			// visible desde aquí (como antes), se vería el prefijo (p.ej.
+			// "Qlik") desde la carga de la página, incluso si esta animación
+			// está encadenada vía nextanim y su timeline sigue en pause
+			// esperando a que otro elemento la dispare. Se revela una única
+			// vez, junto con la primera frase que entra (ver `enter` más
+			// abajo), y a partir de ahí nunca se vuelve a tocar.
+			if (fixedWordsRevealElements.length) gsap.set(fixedWordsRevealElements, { transformOrigin: 'center center', ...preset.from })
 
 			const { cursor, blink } = preset.isTypewriter ? this.createCursorElement() : { cursor: null, blink: null }
 			const sequence = this.cycleContentRandom ? shuffle(items) : items
@@ -999,14 +1028,16 @@ document.addEventListener('DOMContentLoaded', () => {
 				if (firstEl) firstEl.insertAdjacentElement('beforebegin', cursor)
 			}
 
-			const enter = (item, delay = 0) => this.tweenCycleInlineItem(elementsOf(item), preset, { entering: true, cursor, delay })
+			const enter = (item, delay = 0, extraElements = []) => this.tweenCycleInlineItem([...extraElements, ...elementsOf(item)], preset, { entering: true, cursor, delay })
 			const exit = item => this.tweenCycleInlineItem(elementsOf(item), preset, { entering: false, cursor })
 
 			// Entrada inicial fuera del timeline que se repite, mismo motivo que en
 			// cyclecontent: si estuviera dentro, cada vuelta del bucle la volvería a
 			// disparar justo después de que el último paso ya hubiera vuelto a
-			// mostrar esta misma frase.
-			this.timeLine.add(enter(sequence[0], this.delay))
+			// mostrar esta misma frase. El prefijo fijo se cuela solo aquí, en esta
+			// única entrada: a partir de la siguiente vuelta queda fuera de
+			// `elementsOf` en todos los hijos, así que nunca vuelve a animarse.
+			this.timeLine.add(enter(sequence[0], this.delay, fixedWordsRevealElements))
 
 			const loopTimeLine = gsap.timeline({ repeat: -1 })
 			sequence.forEach((item, i) => {
