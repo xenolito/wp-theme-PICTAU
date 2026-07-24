@@ -1,8 +1,9 @@
 /**
  * Animation any for WP based on GSAP
- * version: 4.17.4
+ * version: 4.17.5
  *
  * ? changelog:
+ * ? v4.17.5 — Fixed cyclecontentinline's typewriter cursor (createCursorElement, shared with the standalone 'typewriter' animation) being visible and blinking from page load even while the whole block sat paused waiting for a chained nextanim: the blink tween was a bare gsap.to(cursor, {opacity:0,...}), whose implicit "from" is whatever the element's live opacity happens to be at first render (1, unset) — now it's forced hidden with gsap.set(cursor, {opacity:0}) before creating the tween, which is flipped to animate toward opacity:1 instead. Also fixed the cursor's resting position with data-anim_any_fixedwords: it was placed right after the fixed prefix (elementsOf(sequence[0])[0] skips the fixed word on purpose, since that array is what the reveal/backspace of the rest of the phrase touches), so it sat visible mid-phrase before typing even started; it now anchors before fixedWordsRevealElements[0] when there's a fixed prefix, so the cursor — and the typewriter effect — starts at the very beginning of the whole sentence.
  * ? v4.17.4 — Fixed cyclecontentinline's fixedwords prefix showing up before its chained animation actually starts: the container's initial reveal (gsap.set opacity:1) ran synchronously at setup regardless of autoplay/pause state, and the fixed prefix was never added to the hidden "from" elements (it was meant to stay untouched forever), so it appeared immediately on page load even when the whole block was paused waiting for another element's nextanim to trigger it. It now starts hidden like the rest and is revealed once, together with the very first phrase's entrance, then stays untouched for the rest of the loop. Also fixed the prefix always being pulled from `.chars` regardless of whattoanim: with whattoanim="words" it now reveals as a single word (fixedItemWords) instead of animating letter by letter, matching the granularity of the rest of the phrase.
  * ? v4.17.3 — cyclecontentinline's typewriter backspace now runs at 0.7x the stagger of the typing speed (a fixed ratio, not a separate attribute), so erasing a phrase feels a bit quicker than typing it, like a real backspace.
  * ? v4.17.2 — Fixed v4.17.1's fix being incomplete: it still used a temporary SplitType (even words-only) to capture the fixed HTML, but pre-existing .word spans get wrapped in a *second* layer by the real split that runs afterward (SplitType doesn't recognize its own previously-generated markup), leaving duplicate nested words/chars for the fixed prefix in every child but the first. prepareFixedWordsHTML() no longer uses SplitType at all: it counts words by walking the original text nodes directly (TreeWalker) and extracts clean HTML via a Range, with zero SplitType markup involved before the single real split runs.
@@ -761,8 +762,14 @@ document.addEventListener('DOMContentLoaded', () => {
 			cursor.style.display = 'inline-block'
 			this.header.appendChild(cursor)
 
+			// Arranca oculto explícitamente: un gsap.to() sin fromTo captura como
+			// "from" el valor que tenga el elemento en su primer render, que sin este
+			// gsap.set sería el opacity por defecto (1) — visible y parpadeando desde
+			// el montaje aunque this.timeLine siga en pause esperando un nextanim.
+			gsap.set(cursor, { opacity: 0 })
+
 			const blink = gsap.to(cursor, {
-				opacity: 0,
+				opacity: 1,
 				duration: this.cursorBlink,
 				repeat: -1,
 				yoyo: true,
@@ -1024,7 +1031,13 @@ document.addEventListener('DOMContentLoaded', () => {
 			// el principio justo donde entrará el primer char, para que nunca
 			// haya un instante con el cursor mal situado.
 			if (cursor) {
-				const firstEl = elementsOf(sequence[0])[0]
+				// Si hay palabras fijas, el primer char animable es el de la propia
+				// palabra fija (fixedWordsRevealElements), no el de elementsOf() —
+				// esa exclusión es precisamente para que el reveal/backspace del
+				// resto de la frase no la toque, pero el cursor debe arrancar al
+				// principio de TODA la frase (antes de la fija) para que el tecleo
+				// se vea continuo desde la primera letra.
+				const firstEl = fixedWordsRevealElements[0] || elementsOf(sequence[0])[0]
 				if (firstEl) firstEl.insertAdjacentElement('beforebegin', cursor)
 			}
 
