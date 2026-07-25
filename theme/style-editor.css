@@ -7611,7 +7611,7 @@ body.header-width-full .main-header-content,
 @media only screen and (max-width: 1023px) {
   body.header-width-full .main-header-content,
 	body.header-width-full .above-header-content {
-    --pad-x: 1rem;
+    --pad-x: 0.75rem;
   }
 }
 
