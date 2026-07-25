@@ -1,8 +1,9 @@
 /**
  * Animation any for WP based on GSAP
- * version: 4.17.5
+ * version: 4.17.6
  *
  * ? changelog:
+ * ? v4.17.6 — Fixed cyclecontent/cyclecontentinline never pausing on scroll-out when triggered via data-anim_any_nextanim (as opposed to chainanim): nextanim targets get autoplay forced to '0' by the pre-pass (chainedTargets) so they wait to be started externally, but that also made them skip the ScrollTrigger entirely (`if (this.autoplay && !this.chainedTo)`), so once nextanim called play() the repeat:-1 timeline kept animating at 60fps forever regardless of viewport position — visible as constant reflow (e.g. <html>'s data-overlayscrollbars-* attribute flickering non-stop) that also starves devtools' Styles panel from refreshing. isCycleContent now gets a ScrollTrigger even when !autoplay, gated by a new this.hasStarted flag (set in play()) so onEnter/onEnterBack never fire play() before the triggering element's nextanim actually starts it, but onLeave/onLeaveBack pause it correctly once it's running.
  * ? v4.17.5 — Fixed cyclecontentinline's typewriter cursor (createCursorElement, shared with the standalone 'typewriter' animation) being visible and blinking from page load even while the whole block sat paused waiting for a chained nextanim: the blink tween was a bare gsap.to(cursor, {opacity:0,...}), whose implicit "from" is whatever the element's live opacity happens to be at first render (1, unset) — now it's forced hidden with gsap.set(cursor, {opacity:0}) before creating the tween, which is flipped to animate toward opacity:1 instead. Also fixed the cursor's resting position with data-anim_any_fixedwords: it was placed right after the fixed prefix (elementsOf(sequence[0])[0] skips the fixed word on purpose, since that array is what the reveal/backspace of the rest of the phrase touches), so it sat visible mid-phrase before typing even started; it now anchors before fixedWordsRevealElements[0] when there's a fixed prefix, so the cursor — and the typewriter effect — starts at the very beginning of the whole sentence.
  * ? v4.17.4 — Fixed cyclecontentinline's fixedwords prefix showing up before its chained animation actually starts: the container's initial reveal (gsap.set opacity:1) ran synchronously at setup regardless of autoplay/pause state, and the fixed prefix was never added to the hidden "from" elements (it was meant to stay untouched forever), so it appeared immediately on page load even when the whole block was paused waiting for another element's nextanim to trigger it. It now starts hidden like the rest and is revealed once, together with the very first phrase's entrance, then stays untouched for the rest of the loop. Also fixed the prefix always being pulled from `.chars` regardless of whattoanim: with whattoanim="words" it now reveals as a single word (fixedItemWords) instead of animating letter by letter, matching the granularity of the rest of the phrase.
  * ? v4.17.3 — cyclecontentinline's typewriter backspace now runs at 0.7x the stagger of the typing speed (a fixed ratio, not a separate attribute), so erasing a phrase feels a bit quicker than typing it, like a real backspace.
@@ -140,6 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			this.nextanim = nextanim
 			this.callback = callback
+			this.hasStarted = false // se pone a true la primera vez que play() arranca de verdad el timeline (ver play() y el ScrollTrigger de isCycleContent)
 
 			this.triggerstart = !triggerstart ? `${this.animation === 'slideFromBottom' && this.whattoanim === 'self' ? `top-=${this.slideamount}` : 'top'} bottom-=18%` : `top ${triggerstart}`
 
@@ -152,6 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		play = () => {
 			if (!this.matchmedia || (this.mquery && this.mquery.matches)) {
+				this.hasStarted = true
 				this.timeLine.play()
 			} else return
 		}
@@ -196,24 +199,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			if (this.markers) console.log(this.triggerstart)
 
-			if (this.autoplay && !this.chainedTo) {
-				// cyclecontent es un timeline infinito (repeat:-1 anidado): el truco
-				// progress(0.7)+reverse() de más abajo asume una animación de duración
-				// finita y no tiene un resultado sensato aquí (progress() sobre un
-				// timeline con un hijo infinito no representa una fracción útil). Por
-				// eso, para cyclecontent, se controla con play()/pause() directos en
-				// vez de dejar que el toggleAction por defecto ("play" en onEnter) sea
-				// lo único que lo toque: si no, seguiría animando en bucle para
-				// siempre aunque el usuario haya hecho scroll mucho más abajo.
-				const isCycleContent = this.animation === 'cyclecontent' || this.animation === 'cyclecontentinline'
+			// cyclecontent es un timeline infinito (repeat:-1 anidado): el truco
+			// progress(0.7)+reverse() de más abajo asume una animación de duración
+			// finita y no tiene un resultado sensato aquí (progress() sobre un
+			// timeline con un hijo infinito no representa una fracción útil). Por
+			// eso, para cyclecontent, se controla con play()/pause() directos en
+			// vez de dejar que el toggleAction por defecto ("play" en onEnter) sea
+			// lo único que lo toque: si no, seguiría animando en bucle para
+			// siempre aunque el usuario haya hecho scroll mucho más abajo.
+			const isCycleContent = this.animation === 'cyclecontent' || this.animation === 'cyclecontentinline'
 
+			// Los elementos objetivo de nextanim (no chainanim) llegan aquí con
+			// autoplay forzado a '0' (ver el pre-pass más abajo, chainedTargets):
+			// no deben arrancar solos al entrar en viewport, solo cuando el
+			// elemento que los dispara llame a play(). Antes esto hacía que se
+			// saltase el ScrollTrigger entero para ellos, así que un
+			// cyclecontentinline/cyclecontent disparado por nextanim nunca tenía
+			// vigilancia de scroll: una vez arrancado por el nextanim del elemento
+			// anterior, el timeline con repeat:-1 seguía corriendo a 60fps para
+			// siempre aunque se saliera del viewport, provocando reflow constante
+			// (visible p.ej. como el atributo data-overlayscrollbars-* de <html>
+			// parpadeando sin parar) que además deja el panel Styles de devtools
+			// sin poder refrescarse. Por eso isCycleContent crea el ScrollTrigger
+			// igualmente aunque !this.autoplay, pero con onEnter/onEnterBack
+			// condicionados a this.hasStarted para no adelantar el play() que le
+			// corresponde al nextanim de otro elemento.
+			if ((this.autoplay || isCycleContent) && !this.chainedTo) {
 				this.trigger = ScrollTrigger.create({
 					trigger: this.header,
 					start: this.triggerstart,
 					end: 'top top',
-					animation: this.masterTimeLine ? this.masterTimeLine : this.timeLine,
+					animation: this.autoplay ? this.masterTimeLine ? this.masterTimeLine : this.timeLine : undefined,
+					onEnter: isCycleContent && !this.autoplay ? () => this.hasStarted && this.timeLine.play() : undefined,
 					onLeave: isCycleContent ? () => this.timeLine.pause() : undefined,
-					onEnterBack: isCycleContent ? () => this.timeLine.play() : undefined,
+					onEnterBack: isCycleContent ? () => (this.autoplay || this.hasStarted) && this.timeLine.play() : undefined,
 					onLeaveBack: st => {
 						if (isCycleContent) {
 							// repeat=true: vuelve al estado inicial (oculto), lista para
