@@ -185,6 +185,16 @@ const setScrollBars = () => {
 		showNativeOverlaidScrollbars: false,
 		update: {
 			elementEvents: [['.faq-question', 'click']],
+			// `style` se observa siempre por defecto (no es opcional), y GSAP escribe
+			// inline style en cada tick sobre los spans de SplitType. Con animaciones
+			// infinitas (cyclecontent/cyclecontentinline, cursor del typewriter) eso
+			// dispara un recalculo de OverlayScrollbars ~60fps mientras el elemento
+			// está en viewport y corriendo. Ninguna animación de animation_any.js anima
+			// `height` (todo es opacity/transform/scale, solo compositor), así que
+			// ignorar mutaciones dentro de [data-anim_any] es seguro: nunca cambian el
+			// scrollHeight real de la página. Si en el futuro se añade una animación
+			// que sí afecte al layout (p.ej. un reveal por height), esa mutación
+			// también se ignoraría aquí y habría que excluirla explícitamente.
 			ignoreMutation: mutation => {
 				const target = mutation.target.nodeType === Node.ELEMENT_NODE ? mutation.target : mutation.target.parentElement
 				return !!target?.closest('[data-anim_any]')
