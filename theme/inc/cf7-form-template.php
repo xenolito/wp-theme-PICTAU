@@ -197,7 +197,7 @@ FORM;
 <strong>Comentarios:</strong> [mensaje]<br>
 <br><br>
 <hr><br>
-Has recibido esta información desde: [_post_url]
+Has recibido esta información desde: [_url]
 MAIL;
 	}
 
@@ -237,7 +237,7 @@ FORM;
 <strong>Comentarios:</strong> [mensaje]<br>
 <br><br>
 <hr><br>
-Has recibido esta información desde: [_post_url]
+Has recibido esta información desde: [_url]
 MAIL;
 	}
 }
