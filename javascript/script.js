@@ -184,7 +184,11 @@ const setScrollBars = () => {
 		paddingAbsolute: false,
 		showNativeOverlaidScrollbars: false,
 		update: {
-			elementEvents: [['.faq-question', 'click', '[data-modal]']],
+			elementEvents: [['.faq-question', 'click']],
+			ignoreMutation: mutation => {
+				const target = mutation.target.nodeType === Node.ELEMENT_NODE ? mutation.target : mutation.target.parentElement
+				return !!target?.closest('[data-anim_any]')
+			},
 		},
 		scrollbars: {
 			theme: 'os-theme-dark',

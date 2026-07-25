@@ -123,10 +123,6 @@ const ModalWP = class {
 		this.overlayscrollbars = OverlayScrollbars(this.popupContent, {
 			paddingAbsolute: false,
 			showNativeOverlaidScrollbars: false,
-			update: {
-				// elementEvents: [['[data-modal]', '.content']],
-				elementEvents: [['[data-modal]']],
-			},
 			scrollbars: {
 				theme: 'os-theme-dark',
 				visibility: 'visible',
