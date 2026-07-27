@@ -9914,47 +9914,6 @@ body.single-post .post .entry-content h2,
   font-size: 1.2rem;
 }
 
-/*! ORDERED (NUMBER) LIST */
-
-.ordered-list {
-  --numSize: 1rem;
-  --numberedColor: white;
-  --numberedBgColor: #008dff;
-  --dim: 2em;
-  --padding: 1.2em;
-  /* --connectLineColor: var(--connectedcolor, var(--numberedBgColor)); */
-  padding-top: calc(var(--default-section-vert-padding) * 0.5);
-  counter-reset: pct-counter;
-  display: flex;
-  flex-flow: column;
-  gap: 0.5rem;
-  gap: calc(var(--dim) * 0.5);
-}
-
-.ordered-list > * {
-  display: grid;
-  grid-template-columns: min-content 1fr;
-  align-items: flex-start;
-  gap: 1em;
-}
-
-.ordered-list > *::before {
-  counter-increment: pct-counter;
-  content: counter(pct-counter);
-  border-radius: 50%;
-  background-color: var(--numberedBgColor, red);
-  color: var(--numberedColor, currentColor);
-  width: var(--dim);
-  height: var(--dim);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  align-self: flex-start;
-  font-weight: bold;
-  font-size: var(--numSize);
-  padding: var(--padding);
-}
-
 /*! ORDERED AUTONUMBER ELEMENTS */
 
 /*
