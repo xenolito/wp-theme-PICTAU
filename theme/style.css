@@ -12714,6 +12714,34 @@ section.category-grid-section > * {
   margin-bottom: 0px !important;
 }
 
+.has-connector-vertical {
+  --conector-dim: 70px;
+  --connector-padding: 1rem;
+  --conector-filter: invert(1) brightness(100);
+  --connector-rotate: 90deg;
+  --column-gap: calc(var(--conector-dim) + 2 * var(--connector-padding));
+}
+
+.has-connector-vertical > *:is(.card) {
+  overflow: initial;
+}
+
+.has-connector-vertical > *:not(:first-child)::after {
+  content: "";
+  display: block;
+  width: var(--conector-dim);
+  height: var(--conector-dim);
+  background-image: url("/xen_media/arrow-right.svg");
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: var(--conector-filter);
+  rotate: var(--connector-rotate);
+  position: absolute;
+  top: 0;
+  left: 50%;
+  translate: -50% calc(-100% - var(--connector-padding));
+}
+
 :root {
   --amb-radius: 8px;
   --amb-panel-width: 390px;
