@@ -128,23 +128,37 @@
 	}
 
 	&[class*="decoration-"] {
-		--decoration-width: 3px;
+		--decoration-width: 6px;
+		border: 0;
+		&::before {
+			content: "";
+			display: block;
+			position: absolute;
+			top: 0;
+			left: 0;
+			background-color: var(--main-color);
+		}
+
 		&.decoration-top {
-			border: 0;
+			border-top-right-radius: 0;
+			border-top-left-radius: 0;
 
 			&::before {
-				content: "";
-				display: block;
-				position: absolute;
-				top: 0;
-				left: 0;
 				width: 100%;
 				height: var(--decoration-width);
-				background-color: var(--main-color);
+			}
+		}
+
+		&.decoration-left {
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
+
+			&::before {
+				width: var(--decoration-width);
+				height: 100%;
 			}
 		}
 	}
-
 	&:has(.is-card-icon) {
 		--icon-dim: 20px;
 

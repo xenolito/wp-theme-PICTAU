@@ -51,15 +51,50 @@
 	background-color: hsl(0deg 0% 100% / 0.03) !important;
 }
 
+/*
+ * all-themes.css es la unica fuente de colores de texto del sitio
+ * (font-styles.css se ocupa solo de tipografia: tamaños, pesos, spacing).
+ *
+ * Color de texto/heading/tag "actual": cada .theme-color-* solo redefine
+ * estas variables en el nodo donde se aplica la clase. Al ser custom
+ * properties, un descendiente siempre hereda del ancestro .theme-color-*
+ * MAS CERCANO en el DOM, independientemente del orden en que las clases
+ * .theme-color-light/.theme-color-dark/.theme-color-custom estén
+ * definidas en esta hoja de estilos. Esto permite anidar temas
+ * (light > dark > light...) y que gane siempre el ultimo aplicado segun
+ * el DOM, no segun la cascada.
+ */
+body {
+	color: var(--theme-txt-color, var(--txt-color-theme-light));
+}
+
+p,
+ul {
+	color: var(--theme-txt-color, inherit);
+}
+
 h1,
 h2,
 h3,
 h4 {
-	@apply text-[var(--heading-color)];
+	@apply text-[var(--theme-heading-color,var(--heading-color))];
+}
+
+h1,
+h2,
+h3 {
+	em {
+		color: var(--main-color);
+	}
+}
+
+.header-tag {
+	color: var(--theme-tag-color, inherit);
 }
 
 figure figcaption {
 	font-size: 0.8em;
+	color: var(--theme-figcaption-color, inherit);
 }
 
 /*! THEME COLOR LIGHT */
@@ -67,20 +102,13 @@ figure figcaption {
 	--border-color: var(--heading-color-theme-light);
 	--card-background: rgba(255, 255, 255, 1);
 
+	--theme-txt-color: var(--txt-color-theme-light);
+	--theme-heading-color: var(--heading-color-theme-light);
+	--theme-tag-color: var(--tag-color, #343434);
+	--theme-figcaption-color: black;
+
 	&:is(.pct-card, section) {
 		background: var(--bg-color-theme-light);
-	}
-
-	p,
-	ul {
-		color: var(--txt-color-theme-light);
-	}
-
-	h1,
-	h2,
-	h3,
-	h4 {
-		@apply text-[var(--heading-color-theme-light)];
 	}
 
 	.card-icon {
@@ -89,17 +117,9 @@ figure figcaption {
 		}
 	}
 
-	figure figcaption {
-		@apply text-black;
-	}
-
 	.wpcf7 span.wpcf7-not-valid-tip::after,
 	.wpcf7-response-output::after {
 		filter: none;
-	}
-
-	.header-tag {
-		color: var(--tag-color, #343434);
 	}
 
 	&.theme-color-white {
@@ -116,6 +136,11 @@ figure figcaption {
 	--border-color: var(--heading-color-theme-dark);
 	--link-color: var(--main-color);
 	--card-background: var(--bg-color-theme-dark);
+
+	--theme-txt-color: var(--txt-color-theme-dark);
+	--theme-heading-color: var(--heading-color-theme-dark);
+	--theme-tag-color: var(--main-color);
+	--theme-figcaption-color: inherit;
 
 	background-color: var(--bg-color-theme-dark);
 
@@ -136,7 +161,6 @@ figure figcaption {
 	h2,
 	h3,
 	h4 {
-		color: var(--heading-color-theme-dark);
 		&.figure {
 			color: var(--main-color) !important;
 		}
@@ -144,8 +168,6 @@ figure figcaption {
 
 	p,
 	ul {
-		color: var(--txt-color-theme-dark);
-
 		li::before {
 			opacity: 0.3;
 		}
@@ -167,10 +189,6 @@ figure figcaption {
 		filter: var(--form-error-validation-icon-filter);
 	}
 
-	.header-tag {
-		color: var(--main-color) !important;
-	}
-
 	.card:not(.transparent) {
 		--card-border-color: rgba(255, 255, 255, 0.1);
 		--card-background: rgba(255, 255, 255, 0.0005);
@@ -189,20 +207,13 @@ figure figcaption {
 	--border-color: var(--heading-color-theme-custom);
 	--link-color: var(--main-color);
 
+	--theme-txt-color: var(--txt-color-theme-custom);
+	--theme-heading-color: var(--heading-color-theme-custom);
+	--theme-tag-color: var(--heading-color-theme-custom);
+	--theme-figcaption-color: inherit;
+
 	&:is(.pct-card, section) {
 		background: var(--bg-color-theme-custom);
-	}
-
-	h1,
-	h2,
-	h3,
-	h4 {
-		@apply text-[var(--heading-color-theme-custom)] dark:text-[var(--heading-color-theme-custom)];
-	}
-
-	p,
-	ul {
-		color: var(--txt-color-theme-custom);
 	}
 
 	.wp-element-button,
@@ -243,53 +254,9 @@ figure figcaption {
 	.header-tag {
 		background: rgb(255 255 255 / 0.33);
 		border-color: rgba(255, 255, 255, 1);
-		color: var(--heading-color-theme-custom);
 	}
 
 	.card:not(.transparent) {
 		--card-background: rgba(255, 255, 255, 1);
-	}
-}
-
-[class*="theme-color-"] {
-	&:has([class*="theme-color-"]) {
-		[class*="theme-color-"] {
-			.theme-color-light {
-				p {
-					color: var(--txt-color-theme-light);
-				}
-				h1,
-				h2,
-				h3,
-				h4,
-				ul {
-					color: var(--heading-color-theme-light);
-				}
-			}
-			.theme-color-dark {
-				p {
-					color: var(--txt-color-theme-dark);
-				}
-				h1,
-				h2,
-				h3,
-				h4,
-				ul {
-					color: var(--heading-color-theme-dark);
-				}
-			}
-			.theme-color-custom {
-				p {
-					color: var(--txt-color-theme-custom);
-				}
-				h1,
-				h2,
-				h3,
-				h4,
-				ul {
-					color: var(--heading-color-theme-custom);
-				}
-			}
-		}
 	}
 }

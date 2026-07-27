@@ -4,7 +4,7 @@ Theme URI: https://pictau.com
 Author: Oscar Rey Tajes
 Author URI: https://www.pictau.com
 Description: PICTAU theme with optional "tailwind" support and customizations for BALANZIA.
-Version: 7.10.5
+Version: 7.10.6
 Tested up to: 6.8
 Requires PHP: 7.4
 License: GNU General Public License v2 or later
@@ -1462,15 +1462,47 @@ sup {
   background-color: hsl(0deg 0% 100% / 0.03) !important;
 }
 
+/*
+ * all-themes.css es la unica fuente de colores de texto del sitio
+ * (font-styles.css se ocupa solo de tipografia: tamaños, pesos, spacing).
+ *
+ * Color de texto/heading/tag "actual": cada .theme-color-* solo redefine
+ * estas variables en el nodo donde se aplica la clase. Al ser custom
+ * properties, un descendiente siempre hereda del ancestro .theme-color-*
+ * MAS CERCANO en el DOM, independientemente del orden en que las clases
+ * .theme-color-light/.theme-color-dark/.theme-color-custom estén
+ * definidas en esta hoja de estilos. Esto permite anidar temas
+ * (light > dark > light...) y que gane siempre el ultimo aplicado segun
+ * el DOM, no segun la cascada.
+ */
+
+body {
+  color: var(--theme-txt-color, var(--txt-color-theme-light));
+}
+
+p,
+ul {
+  color: var(--theme-txt-color, inherit);
+}
+
 h1,
 h2,
 h3,
 h4 {
-  color: var(--heading-color);
+  color: var(--theme-heading-color,var(--heading-color));
+}
+
+h1 em, h2 em, h3 em {
+  color: var(--main-color);
+}
+
+.header-tag {
+  color: var(--theme-tag-color, inherit);
 }
 
 figure figcaption {
   font-size: 0.8em;
+  color: var(--theme-figcaption-color, inherit);
 }
 
 /*! THEME COLOR LIGHT */
@@ -1478,40 +1510,23 @@ figure figcaption {
 .theme-color-light {
   --border-color: var(--heading-color-theme-light);
   --card-background: rgba(255, 255, 255, 1);
+  --theme-txt-color: var(--txt-color-theme-light);
+  --theme-heading-color: var(--heading-color-theme-light);
+  --theme-tag-color: var(--tag-color, #343434);
+  --theme-figcaption-color: black;
 }
 
 .theme-color-light:is(.pct-card, section) {
   background: var(--bg-color-theme-light);
 }
 
-.theme-color-light p,
-	.theme-color-light ul {
-  color: var(--txt-color-theme-light);
-}
-
-.theme-color-light h1,
-	.theme-color-light h2,
-	.theme-color-light h3,
-	.theme-color-light h4 {
-  color: var(--heading-color-theme-light);
-}
-
 .theme-color-light .card-icon p {
   color: rgb(255 255 255 / 0.7);
-}
-
-.theme-color-light figure figcaption {
-  --tw-text-opacity: 1;
-  color: rgb(0 0 0 / var(--tw-text-opacity));
 }
 
 .theme-color-light .wpcf7 span.wpcf7-not-valid-tip::after,
 	.theme-color-light .wpcf7-response-output::after {
   filter: none;
-}
-
-.theme-color-light .header-tag {
-  color: var(--tag-color, #343434);
 }
 
 .theme-color-light.theme-color-white {
@@ -1528,6 +1543,10 @@ figure figcaption {
   --border-color: var(--heading-color-theme-dark);
   --link-color: var(--main-color);
   --card-background: var(--bg-color-theme-dark);
+  --theme-txt-color: var(--txt-color-theme-dark);
+  --theme-heading-color: var(--heading-color-theme-dark);
+  --theme-tag-color: var(--main-color);
+  --theme-figcaption-color: inherit;
   background-color: var(--bg-color-theme-dark);
 }
 
@@ -1544,20 +1563,8 @@ figure figcaption {
   background-color: var(--bg-color-theme-dark) !important;
 }
 
-.theme-color-dark h1,
-	.theme-color-dark h2,
-	.theme-color-dark h3,
-	.theme-color-dark h4 {
-  color: var(--heading-color-theme-dark);
-}
-
 .theme-color-dark h1.figure, .theme-color-dark h2.figure, .theme-color-dark h3.figure, .theme-color-dark h4.figure {
   color: var(--main-color) !important;
-}
-
-.theme-color-dark p,
-	.theme-color-dark ul {
-  color: var(--txt-color-theme-dark);
 }
 
 .theme-color-dark p li::before, .theme-color-dark ul li::before {
@@ -1579,10 +1586,6 @@ figure figcaption {
   filter: var(--form-error-validation-icon-filter);
 }
 
-.theme-color-dark .header-tag {
-  color: var(--main-color) !important;
-}
-
 .theme-color-dark .card:not(.transparent) {
   --card-border-color: rgba(255, 255, 255, 0.1);
   --card-background: rgba(255, 255, 255, 0.0005);
@@ -1601,29 +1604,14 @@ figure figcaption {
 .theme-color-custom {
   --border-color: var(--heading-color-theme-custom);
   --link-color: var(--main-color);
+  --theme-txt-color: var(--txt-color-theme-custom);
+  --theme-heading-color: var(--heading-color-theme-custom);
+  --theme-tag-color: var(--heading-color-theme-custom);
+  --theme-figcaption-color: inherit;
 }
 
 .theme-color-custom:is(.pct-card, section) {
   background: var(--bg-color-theme-custom);
-}
-
-.theme-color-custom h1,
-	.theme-color-custom h2,
-	.theme-color-custom h3,
-	.theme-color-custom h4 {
-  color: var(--heading-color-theme-custom);
-}
-
-.theme-color-custom h1:is(.dark *),
-	.theme-color-custom h2:is(.dark *),
-	.theme-color-custom h3:is(.dark *),
-	.theme-color-custom h4:is(.dark *) {
-  color: var(--heading-color-theme-custom);
-}
-
-.theme-color-custom p,
-	.theme-color-custom ul {
-  color: var(--txt-color-theme-custom);
 }
 
 .theme-color-custom .wp-element-button,
@@ -1663,47 +1651,10 @@ figure figcaption {
 .theme-color-custom .header-tag {
   background: rgb(255 255 255 / 0.33);
   border-color: rgba(255, 255, 255, 1);
-  color: var(--heading-color-theme-custom);
 }
 
 .theme-color-custom .card:not(.transparent) {
   --card-background: rgba(255, 255, 255, 1);
-}
-
-[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-light p {
-  color: var(--txt-color-theme-light);
-}
-
-[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-light h1,
-				[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-light h2,
-				[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-light h3,
-				[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-light h4,
-				[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-light ul {
-  color: var(--heading-color-theme-light);
-}
-
-[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-dark p {
-  color: var(--txt-color-theme-dark);
-}
-
-[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-dark h1,
-				[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-dark h2,
-				[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-dark h3,
-				[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-dark h4,
-				[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-dark ul {
-  color: var(--heading-color-theme-dark);
-}
-
-[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-custom p {
-  color: var(--txt-color-theme-custom);
-}
-
-[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-custom h1,
-				[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-custom h2,
-				[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-custom h3,
-				[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-custom h4,
-				[class*="theme-color-"]:has([class*="theme-color-"]) [class*="theme-color-"] .theme-color-custom ul {
-  color: var(--heading-color-theme-custom);
 }
 
 :root {
@@ -3903,22 +3854,37 @@ button#submit:has(svg) {
 }
 
 .card[class*="decoration-"] {
-  --decoration-width: 3px;
-}
-
-.card[class*="decoration-"].decoration-top {
+  --decoration-width: 6px;
   border: 0;
 }
 
-.card[class*="decoration-"].decoration-top::before {
+.card[class*="decoration-"]::before {
   content: "";
   display: block;
   position: absolute;
   top: 0;
   left: 0;
+  background-color: var(--main-color);
+}
+
+.card[class*="decoration-"].decoration-top {
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+}
+
+.card[class*="decoration-"].decoration-top::before {
   width: 100%;
   height: var(--decoration-width);
-  background-color: var(--main-color);
+}
+
+.card[class*="decoration-"].decoration-left {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.card[class*="decoration-"].decoration-left::before {
+  width: var(--decoration-width);
+  height: 100%;
 }
 
 .card:has(.is-card-icon) {
@@ -6178,7 +6144,6 @@ figure.local-video.gallery-grid-item video {
 
 body {
   font-family: var(--def-font-family);
-  color: var(--def-txt-color);
   font-size: 1rem;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -6193,7 +6158,6 @@ h4 {
   font-weight: var(--def-heading-font-weight);
   letter-spacing: var(--def-heading-tracking);
   line-height: var(--def-heading-line-height);
-  color: var(--heading-color);
   margin-left: 0;
   margin-right: 0;
   padding-top: 0;
@@ -6236,14 +6200,6 @@ h2.smaller-2 {
 
 h3 {
   margin-top: 0px !important;
-  color: var(--heading-color);
-}
-
-h3:is(.dark *) {
-  color: var(--heading-color-dark);
-}
-
-h3 {
   margin-bottom: 0.6ch;
   font-size: clamp(1.6rem, 5vw, 2rem);
 }
@@ -6275,7 +6231,6 @@ h3.figure + p {
 h4 {
   margin-top: 0px !important;
   margin-bottom: .5ch !important;
-  color: var(--heading-color);
   font-size: clamp(1rem, 3vw, 1.1rem);
   text-transform: uppercase;
   letter-spacing: 0.05ch;
@@ -6323,7 +6278,6 @@ sup {
 
 p {
   font-size: clamp(1rem, 2vw, 18px);
-  color: var(--txt-color);
   margin-bottom: 1.2ch;
   font-weight: 300;
   letter-spacing: -0.01em;
@@ -6336,13 +6290,8 @@ p.bigger {
   line-height: 1.4;
 }
 
-p {
-  color: currentColor;
-}
-
 p strong {
   font-weight: 700;
-  color: black;
 }
 
 /*! Headings custom styles */
@@ -6369,7 +6318,6 @@ h1.gradient.gradient-anim, h2.gradient.gradient-anim, h3.gradient.gradient-anim,
 /* Highlight header */
 
 h1 em, h2 em, h3 em {
-  color: var(--main-color);
   font-style: normal;
 }
 

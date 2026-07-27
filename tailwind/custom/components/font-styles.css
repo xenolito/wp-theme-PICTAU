@@ -10,7 +10,6 @@
 
 body {
 	font-family: var(--def-font-family);
-	color: var(--def-txt-color);
 	font-size: 1rem;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
@@ -25,7 +24,6 @@ h4 {
 	font-weight: var(--def-heading-font-weight);
 	letter-spacing: var(--def-heading-tracking);
 	line-height: var(--def-heading-line-height);
-	color: var(--heading-color);
 
 	margin-left: 0;
 	margin-right: 0;
@@ -67,7 +65,7 @@ h2 {
 }
 
 h3 {
-	@apply text-[var(--heading-color)] dark:text-[var(--heading-color-dark)] !mt-0;
+	@apply !mt-0;
 	margin-bottom: 0.6ch;
 	font-size: clamp(1.6rem, 5vw, 2rem);
 
@@ -97,7 +95,7 @@ h3 {
 }
 
 h4 {
-	@apply text-[var(--heading-color)] !mt-0 !mb-[.5ch];
+	@apply !mt-0 !mb-[.5ch];
 	font-size: clamp(1rem, 3vw, 1.1rem);
 	text-transform: uppercase;
 	letter-spacing: 0.05ch;
@@ -147,7 +145,6 @@ sup {
 
 p {
 	font-size: clamp(1rem, 2vw, 18px);
-	color: var(--txt-color);
 	margin-bottom: 1.2ch;
 	font-weight: 300;
 	letter-spacing: -0.01em;
@@ -158,11 +155,9 @@ p {
 		font-size: clamp(1.2rem, 4vw, 1.4rem);
 		line-height: 1.4;
 	}
-	color: currentColor;
 
 	strong {
 		font-weight: 700;
-		color: black;
 	}
 }
 
@@ -196,7 +191,6 @@ h1,
 h2,
 h3 {
 	em {
-		color: var(--main-color);
 		font-style: normal;
 		/* padding-right: 0.01ch;
 		background-color: var(--main-color);
