@@ -10402,6 +10402,66 @@ body.single-post .post .entry-content h2,
   padding: var(--padding);
 }
 
+/*! ORDERED AUTONUMBER ELEMENTS */
+
+/*
+	- .ordered-goup: container for the autonumber elements, it will reset the counter for each group
+	- .ordered-item: each autonumber element, it will increment the counter for each item
+	- .ordered-item::before: the autonumber element, it will display the counter value and style it.
+*/
+
+.ordered-group {
+  --numSize: 1rem;
+  --numberedColor: white;
+  --numberedBgColor: #008dff;
+  --dim: 2em;
+  --padding: 1.2em;
+  /* --connectLineColor: var(--connectedcolor, var(--numberedBgColor)); */
+  counter-reset: pct-counter;
+}
+
+/*
+		.card usa container-type: inline-size (container queries), lo que implica
+		contención de estilo (contain: style). Eso crea un scope de contadores CSS
+		aislado por cada .card, así que un .ordered-item dentro de un .card siempre
+		"ve" el contador reiniciado y pinta 1. Se anula aquí para que el contador
+		del grupo pueda atravesar esa frontera.
+	*/
+
+.ordered-group .card {
+  container-type: normal;
+}
+
+/* .zero-prefix: antepone un 0 a los números del 1 al 9 (01, 02… 10, 11…) */
+
+.ordered-group.zero-prefix .ordered-item::before {
+  content: counter(pct-counter, decimal-leading-zero);
+}
+
+.ordered-group .ordered-item {
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  align-items: flex-start;
+  gap: 1em;
+}
+
+.ordered-group .ordered-item::before {
+  counter-increment: pct-counter;
+  content: counter(pct-counter);
+  border-radius: 50%;
+  background-color: var(--numberedBgColor, red);
+  color: var(--numberedColor, currentColor);
+  width: var(--dim);
+  height: var(--dim);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: flex-start;
+  font-weight: bold;
+  font-size: var(--numSize);
+  padding: var(--padding);
+}
+
 /*! Default unordered list */
 
 .entry-content
