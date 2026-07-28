@@ -4,7 +4,7 @@ Theme URI: https://pictau.com
 Author: Oscar Rey Tajes
 Author URI: https://www.pictau.com
 Description: PICTAU theme with optional "tailwind" support and customizations for BALANZIA.
-Version: 7.10.6
+Version: 7.10.7
 Tested up to: 6.8
 Requires PHP: 7.4
 License: GNU General Public License v2 or later
@@ -1514,6 +1514,11 @@ figure figcaption {
   --theme-heading-color: var(--heading-color-theme-light);
   --theme-tag-color: var(--tag-color, #343434);
   --theme-figcaption-color: black;
+  --button-bg-color: var(--main-color);
+  --button-bg-color-hover: var(--highlight-color);
+  --bg-color-outline: transparent;
+  --button-txt-color: white;
+  --button-txt-color-hover: white;
 }
 
 .theme-color-light:is(.pct-card, section) {
@@ -1547,6 +1552,11 @@ figure figcaption {
   --theme-heading-color: var(--heading-color-theme-dark);
   --theme-tag-color: var(--main-color);
   --theme-figcaption-color: inherit;
+  --button-bg-color: var(--main-color);
+  --button-bg-color-hover: var(--highlight-color);
+  --bg-color-outline: transparent;
+  --button-txt-color: white;
+  --button-txt-color-hover: white;
   background-color: var(--bg-color-theme-dark);
 }
 
@@ -1569,16 +1579,6 @@ figure figcaption {
 
 .theme-color-dark p li::before, .theme-color-dark ul li::before {
   opacity: 0.3;
-}
-
-.theme-color-dark .wp-element-button,
-	.theme-color-dark .menu-bt a,
-	.theme-color-dark button#submit {
-  --bg-color: var(--main-color);
-  --bg-color-hover: var(--highlight-color);
-  --bg-color-outline: transparent;
-  --button-txt-color: white;
-  --button-txt-color-hover: white;
 }
 
 .theme-color-dark .wpcf7 span.wpcf7-not-valid-tip::after,
@@ -1608,20 +1608,15 @@ figure figcaption {
   --theme-heading-color: var(--heading-color-theme-custom);
   --theme-tag-color: var(--heading-color-theme-custom);
   --theme-figcaption-color: inherit;
+  --button-bg-color: var(--main-color);
+  --button-bg-color-hover: var(--highlight-color);
+  --bg-color-outline: transparent;
+  --button-txt-color: white;
+  --button-txt-color-hover: white;
 }
 
 .theme-color-custom:is(.pct-card, section) {
   background: var(--bg-color-theme-custom);
-}
-
-.theme-color-custom .wp-element-button,
-	.theme-color-custom .menu-bt a,
-	.theme-color-custom button#submit {
-  --bg-color: var(--main-color);
-  --bg-color-hover: var(--highlight-color);
-  --bg-color-outline: transparent;
-  --button-txt-color: white;
-  --button-txt-color-hover: white;
 }
 
 .theme-color-custom .wpcf7 span.wpcf7-not-valid-tip::after,
@@ -3324,10 +3319,10 @@ body.home [data-heroslider] h2#slider-start-animation:has(.sup) .sup .char {
 
 :root {
   --button-font-size: clamp(0.75rem, 3.5vw, 0.88rem);
-  /* --bg-color: radial-gradient(80% 80% at 50% -15%, #27b294 70%, #1d997e 100%); */
-  --bg-color: var(--main-color);
-  /* --bg-color: #34f1c7; */
-  --bg-color-hover: var(--highlight-color);
+  /* --button-bg-color: radial-gradient(80% 80% at 50% -15%, #27b294 70%, #1d997e 100%); */
+  --button-bg-color: var(--main-color);
+  /* --button-bg-color: #34f1c7; */
+  --button-bg-color-hover: var(--highlight-color);
   --bg-color-outline: var(--header-bg-color-transparent, transparent);
   --padding-y: 1.3ch;
   --padding-x: 2.5ch;
@@ -3336,7 +3331,7 @@ body.home [data-heroslider] h2#slider-start-animation:has(.sup) .sup .char {
   --button-txt-color-hover: white;
   --button-border-radius: 0px;
   --button-border-width: 2px;
-  --button-border-color: var(--bg-color);
+  --button-border-color: var(--button-bg-color);
 }
 
 .wp-block-buttons {
@@ -3357,7 +3352,7 @@ body.home [data-heroslider] h2#slider-start-animation:has(.sup) .sup .char {
 button#submit {
   display: inline-block;
   scale: 1;
-  background: var(--bg-color);
+  background: var(--button-bg-color);
   letter-spacing: 0px;
   /* text-transform: capitalize; */
   border-radius: var(--button-border-radius);
@@ -3489,8 +3484,8 @@ button#submit {
 .wp-element-button:hover, .menu-bt a:hover, button#submit:hover {
   scale: 1.1;
   /* color: white; */
-  background: var(--bg-color-hover);
-  border-color: var(--bg-color-hover);
+  background: var(--button-bg-color-hover);
+  border-color: var(--button-bg-color-hover);
 }
 
 .wp-element-button:has(i.icon) i.icon, .menu-bt a:has(i.icon) i.icon, button#submit:has(i.icon) i.icon {
@@ -3534,7 +3529,7 @@ button#submit:has(svg) {
   background-color: var(--bg-color-outline);
   -webkit-backdrop-filter: blur(15px);
           backdrop-filter: blur(15px);
-  color: var(--bg-color) !important;
+  color: var(--button-bg-color) !important;
 }
 
 .outline .wp-element-button:hover {
@@ -3543,8 +3538,8 @@ button#submit:has(svg) {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
   --tw-shadow-color: rgb(51 65 85 / 0.4);
   --tw-shadow: var(--tw-shadow-colored);
-  border-color: var(--bg-color-hover);
-  background-color: var(--bg-color-hover);
+  border-color: var(--button-bg-color-hover);
+  background-color: var(--button-bg-color-hover);
   color: var(--button-txt-color-hover) !important;
 }
 
@@ -3554,7 +3549,7 @@ button#submit:has(svg) {
 }
 
 .outline.white .wp-element-button:hover {
-  border-color: var(--bg-color-hover);
+  border-color: var(--button-bg-color-hover);
 }
 
 .white:not(.outline) {
@@ -3576,8 +3571,8 @@ button#submit:has(svg) {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
   --tw-shadow-color: rgb(51 65 85 / 0.4);
   --tw-shadow: var(--tw-shadow-colored);
-  border-color: var(--bg-color-hover);
-  background-color: var(--bg-color-hover);
+  border-color: var(--button-bg-color-hover);
+  background-color: var(--button-bg-color-hover);
   mix-blend-mode: unset;
   color: var(--button-txt-color-hover) !important;
 }
@@ -7415,15 +7410,15 @@ body.fixed-header #page #masthead .above-header-wrap * {
 }
 
 body.fixed-header #page #masthead .above-header-wrap .menu-bt a {
-  --bg-color: white;
-  background-color: var(--bg-color) !important;
+  --button-bg-color: white;
+  background-color: var(--button-bg-color) !important;
   border-color: var(--nav-text-color) !important;
   color: var(--nav-text-color) !important;
 }
 
 body.fixed-header #page #masthead .above-header-wrap .menu-bt a:hover {
-  background-color: var(--bg-color-hover) !important;
-  border-color: var(--bg-color-hover) !important;
+  background-color: var(--button-bg-color-hover) !important;
+  border-color: var(--button-bg-color-hover) !important;
   color: white !important;
 }
 
@@ -7489,12 +7484,12 @@ body.fixed-header #masthead:has(.above-header-wrap).scrolledHeader .main-header-
 }
 
 body.fixed-header.home #page #masthead .above-header-wrap .menu-bt a {
-  --bg-color: white !important;
-  border-color: var(--bg-color) !important;
+  --button-bg-color: white !important;
+  border-color: var(--button-bg-color) !important;
 }
 
 body.fixed-header.home #page #masthead .above-header-wrap .menu-bt a:hover {
-  border-color: var(--bg-color-hover) !important;
+  border-color: var(--button-bg-color-hover) !important;
 }
 
 .main-header-wrap {

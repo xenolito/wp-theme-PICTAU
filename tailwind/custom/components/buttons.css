@@ -1,9 +1,9 @@
 :root {
 	--button-font-size: clamp(0.75rem, 3.5vw, 0.88rem);
-	/* --bg-color: radial-gradient(80% 80% at 50% -15%, #27b294 70%, #1d997e 100%); */
-	--bg-color: var(--main-color);
-	/* --bg-color: #34f1c7; */
-	--bg-color-hover: var(--highlight-color);
+	/* --button-bg-color: radial-gradient(80% 80% at 50% -15%, #27b294 70%, #1d997e 100%); */
+	--button-bg-color: var(--main-color);
+	/* --button-bg-color: #34f1c7; */
+	--button-bg-color-hover: var(--highlight-color);
 	--bg-color-outline: var(--header-bg-color-transparent, transparent);
 
 	--padding-y: 1.3ch;
@@ -15,7 +15,7 @@
 
 	--button-border-radius: 0px;
 	--button-border-width: 2px;
-	--button-border-color: var(--bg-color);
+	--button-border-color: var(--button-bg-color);
 }
 
 .wp-block-buttons {
@@ -35,7 +35,7 @@
 button#submit {
 	display: inline-block;
 	scale: 1;
-	background: var(--bg-color);
+	background: var(--button-bg-color);
 	letter-spacing: 0px;
 	/* text-transform: capitalize; */
 	@apply !no-underline text-[var(--button-txt-color)] hover:text-[var(--button-txt-color-hover)] py-[var(--padding-y)] px-[var(--padding-x)] shadow shadow-black/40 hover:shadow-lg hover:shadow-slate-700/40 rounded-[var(--button-border-radius)];
@@ -55,8 +55,8 @@ button#submit {
 	&:hover {
 		scale: 1.1;
 		/* color: white; */
-		background: var(--bg-color-hover);
-		border-color: var(--bg-color-hover);
+		background: var(--button-bg-color-hover);
+		border-color: var(--button-bg-color-hover);
 	}
 
 	&:has(i.icon) {
@@ -99,12 +99,12 @@ button#submit {
 		box-shadow: none;
 		background-color: var(--bg-color-outline);
 		backdrop-filter: blur(15px);
-		color: var(--bg-color) !important;
+		color: var(--button-bg-color) !important;
 
 		&:hover {
 			@apply shadow-lg shadow-slate-700/40;
-			border-color: var(--bg-color-hover);
-			background-color: var(--bg-color-hover);
+			border-color: var(--button-bg-color-hover);
+			background-color: var(--button-bg-color-hover);
 			color: var(--button-txt-color-hover) !important;
 		}
 	}
@@ -114,7 +114,7 @@ button#submit {
 			color: white !important;
 			border-color: white;
 			&:hover {
-				border-color: var(--bg-color-hover);
+				border-color: var(--button-bg-color-hover);
 			}
 		}
 	}
@@ -134,8 +134,8 @@ button#submit {
 
 		&:hover {
 			@apply shadow-lg shadow-slate-700/40;
-			border-color: var(--bg-color-hover);
-			background-color: var(--bg-color-hover);
+			border-color: var(--button-bg-color-hover);
+			background-color: var(--button-bg-color-hover);
 			mix-blend-mode: unset;
 			color: var(--button-txt-color-hover) !important;
 		}

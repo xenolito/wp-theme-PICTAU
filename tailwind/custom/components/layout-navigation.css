@@ -60,13 +60,13 @@ body.fixed-header {
 					color: var(--nav-text-color-transparent) !important;
 				}
 				.menu-bt a {
-					--bg-color: white;
-					background-color: var(--bg-color) !important;
+					--button-bg-color: white;
+					background-color: var(--button-bg-color) !important;
 					border-color: var(--nav-text-color) !important;
 					color: var(--nav-text-color) !important;
 					&:hover {
-						background-color: var(--bg-color-hover) !important;
-						border-color: var(--bg-color-hover) !important;
+						background-color: var(--button-bg-color-hover) !important;
+						border-color: var(--button-bg-color-hover) !important;
 						color: white !important;
 					}
 				}
@@ -134,10 +134,10 @@ body.fixed-header {
 			#masthead {
 				.above-header-wrap {
 					.menu-bt a {
-						--bg-color: white !important;
-						border-color: var(--bg-color) !important;
+						--button-bg-color: white !important;
+						border-color: var(--button-bg-color) !important;
 						&:hover {
-							border-color: var(--bg-color-hover) !important;
+							border-color: var(--button-bg-color-hover) !important;
 						}
 					}
 				}

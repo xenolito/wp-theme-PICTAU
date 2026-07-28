@@ -107,6 +107,12 @@ figure figcaption {
 	--theme-tag-color: var(--tag-color, #343434);
 	--theme-figcaption-color: black;
 
+	--button-bg-color: var(--main-color);
+	--button-bg-color-hover: var(--highlight-color);
+	--bg-color-outline: transparent;
+	--button-txt-color: white;
+	--button-txt-color-hover: white;
+
 	&:is(.pct-card, section) {
 		background: var(--bg-color-theme-light);
 	}
@@ -142,6 +148,12 @@ figure figcaption {
 	--theme-tag-color: var(--main-color);
 	--theme-figcaption-color: inherit;
 
+	--button-bg-color: var(--main-color);
+	--button-bg-color-hover: var(--highlight-color);
+	--bg-color-outline: transparent;
+	--button-txt-color: white;
+	--button-txt-color-hover: white;
+
 	background-color: var(--bg-color-theme-dark);
 
 	.card:not(.transparent) {
@@ -173,17 +185,6 @@ figure figcaption {
 		}
 	}
 
-	.wp-element-button,
-	.menu-bt a,
-	button#submit {
-		--bg-color: var(--main-color);
-		--bg-color-hover: var(--highlight-color);
-		--bg-color-outline: transparent;
-
-		--button-txt-color: white;
-		--button-txt-color-hover: white;
-	}
-
 	.wpcf7 span.wpcf7-not-valid-tip::after,
 	.wpcf7-response-output::after {
 		filter: var(--form-error-validation-icon-filter);
@@ -212,19 +213,14 @@ figure figcaption {
 	--theme-tag-color: var(--heading-color-theme-custom);
 	--theme-figcaption-color: inherit;
 
+	--button-bg-color: var(--main-color);
+	--button-bg-color-hover: var(--highlight-color);
+	--bg-color-outline: transparent;
+	--button-txt-color: white;
+	--button-txt-color-hover: white;
+
 	&:is(.pct-card, section) {
 		background: var(--bg-color-theme-custom);
-	}
-
-	.wp-element-button,
-	.menu-bt a,
-	button#submit {
-		--bg-color: var(--main-color);
-		--bg-color-hover: var(--highlight-color);
-		--bg-color-outline: transparent;
-
-		--button-txt-color: white;
-		--button-txt-color-hover: white;
 	}
 
 	.wpcf7 span.wpcf7-not-valid-tip::after,
