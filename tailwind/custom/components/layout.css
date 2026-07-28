@@ -2772,6 +2772,11 @@ nav.dot-navigation {
 	.splide__track {
 		mask-image: var(--mask-testimonials-gradient);
 		cursor: grab;
+
+		.splide__list {
+			padding-block: 2rem !important;
+		}
+
 		/* overflow: unset !important; */
 	}
 

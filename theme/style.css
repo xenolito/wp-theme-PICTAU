@@ -11915,6 +11915,10 @@ nav.dot-navigation .nav-item.showing::before {
   /* overflow: unset !important; */
 }
 
+[data-testimonials] .splide__track .splide__list {
+  padding-block: 2rem !important;
+}
+
 [data-testimonials] .splide__slide {
   --bg-color: 255, 255, 255;
   display: flex;
