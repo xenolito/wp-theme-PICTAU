@@ -6598,6 +6598,12 @@ h1:not([data-anim_any]), h2:not([data-anim_any]), h3:not([data-anim_any]), h4:no
   text-wrap: balance;
 }
 
+@media only screen and (max-width: 530px) {
+  h1:not([data-anim_any]), h2:not([data-anim_any]), h3:not([data-anim_any]), h4:not([data-anim_any]) {
+    text-wrap: initial
+  }
+}
+
 h1:has(.char), h2:has(.char), h3:has(.char), h4:has(.char) {
   line-height: 1.2;
 }
