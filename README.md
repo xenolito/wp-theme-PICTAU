@@ -445,17 +445,19 @@ Se requieren al menos 2 hijos directos.
 | `data-testimonials_visibleslides` | `3` | Nº de slides visibles en desktop (>1000 px). Default: `2` |
 | `data-testimonials_speed` | `600` | Duración de la transición entre slides en ms. Default: `900` |
 | `data-testimonials_gap` | `3rem` | Espacio entre slides. Acepta cualquier valor CSS (`rem`, `px`, `clamp(…)`). Default: `clamp(2rem, 5vw, 4.8rem)` |
-| `data-testimonials_padding` | `4rem` | Padding del track (efecto "peek": cuánto se asoman los slides adyacentes por los laterales). Acepta cualquier valor CSS. Default: `clamp(5.6rem, 10vw, 9.6rem)`. En móvil (≤535 px) siempre se aplica `2rem` independientemente de este valor |
+| `data-testimonials_padding` | `4rem` | Padding del track (efecto "peek": cuánto se asoman los slides adyacentes por los laterales). Acepta cualquier valor CSS. Default: `clamp(5.6rem, 10vw, 9.6rem)`. En móvil (≤535 px) este valor no se usa: el efecto peek se controla con `fixedWidth`, ver tabla de breakpoints |
 | `data-testimonials_draggable` | `true` | Habilita drag con ratón |
 | `data-testimonials_log` | `1` | Activa logging en consola para debug |
 
 ### Comportamiento por defecto
 
-| Breakpoint | Slides visibles | Padding lateral |
-|---|---|---|
-| >1000 px | 2 (configurable con `data-testimonials_visibleslides`) | `clamp(5.6rem, 10vw, 9.6rem)` |
-| ≤1000 px | 1 | `clamp(5.6rem, 10vw, 9.6rem)` |
-| ≤535 px | 1 | `2rem` |
+| Breakpoint | Slides visibles | Ancho del slide | Padding lateral |
+|---|---|---|---|
+| >1000 px | 2 (configurable con `data-testimonials_visibleslides`) | automático (track / `perPage`) | `clamp(5.6rem, 10vw, 9.6rem)` |
+| ≤1000 px | 1 | automático (track completo) | `clamp(5.6rem, 10vw, 9.6rem)` |
+| ≤535 px | 1 | `fixedWidth: 66vw` (fijo, no depende de `padding`) | *(no aplica, ver nota)* |
+
+**Breakpoint móvil (≤535 px) — `fixedWidth` + `focus: center`:** en vez de calcular el ancho del slide a partir de `padding`, se fija explícitamente a `66vw` (`fixedWidth`) y se centra el slide activo dentro del track (`focus: 'center'`). Esto hace que el track sea más ancho que el viewport y asomen simétricamente los slides adyacentes a ambos lados — el efecto "peek" en este breakpoint depende de `fixedWidth`, no de `data-testimonials_padding`. Se usa `vw` (relativo al viewport) en lugar de `%` para evitar una referencia circular contra el ancho de `.splide__list`, que depende a su vez de sus hijos.
 
 - **Gap entre slides:** `clamp(2rem, 5vw, 4.8rem)` — configurable con `data-testimonials_gap`
 - **Tipo de loop:** `loop` si hay más de 2 slides; `slide` si hay ≤2

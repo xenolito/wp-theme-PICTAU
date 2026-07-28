@@ -11899,6 +11899,9 @@ nav.dot-navigation .nav-item.showing::before {
 [data-testimonials] {
   padding-top: 0 !important;
   margin-top: var(--default-section-vert-padding);
+  /* Always full width */
+  width: 100vw !important;
+  left: calc(50% - 100vw * 0.5);
 }
 
 [data-testimonials]:has(.splide__pagination) {

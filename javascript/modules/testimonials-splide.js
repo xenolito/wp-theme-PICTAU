@@ -130,7 +130,8 @@ document.addEventListener('DOMContentLoaded', () => {
 					},
 					535: {
 						perPage: 1,
-						padding: '2rem',
+						focus: 'center',
+						fixedWidth: '66vw',
 						//arrows: !this.customarrows, // if customarrows is set, arrows will be hidden on mobile
 					},
 				},
