@@ -20,7 +20,6 @@
 	--card-border-radius: var(--def-border-radius);
 	--card-border-width: 1px;
 	--card-border-color: rgba(0, 0, 0, 0.1);
-	--card-background: white;
 	--card-icon-dim: 20px;
 	--card-icon-padd: 0.75ch;
 }

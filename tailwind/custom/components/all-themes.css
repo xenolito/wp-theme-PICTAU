@@ -113,7 +113,7 @@ figure figcaption {
 	--button-txt-color: white;
 	--button-txt-color-hover: white;
 
-	&:is(.pct-card, section) {
+	&:is(.pct-card, section, .card) {
 		background: var(--bg-color-theme-light);
 	}
 
@@ -131,7 +131,7 @@ figure figcaption {
 	&.theme-color-white {
 		--card-background: rgba(255, 255, 255, 1);
 
-		&:is(.pct-card, section) {
+		&:is(.pct-card, section, .card) {
 			background: white;
 		}
 	}
@@ -141,7 +141,8 @@ figure figcaption {
 .theme-color-dark {
 	--border-color: var(--heading-color-theme-dark);
 	--link-color: var(--main-color);
-	--card-background: var(--bg-color-theme-dark);
+	--card-background: rgba(255, 255, 255, 0.0005);
+	--card-border-color: rgba(255, 255, 255, 0.1);
 
 	--theme-txt-color: var(--txt-color-theme-dark);
 	--theme-heading-color: var(--heading-color-theme-dark);
@@ -156,11 +157,7 @@ figure figcaption {
 
 	background-color: var(--bg-color-theme-dark);
 
-	.card:not(.transparent) {
-		--card-background: var(--bg-color-theme-dark);
-	}
-
-	&:is(.pct-card, section) {
+	&:is(.pct-card, section, .card) {
 		background: var(--bg-color-theme-dark);
 	}
 
@@ -191,9 +188,6 @@ figure figcaption {
 	}
 
 	.card:not(.transparent) {
-		--card-border-color: rgba(255, 255, 255, 0.1);
-		--card-background: rgba(255, 255, 255, 0.0005);
-
 		&.bordered {
 			background: rgb(from var(--card-background) r g b / 0.05);
 			> * {
@@ -207,6 +201,7 @@ figure figcaption {
 .theme-color-custom {
 	--border-color: var(--heading-color-theme-custom);
 	--link-color: var(--main-color);
+	--card-background: rgba(255, 255, 255, 1);
 
 	--theme-txt-color: var(--txt-color-theme-custom);
 	--theme-heading-color: var(--heading-color-theme-custom);
@@ -219,7 +214,7 @@ figure figcaption {
 	--button-txt-color: white;
 	--button-txt-color-hover: white;
 
-	&:is(.pct-card, section) {
+	&:is(.pct-card, section, .card) {
 		background: var(--bg-color-theme-custom);
 	}
 
@@ -250,9 +245,5 @@ figure figcaption {
 	.header-tag {
 		background: rgb(255 255 255 / 0.33);
 		border-color: rgba(255, 255, 255, 1);
-	}
-
-	.card:not(.transparent) {
-		--card-background: rgba(255, 255, 255, 1);
 	}
 }

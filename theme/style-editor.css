@@ -1521,7 +1521,7 @@ figure figcaption {
   --button-txt-color-hover: white;
 }
 
-.theme-color-light:is(.pct-card, section) {
+.theme-color-light:is(.pct-card, section, .card) {
   background: var(--bg-color-theme-light);
 }
 
@@ -1538,7 +1538,7 @@ figure figcaption {
   --card-background: rgba(255, 255, 255, 1);
 }
 
-.theme-color-light.theme-color-white:is(.pct-card, section) {
+.theme-color-light.theme-color-white:is(.pct-card, section, .card) {
   background: white;
 }
 
@@ -1547,7 +1547,8 @@ figure figcaption {
 .theme-color-dark {
   --border-color: var(--heading-color-theme-dark);
   --link-color: var(--main-color);
-  --card-background: var(--bg-color-theme-dark);
+  --card-background: rgba(255, 255, 255, 0.0005);
+  --card-border-color: rgba(255, 255, 255, 0.1);
   --theme-txt-color: var(--txt-color-theme-dark);
   --theme-heading-color: var(--heading-color-theme-dark);
   --theme-tag-color: var(--main-color);
@@ -1560,11 +1561,7 @@ figure figcaption {
   background-color: var(--bg-color-theme-dark);
 }
 
-.theme-color-dark .card:not(.transparent) {
-  --card-background: var(--bg-color-theme-dark);
-}
-
-.theme-color-dark:is(.pct-card, section) {
+.theme-color-dark:is(.pct-card, section, .card) {
   background: var(--bg-color-theme-dark);
 }
 
@@ -1586,11 +1583,6 @@ figure figcaption {
   filter: var(--form-error-validation-icon-filter);
 }
 
-.theme-color-dark .card:not(.transparent) {
-  --card-border-color: rgba(255, 255, 255, 0.1);
-  --card-background: rgba(255, 255, 255, 0.0005);
-}
-
 .theme-color-dark .card:not(.transparent).bordered {
   background: rgb(from var(--card-background) r g b / 0.05);
 }
@@ -1604,6 +1596,7 @@ figure figcaption {
 .theme-color-custom {
   --border-color: var(--heading-color-theme-custom);
   --link-color: var(--main-color);
+  --card-background: rgba(255, 255, 255, 1);
   --theme-txt-color: var(--txt-color-theme-custom);
   --theme-heading-color: var(--heading-color-theme-custom);
   --theme-tag-color: var(--heading-color-theme-custom);
@@ -1615,7 +1608,7 @@ figure figcaption {
   --button-txt-color-hover: white;
 }
 
-.theme-color-custom:is(.pct-card, section) {
+.theme-color-custom:is(.pct-card, section, .card) {
   background: var(--bg-color-theme-custom);
 }
 
@@ -1646,10 +1639,6 @@ figure figcaption {
 .theme-color-custom .header-tag {
   background: rgb(255 255 255 / 0.33);
   border-color: rgba(255, 255, 255, 1);
-}
-
-.theme-color-custom .card:not(.transparent) {
-  --card-background: rgba(255, 255, 255, 1);
 }
 
 :root {
@@ -3726,7 +3715,6 @@ button#submit:has(svg) {
   --card-border-radius: var(--def-border-radius);
   --card-border-width: 1px;
   --card-border-color: rgba(0, 0, 0, 0.1);
-  --card-background: white;
   --card-icon-dim: 20px;
   --card-icon-padd: 0.75ch;
 }
