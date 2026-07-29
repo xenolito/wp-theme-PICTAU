@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.10.8
+- **Versión:** 7.10.10
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -475,6 +475,52 @@ Cuando el autoplay está activo (`data-testimonials_autoplay`), el módulo regis
 ### `customarrows` — flechas externas
 
 Si se usa `data-testimonials_customarrows`, el bloque apuntado debe tener exactamente **2 hijos directos**: el primero actúa como botón "anterior" y el último como botón "siguiente". En móvil (≤535 px), si `customarrows` está activo, las flechas nativas se ocultan automáticamente.
+
+### Anti-FOUC / anti-CLS durante el montaje
+
+El bloque exterior arranca con `opacity: 0` y una regla `&:not(.splide) { display: grid; > * { grid-area: 1 / 1; } }` — mientras el JS no ha añadido la clase `.splide` (aún no ha reestructurado el DOM en `.splide__track`/`.splide__list`), los slides en bruto se apilan unos sobre otros (grid) en vez de mostrarse en columna. Así, el alto del bloque antes de montar Splide ya es ~ el de una sola tarjeta (el más alto de los slides superpuestos), en vez de la suma de todos los slides — evita el salto de layout (CLS) grande que se produciría al colapsar una columna larga en una sola fila al montar el carrusel. El módulo añade la clase `splide-ready` justo después de `new Splide(...).mount()`, lo que dispara la transición `opacity` a `1` (`transition: opacity 0.4s ease`) — así el bloque no se ve hasta que Splide está configurado.
+
+---
+
+## Bloques Gutenberg — Marquee infinito de logos (marquee)
+
+Convierte un bloque **Grupo** de Gutenberg en una cinta de logos (u otro contenido) con scroll horizontal infinito. Módulo JS: `javascript/modules/marquee.js`.
+
+**Atributo de activación:** `data-marquee`
+
+### Estructura HTML requerida
+
+El outer Group debe contener un **único Group interior** ("slide"), y dentro de ese, los items (normalmente bloques de imagen). El módulo clona ese slide una vez y lo coloca a continuación del original, para lograr el scroll infinito sin salto (los dos slides idénticos se desplazan juntos y el bucle se reinicia de forma invisible).
+
+```
+📦 Group (outer)       ← data-marquee aquí
+  └── 📦 Group (slide) ← único hijo directo
+        ├── 🖼️ Image (item 1)
+        ├── 🖼️ Image (item 2)
+        └── 🖼️ Image (item N…)
+```
+
+Se requieren al menos **5 items** dentro del slide.
+
+### Atributos de configuración (en el bloque exterior)
+
+| Atributo | Valor de ejemplo | Descripción |
+|---|---|---|
+| `data-marquee` | *(vacío)* | **Activa el marquee** (requerido) |
+| `data-marquee_speed` | `20000` | Duración en ms para completar un ciclo completo de scroll. Default: `30000` |
+| `data-marquee_reverse` | `1` | Invierte el sentido del scroll (izquierda→derecha en vez de derecha→izquierda) |
+| `data-marquee_log` | `1` | Activa logging en consola para debug |
+
+### Comportamiento por defecto
+
+- **Dirección:** derecha → izquierda (configurable con `data-marquee_reverse`)
+- **Velocidad:** 30000ms (30s) por ciclo completo, lineal, infinito — configurable con `data-marquee_speed`
+- **Máscara horizontal:** degradado radial (`mask-image`) para difuminar los bordes izquierdo/derecho
+- **Altura de cada logo:** 60px (`.item img`), controlada por CSS, no por el módulo JS
+
+### Anti-FOUC / anti-CLS durante el montaje
+
+Mismo problema y misma solución que en el slider de testimonios (ver sección anterior), adaptada a que aquí solo hay un slide (no varios independientes): el bloque exterior arranca con `opacity: 0`, y mientras el JS no ha añadido la clase `.marquee`, el slide en bruto y sus items ya se muestran en una fila (`display: flex; flex-flow: row nowrap`) con la misma altura de imagen final (60px), en vez de apilados en columna con el alto natural (sin restringir) de cada imagen. Así el alto del bloque no cambia al montar el marquee real — antes colapsaba de una columna de imágenes a tamaño natural a una fila de 60px de golpe. El módulo añade la clase `marquee-ready` al final de `setupDOM()` (tras clonar el slide), lo que dispara la transición `opacity` a `1` (`transition: opacity 0.4s ease`).
 
 ---
 
@@ -1439,6 +1485,7 @@ Entry: `javascript/script.js` → `theme/js/script.min.js`
 | `hero_slider.js` | Slider full-width above-the-fold (Splide). Atributo: `data-heroslider`. Reveal ligado a carga de primera imagen. |
 | `imgcompare.js` | Comparador antes/después con slider. Atributo: `data-imgcompare`. |
 | `testimonials-splide.js` | Slider de testimonios (Splide). Atributo: `data-testimonials`. |
+| `marquee.js` | Cinta infinita de logos con scroll horizontal. Atributo: `data-marquee`. |
 | `animation_any.js` | Animaciones de entrada con GSAP + ScrollTrigger. Atributo: `data-anim_any`. |
 | `parallax.js` | Efecto parallax vertical. Atributo: `data-parallax="<depth>"`. |
 | `navigation_dot.js` | Navegación lateral por puntos para páginas one-page. Atributo: `data-dotnav`. |

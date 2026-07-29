@@ -138,6 +138,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			const clonedSlide = this.slide.cloneNode(true)
 			this.slide.after(clonedSlide)
+
+			this.marqueeContainer.classList.add('marquee-ready')
 		}
 
 		init = () => {

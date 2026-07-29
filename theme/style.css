@@ -4,7 +4,7 @@ Theme URI: https://pictau.com
 Author: Oscar Rey Tajes
 Author URI: https://www.pictau.com
 Description: PICTAU theme with optional "tailwind" support and customizations for BALANZIA.
-Version: 7.10.8
+Version: 7.10.10
 Tested up to: 6.8
 Requires PHP: 7.4
 License: GNU General Public License v2 or later
@@ -11902,6 +11902,25 @@ nav.dot-navigation .nav-item.showing::before {
   /* Always full width */
   width: 100vw !important;
   left: calc(50% - 100vw * 0.5);
+  /* Evitar FOUC + CLS mientras se monta Splide: oculto hasta que JS añade
+	   .splide-ready tras el mount, y mientras tanto los slides en bruto se
+	   apilan (grid) en vez de en columna, para que el alto ya sea ~ el de una
+	   sola tarjeta y no colapse de golpe cuando Splide reestructura el DOM. */
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+[data-testimonials].splide-ready {
+  opacity: 1;
+}
+
+[data-testimonials]:not(.splide) {
+  display: grid;
+  overflow: hidden;
+}
+
+[data-testimonials]:not(.splide) > * {
+  grid-area: 1 / 1;
 }
 
 [data-testimonials]:has(.splide__pagination) {
@@ -12057,6 +12076,41 @@ nav.dot-navigation .nav-item.showing::before {
 
 [data-marquee] {
   margin: 2rem 0;
+  /* Evitar FOUC + CLS mientras se monta el marquee: oculto hasta que JS añade
+	   .marquee-ready tras el setup, y mientras tanto (sin la clase .marquee que
+	   añade el JS) el único slide en bruto y sus items se muestran ya en fila
+	   (flex nowrap) con la misma altura de imagen final, en vez de apilados en
+	   columna con el alto natural de cada imagen — así el alto no colapsa de
+	   golpe al montar el marquee real. */
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+[data-marquee].marquee-ready {
+  opacity: 1;
+}
+
+[data-marquee]:not(.marquee) {
+  display: flex;
+  overflow: hidden;
+}
+
+[data-marquee]:not(.marquee) > div {
+  display: flex;
+  flex-flow: row nowrap;
+  flex-shrink: 0;
+  gap: 2rem;
+}
+
+[data-marquee]:not(.marquee) > div > * {
+  flex-shrink: 0;
+}
+
+[data-marquee]:not(.marquee) > div img {
+  height: 60px;
+  width: auto;
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 
 [data-marquee] .marquee-slide {

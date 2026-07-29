@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			this.initSwiper()
 
-			this.testimonialsContainer.style.opacity = '1'
+			this.testimonialsContainer.classList.add('splide-ready')
 		}
 
 		initSwiper = () => {
