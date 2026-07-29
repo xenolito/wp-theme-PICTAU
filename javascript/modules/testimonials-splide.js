@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				autoplayreverse = false,
 				draggable = false,
 				spacebetween = 32,
-				visibleslides = 2,
+				slidewidth = 'clamp(300px, 24vw, 420px)',
 				speed = 900,
 				gap = 'clamp(2rem, 5vw, 4.8rem)',
 				padding = 'clamp(5.6rem, 10vw, 9.6rem)',
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.autoplayreverse = autoplayreverse ? true : false
 			this.draggable = draggable === 'true' || draggable === '1' ? true : false
 			this.spaceBetween = Number(spacebetween)
-			this.perPage = Math.max(1, Number(visibleslides) || 2)
+			this.slideWidth = slidewidth
 			this.speed = Number(speed) || 900
 			this.gap = gap
 			this.padding = padding
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		initSwiper = () => {
 			const config = {
 				type: this.swiperLoopType,
-				perPage: this.perPage,
+				fixedWidth: this.slideWidth,
 				perMove: 1,
 				gap: this.gap,
 				padding: this.padding,
@@ -125,11 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				// autoplay: true,
 				// interval: 2500,
 				breakpoints: {
-					1000: {
-						perPage: 1,
-					},
 					535: {
-						perPage: 1,
 						focus: 'center',
 						fixedWidth: '66vw',
 						padding: 0,
