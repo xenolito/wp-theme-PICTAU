@@ -40,6 +40,10 @@
 	--icon-gradient-4: linear-gradient(174deg, rgba(0, 159, 12, 1) 0%, rgba(0, 247, 255, 1) 100%);
 	--icon-gradient-5: linear-gradient(174deg, rgba(1, 251, 255, 1) 0%, rgba(224, 1, 255, 1) 100%);
 	--icon-gradient-6: linear-gradient(174deg, rgba(106, 255, 1, 1) 0%, rgba(255, 233, 1, 1) 100%);
+
+	/* Testimonials pagination dots */
+	--testimonials-pagination-color: hsl(0, 0%, 80%);
+	--testimonials-pagination-active-color: white;
 }
 
 .bg-transparent {
@@ -112,6 +116,9 @@ figure figcaption {
 	--bg-color-outline: transparent;
 	--button-txt-color: white;
 	--button-txt-color-hover: white;
+
+	/* --testimonials-pagination-color: var(--main-color);
+	--testimonials-pagination-active-color: black; */
 
 	&:is(.pct-card, section, .card) {
 		background: var(--bg-color-theme-light);
