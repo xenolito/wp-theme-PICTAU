@@ -1414,6 +1414,44 @@ body.single-evento {
 			}
 		}
 	}
+
+	&.list-icon-tic {
+		li {
+			display: grid !important;
+			grid-template-columns: min-content 1fr !important;
+			gap: 1.33ch;
+			align-items: flex-start;
+
+			&::before {
+				position: relative !important;
+				translate: none !important;
+				content: "\f00c" !important;
+				color: var(--list-icon-tic-color, black);
+				opacity: 1 !important;
+			}
+		}
+	}
+
+	&.numbered {
+		counter-reset: pct-counter;
+
+		li {
+			display: grid !important;
+			grid-template-columns: min-content 1fr !important;
+			gap: 1.33ch;
+			align-items: flex-start;
+
+			&::before {
+				position: relative !important;
+				translate: none !important;
+				font-family: inherit !important;
+				counter-increment: pct-counter;
+				content: counter(pct-counter, decimal-leading-zero) !important;
+				color: var(--list-icon-tic-color, black);
+				opacity: 1 !important;
+			}
+		}
+	}
 }
 
 .img-shadow {

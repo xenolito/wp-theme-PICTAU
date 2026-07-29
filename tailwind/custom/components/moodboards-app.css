@@ -6,7 +6,6 @@
 	--amb-panel-columns-mobile: 4;
 	--amb-panel-bg: hsl(0 0% 100% / 1);
 	--amb-panel-shadow: 0 4px 24px hsl(0 0% 0% / 0.16);
-	--cta-color: hsl(354, 73%, 46%);
 	--amb-accent: var(--cta-color);
 	/* --amb-accent-hover: #122d54; */
 	--amb-thumb-size: 56px;

@@ -120,7 +120,9 @@ figure figcaption {
 	/* --testimonials-pagination-color: var(--main-color);
 	--testimonials-pagination-active-color: black; */
 
-	&:is(.pct-card, section, .card) {
+	--list-icon-tic-color: var(--heading-color);
+
+	&:is(.pct-card, section, .card, li) {
 		background: var(--bg-color-theme-light);
 	}
 
@@ -128,6 +130,10 @@ figure figcaption {
 		p {
 			@apply text-white/70;
 		}
+	}
+
+	li {
+		color: var(--theme-txt-color, inherit);
 	}
 
 	.wpcf7 span.wpcf7-not-valid-tip::after,
