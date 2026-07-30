@@ -8427,6 +8427,7 @@ body.header-width-centered .main-header-content {
   --layout-max-width: 1500px;
   --def-layout-x-padding: clamp(1rem, 5.5vw, 8rem);
   --default-section-vert-padding: clamp(5rem, 15vw, 10rem);
+  --default-y-padding: clamp(5rem, 15vw, 6rem);
   --column-gap: var(--card-padding, var(--default-card-padding));
   --row-gap: calc(var(--card-padding) * 2.5);
   --scroll-offset: 0px;
@@ -8709,14 +8710,27 @@ figure.size-full:not(.is-resized):not(.card-fake-cta-icon) svg {
 }
 
 .padding-b {
-  padding-bottom: var(--def-layout-x-padding) !important;
+  padding-bottom: var(--default-y-padding) !important;
 }
 
 .padding-t {
-  padding-top: var(--def-layout-x-padding) !important;
+  padding-top: var(--default-y-padding) !important;
 }
 
 .padding-y {
+  padding-top: var(--default-y-padding) !important;
+  padding-bottom: var(--default-y-padding) !important;
+}
+
+.padding-b-small {
+  padding-bottom: var(--def-layout-x-padding) !important;
+}
+
+.padding-t-small {
+  padding-top: var(--def-layout-x-padding) !important;
+}
+
+.padding-y-small {
   padding-top: var(--def-layout-x-padding) !important;
   padding-bottom: var(--def-layout-x-padding) !important;
 }

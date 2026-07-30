@@ -2,6 +2,7 @@
 	--layout-max-width: 1500px;
 	--def-layout-x-padding: clamp(1rem, 5.5vw, 8rem);
 	--default-section-vert-padding: clamp(5rem, 15vw, 10rem);
+	--default-y-padding: clamp(5rem, 15vw, 6rem);
 	--column-gap: var(--card-padding, var(--default-card-padding));
 	--row-gap: calc(var(--card-padding) * 2.5);
 	--scroll-offset: 0px;
@@ -284,14 +285,26 @@ figure {
 }
 
 .padding-b {
-	@apply !pb-[var(--def-layout-x-padding)];
+	@apply !pb-[var(--default-y-padding)];
 }
 
 .padding-t {
-	@apply !pt-[var(--def-layout-x-padding)];
+	@apply !pt-[var(--default-y-padding)];
 }
 
 .padding-y {
+	@apply !py-[var(--default-y-padding)];
+}
+
+.padding-b-small {
+	@apply !pb-[var(--def-layout-x-padding)];
+}
+
+.padding-t-small {
+	@apply !pt-[var(--def-layout-x-padding)];
+}
+
+.padding-y-small {
 	@apply !py-[var(--def-layout-x-padding)];
 }
 
