@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.11.1
+- **Versión:** 7.11.3
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1698,9 +1698,9 @@ Contiene un botón **"Rellenar con plantilla base"** que, sin necesidad de guard
 
 Si alguno de los dos ya tiene contenido, pide confirmación antes de sobrescribir.
 
-El contenido de la plantilla está hardcodeado en dos métodos privados (`get_form_template()` y `get_mail_template()`) del propio archivo — es una copia del formulario **"Contacto General"** (el que alimenta el modal `lead` del sitio). Para actualizar la plantilla cuando ese formulario cambie, basta con volver a copiar su contenido en esos dos métodos.
+El contenido de la plantilla está hardcodeado en dos métodos privados (`get_form_template()` y `get_mail_template()`) del propio archivo — es una copia del formulario **"Lead"** (post 76992, hash `b3cd5c0`, el que alimenta el modal `lead` del sitio). Para actualizar la plantilla cuando ese formulario cambie, basta con volver a copiar su contenido en esos dos métodos.
 
-**Botón "Rellenar con plantilla base Multiidioma"** — visible únicamente si Polylang está activo (`function_exists('pll_register_string')`, mismo criterio que `cf7-polylang.php`). Hace lo mismo que el botón base, pero con una plantilla distinta (`get_form_template_multilang()` / `get_mail_template_multilang()`): copia del formulario **"Contacto General -- MULTIIDIOMA"**, con los textos envueltos en `{llaves}` para que la pestaña Polylang del editor los detecte y registre como strings traducibles automáticamente.
+**Botón "Rellenar con plantilla base Multiidioma"** — visible únicamente si Polylang está activo (`function_exists('pll_register_string')`, mismo criterio que `cf7-polylang.php`). Hace lo mismo que el botón base, pero con una plantilla distinta (`get_form_template_multilang()` / `get_mail_template_multilang()`): misma base que la plantilla "Lead" del botón anterior, con los textos de la pestaña Formulario envueltos en `{llaves}` para que la pestaña Polylang del editor los detecte y registre como strings traducibles automáticamente (el cuerpo del correo no lleva llaves, no se traduce).
 
 Disponible tanto al editar un formulario existente (`admin.php?page=wpcf7&post=X&action=edit`) como en la pantalla **"Añadir nuevo"** (`admin.php?page=wpcf7-new`) — el script se encola comprobando que `$screen->id` contiene `wpcf7`, en vez de una comparación exacta contra `toplevel_page_wpcf7`, porque ambas pantallas usan screen ids distintos.
 

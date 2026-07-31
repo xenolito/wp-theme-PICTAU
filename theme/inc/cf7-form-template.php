@@ -170,17 +170,37 @@ final class Pictau_CF7_Form_Template {
 	//! Plantilla base
 	// =========================================================================
 
+	/**
+	 * Copia del formulario "Lead" (post 76992, hash b3cd5c0), el formulario que
+	 * alimenta el modal `lead` del sitio. Para actualizar la plantilla cuando ese
+	 * formulario cambie, basta con volver a copiar su contenido en estos dos métodos.
+	 */
 	private function get_form_template(): string {
 		return <<<'FORM'
 <div class="pct-form-pasti">
-[select* interes class:pct-select first_as_label "¿Qué te interesa?*" "Participar" "Colaborar" "Crear Proyectos"]
-  [text* nombre placeholder "Nombre*"]
+  [text* nombre placeholder "Nombre y Apellidos*"]
+  [text* empresa placeholder "Empresa*"]
   [email* email placeholder "Email*"]
   [text* telefono placeholder "Teléfono*"]
+  [text* provincia placeholder "Provincia*"]
+  [select* empleados class:pct-select first_as_label "Empleados*" "1-10" "11-50" "51-100" "101-250" "Más de 250"]
+  [hidden producto]
 
-  <div>[textarea mensaje placeholder "¿En qué más podemos ayudarte?"]</div>
-  <div class="legal-content"><span class="pct-form-element pct-legal">[checkbox* legal-check id:legal-input class:pct-legal-acceptance "legal-acceptance"]<label class="pct-label-for-legal" for="legalinput-cf"><span class="display-as-block"><i class="ico-unchecked"></i><i class="ico-checked"></i></span><span class="display-as-block">Al enviar este formulario confirmo que he leído y acepto la <a class="pct-lk-privacidad" href="/politica-privacidad" style="text-decoration:underline">Política de Privacidad</a></span></label></span></div><div><button id="submit" class="wpcf7-form-control wpcf7-submit bg-bt-submit"><span>Enviar</span> <i class="fas fa-cog fa-spin"></i></button></div>[response]</div>
+  <div class="pct-form-2cols">
+  <h3>Áreas que quieres mejorar</h3>
+  [checkbox area-interes-ventas use_label_element "Ventas"]
+  [checkbox area-interes-margenes use_label_element "Márgenes"]
+  [checkbox area-interes-finanzas use_label_element "Finanzas"]
+  [checkbox area-interes-stock use_label_element "Stock"]
+  [checkbox area-interes-crm use_label_element "CRM"]
+  [checkbox area-interes-operaciones use_label_element "Operaciones"]
+  [checkbox area-interes-reporting use_label_element "Reporting"]
+  [checkbox area-interes-otro use_label_element "Otro"]
+  </div>
 
+  <div>
+    <div class="legal-content"><span class="pct-form-element pct-legal">[checkbox* legal-check id:legal-input class:pct-legal-acceptance "legal-acceptance"]<label class="pct-label-for-legal" for="legalinput-cf"><span class="display-as-block"><i class="ico-unchecked"></i><i class="ico-checked"></i></span><span class="display-as-block">Al enviar este formulario confirmo que he leído y acepto la <a class="pct-lk-privacidad" href="/politica-privacidad" style="text-decoration:underline">Política de Privacidad</a></span></label></span></div><div><button id="submit" class="wpcf7-form-control wpcf7-submit bg-bt-submit"><span>Enviar</span> <i class="fas fa-cog fa-spin"></i></button></div>[response]</div>
+  </div>
 
 <div data-modal="contacto-msg-sent-ok">
   <h3>Gracias por tu Mensaje</h3>
@@ -192,12 +212,23 @@ FORM;
 	private function get_mail_template(): string {
 		return <<<'MAIL'
 <strong>De:</strong> [nombre] --> [email]<br>
-<strong>Interés en:</strong> [interes]<br>
+<strong>Empresa:</strong> [empresa]<br>
+<strong>Provincia:</strong> [provincia]<br>
+<strong>Empleados:</strong> [empleados]<br>
 <strong>Teléfono:</strong> [telefono]<br>
-<strong>Comentarios:</strong> [mensaje]<br>
+<strong>Producto:</strong> [producto]<br>
+<h3>Areas de interés:</h3>
+[area-interes-ventas]<br>
+[area-interes-margenes]<br>
+[area-interes-finanzas]<br>
+[area-interes-stock]<br>
+[area-interes-crm]<br>
+[area-interes-operaciones]<br>
+[area-interes-reporting]<br>
+[area-interes-otro]
 <br><br>
 <hr><br>
-Has recibido esta información desde: [_url]
+Has recibido este lead desde: [_url]
 MAIL;
 	}
 
@@ -206,21 +237,38 @@ MAIL;
 	// =========================================================================
 
 	/**
-	 * Copia del formulario "Contacto General -- MULTIIDIOMA" (post 76611, hash 0031d46),
-	 * con los textos envueltos en {llaves} para que theme/inc/cf7-polylang.php los
-	 * registre automáticamente como strings traducibles en Polylang.
+	 * Misma base que get_form_template()/get_mail_template() (formulario "Lead",
+	 * post 76992, hash b3cd5c0), con los textos envueltos en {llaves} para que
+	 * theme/inc/cf7-polylang.php los registre automáticamente como strings
+	 * traducibles en Polylang. El cuerpo del correo no lleva llaves (no se
+	 * traduce, es la notificación interna al admin del sitio).
 	 */
 	private function get_form_template_multilang(): string {
 		return <<<'FORM'
 <div class="pct-form-pasti">
-[select* interes class:pct-select first_as_label "{¿Qué te interesa?*}" "{Participar}" "{Colaborar}" "{Crear Proyectos}"]
   [text* nombre placeholder "{Nombre y Apellidos}*"]
+  [text* empresa placeholder "{Empresa}*"]
   [email* email placeholder "Email*"]
   [text* telefono placeholder "{Teléfono}*"]
+  [text* provincia placeholder "{Provincia}*"]
+  [select* empleados class:pct-select first_as_label "{Empleados*}" "{1-10}" "{11-50}" "{51-100}" "{101-250}" "{Más de 250}"]
+  [hidden producto]
 
-  <div>[textarea mensaje placeholder "{¿En qué más podemos ayudarte?}"]</div>
-  <div class="legal-content"><span class="pct-form-element pct-legal">[checkbox* legal-check id:legal-input class:pct-legal-acceptance "legal-acceptance"]<label class="pct-label-for-legal" for="legalinput-cf"><span class="display-as-block"><i class="ico-unchecked"></i><i class="ico-checked"></i></span><span class="display-as-block">{Al enviar este formulario confirmo que he leído y acepto la}  <a class="pct-lk-privacidad" {href="/politica-privacidad"} style="text-decoration:underline">{Política de Privacidad}</a></span></label></span></div><div><button id="submit" class="wpcf7-form-control wpcf7-submit bg-bt-submit"><span>{Enviar}</span> <i class="fas fa-cog fa-spin"></i></button></div>[response]</div>
+  <div class="pct-form-2cols">
+  <h3>{Áreas que quieres mejorar}</h3>
+  [checkbox area-interes-ventas use_label_element "{Ventas}"]
+  [checkbox area-interes-margenes use_label_element "{Márgenes}"]
+  [checkbox area-interes-finanzas use_label_element "{Finanzas}"]
+  [checkbox area-interes-stock use_label_element "{Stock}"]
+  [checkbox area-interes-crm use_label_element "{CRM}"]
+  [checkbox area-interes-operaciones use_label_element "{Operaciones}"]
+  [checkbox area-interes-reporting use_label_element "{Reporting}"]
+  [checkbox area-interes-otro use_label_element "{Otro}"]
+  </div>
 
+  <div>
+    <div class="legal-content"><span class="pct-form-element pct-legal">[checkbox* legal-check id:legal-input class:pct-legal-acceptance "legal-acceptance"]<label class="pct-label-for-legal" for="legalinput-cf"><span class="display-as-block"><i class="ico-unchecked"></i><i class="ico-checked"></i></span><span class="display-as-block">{Al enviar este formulario confirmo que he leído y acepto la}  <a class="pct-lk-privacidad" {href="/politica-privacidad"} style="text-decoration:underline">{Política de Privacidad}</a></span></label></span></div><div><button id="submit" class="wpcf7-form-control wpcf7-submit bg-bt-submit"><span>{Enviar}</span> <i class="fas fa-cog fa-spin"></i></button></div>[response]</div>
+  </div>
 
 <div data-modal="contacto-msg-sent-ok">
   <h3>{Gracias por tu Mensaje}</h3>
@@ -232,12 +280,23 @@ FORM;
 	private function get_mail_template_multilang(): string {
 		return <<<'MAIL'
 <strong>De:</strong> [nombre] --> [email]<br>
-<strong>Interés en:</strong> [interes]<br>
+<strong>Empresa:</strong> [empresa]<br>
+<strong>Provincia:</strong> [provincia]<br>
+<strong>Empleados:</strong> [empleados]<br>
 <strong>Teléfono:</strong> [telefono]<br>
-<strong>Comentarios:</strong> [mensaje]<br>
+<strong>Producto:</strong> [producto]<br>
+<h3>Areas de interés:</h3>
+[area-interes-ventas]<br>
+[area-interes-margenes]<br>
+[area-interes-finanzas]<br>
+[area-interes-stock]<br>
+[area-interes-crm]<br>
+[area-interes-operaciones]<br>
+[area-interes-reporting]<br>
+[area-interes-otro]
 <br><br>
 <hr><br>
-Has recibido esta información desde: [_url]
+Has recibido este lead desde: [_url]
 MAIL;
 	}
 }
