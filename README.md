@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.11.6
+- **Versión:** 7.11.7
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1713,12 +1713,13 @@ Contiene un botón **"Rellenar con plantilla base"** que, sin necesidad de guard
 
 - El textarea de la pestaña **Formulario** (`#wpcf7-form`).
 - El textarea de **Cuerpo del mensaje** de la pestaña Correo (`#wpcf7-mail-body`, solo Mail 1).
+- El textarea de **Cabeceras adicionales** de la pestaña Correo (`#wpcf7-mail-additional-headers`, solo Mail 1), con `Reply-To: [email]`. CF7 precarga por defecto `Reply-To: [your-email]` en formularios nuevos, pero el campo de email de esta plantilla se llama `[email]`, no `[your-email]` — sin este ajuste el Reply-To quedaría roto (apuntando a un campo inexistente).
 
-Si alguno de los dos ya tiene contenido, pide confirmación antes de sobrescribir.
+Si el formulario o el correo ya tienen contenido, pide confirmación antes de sobrescribir; las cabeceras adicionales se rellenan siempre que exista el campo (no forman parte de esa comprobación de confirmación).
 
-El contenido de la plantilla está hardcodeado en dos métodos privados (`get_form_template()` y `get_mail_template()`) del propio archivo — es una copia del formulario **"Lead"** (post 76992, hash `b3cd5c0`, el que alimenta el modal `lead` del sitio). Para actualizar la plantilla cuando ese formulario cambie, basta con volver a copiar su contenido en esos dos métodos.
+El contenido de la plantilla está hardcodeado en tres métodos privados (`get_form_template()`, `get_mail_template()` y `get_mail_additional_headers()`) del propio archivo — es una copia del formulario **"Lead"** (post 76992, hash `b3cd5c0`, el que alimenta el modal `lead` del sitio). Para actualizar la plantilla cuando ese formulario cambie, basta con volver a copiar su contenido en esos métodos.
 
-**Botón "Rellenar con plantilla base Multiidioma"** — visible únicamente si Polylang está activo (`function_exists('pll_register_string')`, mismo criterio que `cf7-polylang.php`). Hace lo mismo que el botón base, pero con una plantilla distinta (`get_form_template_multilang()` / `get_mail_template_multilang()`): misma base que la plantilla "Lead" del botón anterior, con los textos de la pestaña Formulario envueltos en `{llaves}` para que la pestaña Polylang del editor los detecte y registre como strings traducibles automáticamente (el cuerpo del correo no lleva llaves, no se traduce).
+**Botón "Rellenar con plantilla base Multiidioma"** — visible únicamente si Polylang está activo (`function_exists('pll_register_string')`, mismo criterio que `cf7-polylang.php`). Hace lo mismo que el botón base, pero con una plantilla distinta (`get_form_template_multilang()` / `get_mail_template_multilang()`): misma base que la plantilla "Lead" del botón anterior, con los textos de la pestaña Formulario envueltos en `{llaves}` para que la pestaña Polylang del editor los detecte y registre como strings traducibles automáticamente (el cuerpo del correo no lleva llaves, no se traduce). Las cabeceras adicionales (`get_mail_additional_headers()`) son comunes a ambos botones, no llevan texto traducible.
 
 Disponible tanto al editar un formulario existente (`admin.php?page=wpcf7&post=X&action=edit`) como en la pantalla **"Añadir nuevo"** (`admin.php?page=wpcf7-new`) — el script se encola comprobando que `$screen->id` contiene `wpcf7`, en vez de una comparación exacta contra `toplevel_page_wpcf7`, porque ambas pantallas usan screen ids distintos.
 

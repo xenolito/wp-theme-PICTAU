@@ -145,6 +145,7 @@ final class Pictau_CF7_Form_Template {
 	btn.addEventListener('click', function () {
 		var formEl = document.getElementById('wpcf7-form');
 		var mailEl = document.getElementById('wpcf7-mail-body');
+		var headersEl = document.getElementById('wpcf7-mail-additional-headers');
 		if (!formEl || !mailEl) return;
 
 		var hasContent = formEl.value.trim() !== '' || mailEl.value.trim() !== '';
@@ -155,6 +156,11 @@ final class Pictau_CF7_Form_Template {
 
 		formEl.dispatchEvent(new Event('change', { bubbles: true }));
 		mailEl.dispatchEvent(new Event('change', { bubbles: true }));
+
+		if (headersEl) {
+			headersEl.value = " . wp_json_encode( $this->get_mail_additional_headers() ) . ";
+			headersEl.dispatchEvent(new Event('change', { bubbles: true }));
+		}
 
 		var feedback = document.getElementById('{$feedback_id}');
 		if (feedback) {
@@ -207,6 +213,17 @@ final class Pictau_CF7_Form_Template {
   <p>¡Nos pondremos en contacto contigo lo antes posible!</p>
 </div>
 FORM;
+	}
+
+	/**
+	 * Cabeceras adicionales del correo. CF7 precarga "Reply-To: [your-email]"
+	 * por defecto en formularios nuevos, pero el campo de email de esta plantilla
+	 * se llama [email], no [your-email] — hay que sobrescribir la cabecera para
+	 * que el Reply-To apunte al campo real. Común a la plantilla normal y a la
+	 * multiidioma (no lleva texto traducible).
+	 */
+	private function get_mail_additional_headers(): string {
+		return 'Reply-To: [email]';
 	}
 
 	private function get_mail_template(): string {
