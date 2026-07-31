@@ -66,6 +66,9 @@ const ModalWP = class {
 
 		this.closeUI = document.createElement('div')
 		this.closeUI.classList.add('icon-close')
+		this.closeUI.setAttribute('role', 'button')
+		this.closeUI.setAttribute('tabindex', '0')
+		this.closeUI.setAttribute('aria-label', 'Cerrar')
 		this.closeUI.innerHTML = iconClose
 
 		this.popup = document.createElement('div')
@@ -100,7 +103,35 @@ const ModalWP = class {
 		this.setupModalCloseLinks()
 
 		this.setupBackdropAsClose()
+		this.setupFocusTrap()
 		this.setModalContent(this.modalContent)
+	}
+
+	//! Atrapa el foco dentro de la modal: Tab en el último elemento vuelve al primero,
+	//! Shift+Tab en el primero va al último (el icono de cerrar), sin salir nunca de la modal.
+	setupFocusTrap = () => {
+		this.modal.addEventListener('keydown', e => {
+			if (e.code !== 'Tab' || !this.modal.classList.contains('showing')) return
+
+			const focusableEls = Array.from(
+				this.modal.querySelectorAll(
+					'a[href], button:not([disabled]), input:not([type="hidden"]):not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+				)
+			).filter(el => el.offsetParent !== null)
+
+			if (!focusableEls.length) return
+
+			const first = focusableEls[0]
+			const last = focusableEls[focusableEls.length - 1]
+
+			if (e.shiftKey && document.activeElement === first) {
+				e.preventDefault()
+				last.focus()
+			} else if (!e.shiftKey && document.activeElement === last) {
+				e.preventDefault()
+				first.focus()
+			}
+		})
 	}
 
 	setModalContent = node => {
@@ -154,6 +185,13 @@ const ModalWP = class {
 
 	setupModalCloseLinks = () => {
 		this.closeUI.addEventListener('click', e => {
+			this.close()
+		})
+
+		//! El icono de cerrar es un <div>, no un <button>: espacio/intro no lo activan de forma nativa.
+		this.closeUI.addEventListener('keydown', e => {
+			if (e.code !== 'Space' && e.code !== 'Enter') return
+			e.preventDefault()
 			this.close()
 		})
 

@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.11.4
+- **Versión:** 7.11.6
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1527,6 +1527,10 @@ Ejemplo de uso (ver `theme/inc/catalog.php`):
 **Foco automático al mostrar un formulario:** cuando la modal se crea con `{ form: true }` (caso de `modalContactForm7.js`), `show()` mueve el foco al primer campo focuseable y visible del formulario (excluye ocultos, como el input real — `display:none` — de checkboxes/radio personalizados). No aplica a los modales de mensaje OK/error, que se crean sin `form: true`.
 
 **`setModalContent()` mueve nodos reales, no clona por `innerHTML`:** el contenido se traslada al popup con `appendChild` de los hijos reales del nodo origen (no `popupContent.innerHTML = node.innerHTML`). Esto es necesario porque `contactForm7.js` decora los checkboxes/radio (iconos accesibles, listeners de teclado) **antes** de que la modal mueva el formulario a su contenido — un clonado vía `innerHTML` serializa y reparsea el HTML, preservando atributos (`role`, `aria-checked`, `tabindex`) pero destruyendo cualquier listener añadido con `addEventListener`. Mover los nodos reales conserva esos listeners intactos.
+
+**Icono de cerrar (`.icon-close`) accesible por teclado:** es un `<div>`, no un `<button>`, así que recibe `role="button"`, `tabindex="0"` y `aria-label="Cerrar"` en `setupModal()`, más un listener `keydown` propio (`Space`/`Enter`) en `setupModalCloseLinks()` para activarlo — un `<div>` no dispara `click` automáticamente con esas teclas. Al estar en el DOM justo después del contenido del formulario, el tabulador lo alcanza como último elemento del recorrido. Esto aplica a **cualquier** instancia de `ModalWP` (mismo código en la clase), incluida la modal de mensaje de error/éxito que `contactForm7.js` reutiliza tras un fallo de validación.
+
+**Focus trap (`setupFocusTrap()`):** el foco nunca sale de la modal mientras está abierta. En el keydown `Tab` sobre `this.modal`, si el foco está en el último elemento focuseable (normalmente `.icon-close`) el tabulador vuelve al primero; con `Shift+Tab` en el primero, va al último. La lista de elementos focuseables se recalcula en cada pulsación (no se cachea), ya que el contenido de la modal puede cambiar (`setModalContent()`).
 
 ---
 
