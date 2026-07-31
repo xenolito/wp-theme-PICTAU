@@ -115,5 +115,5 @@ npm run bundle        # Genera .zip para despliegue
 
 - Comentarios deshabilitados globalmente (se pueden activar por post)
 - Búsqueda deshabilitada (búsqueda vacía redirige a home)
-- GTM configurable desde el Customizer
+- GTM/GA4 los carga siempre el gestor de cookies del sitio, nunca el tema (GDPR); el tema solo envía eventos si detecta que ya están presentes (pestaña "Seguimiento GA4 / GTM" de CF7, `theme/inc/cf7-ga-tracking.php`)
 - SVG con sanitización e inline rendering via shortcode `[inline_svg]`

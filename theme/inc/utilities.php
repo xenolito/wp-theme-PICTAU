@@ -655,6 +655,11 @@ if ( class_exists( 'WPCF7_ContactForm' ) ) {
 	require get_template_directory() . '/inc/cf7-form-template.php';
 }
 
+//! SEGUIMIENTO GA4 / GTM CONFIGURABLE POR FORMULARIO CF7
+if ( class_exists( 'WPCF7_ContactForm' ) ) {
+	require get_template_directory() . '/inc/cf7-ga-tracking.php';
+}
+
 
 
 //! FEATURERD AREAS CARDS FOR HOMEPAGE WITH POD TEMPLATE

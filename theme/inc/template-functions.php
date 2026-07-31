@@ -658,24 +658,6 @@ function customize_theme_pictau($wp_customize)
 		) );
 	}
 
-	// Add Google Tag Manager Section (GTM)
-	$wp_customize->add_section('google_tag_manager', array(
-		'title' => 'Google Tag Manager (GTM)',
-		'panel'	=> 'PICTAU'
-	));
-
-	$wp_customize->add_setting(
-		'GTM_ID',
-		array('default' => get_theme_mod('GTM_ID') ? get_theme_mod('GTM_ID') : '')
-	);
-
-	$wp_customize->add_control('GTM_ID', array(
-		'label'   	=> __('GTM ID', 'pictau'),
-		'section' 	=> 'google_tag_manager',
-		'settings'	=> 'GTM_ID',
-		'description'	=> 'Enter your Google Tag Manager ID here (e.g., GTM-XXXXXXX).<br><br>⚠️ This will load GTM script on all your pages!<br>If you are using a GDPR cookie consent plugin, make sure to configure it properly to avoid loading GTM before user consent (Use your cookie consent plugin to load GTM instead?).',
-		'type'    	=> 'text',
-	));
 }
 
 add_action('customize_register', 'customize_theme_pictau');

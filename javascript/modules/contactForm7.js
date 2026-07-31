@@ -32,6 +32,36 @@ const iconAlert = `<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height=
 // 	form.reset()
 // }
 
+//! Envía un evento a window.dataLayer (GTM) solo si ya existe en la página. Sin GTM cargado, no hace nada.
+const pushDataLayer = payload => {
+	if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+		window.dataLayer.push(payload)
+	}
+}
+
+//! Envía un evento a window.gtag (GA4 directo) solo si ya existe en la página. Sin gtag cargado, no hace nada.
+const pushGtagEvent = (eventName, params) => {
+	if (typeof window.gtag === 'function') {
+		window.gtag('event', eventName, params)
+	}
+}
+
+//! Construye los parámetros de campaña (UTM/click-ids) a partir de los hidden fields ya presentes
+//! en el formulario (rellenados desde la URL, ver theme/inc/cf7_html_email_templates.php), con fallback
+//! a los valores por defecto de la pestaña "Seguimiento GA4 / GTM" cuando no llega valor real por URL.
+const buildCampaignData = data => {
+	const campaign = {}
+	;['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'fbclid', 'msclkid'].forEach(key => {
+		if (data[key]) campaign[key] = data[key]
+	})
+
+	if (!campaign.utm_source && data.pct_ga_default_source) campaign.utm_source = data.pct_ga_default_source
+	if (!campaign.utm_medium && data.pct_ga_default_medium) campaign.utm_medium = data.pct_ga_default_medium
+	if (!campaign.utm_campaign && data.pct_ga_default_campaign) campaign.utm_campaign = data.pct_ga_default_campaign
+
+	return campaign
+}
+
 window.addEventListener('load', () => {
 	const formContainers = document.querySelectorAll('.wpcf7')
 
@@ -102,11 +132,33 @@ window.addEventListener('load', () => {
 			const inputs = event.detail.inputs // [{ name: 'your-name', value: 'Oscar' }, ...]
 			const data = Object.fromEntries(inputs.map(i => [i.name, i.value]))
 
-			// guardamos los campos que nos interesan para enviarlos a dataLayer cuando el formulario se envíe correctamente
-			form.emailField = data.email ?? false
+			// guardamos los campos que nos interesan para enviarlos a dataLayer/gtag cuando el formulario se envíe
 			form.productField = data.producto ?? document.title ?? 'contacto'
 
-			// console.log('Antes de enviar, email:', emailField, 'producto:', productField)
+			form.trackingConfig = {
+				enabled: data.pct_ga_enabled === '1',
+				trackAllAttempts: data.pct_ga_track_all_attempts !== '0',
+				submitEvent: data.pct_ga_submit_event || 'form_submit',
+				leadEvent: data.pct_ga_lead_event || 'generate_lead',
+				value: data.pct_ga_value || '',
+				currency: data.pct_ga_currency || 'EUR',
+			}
+			form.campaignData = buildCampaignData(data)
+		})
+
+		//! ENVÍO PROCESADO POR EL SERVIDOR (éxito, fallo o spam) — evento de auditoría de envío GA4/GTM
+		formContainer.addEventListener('wpcf7submit', event => {
+			if (!form.trackingConfig || !form.trackingConfig.enabled || !form.trackingConfig.trackAllAttempts) return
+
+			const payload = {
+				form_id: event.detail.contactFormId,
+				form_destination: window.location.href,
+				producto: form.productField,
+				...form.campaignData,
+			}
+
+			pushDataLayer({ event: form.trackingConfig.submitEvent, ...payload })
+			pushGtagEvent(form.trackingConfig.submitEvent, payload)
 		})
 
 		//! ALL OK, SENT
@@ -120,15 +172,31 @@ window.addEventListener('load', () => {
 
 			modal.show({ content: form.messageOK, showcallback: closeCallback })
 
-			//! Enviamos email y producto a dataLayer (Google Tag Manager) si existe.
-			if (window.dataLayer && typeof window.dataLayer.push === 'function') {
-				window.dataLayer.push({
-					email: form.emailField,
+			//! Enviamos evento de conversión a dataLayer (GTM) y/o gtag (GA4) si están disponibles.
+			if (form.trackingConfig && form.trackingConfig.enabled) {
+				const payload = {
+					form_id: event.detail.contactFormId,
+					form_destination: window.location.href,
 					producto: form.productField,
-					event: 'form_enviado',
-				})
-			} else {
-				console.warn('GTM no está disponible todavía')
+					...form.campaignData,
+				}
+
+				// Si no se registra el envío en cualquier intento, el evento de envío no se ha disparado
+				// todavía (ver listener wpcf7submit) — lo enviamos aquí, junto con la conversión. Se pasa
+				// una copia del payload: gtag/dataLayer pueden conservar la referencia, y payload se muta
+				// justo después para añadir value/currency (que no deben "filtrarse" a este evento).
+				if (!form.trackingConfig.trackAllAttempts) {
+					pushDataLayer({ event: form.trackingConfig.submitEvent, ...payload })
+					pushGtagEvent(form.trackingConfig.submitEvent, { ...payload })
+				}
+
+				if (form.trackingConfig.value) {
+					payload.value = parseFloat(form.trackingConfig.value)
+					payload.currency = form.trackingConfig.currency
+				}
+
+				pushDataLayer({ event: form.trackingConfig.leadEvent, ...payload })
+				pushGtagEvent(form.trackingConfig.leadEvent, { ...payload })
 			}
 
 			if (btsubmit) {

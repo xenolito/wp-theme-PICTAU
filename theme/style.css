@@ -4,7 +4,7 @@ Theme URI: https://pictau.com
 Author: Oscar Rey Tajes
 Author URI: https://www.pictau.com
 Description: PICTAU theme with optional "tailwind" support and customizations for BALANZIA.
-Version: 7.10.10
+Version: 7.11.1
 Tested up to: 6.8
 Requires PHP: 7.4
 License: GNU General Public License v2 or later
@@ -7442,7 +7442,8 @@ form.wpcf7-form:has(.pct-form-2cols) {
        column-gap: calc(var(--card-padding) * 0.75);
   row-gap: 0;
   border-top: 1px solid rgba(0, 0, 0, 0.9);
-  padding-top: calc(var(--card-padding) * 0.5);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.9);
+  padding-block: calc(var(--card-padding) * 0.5);
 }
 
 .pct-form-2cols > p br {

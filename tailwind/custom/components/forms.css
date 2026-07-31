@@ -606,7 +606,8 @@ form.wpcf7-form:has(.pct-form-2cols) {
 		column-gap: calc(var(--card-padding) * 0.75);
 		row-gap: 0;
 		border-top: 1px solid rgba(0, 0, 0, 0.9);
-		padding-top: calc(var(--card-padding) * 0.5);
+		border-bottom: 1px solid rgba(0, 0, 0, 0.9);
+		padding-block: calc(var(--card-padding) * 0.5);
 		br {
 			display: none;
 		}

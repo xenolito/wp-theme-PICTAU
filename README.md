@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.10.10
+- **Versión:** 7.11.1
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1706,6 +1706,31 @@ Disponible tanto al editar un formulario existente (`admin.php?page=wpcf7&post=X
 
 ---
 
+## Contact Form 7 — Pestaña "Seguimiento GA4 / GTM" (`theme/inc/cf7-ga-tracking.php`)
+
+Añade una pestaña **Seguimiento GA4 / GTM** en el editor de CF7 para activar, por formulario, el envío de eventos a `window.dataLayer` (Google Tag Manager) y/o `window.gtag` (GA4 directo). Cargada condicionalmente desde `theme/inc/utilities.php` solo si CF7 está activo.
+
+**Esta pestaña nunca carga GTM ni GA4.** El tema es de uso "marca blanca": cada cliente puede tener GTM, GA4 directo, ambos o ninguno cargado por su propio gestor de cookies (banner de consentimiento), y no se sabe de antemano cuál. `javascript/modules/contactForm7.js` detecta en tiempo de ejecución si `window.dataLayer`/`window.gtag` existen antes de enviar nada; si no existen, no se envía ni se produce ningún error.
+
+### Campos del panel (por formulario)
+
+- **Activar seguimiento GA4/GTM para este formulario** — checkbox, desactivado por defecto (opt-in).
+- **Registrar evento de envío en cualquier intento** (`pct_ga_track_all_attempts`) — checkbox, **marcado por defecto**. Desmarcado: el evento de envío no se dispara en fallos/spam — se dispara igualmente, pero solo en el momento del éxito, junto con el evento de conversión (no desaparece del todo, para no romper embudos/exploraciones de GA4 que comparen envíos vs. conversiones).
+- **Evento de envío** (`pct_ga_submit_event`, default `form_submit`) — se dispara en cualquier intento de envío procesado por el servidor (éxito, fallo de correo, spam) vía el evento nativo `wpcf7submit`, salvo que el checkbox anterior esté desmarcado (ver arriba).
+- **Evento de conversión** (`pct_ga_lead_event`, default `generate_lead`, nombre recomendado por GA4 para leads) — se dispara solo si el envío tiene éxito, vía `wpcf7mailsent`.
+- **Valor de conversión** (opcional) + **moneda** (default `EUR`) — útil para pujas por valor en Google Ads. Solo se incluyen en el evento de conversión si hay valor informado.
+- **Fuente / Medio / Campaña por defecto** — usados como fallback de `utm_source`/`utm_medium`/`utm_campaign` únicamente cuando no llega el parámetro real por la URL (tráfico sin campaña activa: orgánico, directo, referral). Si llega el parámetro real por URL, ese valor siempre tiene prioridad. Mapean directo a las dimensiones nativas Source/Medium/Campaign de GA4.
+
+### Cómo se guarda y se expone al frontend
+
+La configuración se persiste como post meta (`_pct_ga_*`) del formulario, guardada en el hook `wpcf7_after_save` (reutiliza el nonce que ya verifica CF7 al guardar, sin necesitar uno propio). Para exponerla al frontend sin duplicar lógica, se inyecta como hidden fields adicionales vía el filtro `wpcf7_form_hidden_fields` — el mismo mecanismo que ya usa el tema para los campos UTM/GCLID (ver sección de arriba), así que `contactForm7.js` los lee directamente de `event.detail.inputs` en `wpcf7beforesubmit`, sin necesidad de `wp_localize_script`.
+
+### Política de datos — sin PII
+
+Los eventos enviados **nunca incluyen datos personales** del formulario (email, nombre, teléfono, mensaje, etc.), solo: `event`, `form_id`, `form_destination` (URL de la página), `producto` (interés/servicio — no es un dato personal, permite diferenciar leads por servicio, con la misma cadena de fallback que ya existía: campo `producto` del formulario → contexto pasado por `ModalWP`/`modalContactForm7.js` al abrir el popup → `document.title` → `'contacto'`), los campos de campaña (`utm_*`, `gclid`, `fbclid`, `msclkid`) y, solo en el evento de conversión, `value`/`currency`. Esto evita el riesgo de suspensión de cuenta/campaña por incumplir las políticas de Google de no identificar usuarios.
+
+---
+
 ## Biblioteca de medios — assets por defecto (`theme/inc/default-media.php`)
 
 Al activar el tema, se importan automáticamente a la biblioteca de medios todas las imágenes que haya en `theme/assets/` (extensiones `svg`, `png`, `jpg`, `jpeg`, `gif`, `webp`; otros ficheros de esa carpeta, como `inter2.ttf`, se ignoran). El título del adjunto se genera a partir del nombre de fichero (p.ej. `flag-en.svg` → "Flag En").
@@ -1719,5 +1744,5 @@ Para añadir una nueva imagen por defecto al framework, basta con colocar el fic
 - PHP: siempre `<?php echo` (nunca `<?=`)
 - Comentarios deshabilitados globalmente
 - Búsqueda vacía redirige a home
-- GTM configurable desde el Customizer
+- GTM/GA4 los carga siempre el gestor de cookies del sitio, nunca el tema (GDPR); el tema solo envía eventos si detecta que ya están presentes (ver pestaña "Seguimiento GA4 / GTM" de CF7)
 - SVG inline via `[svg filename="..."]` (desde carpeta del tema) y `[svg-inline]` (convierte `<img src="*.svg">` en inline)
