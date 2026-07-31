@@ -106,7 +106,18 @@ const ModalWP = class {
 	setModalContent = node => {
 		const isHTMLElement = node.toString() === '[object HTMLDivElement]' || node.toString() == '[object HTMLElement]' ? true : false
 
-		this.popupContent.innerHTML = isHTMLElement ? node.innerHTML : node
+		this.popupContent.innerHTML = ''
+
+		if (isHTMLElement) {
+			// Mueve los nodos reales (no clona vía innerHTML) para conservar los listeners ya enlazados
+			// (p.ej. accesibilidad de teclado de checkboxes/radio de contactForm7.js). innerHTML + reparse
+			// preserva atributos pero destruye cualquier listener añadido con addEventListener.
+			while (node.firstChild) {
+				this.popupContent.append(node.firstChild)
+			}
+		} else {
+			this.popupContent.innerHTML = node
+		}
 
 		this.modalContent = this.popupContent // prevents memory leaks when removing original DOM node
 		node.remove()
@@ -179,6 +190,19 @@ const ModalWP = class {
 		if (window.lenis) window.lenis.stop()
 
 		this.modal.classList.add('showing')
+
+		//! Mueve el foco al primer campo del formulario al mostrar la modal (accesibilidad de teclado).
+		if (this.hasForm && this.form) {
+			requestAnimationFrame(() => {
+				const focusable = Array.from(
+					this.form.querySelectorAll(
+						'input:not([type="hidden"]):not([disabled]), select:not([disabled]), textarea:not([disabled]), [role="checkbox"], [role="radio"]'
+					)
+				).find(el => el.offsetParent !== null)
+
+				if (focusable) focusable.focus()
+			})
+		}
 
 		if (autoclose) {
 			this.iToClose = setTimeout(() => this.close(closecallback), autoclose)

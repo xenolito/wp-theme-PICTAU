@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.11.3
+- **Versión:** 7.11.4
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1523,6 +1523,20 @@ Ejemplo de uso (ver `theme/inc/catalog.php`):
 ```
 
 `contactForm7.js` usa `ModalWP.js` de forma independiente (sin `form: true`) para mostrar el mensaje de confirmación/error tras el envío del formulario, no como modal disparado por click.
+
+**Foco automático al mostrar un formulario:** cuando la modal se crea con `{ form: true }` (caso de `modalContactForm7.js`), `show()` mueve el foco al primer campo focuseable y visible del formulario (excluye ocultos, como el input real — `display:none` — de checkboxes/radio personalizados). No aplica a los modales de mensaje OK/error, que se crean sin `form: true`.
+
+**`setModalContent()` mueve nodos reales, no clona por `innerHTML`:** el contenido se traslada al popup con `appendChild` de los hijos reales del nodo origen (no `popupContent.innerHTML = node.innerHTML`). Esto es necesario porque `contactForm7.js` decora los checkboxes/radio (iconos accesibles, listeners de teclado) **antes** de que la modal mueva el formulario a su contenido — un clonado vía `innerHTML` serializa y reparsea el HTML, preservando atributos (`role`, `aria-checked`, `tabindex`) pero destruyendo cualquier listener añadido con `addEventListener`. Mover los nodos reales conserva esos listeners intactos.
+
+---
+
+## Accesibilidad de teclado en checkboxes/radio personalizados (`contactForm7.js`)
+
+Los checkboxes y radio buttons de CF7 se estilizan ocultando el `<input>` real (`display:none`, ver `tailwind/custom/components/forms.css`) e inyectando un `<span class="check-icon-container"|"radio-icon-container" role="checkbox"|"radio" tabindex="0" aria-checked="...">` con los SVGs de estado. El estado visual (marcado/desmarcado) lo gestiona CSS puro vía `:has(:checked)`, sin JS adicional.
+
+- **Barra espaciadora**: `enableSwitchBySpacebar(focusedElement, inputTarget)` recibe una referencia directa al `<input>` real (nunca se busca por `closest()`/`querySelector()`, frágil ante cambios de estructura). Para checkboxes alterna el valor; para radios, solo lo marca (nunca lo desmarca al repetir espacio, igual que el comportamiento nativo) y dispara un evento `change` para mantener consistencia con CF7 (revalida en `change`, igual que con un clic nativo).
+- **`aria-checked`** se mantiene sincronizado tanto al usar teclado como al marcar con el ratón (listener `change` en el input real). En radio buttons, al seleccionar uno se resincroniza `aria-checked` de todo el grupo (los demás pasan a `false`).
+- El checkbox de aceptación legal (`.pct-legal-acceptance`) sigue el mismo mecanismo; su `<label class="checkIcon">` recibe la referencia al input directamente en vez de intentar localizarlo por estructura DOM (antes fallaba: el label se crea como hermano del input, no como envoltorio).
 
 ---
 

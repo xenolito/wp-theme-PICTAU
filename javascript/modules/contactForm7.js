@@ -276,15 +276,28 @@ window.addEventListener('load', () => {
 
 const triggerEvent = (formContainer, eventType, detail) => formContainer.dispatchEvent(new CustomEvent(eventType, { detail }))
 
-//! Enable checkbox and radio button to be toggled by spacebar when focused
-const enableSwitchBySpacebar = focusedElement => {
+//! Enable checkbox and radio button to be toggled by spacebar when focused.
+//! Recibe el input real directamente (sin closest()/querySelector(), frágil ante cambios de estructura DOM).
+const enableSwitchBySpacebar = (focusedElement, inputTarget) => {
 	focusedElement.addEventListener('keydown', e => {
-		if (document.activeElement === e.target && e.code === 'Space') {
-			e.preventDefault()
-			const inputTarget = e.target.closest('label').querySelector('input') || e.target.closest('#legal-input').querySelector('input')
+		if (e.code !== 'Space') return
+		e.preventDefault()
+		e.stopPropagation() // evita que OverlayScrollbars (modal) interprete el espacio como scroll del contenedor
+
+		if (inputTarget.type === 'radio') {
+			if (inputTarget.checked) return // ya seleccionado; espacio no debe desmarcar un radio
+			inputTarget.checked = true
+		} else {
 			inputTarget.checked = !inputTarget.checked
 		}
+
+		inputTarget.dispatchEvent(new Event('change', { bubbles: true })) // consistente con clic nativo (CF7 revalida on-change)
 	})
+}
+
+//! Sincroniza aria-checked de un icono personalizado con el estado real de su input.
+const syncAriaChecked = (iconEl, inputEl) => {
+	iconEl.setAttribute('aria-checked', inputEl.checked ? 'true' : 'false')
 }
 
 //! checkbox customized with svg
@@ -297,10 +310,14 @@ if (checkList.length) {
 
 		targetList.forEach(item => {
 			const target = item.querySelector('.wpcf7-list-item-label')
+			const inputEl = item.querySelector('input[type="checkbox"]')
+			if (!inputEl) return
 
 			const iconContainer = document.createElement('span')
 			iconContainer.classList.add('check-icon-container')
 			iconContainer.setAttribute('tabindex', '0')
+			iconContainer.setAttribute('role', 'checkbox')
+			iconContainer.setAttribute('aria-checked', inputEl.checked ? 'true' : 'false')
 			target.prepend(iconContainer)
 
 			const fragUnchecked = document.createRange().createContextualFragment(iconUncheckedSVG)
@@ -310,7 +327,10 @@ if (checkList.length) {
 			iconContainer.append(fragChecked)
 
 			//!allow spacebar to toggle checkbox when focused
-			enableSwitchBySpacebar(iconContainer)
+			enableSwitchBySpacebar(iconContainer, inputEl)
+
+			//! mantiene aria-checked sincronizado también cuando se marca con el ratón (label forwarding nativo)
+			inputEl.addEventListener('change', () => syncAriaChecked(iconContainer, inputEl))
 		})
 	})
 }
@@ -322,13 +342,18 @@ if (radioList.length) {
 		radio.classList.add('novalidate')
 
 		const targetList = radio.querySelectorAll('.wpcf7-list-item')
+		const groupIcons = [] // [{ iconContainer, inputEl }] — para resincronizar aria-checked de todo el grupo
 
 		targetList.forEach(item => {
 			const target = item.querySelector('.wpcf7-list-item-label')
+			const inputEl = item.querySelector('input[type="radio"]')
+			if (!inputEl) return
 
 			const iconContainer = document.createElement('span')
 			iconContainer.classList.add('radio-icon-container')
 			iconContainer.setAttribute('tabindex', '0')
+			iconContainer.setAttribute('role', 'radio')
+			iconContainer.setAttribute('aria-checked', inputEl.checked ? 'true' : 'false')
 			target.prepend(iconContainer)
 
 			const fragUnchecked = document.createRange().createContextualFragment(iconRadioUncheckedSVG)
@@ -338,7 +363,16 @@ if (radioList.length) {
 			iconContainer.append(fragChecked)
 
 			//!enable radio button to be toggled by spacebar when focused
-			enableSwitchBySpacebar(iconContainer)
+			enableSwitchBySpacebar(iconContainer, inputEl)
+
+			groupIcons.push({ iconContainer, inputEl })
+		})
+
+		//! al seleccionar un radio, resincroniza aria-checked de todo el grupo (los demás quedan desmarcados)
+		groupIcons.forEach(({ inputEl }) => {
+			inputEl.addEventListener('change', () => {
+				groupIcons.forEach(({ iconContainer: icon, inputEl: input }) => syncAriaChecked(icon, input))
+			})
 		})
 	})
 }
@@ -359,6 +393,8 @@ document.querySelectorAll('.pct-legal-acceptance').forEach(el => {
 	newLabel.setAttribute('for', `${label.getAttribute('for')}${cId.toString()}`)
 	newLabel.setAttribute('class', 'checkIcon')
 	newLabel.setAttribute('tabindex', '0')
+	newLabel.setAttribute('role', 'checkbox')
+	newLabel.setAttribute('aria-checked', check.checked ? 'true' : 'false')
 
 	newLabel.innerHTML = label.innerHTML
 	check.parentNode.appendChild(newLabel)
@@ -377,6 +413,9 @@ document.querySelectorAll('.pct-legal-acceptance').forEach(el => {
 	label.remove()
 	legalEl.querySelector('.wpcf7-list-item-label').remove()
 
-	//!enable radio button to be toggled by spacebar when focused
-	enableSwitchBySpacebar(newLabel)
+	//!enable checkbox to be toggled by spacebar when focused
+	enableSwitchBySpacebar(newLabel, check)
+
+	//! mantiene aria-checked sincronizado también cuando se marca con el ratón
+	check.addEventListener('change', () => syncAriaChecked(newLabel, check))
 })
