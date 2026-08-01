@@ -521,11 +521,22 @@ final class Pictau_CSP_Manager {
 	}
 
 	public function get_default_template(): string {
+		$own_domains = implode( ' ', $this->get_own_domain_variants() );
+		$own_domains_suffix = '' !== $own_domains ? ' ' . $own_domains : '';
+
 		return <<<CSP
 # CSP por defecto del tema pictau — dominios confirmados en el código: YouTube y Vimeo
 # (embeds de vídeo), Google Tag Manager (lo inyecta el gestor de cookies del sitio) y GA4
-# (google-analytics.com / analytics.google.com), que GTM suele cargar en runtime aunque
-# no esté hardcodeado en el tema — incluido por defecto para no romper el tracking.
+# (analytics.google.com y *.google-analytics.com, con wildcard porque GA4 reparte las
+# peticiones de medición entre subdominios regionales como region1.google-analytics.com
+# según la localización del visitante), que GTM suele cargar en runtime aunque no esté
+# hardcodeado en el tema — incluido por defecto para no romper el tracking.
+# En img-src/style-src/script-src/font-src se incluyen también, calculadas en runtime a partir
+# de home_url(), las variantes con y sin «www.» del propio dominio del sitio: una página
+# servida sin pasar por el bootstrap normal de WordPress (p.ej. el modo mantenimiento,
+# que puede responder en cualquiera de los dos hosts sin redirigir al canónico) referencia
+# sus propios recursos con la URL absoluta de home_url(), que 'self' NO cubre si el host
+# real de la petición es el otro — sin esto se bloquean imágenes/CSS/JS del propio sitio.
 # Opcional (descomenta si se usa el shortcode rive-player): WASM de Rive — añade
 # https://cdn.jsdelivr.net https://unpkg.com a script-src/connect-src.
 <IfModule mod_headers.c>
@@ -533,7 +544,7 @@ SetEnvIf Request_URI "^/wp-admin" csp_admin
 SetEnvIf Request_URI "^/wp-login\\.php" csp_admin
 
 # Publico
-Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ytimg.com; font-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://analytics.google.com; frame-src 'self' https://www.youtube.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';" env=!csp_admin
+Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com{$own_domains_suffix}; style-src 'self' 'unsafe-inline'{$own_domains_suffix}; img-src 'self' data: https://i.ytimg.com{$own_domains_suffix}; font-src 'self' data:{$own_domains_suffix}; connect-src 'self' https://*.google-analytics.com https://analytics.google.com; frame-src 'self' https://www.youtube.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';" env=!csp_admin
 
 # wp-admin / wp-login: mas permisiva, area autenticada
 Header set Content-Security-Policy "default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; connect-src 'self' https: wss:; frame-src 'self' https: blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';" env=csp_admin
@@ -546,6 +557,27 @@ Header always set Permissions-Policy "geolocation=(), camera=(), microphone=()"
 Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
 </IfModule>
 CSP;
+	}
+
+	/**
+	 * Variantes con y sin «www.» del dominio configurado en home_url(), como
+	 * "https://host". Se calculan en runtime (nunca hardcodeadas) porque cada
+	 * sitio que use este tema tiene su propio dominio; cubre el caso de páginas
+	 * que puedan servirse en cualquiera de los dos hosts sin pasar por una
+	 * redirección canónica previa (ver comentario en get_default_template()).
+	 *
+	 * @return string[]
+	 */
+	private function get_own_domain_variants(): array {
+		$host = wp_parse_url( home_url(), PHP_URL_HOST );
+
+		if ( ! $host ) {
+			return array();
+		}
+
+		$alt = ( 0 === stripos( $host, 'www.' ) ) ? substr( $host, 4 ) : 'www.' . $host;
+
+		return array( 'https://' . $host, 'https://' . $alt );
 	}
 
 	// =========================================================================
