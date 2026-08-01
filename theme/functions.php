@@ -316,6 +316,11 @@ require get_template_directory() . '/inc/template-functions.php';
 require get_template_directory() . '/inc/block-attributes.php';
 
 /**
+ * Gestión de cabeceras Content-Security-Policy (CSP) desde el Theme Customizer.
+ */
+require get_template_directory() . '/inc/customizer-csp.php';
+
+/**
  * Clonación de posts nativa del tema (reemplaza el plugin duplicate-post).
  */
 require get_template_directory() . '/inc/clone-post.php';

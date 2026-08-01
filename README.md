@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.11.7
+- **Versión:** 7.12.2
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1568,6 +1568,23 @@ Panel **Apariencia → Personalizar → THEME CUSTOMIZER**.
 Los filtros `wp_mail_from` y `wp_mail_from_name` **solo se registran** si el valor está guardado (no vacío). Si el campo está vacío, WordPress usa su comportamiento por defecto.
 
 El plugin **Maintenance Mode by PICTAU** consume `pictau_contact_email` directamente.
+
+### Seguridad (CSP) — cabeceras Content-Security-Policy
+
+Desde **v7.12.0**. Sección `Apariencia → Personalizar → THEME CUSTOMIZER → Seguridad (CSP)`, implementada en `theme/inc/customizer-csp.php` (clase `Pictau_CSP_Manager`) + `theme/inc/customizer-csp-control.php` (control custom del Customizer) + `theme/customizer/csp-control.js`.
+
+Permite activar y editar la cabecera `Content-Security-Policy` (y cabeceras de seguridad adicionales: `X-Content-Type-Options`, `Cross-Origin-Opener-Policy`, `Cross-Origin-Resource-Policy`, `Permissions-Policy`, `Strict-Transport-Security`) escritas directamente en el `.htaccess` de la raíz del sitio, sin depender de un plugin PHP (evita el problema de cabeceras que desaparecen con plugins de caché de página — ver la sección de CSP en `CLAUDE.md`).
+
+**Funcionamiento:**
+- **Opt-in explícito**: la casilla "Activar gestión de cabeceras CSP" solo revela el editor; no escribe nada por sí sola.
+- Al abrir el editor, si ya existen directivas CSP del tema en el `.htaccess` se muestran para editar; si no existen, se muestra la plantilla por defecto del tema (dominios confirmados en el código: YouTube/Vimeo para embeds de vídeo, Google Tag Manager) — pero **no se guarda nada hasta pulsar "Aplicar cambios"**.
+- Botón **"Usar valores por defecto del tema"** repone la plantilla en el textarea.
+- Botón **"Aplicar cambios"**: valida el contenido contra una whitelist estricta de directivas (`Header`, `<IfModule mod_headers.c>`, `SetEnvIf`, comentarios y líneas vacías — cualquier otra directiva, como `RewriteRule` o `php_value`, se rechaza), comprueba que no haya directivas de cabecera ya existentes en el `.htaccess` fuera del bloque del tema (si las hay, rechaza aplicar hasta que se resuelvan a mano, para evitar cabeceras duplicadas/en conflicto), crea una copia de seguridad (opción en BD + fichero físico `.htaccess.pictau-bak`), escribe el bloque (marcador `# BEGIN/END Pictau CSP`, vía `insert_with_markers()` de WordPress), hace una **auto-verificación** (petición HTTP interna a la home) y, si tiene éxito, dispara automáticamente el botón "Publicar" del Customizer para que no queden cambios sin guardar. Si el sitio deja de responder correctamente (error 500 real de Apache), se **revierte automáticamente** al contenido anterior.
+- Botón **"Restaurar backup anterior"** (visible si hay copia de seguridad) revierte manualmente.
+- Al desmarcar la casilla y pulsar "Publicar" en el Customizer, se elimina de verdad el bloque CSP del `.htaccess` (marcadores incluidos, sin dejar comentarios residuales) — mismo backup + auto-verificación.
+- El bloqueo de métodos `TRACE`/`TRACK` (marcador independiente `# BEGIN/END Pictau Security Rules`) se aplica una única vez, de forma fija y no editable, la primera vez que se aplica una política — deliberadamente fuera del textarea editable para no tener que permitir `RewriteRule` en la whitelist, y permanece aunque luego se desactive la CSP (hardening sin downside).
+- Avisos en wp-admin (`admin_notices`, para `manage_options`) si: la CSP está "activada" en BD pero no aplicada en el `.htaccess` de este servidor (típico tras un restore de solo BD, p.ej. UpdraftPlus, en una migración), o si se detectan directivas de cabecera ajenas al tema fuera de su bloque.
+- Solo disponible para usuarios con capability `manage_options`, con nonce dedicado (`pictau_csp_action`) distinto del nonce estándar del Customizer.
 
 ---
 
