@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.12.2
+- **Versión:** 7.12.3
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1577,7 +1577,7 @@ Permite activar y editar la cabecera `Content-Security-Policy` (y cabeceras de s
 
 **Funcionamiento:**
 - **Opt-in explícito**: la casilla "Activar gestión de cabeceras CSP" solo revela el editor; no escribe nada por sí sola.
-- Al abrir el editor, si ya existen directivas CSP del tema en el `.htaccess` se muestran para editar; si no existen, se muestra la plantilla por defecto del tema (dominios confirmados en el código: YouTube/Vimeo para embeds de vídeo, Google Tag Manager) — pero **no se guarda nada hasta pulsar "Aplicar cambios"**.
+- Al abrir el editor, si ya existen directivas CSP del tema en el `.htaccess` se muestran para editar; si no existen, se muestra la plantilla por defecto del tema (dominios confirmados en el código: YouTube/Vimeo para embeds de vídeo, Google Tag Manager; más GA4 — google-analytics.com/analytics.google.com — incluido por defecto en `connect-src` aunque no esté hardcodeado en el tema, porque GTM suele cargarlo en runtime) — pero **no se guarda nada hasta pulsar "Aplicar cambios"**.
 - Botón **"Usar valores por defecto del tema"** repone la plantilla en el textarea.
 - Botón **"Aplicar cambios"**: valida el contenido contra una whitelist estricta de directivas (`Header`, `<IfModule mod_headers.c>`, `SetEnvIf`, comentarios y líneas vacías — cualquier otra directiva, como `RewriteRule` o `php_value`, se rechaza), comprueba que no haya directivas de cabecera ya existentes en el `.htaccess` fuera del bloque del tema (si las hay, rechaza aplicar hasta que se resuelvan a mano, para evitar cabeceras duplicadas/en conflicto), crea una copia de seguridad (opción en BD + fichero físico `.htaccess.pictau-bak`), escribe el bloque (marcador `# BEGIN/END Pictau CSP`, vía `insert_with_markers()` de WordPress), hace una **auto-verificación** (petición HTTP interna a la home) y, si tiene éxito, dispara automáticamente el botón "Publicar" del Customizer para que no queden cambios sin guardar. Si el sitio deja de responder correctamente (error 500 real de Apache), se **revierte automáticamente** al contenido anterior.
 - Botón **"Restaurar backup anterior"** (visible si hay copia de seguridad) revierte manualmente.

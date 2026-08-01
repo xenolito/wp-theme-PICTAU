@@ -523,17 +523,17 @@ final class Pictau_CSP_Manager {
 	public function get_default_template(): string {
 		return <<<CSP
 # CSP por defecto del tema pictau — dominios confirmados en el código: YouTube y Vimeo
-# (embeds de vídeo), Google Tag Manager (lo inyecta el gestor de cookies del sitio).
-# Opcionales (descomenta si aplica a este sitio): GA4 vía GTM (añade
-# https://www.google-analytics.com https://analytics.google.com a connect-src),
-# WASM de Rive (añade https://cdn.jsdelivr.net https://unpkg.com a script-src/connect-src
-# si se usa el shortcode rive-player).
+# (embeds de vídeo), Google Tag Manager (lo inyecta el gestor de cookies del sitio) y GA4
+# (google-analytics.com / analytics.google.com), que GTM suele cargar en runtime aunque
+# no esté hardcodeado en el tema — incluido por defecto para no romper el tracking.
+# Opcional (descomenta si se usa el shortcode rive-player): WASM de Rive — añade
+# https://cdn.jsdelivr.net https://unpkg.com a script-src/connect-src.
 <IfModule mod_headers.c>
 SetEnvIf Request_URI "^/wp-admin" csp_admin
 SetEnvIf Request_URI "^/wp-login\\.php" csp_admin
 
 # Publico
-Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ytimg.com; font-src 'self' data:; connect-src 'self'; frame-src 'self' https://www.youtube.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';" env=!csp_admin
+Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ytimg.com; font-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://analytics.google.com; frame-src 'self' https://www.youtube.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';" env=!csp_admin
 
 # wp-admin / wp-login: mas permisiva, area autenticada
 Header set Content-Security-Policy "default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; connect-src 'self' https: wss:; frame-src 'self' https: blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';" env=csp_admin
