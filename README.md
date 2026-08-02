@@ -25,11 +25,11 @@ Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida c
 - [Loco Translate](https://es.wordpress.org/plugins/loco-translate/)
 - [Maintenance Mode by Pictau](https://github.com/xenolito/WordPress-Plugin-Maintenance-Mode-by-Pictau)
 - [PCT Gallery](https://github.com/xenolito/WordPress-Plugin-Image-Gallery)
-- ~~[Pictau Blocks Gutenberg](https://github.com/xenolito/wordpress-pictau-blocks-plugin)~~ — **integrado en el tema desde v7.0.0**, desinstalar si estaba activo
 - [Pods](https://es.wordpress.org/plugins/pods/)
-- [WP Hide Login](https://es.wordpress.org/plugins/wps-hide-login/)
+- [WP Hide Login](https://es.wordpress.org/plugins/wps-hide-login/) (Optional)
 - [WP Mail SMTP](https://es.wordpress.org/plugins/wp-mail-smtp/)
 - [Updraft Plus – Backup and Restore](https://es.wordpress.org/plugins/updraftplus/)
+- [WP Super Cache](https://es.wordpress.org/plugins/wp-super-cache/)
 
 ---
 
