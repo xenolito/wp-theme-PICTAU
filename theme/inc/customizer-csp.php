@@ -537,6 +537,10 @@ final class Pictau_CSP_Manager {
 # que puede responder en cualquiera de los dos hosts sin redirigir al canónico) referencia
 # sus propios recursos con la URL absoluta de home_url(), que 'self' NO cubre si el host
 # real de la petición es el otro — sin esto se bloquean imágenes/CSS/JS del propio sitio.
+# En img-src se incluye también https://www.googletagmanager.com: GTM usa ese dominio
+# como beacon de imagen (endpoint /td, fallback de Measurement Protocol/GA4), no solo
+# para servir su script — sin esto el navegador bloquea esa petición aunque script-src
+# ya permita cargar el script de GTM (detectado en producción de qlikparapymes).
 # Opcional (descomenta si se usa el shortcode rive-player): WASM de Rive — añade
 # https://cdn.jsdelivr.net https://unpkg.com a script-src/connect-src.
 <IfModule mod_headers.c>
@@ -544,7 +548,7 @@ SetEnvIf Request_URI "^/wp-admin" csp_admin
 SetEnvIf Request_URI "^/wp-login\\.php" csp_admin
 
 # Publico
-Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com{$own_domains_suffix}; style-src 'self' 'unsafe-inline'{$own_domains_suffix}; img-src 'self' data: https://i.ytimg.com{$own_domains_suffix}; font-src 'self' data:{$own_domains_suffix}; connect-src 'self' https://*.google-analytics.com https://analytics.google.com; frame-src 'self' https://www.youtube.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';" env=!csp_admin
+Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com{$own_domains_suffix}; style-src 'self' 'unsafe-inline'{$own_domains_suffix}; img-src 'self' data: https://i.ytimg.com https://www.googletagmanager.com{$own_domains_suffix}; font-src 'self' data:{$own_domains_suffix}; connect-src 'self' https://*.google-analytics.com https://analytics.google.com; frame-src 'self' https://www.youtube.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';" env=!csp_admin
 
 # wp-admin / wp-login: mas permisiva, area autenticada
 Header set Content-Security-Policy "default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; connect-src 'self' https: wss:; frame-src 'self' https: blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';" env=csp_admin
