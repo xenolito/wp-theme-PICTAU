@@ -2550,8 +2550,15 @@ add_filter('wpseo_sitemap_entries_per_page', function ($n, $post_type = null) {
  */
 require get_template_directory() . '/inc/utilities.php';
 
-//! Sepeculative loading in WP 6.8+ --> disable
-// add_filter( 'wp_speculation_rules_configuration', '__return_null' );
+//! Speculative loading (WP 6.8+): el ruleset se imprime por defecto en wp_footer,
+//! dentro de <body>. OverlayScrollbars se inicializa sobre document.body y reestructura
+//! sus hijos (los envuelve en su viewport/content), lo que invalida el
+//! <script type="speculationrules"> según el spec (se descarta si se reubica/clona vía
+//! manipulación DOM). Lo movemos a wp_head para que quede fuera del árbol que
+//! OverlayScrollbars reestructura, evitando el warning "will be ignored" sin desactivar
+//! la funcionalidad.
+remove_action('wp_footer', 'wp_print_speculation_rules');
+add_action('wp_head', 'wp_print_speculation_rules');
 
 
 // When a category is deleted, remove stale _categoria_principal meta from its posts.
