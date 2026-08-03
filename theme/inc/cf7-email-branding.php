@@ -40,6 +40,7 @@ final class Pictau_CF7_Email_Branding {
 	private function init_hooks(): void {
 		add_action( 'customize_register', [ $this, 'register' ] );
 		add_action( 'customize_controls_enqueue_scripts', [ $this, 'enqueue_control_assets' ] );
+		add_action( 'wp_ajax_pct_cf7_resolve_email_logo_preview', [ $this, 'ajax_resolve_logo_preview' ] );
 	}
 
 	// =========================================================================
@@ -106,14 +107,18 @@ final class Pictau_CF7_Email_Branding {
 			true
 		);
 
-		$default_logo_id  = pct_cf7_get_email_logo_attachment_id();
-		$default_logo_img = $default_logo_id ? wp_get_attachment_image_src( $default_logo_id, 'medium' ) : false;
+		$default_logo_id    = pct_cf7_get_email_logo_attachment_id();
+		// Misma resolución que el email real (SVG -> PNG generado si es posible), para
+		// que el fallback de logo por defecto del preview coincida con lo que se envía.
+		$default_logo_image = pct_cf7_get_effective_email_logo_image( $default_logo_id );
 
 		wp_localize_script(
 			'pictau-cf7-email-branding-control',
 			'pictauCf7EmailBranding',
 			[
-				'defaultLogoUrl'         => $default_logo_img ? $default_logo_img[0] : '',
+				'defaultLogoUrl'         => $default_logo_image ? $default_logo_image[0] : '',
+				'ajaxUrl'                => admin_url( 'admin-ajax.php' ),
+				'nonce'                  => wp_create_nonce( 'pct_cf7_email_logo_preview' ),
 				'siteName'               => get_bloginfo( 'name' ),
 				'svgConversionSupported' => pct_cf7_email_svg_conversion_supported(),
 				'i18n'                   => [
@@ -123,6 +128,39 @@ final class Pictau_CF7_Email_Branding {
 				],
 			]
 		);
+	}
+
+	// =========================================================================
+	// AJAX — resolución en vivo del logo para la vista previa
+	// =========================================================================
+
+	/**
+	 * Resuelve, para una URL de logo recién seleccionada en el media uploader del
+	 * Customizer (aún no guardada como theme_mod), la misma imagen "efectiva" que
+	 * se usaría en el email real: si es SVG, el PNG generado en servidor (o cadena
+	 * vacía si este servidor no puede convertirlo, para que el JS caiga al texto).
+	 * El JS del control no puede generar ese PNG por sí mismo (requiere Imagick o
+	 * binarios de conversión en servidor), de ahí el viaje a admin-ajax.
+	 */
+	public function ajax_resolve_logo_preview(): void {
+		check_ajax_referer( 'pct_cf7_email_logo_preview', 'nonce' );
+
+		if ( ! current_user_can( 'customize' ) ) {
+			wp_send_json_error( null, 403 );
+		}
+
+		$logo_url      = isset( $_POST['logo_url'] ) ? esc_url_raw( wp_unslash( $_POST['logo_url'] ) ) : '';
+		$attachment_id = $logo_url ? attachment_url_to_postid( $logo_url ) : 0;
+
+		if ( ! $attachment_id ) {
+			$attachment_id = pct_cf7_get_email_logo_attachment_id();
+		}
+
+		$logo_image = pct_cf7_get_effective_email_logo_image( $attachment_id );
+
+		wp_send_json_success( [
+			'url' => $logo_image ? $logo_image[0] : '',
+		] );
 	}
 }
 

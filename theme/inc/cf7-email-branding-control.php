@@ -32,9 +32,12 @@ class Pictau_Customize_CF7_Email_Preview_Control extends WP_Customize_Control {
 		if ( ! $logo_attachment ) {
 			// Sin logo de email configurado (o URL no resoluble): mismo fallback que el email real.
 			$logo_attachment = pct_cf7_get_email_logo_attachment_id();
-			$image           = $logo_attachment ? wp_get_attachment_image_src( $logo_attachment, 'medium' ) : false;
-			$logo_url        = $image ? $image[0] : '';
 		}
+
+		// Misma resolución que usa el email real (SVG -> PNG generado si es posible),
+		// para que la vista previa muestre exactamente la imagen que se enviará.
+		$logo_image = pct_cf7_get_effective_email_logo_image( $logo_attachment );
+		$logo_url   = $logo_image ? $logo_image[0] : '';
 
 		$warning = pct_cf7_get_email_logo_format_warning( $logo_attachment );
 		?>

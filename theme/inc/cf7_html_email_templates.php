@@ -47,22 +47,12 @@ function add_custom_content_to_cf7_email($contact_form)
 }
 
 
-$logo = pct_cf7_get_email_logo_attachment_id();
-$image = $logo ? wp_get_attachment_image_src($logo, 'full') : false;
-$image_url = $image ? $image[0] : '';
-$is_svg_logo = $logo && get_post_mime_type($logo) === 'image/svg+xml';
-
 // Outlook y la mayoría de webmails no renderizan SVG en el cuerpo del email.
 // Si el logo del sitio está subido como SVG, se genera automáticamente (y se
-// cachea en disco) un PNG de alternativa para usar en emails. Ver pct_cf7_get_email_logo_png().
-if ($is_svg_logo) {
-	$email_logo = pct_cf7_get_email_logo_png($logo);
-	if ($email_logo) {
-		$image_url = $email_logo[0];
-		$image = $email_logo;
-		$is_svg_logo = false; // ya tenemos un PNG utilizable, no hace falta el fallback de texto
-	}
-}
+// cachea en disco) un PNG de alternativa para usar en emails. Ver pct_cf7_get_effective_email_logo_image().
+$logo = pct_cf7_get_email_logo_attachment_id();
+$image = pct_cf7_get_effective_email_logo_image($logo);
+$image_url = $image ? $image[0] : '';
 
 // Ancho fijo del logo en el email + alto proporcional real, calculados en px numéricos
 // (Outlook/Word ignora atributos width/height inválidos como "200px" o "auto"
@@ -76,7 +66,7 @@ $logo_email_height = ($image && !empty($image[1]) && !empty($image[2]))
 // (servidor sin Imagick ni binarios de conversión), no hay imagen fiable para el
 // email, así que mostramos el nombre del sitio como texto en vez de una imagen rota.
 $logo_email_text_color = apply_filters('pct_cf7_email_logo_color', '#ffffff');
-if ($image_url && !$is_svg_logo) {
+if ($image_url) {
 	$logo_markup = '<img class="brand-logo" src="' . $image_url . '" width="' . $logo_email_width . '" height="' . $logo_email_height . '" alt="' . esc_attr(get_bloginfo('name')) . '" style="display:block; margin: auto; width: ' . $logo_email_width . 'px; max-width: ' . $logo_email_width . 'px; height: ' . $logo_email_height . 'px;">';
 } else {
 	$logo_markup = '<h1 style="margin:0; padding:0; color:' . esc_attr($logo_email_text_color) . '; font-family:\'Outfit\', sans-serif; font-size:24px; font-weight:700; letter-spacing:1px; text-transform:uppercase;">' . esc_html(get_bloginfo('name')) . '</h1>';
@@ -336,6 +326,27 @@ function pct_cf7_get_email_logo_attachment_id()
 		}
 	}
 	return (int) get_theme_mod('custom_logo', 0);
+}
+
+// Resuelve la imagen "efectiva" a usar para el logo del email: si el adjunto es
+// SVG, intenta convertirlo a PNG (pct_cf7_get_email_logo_png()); si no es SVG,
+// devuelve la imagen tal cual. Devuelve false si no hay logo, o si es un SVG que
+// este servidor no puede convertir (el llamante debe caer entonces al fallback
+// de texto, igual que hace el email real).
+// Usada tanto por el email real (más abajo) como por el preview del Customizer
+// (theme/inc/cf7-email-branding-control.php) y su resolución AJAX en vivo
+// (theme/inc/cf7-email-branding.php), para que preview y email nunca diverjan.
+function pct_cf7_get_effective_email_logo_image($attachment_id)
+{
+	if (!$attachment_id) {
+		return false;
+	}
+
+	if (get_post_mime_type($attachment_id) === 'image/svg+xml') {
+		return pct_cf7_get_email_logo_png($attachment_id);
+	}
+
+	return wp_get_attachment_image_src($attachment_id, 'full');
 }
 
 // Evalúa si el logo efectivo del email está en un formato seguro para Outlook.
