@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.15.1
+- **Versión:** 7.15.2
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1579,7 +1579,8 @@ Permite subir dos variantes del favicon — icono negro para modo claro (`favico
 - Cada variante sube un `.svg`; si además existe un `.png` con el **mismo nombre de archivo** (subido por separado a la Biblioteca de medios), se sirve también como `<link rel="icon" type="image/png" sizes="32x32">` — fallback para navegadores sin soporte de SVG en el favicon.
 - Si solo se rellena una variante, se sirve sin atributo `media` (favicon único, sin cambio de tema).
 - Si se rellenan ambas, cada `<link>` incluye `media="(prefers-color-scheme: light|dark)"` — soportado de forma fiable en Firefox y Safari; en navegadores basados en Chromium se aplica en la carga inicial de la pestaña, pero no siempre se re-evalúa en caliente si el usuario cambia el tema del SO con la pestaña ya abierta (limitación conocida del motor, no del tema).
-- En cuanto se rellena alguna variante, se desactiva el Site Icon nativo de WordPress (`remove_action('wp_head'/'admin_head', 'wp_site_icon', 99)`) para evitar `<link rel="icon">` duplicados/en conflicto.
+- En cuanto se rellena alguna variante, se desactiva el Site Icon nativo de WordPress (`remove_action('wp_head'/'admin_head'/'login_head', 'wp_site_icon', 99)`) para evitar `<link rel="icon">` duplicados/en conflicto.
+- `add_favicon_to_head()` también se engancha a `login_head`, así que la pantalla de login (`wp-login.php`) muestra el mismo favicon claro/oscuro en vez del icono por defecto de WordPress.
 
 ### Seguridad (CSP) — cabeceras Content-Security-Policy
 

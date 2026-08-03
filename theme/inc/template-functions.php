@@ -710,6 +710,7 @@ function add_favicon_to_head()
 	// Evita que WP Core imprima su propio Site Icon en conflicto con estos <link>
 	remove_action('wp_head', 'wp_site_icon', 99);
 	remove_action('admin_head', 'wp_site_icon', 99);
+	remove_action('login_head', 'wp_site_icon', 99);
 
 	// Si solo hay una variante, se sirve sin "media" (universal, sin cambio de tema)
 	$has_both = $favicon_svg_light && $favicon_svg_dark;
@@ -728,6 +729,7 @@ function add_favicon_to_head()
 	}
 }
 add_action('wp_head', 'add_favicon_to_head');
+add_action('login_head', 'add_favicon_to_head');
 // add_action( 'admin_head', 'add_favicon_to_head' );
 
 
