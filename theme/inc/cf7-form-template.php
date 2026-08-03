@@ -3,8 +3,8 @@
  * Plantilla base para nuevos formularios Contact Form 7
  *
  * Añade una pestaña "Plantilla Base" al editor de CF7 con un botón que rellena
- * el contenido de las pestañas Formulario y Correo con una plantilla base
- * predefinida, para agilizar la creación de formularios nuevos.
+ * el contenido de las pestañas Formulario, Correo y Correo (2) con una plantilla
+ * base predefinida, para agilizar la creación de formularios nuevos.
  *
  * Cargado condicionalmente desde utilities.php solo si CF7 está activo.
  *
@@ -65,10 +65,10 @@ final class Pictau_CF7_Form_Template {
 			<h2 style="margin-top: 0;"><?php esc_html_e( 'Plantilla base', 'pictau' ); ?></h2>
 
 			<p>
-				<?php esc_html_e( 'Rellena automáticamente el contenido de las pestañas "Formulario" y "Correo" con la plantilla base de contacto del tema.', 'pictau' ); ?>
+				<?php esc_html_e( 'Rellena automáticamente el contenido de las pestañas "Formulario", "Correo" y "Correo (2)" con la plantilla base de contacto del tema.', 'pictau' ); ?>
 			</p>
 			<p class="description">
-				<?php esc_html_e( 'Si esas pestañas ya tienen contenido, se pedirá confirmación antes de sobrescribirlo.', 'pictau' ); ?>
+				<?php esc_html_e( 'Los campos de "Correo (2)" se rellenan aunque no esté activada su casilla "Usar correo electrónico (2)", por si se activa más adelante. El campo "De" de Correo (2) no se toca: se deja el valor automático de CF7. Si esas pestañas ya tienen contenido, se pedirá confirmación antes de sobrescribirlo.', 'pictau' ); ?>
 			</p>
 
 			<p style="margin-top: 1.5em;">
@@ -115,7 +115,9 @@ final class Pictau_CF7_Form_Template {
 			'pct-cf7-template-fill',
 			'pct-cf7-template-feedback',
 			$this->get_form_template(),
-			$this->get_mail_template()
+			$this->get_mail_template(),
+			$this->get_mail_2_subject(),
+			$this->get_mail_2_body()
 		);
 
 		if ( $this->is_polylang_active() ) {
@@ -123,7 +125,9 @@ final class Pictau_CF7_Form_Template {
 				'pct-cf7-template-fill-multilang',
 				'pct-cf7-template-feedback-multilang',
 				$this->get_form_template_multilang(),
-				$this->get_mail_template_multilang()
+				$this->get_mail_template_multilang(),
+				$this->get_mail_2_subject_multilang(),
+				$this->get_mail_2_body_multilang()
 			);
 		}
 
@@ -132,11 +136,16 @@ final class Pictau_CF7_Form_Template {
 
 	/**
 	 * Genera el bloque JS que engancha el click de un botón "rellenar plantilla"
-	 * a un par de textareas (Formulario / Correo) del editor CF7.
+	 * a los textareas/inputs de Formulario, Correo y Correo (2) del editor CF7.
+	 *
+	 * El campo "De" de Correo (2) (`#wpcf7-mail-2-sender`) y su checkbox de activación
+	 * (`#wpcf7-mail-2-active`) nunca se tocan: el primero se deja con el valor automático
+	 * que ya trae CF7, y el segundo lo decide el usuario — solo se dejan los campos
+	 * rellenos por si los activa más tarde.
 	 */
-	private function build_fill_button_script( string $button_id, string $feedback_id, string $form_template, string $mail_template ): string {
-		$confirm_msg = esc_js( __( 'Esto sobrescribirá el contenido actual de las pestañas Formulario y Correo con la plantilla base. ¿Continuar?', 'pictau' ) );
-		$done_msg    = esc_js( __( 'Plantilla aplicada. Revisa las pestañas Formulario y Correo, y recuerda guardar.', 'pictau' ) );
+	private function build_fill_button_script( string $button_id, string $feedback_id, string $form_template, string $mail_template, string $mail_2_subject, string $mail_2_body ): string {
+		$confirm_msg = esc_js( __( 'Esto sobrescribirá el contenido actual de las pestañas Formulario, Correo y Correo (2) con la plantilla base. ¿Continuar?', 'pictau' ) );
+		$done_msg    = esc_js( __( 'Plantilla aplicada. Revisa las pestañas Formulario, Correo y Correo (2), y recuerda guardar.', 'pictau' ) );
 
 		return "(function () {
 	var btn = document.getElementById('{$button_id}');
@@ -146,9 +155,12 @@ final class Pictau_CF7_Form_Template {
 		var formEl = document.getElementById('wpcf7-form');
 		var mailEl = document.getElementById('wpcf7-mail-body');
 		var headersEl = document.getElementById('wpcf7-mail-additional-headers');
+		var mail2RecipientEl = document.getElementById('wpcf7-mail-2-recipient');
+		var mail2SubjectEl = document.getElementById('wpcf7-mail-2-subject');
+		var mail2BodyEl = document.getElementById('wpcf7-mail-2-body');
 		if (!formEl || !mailEl) return;
 
-		var hasContent = formEl.value.trim() !== '' || mailEl.value.trim() !== '';
+		var hasContent = formEl.value.trim() !== '' || mailEl.value.trim() !== '' || (mail2BodyEl && mail2BodyEl.value.trim() !== '');
 		if (hasContent && !window.confirm('{$confirm_msg}')) return;
 
 		formEl.value = " . wp_json_encode( $form_template ) . ";
@@ -160,6 +172,21 @@ final class Pictau_CF7_Form_Template {
 		if (headersEl) {
 			headersEl.value = " . wp_json_encode( $this->get_mail_additional_headers() ) . ";
 			headersEl.dispatchEvent(new Event('change', { bubbles: true }));
+		}
+
+		if (mail2RecipientEl) {
+			mail2RecipientEl.value = " . wp_json_encode( $this->get_mail_2_recipient() ) . ";
+			mail2RecipientEl.dispatchEvent(new Event('change', { bubbles: true }));
+		}
+
+		if (mail2SubjectEl) {
+			mail2SubjectEl.value = " . wp_json_encode( $mail_2_subject ) . ";
+			mail2SubjectEl.dispatchEvent(new Event('change', { bubbles: true }));
+		}
+
+		if (mail2BodyEl) {
+			mail2BodyEl.value = " . wp_json_encode( $mail_2_body ) . ";
+			mail2BodyEl.dispatchEvent(new Event('change', { bubbles: true }));
 		}
 
 		var feedback = document.getElementById('{$feedback_id}');
@@ -226,6 +253,36 @@ FORM;
 		return 'Reply-To: [email]';
 	}
 
+	/**
+	 * Destinatario de Correo (2) (autorespuesta al propio remitente del formulario).
+	 * Común a la plantilla normal y a la multiidioma — no lleva texto traducible.
+	 */
+	private function get_mail_2_recipient(): string {
+		return '[email]';
+	}
+
+	private function get_mail_2_subject(): string {
+		return 'Gracias por contactar con [_site_title]';
+	}
+
+	private function get_mail_2_body(): string {
+		return <<<'MAIL2'
+<h2>¡Gracias por contactar con nosotros!</h2>
+<p>Gracias por tu interés, [nombre].<br>Hemos recibido tu solicitud.<br> En breve nos pondremos en contacto contigo.</p>
+MAIL2;
+	}
+
+	private function get_mail_2_subject_multilang(): string {
+		return '{Gracias por contactar con} [_site_title]';
+	}
+
+	private function get_mail_2_body_multilang(): string {
+		return <<<'MAIL2'
+<h2>{¡Gracias por contactar con nosotros!}</h2>
+<p>{Gracias por tu interés}, [nombre].<br>{Hemos recibido tu solicitud.}<br> {En breve nos pondremos en contacto contigo.}</p>
+MAIL2;
+	}
+
 	private function get_mail_template(): string {
 		return <<<'MAIL'
 <strong>De:</strong> [nombre] --> [email]<br>
@@ -245,7 +302,7 @@ FORM;
 [area-interes-otro]
 <br><br>
 <hr><br>
-Has recibido este lead desde: [_url]
+Has recibido este lead desde: [pagina_url]
 MAIL;
 	}
 
@@ -313,7 +370,7 @@ FORM;
 [area-interes-otro]
 <br><br>
 <hr><br>
-Has recibido este lead desde: [_url]
+Has recibido este lead desde: [pagina_url]
 MAIL;
 	}
 }

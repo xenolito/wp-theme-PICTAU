@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.12.7
+- **Versión:** 7.13.0
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1675,6 +1675,17 @@ Si no hay logo configurado, o es SVG y no se pudo generar/encontrar un PNG (serv
 
 Si el servidor no puede generar el PNG (sin Imagick ni binarios de conversión disponibles), aparece un aviso en el panel de administración (visible solo para `manage_options`) indicando que hay que subir manualmente un PNG junto al SVG del logo, con el sufijo `-email.png`. El estado se cachea en un transient (`pct_cf7_email_logo_png_unsupported`, 12h) para no reintentar la generación en cada email enviado.
 
+### Auto-tracking: UTM/GCLID y URL real de la página (`[pagina_url]`)
+
+El tema inyecta automáticamente, vía el filtro `wpcf7_form_hidden_fields`, un conjunto de hidden fields en **todos** los formularios CF7 del sitio sin necesidad de añadir `[hidden ...]` en la pestaña Formulario:
+
+- `utm_source`, `utm_medium`, `utm_campaign`, `utm_term`, `utm_content`, `gclid`, `fbclid`, `msclkid` — precargados en servidor desde `$_GET` (min/MAYÚS) y sobrescritos en cliente (`wp_footer`) desde `window.location.search`, inmune a caché de página.
+- `pagina_url` — la URL completa de la página que aloja el formulario, precargada en servidor desde `$_SERVER['REQUEST_URI']` y sobrescrita en cliente desde `window.location.href`.
+
+Un filtro adicional en `wpcf7_posted_data` garantiza que estos campos lleguen a `get_posted_data()` aunque CF7 (5.8+) no los incluya automáticamente por venir de `wpcf7_form_hidden_fields` y no de un tag declarado en el Formulario.
+
+**`[pagina_url]` sustituye al special mail tag `[_url]` de CF7**, que no es fiable: desde que CF7 envía los formularios vía REST API (fetch a `/wp-json/contact-form-7/v1/contact-forms/{id}/feedback`), `[_url]` solo funciona si el navegador envía `HTTP_REFERER` y coincide con `home_url()` (`WPCF7_Submission::get_request_url()`); si falla esa condición, cae al URI de la propia petición REST y `[_url]` devuelve la URL del endpoint `feedback` en vez de la página del formulario. Usar siempre `[pagina_url]` en las plantillas de correo, nunca `[_url]`. La pestaña "Plantilla Base" (ver abajo) ya lo usa por defecto.
+
 ---
 
 ## Contact Form 7 + Polylang — Integración nativa
@@ -1732,12 +1743,15 @@ Contiene un botón **"Rellenar con plantilla base"** que, sin necesidad de guard
 - El textarea de la pestaña **Formulario** (`#wpcf7-form`).
 - El textarea de **Cuerpo del mensaje** de la pestaña Correo (`#wpcf7-mail-body`, solo Mail 1).
 - El textarea de **Cabeceras adicionales** de la pestaña Correo (`#wpcf7-mail-additional-headers`, solo Mail 1), con `Reply-To: [email]`. CF7 precarga por defecto `Reply-To: [your-email]` en formularios nuevos, pero el campo de email de esta plantilla se llama `[email]`, no `[your-email]` — sin este ajuste el Reply-To quedaría roto (apuntando a un campo inexistente).
+- Los campos **Para** (`#wpcf7-mail-2-recipient`), **Asunto** (`#wpcf7-mail-2-subject`) y **Cuerpo del mensaje** (`#wpcf7-mail-2-body`) de **Correo (2)** (autorespuesta al remitente), aunque su casilla "Usar correo electrónico (2)" no esté marcada — así queda listo por si se activa más adelante. El campo **De** de Correo (2) (`#wpcf7-mail-2-sender`) y la propia casilla de activación (`#wpcf7-mail-2-active`) nunca se tocan: el primero se deja con el valor automático que ya trae CF7, la segunda la decide el usuario.
 
-Si el formulario o el correo ya tienen contenido, pide confirmación antes de sobrescribir; las cabeceras adicionales se rellenan siempre que exista el campo (no forman parte de esa comprobación de confirmación).
+Si el formulario o el correo (incluido Correo (2)) ya tienen contenido, pide confirmación antes de sobrescribir; las cabeceras adicionales se rellenan siempre que exista el campo (no forman parte de esa comprobación de confirmación).
 
-El contenido de la plantilla está hardcodeado en tres métodos privados (`get_form_template()`, `get_mail_template()` y `get_mail_additional_headers()`) del propio archivo — es una copia del formulario **"Lead"** (post 76992, hash `b3cd5c0`, el que alimenta el modal `lead` del sitio). Para actualizar la plantilla cuando ese formulario cambie, basta con volver a copiar su contenido en esos métodos.
+El contenido de la plantilla está hardcodeado en varios métodos privados del propio archivo (`get_form_template()`, `get_mail_template()`, `get_mail_additional_headers()`, `get_mail_2_recipient()`, `get_mail_2_subject()` y `get_mail_2_body()`) — es una copia del formulario **"Lead"** (post 76992, hash `b3cd5c0`, el que alimenta el modal `lead` del sitio). Para actualizar la plantilla cuando ese formulario cambie, basta con volver a copiar su contenido en esos métodos.
 
-**Botón "Rellenar con plantilla base Multiidioma"** — visible únicamente si Polylang está activo (`function_exists('pll_register_string')`, mismo criterio que `cf7-polylang.php`). Hace lo mismo que el botón base, pero con una plantilla distinta (`get_form_template_multilang()` / `get_mail_template_multilang()`): misma base que la plantilla "Lead" del botón anterior, con los textos de la pestaña Formulario envueltos en `{llaves}` para que la pestaña Polylang del editor los detecte y registre como strings traducibles automáticamente (el cuerpo del correo no lleva llaves, no se traduce). Las cabeceras adicionales (`get_mail_additional_headers()`) son comunes a ambos botones, no llevan texto traducible.
+El pie del correo (Mail 1) usa `[pagina_url]`, no el special mail tag `[_url]` de CF7 (poco fiable en envíos vía REST API — ver [Auto-tracking: UTM/GCLID y URL real de la página](#contact-form-7--plantilla-html-de-email-compatibilidad-outlook)). Al copiar contenido de un formulario existente a esta plantilla, sustituir siempre `[_url]` por `[pagina_url]` si aparece.
+
+**Botón "Rellenar con plantilla base Multiidioma"** — visible únicamente si Polylang está activo (`function_exists('pll_register_string')`, mismo criterio que `cf7-polylang.php`). Hace lo mismo que el botón base, pero con una plantilla distinta (`get_form_template_multilang()` / `get_mail_template_multilang()` / `get_mail_2_subject_multilang()` / `get_mail_2_body_multilang()`): misma base que la plantilla "Lead" del botón anterior, con los textos de la pestaña Formulario y de Correo (2) envueltos en `{llaves}` para que la pestaña Polylang del editor los detecte y registre como strings traducibles automáticamente. El cuerpo de Mail 1 no lleva llaves porque es la notificación interna al admin del sitio (no se traduce); el de Correo (2) sí, porque es la autorespuesta que recibe el propio lead/visitante y debe mostrarse en su idioma. Las cabeceras adicionales (`get_mail_additional_headers()`) y el destinatario de Correo (2) (`get_mail_2_recipient()`, `[email]`) son comunes a ambos botones, no llevan texto traducible.
 
 Disponible tanto al editar un formulario existente (`admin.php?page=wpcf7&post=X&action=edit`) como en la pantalla **"Añadir nuevo"** (`admin.php?page=wpcf7-new`) — el script se encola comprobando que `$screen->id` contiene `wpcf7`, en vez de una comparación exacta contra `toplevel_page_wpcf7`, porque ambas pantallas usan screen ids distintos.
 

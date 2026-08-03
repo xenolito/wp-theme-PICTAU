@@ -478,9 +478,33 @@ add_action('wp_footer', function () {
 					});
 				}
 			});
+
+			document.querySelectorAll('input[name="pagina_url"]').forEach(function(el) {
+				el.value = window.location.href;
+			});
 		})();
 	</script>
 <?php
+});
+
+//! HELPER para la URL real de la página que aloja el formulario (sustituye a [_url])
+//
+// El special mail tag [_url] de CF7 deja de ser fiable desde que CF7 envía los formularios vía
+// REST API (fetch a /wp-json/contact-form-7/v1/contact-forms/{id}/feedback): WPCF7_Submission::get_request_url()
+// (includes/submission.php) solo usa la cabecera HTTP_REFERER si el navegador la envía y coincide con
+// home_url(); si falla esa condición, cae al URI de la propia petición REST y [_url] termina devolviendo
+// la URL del endpoint feedback en vez de la página del formulario. Este hidden field es inmune a ese
+// problema: se calcula en servidor con la URL de la petición actual y se sobrescribe en cliente con
+// window.location.href (bloque JS de arriba), igual que los campos UTM/GCLID.
+//
+// Usar [pagina_url] en las plantillas de correo en vez de [_url].
+add_filter('wpcf7_form_hidden_fields', function ($hidden) {
+	$scheme = is_ssl() ? 'https://' : 'http://';
+	$host   = isset($_SERVER['HTTP_HOST']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_HOST'])) : wp_parse_url(home_url(), PHP_URL_HOST);
+	$uri    = isset($_SERVER['REQUEST_URI']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI'])) : '/';
+
+	$hidden['pagina_url'] = esc_url_raw($scheme . $host . $uri);
+	return $hidden;
 });
 
 // Convierte los separadores ' | ' del campo producto en saltos de línea en el email.
@@ -496,13 +520,15 @@ add_filter('wpcf7_mail_tag_replaced', function ($replaced, $submitted, $html, $m
 	return str_replace(' | ', "\n", $replaced);
 }, 10, 4);
 
-// Asegura que los campos de tracking aparezcan en get_posted_data()
+// Asegura que los campos de tracking (y pagina_url) aparezcan en get_posted_data()
 // (CF7 5.8+ puede no incluir hidden fields añadidos via wpcf7_form_hidden_fields)
 add_filter('wpcf7_posted_data', function ($posted_data) {
-	$keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'fbclid', 'msclkid'];
+	$keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'fbclid', 'msclkid', 'pagina_url'];
 	foreach ($keys as $k) {
 		if (isset($_POST[$k]) && !isset($posted_data[$k])) {
-			$posted_data[$k] = sanitize_text_field(wp_unslash($_POST[$k]));
+			$posted_data[$k] = $k === 'pagina_url'
+				? esc_url_raw(wp_unslash($_POST[$k]))
+				: sanitize_text_field(wp_unslash($_POST[$k]));
 		}
 	}
 	return $posted_data;
