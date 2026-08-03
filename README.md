@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.15.0
+- **Versión:** 7.15.1
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1568,6 +1568,18 @@ Panel **Apariencia → Personalizar → THEME CUSTOMIZER**.
 Los filtros `wp_mail_from` y `wp_mail_from_name` **solo se registran** si el valor está guardado (no vacío). Si el campo está vacío, WordPress usa su comportamiento por defecto.
 
 El plugin **Maintenance Mode by PICTAU** consume `pictau_contact_email` directamente.
+
+### Favicon SVG claro/oscuro (`priority: 30`)
+
+Sección **Favicon SVG**, implementada en `favicon_customizer()` / `add_favicon_to_head()` (`theme/inc/template-functions.php`).
+
+Permite subir dos variantes del favicon — icono negro para modo claro (`favicon_svg`) e icono blanco para modo oscuro (`favicon_svg_dark`) — y el navegador elige automáticamente cuál mostrar según el `prefers-color-scheme` del sistema operativo del visitante, sin JS.
+
+**Funcionamiento:**
+- Cada variante sube un `.svg`; si además existe un `.png` con el **mismo nombre de archivo** (subido por separado a la Biblioteca de medios), se sirve también como `<link rel="icon" type="image/png" sizes="32x32">` — fallback para navegadores sin soporte de SVG en el favicon.
+- Si solo se rellena una variante, se sirve sin atributo `media` (favicon único, sin cambio de tema).
+- Si se rellenan ambas, cada `<link>` incluye `media="(prefers-color-scheme: light|dark)"` — soportado de forma fiable en Firefox y Safari; en navegadores basados en Chromium se aplica en la carga inicial de la pestaña, pero no siempre se re-evalúa en caliente si el usuario cambia el tema del SO con la pestaña ya abierta (limitación conocida del motor, no del tema).
+- En cuanto se rellena alguna variante, se desactiva el Site Icon nativo de WordPress (`remove_action('wp_head'/'admin_head', 'wp_site_icon', 99)`) para evitar `<link rel="icon">` duplicados/en conflicto.
 
 ### Seguridad (CSP) — cabeceras Content-Security-Policy
 

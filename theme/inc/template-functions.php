@@ -663,7 +663,7 @@ function customize_theme_pictau($wp_customize)
 add_action('customize_register', 'customize_theme_pictau');
 
 
-//! CUSTOM FAVICON: Allows to use svg images as favicon without cropping
+//! CUSTOM FAVICON: Allows to use svg images as favicon without cropping, with light/dark variants
 function favicon_customizer($wp_customize)
 {
 	// Add a section
@@ -671,36 +671,60 @@ function favicon_customizer($wp_customize)
 		'title'    => __('Favicon SVG ⚠️', 'pictau'),
 		'priority' => 30,
 		'panel'	=> 'PICTAU',
-		'description' => __('This image will be used as favicon. It will be nice if you use "@media (prefers-color-scheme: dark)" to adjust the svg colors for dark mode.<br><hr>⚠️ <strong>Beware!</strong> Safari does not support SVG favicons. I you use this feature, make sure to upload a .png version with the same filename for Safari Browsers.<br><br>It is also a good practice to use a "favicon.ico" (32bit, transparent background) on the root of your WP folder for admin pages. <br><br>Check support at <a href="https://caniuse.com/link-icon-svg" target="_blank">https://caniuse.com/link-icon-svg</a>', 'pictau'),
+		'description' => __('Sube el icono en modo claro (icono negro) y su equivalente en modo oscuro (icono blanco). El navegador elegirá automáticamente uno u otro según el tema del sistema operativo del visitante.<br><hr>⚠️ <strong>Beware!</strong> Algunos navegadores no soportan SVG como favicon. Sube también un .png (32x32) con el mismo nombre de archivo para cada variante.<br><br>Check support at <a href="https://caniuse.com/link-icon-svg" target="_blank">https://caniuse.com/link-icon-svg</a>', 'pictau'),
 	));
 
-	// Add a setting to store the image URL
+	// Variante modo claro (icono negro)
 	$wp_customize->add_setting('favicon_svg', array(
 		'default'           => '',
 		'sanitize_callback' => 'esc_url_raw',
 	));
-
-	// Add the image control
 	$wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'favicon_svg', array(
-		'label'    => __('Selecciona tu imagen', 'pictau'),
+		'label'    => __('Favicon modo claro (icono negro)', 'pictau'),
 		'section'  => 'favicon_customizer',
 		'settings' => 'favicon_svg',
+	)));
+
+	// Variante modo oscuro (icono blanco)
+	$wp_customize->add_setting('favicon_svg_dark', array(
+		'default'           => '',
+		'sanitize_callback' => 'esc_url_raw',
+	));
+	$wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'favicon_svg_dark', array(
+		'label'    => __('Favicon modo oscuro (icono blanco)', 'pictau'),
+		'section'  => 'favicon_customizer',
+		'settings' => 'favicon_svg_dark',
 	)));
 }
 add_action('customize_register', 'favicon_customizer');
 
 function add_favicon_to_head()
 {
-	$favicon_svg = get_theme_mod('favicon_svg');
-	$favicon_no_extension = set_url_scheme(preg_replace('/\.[^.]+$/', '', $favicon_svg), 'https');
+	$favicon_svg_light = get_theme_mod('favicon_svg');
+	$favicon_svg_dark  = get_theme_mod('favicon_svg_dark');
 
+	if (! $favicon_svg_light && ! $favicon_svg_dark) {
+		return;
+	}
 
-	if ($favicon_svg) {
-		// remove_action('wp_head', 'wp_site_icon', 99);
-		// remove_action('admin_head', 'wp_site_icon', 99);
+	// Evita que WP Core imprima su propio Site Icon en conflicto con estos <link>
+	remove_action('wp_head', 'wp_site_icon', 99);
+	remove_action('admin_head', 'wp_site_icon', 99);
 
-		echo '<link rel="icon" type="image/svg+xml" href="' . esc_url($favicon_no_extension) . '.svg">';
-		echo '<link rel="icon" type="image/png" href="' . esc_url($favicon_no_extension) . '.png?v=3.1" sizes="32x32" />';
+	// Si solo hay una variante, se sirve sin "media" (universal, sin cambio de tema)
+	$has_both = $favicon_svg_light && $favicon_svg_dark;
+
+	if ($favicon_svg_light) {
+		$base  = set_url_scheme(preg_replace('/\.[^.]+$/', '', $favicon_svg_light), 'https');
+		$media = $has_both ? ' media="(prefers-color-scheme: light)"' : '';
+		echo '<link rel="icon" type="image/svg+xml" href="' . esc_url($base) . '.svg"' . $media . '>' . "\n";
+		echo '<link rel="icon" type="image/png" href="' . esc_url($base) . '.png" sizes="32x32"' . $media . ' />' . "\n";
+	}
+
+	if ($favicon_svg_dark) {
+		$base = set_url_scheme(preg_replace('/\.[^.]+$/', '', $favicon_svg_dark), 'https');
+		echo '<link rel="icon" type="image/svg+xml" href="' . esc_url($base) . '.svg" media="(prefers-color-scheme: dark)">' . "\n";
+		echo '<link rel="icon" type="image/png" href="' . esc_url($base) . '.png" sizes="32x32" media="(prefers-color-scheme: dark)" />' . "\n";
 	}
 }
 add_action('wp_head', 'add_favicon_to_head');
