@@ -663,41 +663,6 @@ function customize_theme_pictau($wp_customize)
 add_action('customize_register', 'customize_theme_pictau');
 
 
-//! Add mobile meta "theme-color" to CUSTOMIZER
-function color_customizer($wp_customize)
-{
-	$wp_customize->add_section('mobile_theme_color', array(
-		'title' => 'Theme Color Mobile',
-		'panel'	=> 'PICTAU',
-		'description' => __('This color will be used for the mobile "theme-color" meta tag<br><strong>Note:</strong> This will only affect mobile browsers that support this feature.<br><br>If you\'re using Contact Form 7, this color will be used for the html email templates on the header and footer sections. 🙌', 'pictau'),
-	));
-
-
-
-	$wp_customize->add_setting(
-		'colorThemeMobile',
-		array(
-			'default' => '#000000',
-			'sanitize_callback' => 'sanitize_hex_color',
-			// 'capability' => 'edit_theme_options'
-		)
-	);
-
-	$wp_customize->add_control(
-		new WP_Customize_Color_Control(
-			$wp_customize,
-			'colorThemeMobile',
-			array(
-				'label' => __('Color Section Title', 'pictau'),
-				'section' => 'mobile_theme_color',
-				'settings' => 'colorThemeMobile'
-			)
-		)
-	);
-}
-
-add_action('customize_register', 'color_customizer');
-
 //! CUSTOM FAVICON: Allows to use svg images as favicon without cropping
 function favicon_customizer($wp_customize)
 {
@@ -740,19 +705,6 @@ function add_favicon_to_head()
 }
 add_action('wp_head', 'add_favicon_to_head');
 // add_action( 'admin_head', 'add_favicon_to_head' );
-
-
-function theme_color()
-{
-	$color = get_theme_mod('colorThemeMobile', 'transparent');
-	if ($color) {
-		echo '<meta name="theme-color" content="' . $color . '" />';
-	}
-}
-
-// add_action('wp_head', 'theme_color');
-
-
 
 
 /*------------------------------------------------------------------------------------------------------*

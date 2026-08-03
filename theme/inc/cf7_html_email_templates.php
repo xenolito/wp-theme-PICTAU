@@ -47,7 +47,7 @@ function add_custom_content_to_cf7_email($contact_form)
 }
 
 
-$logo = get_theme_mod('custom_logo');
+$logo = pct_cf7_get_email_logo_attachment_id();
 $image = $logo ? wp_get_attachment_image_src($logo, 'full') : false;
 $image_url = $image ? $image[0] : '';
 $is_svg_logo = $logo && get_post_mime_type($logo) === 'image/svg+xml';
@@ -83,9 +83,7 @@ if ($image_url && !$is_svg_logo) {
 }
 
 
-$brandColor = get_theme_mod('colorThemeMobile', '#19222a');
-
-// colorThemeMobile
+$brandColor = pct_cf7_get_email_brand_color();
 
 $htmlEmailTemplateCssStyles = '
   <style>
@@ -310,6 +308,89 @@ function email_HTMLtemplate_1($message, $isMail2 = false)
 	return $html;
 }
 
+
+//! BRANDING DEL EMAIL (color + logo), configurable desde Personalizar > CF7 emails
+//! (theme/inc/cf7-email-branding.php). Estas funciones son la fuente de verdad,
+//! tanto para el email real como para el preview del Customizer, y viven aquí
+//! (no en el archivo condicional a CF7) porque este archivo se carga siempre.
+
+// Color de fondo compartido por cabecera y pie del email. Si no se ha configurado
+// explícitamente en la sección "CF7 emails", cae al valor por defecto histórico.
+function pct_cf7_get_email_brand_color()
+{
+	$color = get_theme_mod('cf7_email_brand_color', '');
+	return $color ? $color : '#19222a';
+}
+
+// Attachment ID del logo a usar en el email. Si no se ha seleccionado un logo
+// específico para el email (o la URL guardada ya no resuelve a un adjunto local,
+// p.ej. tras una migración de sitio), cae al logo general del sitio (custom_logo),
+// que es el comportamiento que ya existía antes de esta funcionalidad.
+function pct_cf7_get_email_logo_attachment_id()
+{
+	$logo_url = get_theme_mod('cf7_email_logo', '');
+	if ($logo_url) {
+		$id = attachment_url_to_postid($logo_url);
+		if ($id) {
+			return $id;
+		}
+	}
+	return (int) get_theme_mod('custom_logo', 0);
+}
+
+// Evalúa si el logo efectivo del email está en un formato seguro para Outlook.
+// Devuelve null si es seguro (jpg/jpeg/png/webp), o un array ['level' => 'info'|'warning', 'message' => string]:
+// - 'info'    → es SVG, pero este servidor SÍ puede convertirlo automáticamente a PNG.
+// - 'warning' → es SVG y este servidor NO puede convertirlo, o es un formato no recomendado.
+function pct_cf7_get_email_logo_format_warning($attachment_id)
+{
+	if (!$attachment_id) {
+		return null;
+	}
+
+	$safe_mimes = array('image/jpeg', 'image/png', 'image/webp');
+	$mime = get_post_mime_type($attachment_id);
+
+	if (in_array($mime, $safe_mimes, true)) {
+		return null;
+	}
+
+	if ('image/svg+xml' === $mime) {
+		$png = pct_cf7_get_email_logo_png($attachment_id);
+		if ($png) {
+			return array(
+				'level'   => 'info',
+				'message' => esc_html__('Logo en SVG: se genera automáticamente una versión PNG para Outlook y el resto de clientes de correo. Conversión disponible en este servidor.', 'pictau'),
+			);
+		}
+		return array(
+			'level'   => 'warning',
+			'message' => esc_html__('Logo en SVG y este servidor no puede convertirlo automáticamente a PNG (sin Imagick ni binarios de conversión disponibles). Outlook no lo mostrará — sube manualmente una versión en JPG, PNG o WEBP.', 'pictau'),
+		);
+	}
+
+	return array(
+		'level'   => 'warning',
+		'message' => esc_html__('Formato de imagen no recomendado para email (Outlook y otros clientes pueden no mostrarlo correctamente). Usa JPG, PNG o WEBP.', 'pictau'),
+	);
+}
+
+// Comprueba si este servidor puede convertir SVG a PNG (Imagick o binarios de
+// sistema), sin intentar la conversión real — usado por el JS del Customizer
+// para decidir en vivo si un SVG recién seleccionado dará aviso 'info' o 'warning'
+// antes de guardar (cuando aún no hay un attachment ID que resolver en servidor).
+function pct_cf7_email_svg_conversion_supported()
+{
+	if (extension_loaded('imagick')) {
+		return true;
+	}
+	foreach (array('rsvg-convert', 'convert', 'magick') as $binary) {
+		if (pct_cf7_shell_binary_exists($binary)) {
+			return true;
+		}
+	}
+	return false;
+}
 
 //! LOGO SVG -> PNG para emails (Outlook/webmails no renderizan SVG en el cuerpo del email)
 

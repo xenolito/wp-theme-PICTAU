@@ -660,6 +660,11 @@ if ( class_exists( 'WPCF7_ContactForm' ) ) {
 	require get_template_directory() . '/inc/cf7-ga-tracking.php';
 }
 
+//! BRANDING (COLOR + LOGO) CONFIGURABLE PARA LOS EMAILS HTML DE CF7 (sección Customizer)
+if ( class_exists( 'WPCF7_ContactForm' ) ) {
+	require get_template_directory() . '/inc/cf7-email-branding.php';
+}
+
 
 
 //! FEATURERD AREAS CARDS FOR HOMEPAGE WITH POD TEMPLATE
