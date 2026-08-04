@@ -55,21 +55,9 @@
 	background-color: hsl(0deg 0% 100% / 0.03) !important;
 }
 
-/*
- * all-themes.css es la unica fuente de colores de texto del sitio
- * (font-styles.css se ocupa solo de tipografia: tamaños, pesos, spacing).
- *
- * Color de texto/heading/tag "actual": cada .theme-color-* solo redefine
- * estas variables en el nodo donde se aplica la clase. Al ser custom
- * properties, un descendiente siempre hereda del ancestro .theme-color-*
- * MAS CERCANO en el DOM, independientemente del orden en que las clases
- * .theme-color-light/.theme-color-dark/.theme-color-custom estén
- * definidas en esta hoja de estilos. Esto permite anidar temas
- * (light > dark > light...) y que gane siempre el ultimo aplicado segun
- * el DOM, no segun la cascada.
- */
 body {
 	color: var(--theme-txt-color, var(--txt-color-theme-light));
+	background: red !important;
 }
 
 p,
