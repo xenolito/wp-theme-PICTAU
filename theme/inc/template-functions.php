@@ -1604,7 +1604,11 @@ function video_as_background($atts = [], $content = '')
 	}
 
 
-	$output .= '<video class="video-bg" style="object-position: ' . $align . ';" ' . $isAutoplay . ' muted loop playsinline preload="metadata" poster="' . wp_upload_dir()['baseurl'] . '/' . $src . '.webp" aria-label="intro video">';
+	// aria-hidden en vez de aria-label: es un vídeo de fondo decorativo (muted, loop,
+	// sin controles) — darle un nombre accesible sin subtítulos hace que Lighthouse pida
+	// un <track kind="captions">, que no aplica aquí. Ocultarlo del árbol de accesibilidad
+	// es la recomendación estándar para vídeo puramente decorativo.
+	$output .= '<video class="video-bg" style="object-position: ' . $align . ';" ' . $isAutoplay . ' muted loop playsinline preload="metadata" poster="' . wp_upload_dir()['baseurl'] . '/' . $src . '.webp" aria-hidden="true">';
 	$output .= '<source src="' . wp_upload_dir()['baseurl'] . '/' . $src . '.mp4" ' . $mediaQuery . ' type="video/mp4">';
 	if ($mobile) {
 		$output .= '<source src="' . wp_upload_dir()['baseurl'] . '/' . $src . $mobile . '.mp4" type="video/mp4">';

@@ -313,11 +313,17 @@ if (checkList.length) {
 			const inputEl = item.querySelector('input[type="checkbox"]')
 			if (!inputEl) return
 
+			//! nombre accesible del icono role="checkbox": su propio subárbol solo contiene
+			//! los SVG (sin texto), así que un lector de pantalla no anuncia nada sin esto —
+			//! se captura el texto de la etiqueta antes de insertar el icono como hermano.
+			const accessibleName = target.textContent.trim()
+
 			const iconContainer = document.createElement('span')
 			iconContainer.classList.add('check-icon-container')
 			iconContainer.setAttribute('tabindex', '0')
 			iconContainer.setAttribute('role', 'checkbox')
 			iconContainer.setAttribute('aria-checked', inputEl.checked ? 'true' : 'false')
+			if (accessibleName) iconContainer.setAttribute('aria-label', accessibleName)
 			target.prepend(iconContainer)
 
 			const fragUnchecked = document.createRange().createContextualFragment(iconUncheckedSVG)

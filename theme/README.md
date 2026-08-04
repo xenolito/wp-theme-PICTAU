@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.15.4
+- **Versión:** 7.15.5
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -772,6 +772,8 @@ Vídeo de fondo a pantalla completa (`<video class="video-bg" autoplay muted loo
 
 **Implementación:** `theme/inc/template-functions.php` — `video_as_background()`.
 
+**Accesibilidad:** el `<video>` lleva `aria-hidden="true"` (nunca `aria-label`) — es contenido puramente decorativo (`muted loop`, sin controles), y darle un nombre accesible sin subtítulos hace que Lighthouse pida un `<track kind="captions">` que no aplica aquí. Ocultarlo del árbol de accesibilidad es la recomendación estándar para vídeo de fondo decorativo.
+
 **Atributos:**
 
 | Atributo | Tipo | Default | Descripción |
@@ -1518,6 +1520,7 @@ Los checkboxes y radio buttons de CF7 se estilizan ocultando el `<input>` real (
 - **Barra espaciadora**: `enableSwitchBySpacebar(focusedElement, inputTarget)` recibe una referencia directa al `<input>` real (nunca se busca por `closest()`/`querySelector()`, frágil ante cambios de estructura). Para checkboxes alterna el valor; para radios, solo lo marca (nunca lo desmarca al repetir espacio, igual que el comportamiento nativo) y dispara un evento `change` para mantener consistencia con CF7 (revalida en `change`, igual que con un clic nativo).
 - **`aria-checked`** se mantiene sincronizado tanto al usar teclado como al marcar con el ratón (listener `change` en el input real). En radio buttons, al seleccionar uno se resincroniza `aria-checked` de todo el grupo (los demás pasan a `false`).
 - El checkbox de aceptación legal (`.pct-legal-acceptance`) sigue el mismo mecanismo; su `<label class="checkIcon">` recibe la referencia al input directamente en vez de intentar localizarlo por estructura DOM (antes fallaba: el label se crea como hermano del input, no como envoltorio).
+- **Nombre accesible**: `check-icon-container` tiene `role="checkbox"` pero su propio subárbol solo contiene los SVG de estado (sin texto), así que un lector de pantalla no anunciaba nada al llegar a él (detectado por Lighthouse: "ARIA toggle fields do not have accessible names"). Se captura el texto de `.wpcf7-list-item-label` antes de insertar el icono como hermano, y se aplica como `aria-label` del icono.
 
 ---
 
@@ -1758,6 +1761,8 @@ Contiene un botón **"Rellenar con plantilla base"** que, sin necesidad de guard
 Si el formulario o el correo (incluido Correo (2)) ya tienen contenido, pide confirmación antes de sobrescribir; las cabeceras adicionales se rellenan siempre que exista el campo (no forman parte de esa comprobación de confirmación).
 
 El contenido de la plantilla está hardcodeado en varios métodos privados del propio archivo (`get_form_template()`, `get_mail_template()`, `get_mail_additional_headers()`, `get_mail_2_recipient()`, `get_mail_2_subject()` y `get_mail_2_body()`) — es una copia del formulario **"Lead"** (post 76992, hash `b3cd5c0`, el que alimenta el modal `lead` del sitio). Para actualizar la plantilla cuando ese formulario cambie, basta con volver a copiar su contenido en esos métodos.
+
+**Accesibilidad:** el campo `[select* empleados class:pct-select first_as_label ...]` no tiene ningún `<label>` HTML asociado (Lighthouse: "Select elements do not have associated label elements") — CF7 no soporta un atributo `aria-label:"..."` genérico en las opciones del tag (comprobado en `modules/select.php` del propio plugin, solo procesa `class`, `id`, `tabindex`, `autocomplete`, `size`, etc.). El fix es un `<label for="pct-select-empleados" class="sr-only">Empleados</label>` justo antes del shortcode, con `id:pct-select-empleados` añadido al `[select*]` para que el `for` apunte al id real. **Importante:** este `<label>` solo llega a formularios ya creados si se vuelve a pulsar "Rellenar con plantilla base" — editar este método no actualiza retroactivamente el contenido ya guardado en la BD del formulario CF7 (mismo criterio que el resto de esta plantilla).
 
 El pie del correo (Mail 1) usa `[pagina_url]`, no el special mail tag `[_url]` de CF7 (poco fiable en envíos vía REST API — ver [Auto-tracking: UTM/GCLID y URL real de la página](#contact-form-7--plantilla-html-de-email-compatibilidad-outlook)). Al copiar contenido de un formulario existente a esta plantilla, sustituir siempre `[_url]` por `[pagina_url]` si aparece.
 

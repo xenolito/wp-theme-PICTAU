@@ -216,7 +216,8 @@ final class Pictau_CF7_Form_Template {
   [email* email placeholder "Email*"]
   [text* telefono placeholder "Teléfono*"]
   [text* provincia placeholder "Provincia*"]
-  [select* empleados class:pct-select first_as_label "Empleados*" "1-10" "11-50" "51-100" "101-250" "Más de 250"]
+  <label for="pct-select-empleados" class="sr-only">Empleados</label>
+  [select* empleados id:pct-select-empleados class:pct-select first_as_label "Empleados*" "1-10" "11-50" "51-100" "101-250" "Más de 250"]
   [hidden producto]
 
   <div class="pct-form-2cols">
@@ -325,7 +326,8 @@ MAIL;
   [email* email placeholder "Email*"]
   [text* telefono placeholder "{Teléfono}*"]
   [text* provincia placeholder "{Provincia}*"]
-  [select* empleados class:pct-select first_as_label "{Empleados*}" "{1-10}" "{11-50}" "{51-100}" "{101-250}" "{Más de 250}"]
+  <label for="pct-select-empleados-ml" class="sr-only">{Empleados}</label>
+  [select* empleados id:pct-select-empleados-ml class:pct-select first_as_label "{Empleados*}" "{1-10}" "{11-50}" "{51-100}" "{101-250}" "{Más de 250}"]
   [hidden producto]
 
   <div class="pct-form-2cols">
