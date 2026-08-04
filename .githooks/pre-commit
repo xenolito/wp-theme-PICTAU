@@ -9,17 +9,26 @@
 
 changed_source=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '^(tailwind/|javascript/|postcss\.config\.js)')
 
-if [ -z "$changed_source" ]; then
-  exit 0
+if [ -n "$changed_source" ]; then
+  echo "pre-commit: CSS/JS fuente modificado, regenerando build de produccion..."
+
+  if ! npm run production; then
+    echo "pre-commit: 'npm run production' fallo. Commit abortado." >&2
+    exit 1
+  fi
+
+  git add theme/
 fi
 
-echo "pre-commit: CSS/JS fuente modificado, regenerando build de produccion..."
+# El post-commit despliega solo el arbol de theme/ (ver .githooks/post-commit),
+# asi que README.md (en la raiz del repo) nunca llega al repo de deploy salvo
+# que tambien exista una copia dentro de theme/. La mantenemos sincronizada
+# aqui cada vez que README.md cambia.
+changed_readme=$(git diff --cached --name-only --diff-filter=ACMR -- README.md)
 
-if ! npm run production; then
-  echo "pre-commit: 'npm run production' fallo. Commit abortado." >&2
-  exit 1
+if [ -n "$changed_readme" ]; then
+  cp README.md theme/README.md
+  git add theme/README.md
 fi
-
-git add theme/
 
 exit 0
