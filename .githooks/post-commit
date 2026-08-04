@@ -1,0 +1,25 @@
+#!/bin/sh
+# Tras cada commit en main, publica un snapshot de theme/ en la rama deploy
+# y la sube a su propio remote (deploy-origin -> web-balanzia).
+#
+# No usamos "git subtree split": recorre TODO el historial de main en cada
+# ejecucion (coste creciente con cada commit, sin cache real entre llamadas).
+# Como deploy solo necesita el estado actual de theme/ (no su historial
+# replicado), usamos "git commit-tree" para crear el commit directamente a
+# partir del arbol de theme/ en HEAD: coste O(1), no depende del numero de
+# commits en main.
+branch=$(git symbolic-ref --short HEAD)
+if [ "$branch" = "main" ]; then
+  tree=$(git rev-parse HEAD:theme)
+  parent=$(git rev-parse deploy 2>/dev/null)
+  msg=$(git log -1 --pretty=%s)
+
+  if [ -n "$parent" ]; then
+    new_commit=$(git commit-tree "$tree" -p "$parent" -m "$msg")
+  else
+    new_commit=$(git commit-tree "$tree" -m "$msg")
+  fi
+
+  git branch -f deploy "$new_commit" >/dev/null
+  git push deploy-origin deploy:main
+fi

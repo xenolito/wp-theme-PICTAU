@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "pictau_wordpress_theme",
-  "version": "7.15.3",
+  "version": "7.15.4",
   "description": "An advanced WordPress theme template and framework with advanced utilities and features. Includes tailwindcss, esbuild, and more.",
   "author": "Balanzia",
   "keywords": [
@@ -40,6 +40,7 @@
     "touch": "^3.1.0"
   },
   "scripts": {
+    "postinstall": "git config core.hooksPath .githooks",
     "development:tailwind:frontend": "npx tailwindcss --postcss -i ./tailwind/tailwind.css -c ./tailwind/tailwind.config.js -o ./theme/style.css",
     "development:tailwind:editor": "cross-env _TW_TARGET=editor npx tailwindcss --postcss -i ./tailwind/tailwind.css -c ./tailwind/tailwind.config.js -o ./theme/style-editor.css",
     "development:tailwind:editor:extra": "cross-env _TW_TARGET=editor npx tailwindcss --postcss -i tailwind/tailwind-editor-extra.css -c ./tailwind/tailwind.config.js -o ./theme/style-editor-extra.css",

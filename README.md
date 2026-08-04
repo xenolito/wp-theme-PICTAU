@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.15.3
+- **Versión:** 7.15.4
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -60,6 +60,15 @@ Este proyecto usa dos repos de GitHub:
 
 La sincronización entre ambos es automática: un hook de git local publica un snapshot de `theme/` en el repo de despliegue en cada commit a `main`.
 
+### Hooks versionados (`.githooks/`)
+
+`.git/hooks/` nunca se versiona (es el directorio interno de metadatos de git, no un `.gitignore`). Por eso los hooks de este proyecto viven en `.githooks/` (versionado en el repo) y se activan configurando `core.hooksPath`:
+
+- `.githooks/pre-commit` — si el commit toca `tailwind/`, `javascript/` o `postcss.config.js`, ejecuta `npm run production` y añade `theme/` al commit automáticamente. Evita desplegar por error un build de desarrollo (`npm run watch`, sin minificar) si se te olvida correr `npm run production` antes de commitear.
+- `.githooks/post-commit` — el hook de publicación a `deploy-origin` (ver más abajo).
+
+El script `postinstall` de `package.json` ejecuta `git config core.hooksPath .githooks` automáticamente en cada `npm install`, así que un checkout nuevo queda configurado sin pasos manuales.
+
 ### Cómo replicarlo en un proyecto nuevo
 
 1. Crea el repo de despliegue vacío en GitHub (p. ej. `web-<proyecto>.git`) y añádelo como remote:
@@ -67,42 +76,9 @@ La sincronización entre ambos es automática: un hook de git local publica un s
    git remote add deploy-origin git@github.com:usuario/web-<proyecto>.git
    ```
 
-2. Crea `.git/hooks/post-commit` (no se versiona — hay que crearlo a mano en cada máquina/checkout) con este contenido, ajustando `--prefix` al nombre de la carpeta del tema si no se llama `theme`:
+2. Copia `.githooks/post-commit` de este proyecto (ajustando `HEAD:theme` al nombre de la carpeta del tema si no se llama `theme`), añade `"postinstall": "git config core.hooksPath .githooks"` a los `scripts` de `package.json`, y corre `npm install` (o `git config core.hooksPath .githooks` directamente) para activarlo en el checkout actual.
 
-   ```sh
-   #!/bin/sh
-   # Tras cada commit en main, publica un snapshot de theme/ en la rama deploy
-   # y la sube a su propio remote (deploy-origin).
-   #
-   # No usamos "git subtree split": recorre TODO el historial de main en cada
-   # ejecucion (coste creciente con cada commit, sin cache real entre llamadas).
-   # Como deploy solo necesita el estado actual de theme/ (no su historial
-   # replicado), usamos "git commit-tree" para crear el commit directamente a
-   # partir del arbol de theme/ en HEAD: coste O(1), no depende del numero de
-   # commits en main.
-   branch=$(git symbolic-ref --short HEAD)
-   if [ "$branch" = "main" ]; then
-     tree=$(git rev-parse HEAD:theme)
-     parent=$(git rev-parse deploy 2>/dev/null)
-     msg=$(git log -1 --pretty=%s)
-
-     if [ -n "$parent" ]; then
-       new_commit=$(git commit-tree "$tree" -p "$parent" -m "$msg")
-     else
-       new_commit=$(git commit-tree "$tree" -m "$msg")
-     fi
-
-     git branch -f deploy "$new_commit" >/dev/null
-     git push deploy-origin deploy:main
-   fi
-   ```
-
-3. Dale permisos de ejecución:
-   ```bash
-   chmod +x .git/hooks/post-commit
-   ```
-
-4. En el servidor de producción, clona el repo de despliegue **directamente** en `wp-content/themes/<slug>/` (estructura plana — `style.css` y `functions.php` deben quedar directamente ahí, no anidados en una subcarpeta `theme/`).
+3. En el servidor de producción, clona el repo de despliegue **directamente** en `wp-content/themes/<slug>/` (estructura plana — `style.css` y `functions.php` deben quedar directamente ahí, no anidados en una subcarpeta `theme/`).
 
 ### Por qué `git commit-tree` y no `git subtree split`
 
