@@ -147,10 +147,6 @@ h1.screen-reader-text {
 	}
 }
 
-.slider-logos .swiper-wrapper {
-	flex-flow: column;
-}
-
 .mask-faded-down {
 	mask-image: none !important;
 }

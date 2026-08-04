@@ -5,7 +5,6 @@
  * @author: Oscar Rey Tajes, oscar.rey.tajes@gmail.com
  * © @xenolito 2025
  * @requires @splidejs/splide
- * @requires HTML DOM specific layout, template needed at: https://swiperjs.com/get-started#add-swiper-html-layout
  *
  */
 
@@ -103,16 +102,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			this.testimonialsContainer.append(this.splideTrack)
 
-			this.swiperLoopType = this.slides.length > 2 ? 'loop' : 'slide'
+			this.loopType = this.slides.length > 2 ? 'loop' : 'slide'
 
-			this.initSwiper()
+			this.initSplide()
 
 			this.testimonialsContainer.classList.add('splide-ready')
 		}
 
-		initSwiper = () => {
+		initSplide = () => {
 			const config = {
-				type: this.swiperLoopType,
+				type: this.loopType,
 				fixedWidth: this.slideWidth,
 				perMove: 1,
 				gap: this.gap,

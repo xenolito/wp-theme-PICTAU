@@ -1492,12 +1492,6 @@ body.single-evento {
 	max-width: unset !important;
 	z-index: -1;
 
-	.swiper-wrapper {
-		width: 100vw;
-		flex-flow: row;
-		gap: 0rem;
-	}
-
 	img {
 		-webkit-user-drag: none;
 		user-select: none;
@@ -1506,29 +1500,6 @@ body.single-evento {
 		height: 100%;
 	}
 }
-
-/* .slider-cards {
-	overflow: hidden;
-	aspect-ratio: 2/4;
-	width: 100%;
-	max-width: 500px !important;
-	height: 600px;
-
-	.swiper-wrapper {
-		flex-flow: row;
-
-		.swiper-slide {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			border-radius: 18px;
-			color: var(--main-color-third);
-			background-color: white;
-			padding: var(--card-padding);
-			cursor: grab;
-		}
-	}
-} */
 
 /*! FAQs styles */
 /*
@@ -2631,28 +2602,6 @@ figure.curtain {
 	}
 }
 
-/*! Swiper default styles */
-[data-swiper] {
-	opacity: 0;
-	/* overflow: clip; */
-	.swiper-wrapper {
-		max-height: unset !important;
-	}
-
-	.swiper-slide {
-		cursor: grab;
-		img {
-			width: 100%;
-			height: 100%;
-			/* height: auto; */
-			object-fit: cover;
-			object-position: top left;
-			border-radius: calc(var(--def-border-radius) * 2);
-			overflow: clip;
-		}
-	}
-}
-
 /*! Dot navigation for single page webs with sections. Requires js module 'navigation_dot.js' */
 nav.dot-navigation {
 	--item-dim: 2rem;
@@ -2780,31 +2729,6 @@ nav.dot-navigation {
 	left: 50%;
 	translate: -50%;
 	mask-image: var(--mask-horiz-gradient);
-
-	.swiper-wrapper {
-		display: flex;
-		flex-flow: row;
-		gap: 2rem;
-		transition-timing-function: linear;
-		width: 100%;
-		max-width: unset !important;
-		height: auto;
-
-		.swiper-slide {
-			display: flex;
-			justify-content: center;
-			width: auto;
-
-			img {
-				height: 35px;
-				width: auto;
-				object-fit: contain;
-			}
-		}
-		/* @media only screen and (max-width: 700px) {
-			gap: 2rem;
-		} */
-	}
 }
 
 /*! TESTIMONIALS SPLIDE  */
