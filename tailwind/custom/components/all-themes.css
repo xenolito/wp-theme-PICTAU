@@ -57,7 +57,7 @@
 
 body {
 	color: var(--theme-txt-color, var(--txt-color-theme-light));
-	background: red !important;
+	background: green !important;
 }
 
 p,
