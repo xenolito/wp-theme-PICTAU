@@ -1445,6 +1445,7 @@ Fuente en `tailwind/` → `theme/style.css`.
 
 - Dark mode: estrategia `class`
 - Los colores de marca se definen por proyecto en `tailwind/custom/components/all-themes.css` via variables CSS (`--brand-color-rgb`, etc.)
+- **Orden de compilación de `tailwind/custom/components/`**: todos los ficheros de ese directorio se importan automáticamente vía `@import-glob` (orden alfabético), **excepto** `components.css`, `all-themes.css` y `style.css`, que se excluyen de ese glob y se importan explícitamente al final, en ese orden fijo (`components` → `all-themes` → `style`), para que ganen siempre la cascada frente al resto de componentes sin depender de `!important`. Ver `tailwind/tailwind.css`. Cualquier otro fichero nuevo en `components/` entra automáticamente en el glob salvo que se añada también a esa lista de exclusión.
 
 ---
 
