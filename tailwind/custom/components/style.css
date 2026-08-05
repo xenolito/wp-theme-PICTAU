@@ -2938,8 +2938,7 @@ body.single-ebook {
 	font-size: 1.2em;
 }
 
-/*! Styles for chatbot plugin AI Engine by Meow */
-
+/*! Styles for chatbot plugin AI Engine by Meow: Remove if not using */
 .mwai-timer {
 	font-size: 1rem !important;
 	margin-right: 0 !important;
