@@ -1469,9 +1469,17 @@ npm run critical         # recompila tailwind (production, minify) + genera ambo
 npm run critical:home    # solo portada
 npm run critical:default # solo plantilla genérica
 ```
-`npm run critical` **no** forma parte de `watch` (Puppeteer es demasiado lento para cada guardado); sí es el último paso de `npm run bundle` (`production` → `critical` → `zip`). **Hay que re-ejecutarlo manualmente** tras cualquier cambio visual above-the-fold (hero, header, nav) aunque no se haga un bundle completo, para que `theme/critical/*.css` no quede desincronizado del diseño real.
+`npm run critical` **no** forma parte de `watch` (Puppeteer es demasiado lento para cada guardado). Se regenera automáticamente en dos puntos del workflow:
+- **`git commit`** — `.githooks/pre-commit` lo ejecuta (junto con `npm run production`) siempre que el commit incluya cambios en `tailwind/`, `javascript/` o `postcss.config.js`, y añade `theme/critical/*.css` al propio commit. Si el commit no toca esos paths, no se regenera (no hace falta).
+- **`npm run bundle`** — último paso de la secuencia `production → critical → zip`, incondicional, como red de seguridad antes de empaquetar/desplegar.
+
+Antes de generar, se comprueba que el sitio local (`https://balanzia.dev/`) responde 200 (`node_scripts/lib/site-preflight.js`). Si está caído o en modo mantenimiento, falla rápido (<1s) con un aviso imposible de pasar por alto en vez de colgar Puppeteer varios minutos — y en el caso del `pre-commit`, **aborta el commit**.
 
 Tras desplegar o regenerar el critical CSS, **purgar la caché de WP Super Cache** (`wp-local cache flush` o desde el admin) para que no se sirva HTML cacheado con una versión antigua del `<style>` inline.
+
+**Desactivar el critical CSS:**
+- **Runtime (por sitio):** Personalizar > PICTAU > Rendimiento > "Activar critical CSS inline" (`theme_mod` `pictau_critical_css_enabled`, **activado por defecto**). Al desmarcarlo, `pictau_inline_critical_css()` no imprime el `<style>` y `pictau_async_style_loader_tag()` no reescribe el `<link>` — vuelve a la carga normal (bloqueante) del stylesheet completo, sin critical CSS de por medio (evita el FOUC que daría cargar de forma asíncrona sin un critical CSS de respaldo).
+- **Build (por proyecto):** crear el fichero marcador `.critical-css-disabled` en la raíz del tema (`touch .critical-css-disabled && git add .critical-css-disabled && git commit`). Tanto `.githooks/pre-commit` como `generate-critical-css.js` (y por tanto `npm run bundle`) lo detectan y omiten la generación sin fallar. Para reactivar, borrar el archivo y commitear. Recomendado para proyectos forkados de este tema que no quieran usar critical CSS: mantiene el código del framework idéntico entre proyectos, sin tener que borrar nada.
 
 ---
 

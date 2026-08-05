@@ -248,10 +248,20 @@ add_action('wp_enqueue_scripts', 'pictau_scripts');
  * inline (ver pictau_inline_critical_css() en inc/template-functions.php)
  * cubre el contenido above-the-fold mientras tanto. Fallback <noscript> para
  * navegadores sin JS.
+ *
+ * Toggle: Personalizar > PICTAU > Rendimiento > "Activar critical CSS inline"
+ * (theme_mod 'pictau_critical_css_enabled', activado por defecto). Si está
+ * desactivado, se vuelve a la carga normal (bloqueante) del <link> — sin
+ * critical CSS de respaldo, cargar de forma asíncrona dejaría la página sin
+ * estilos unos instantes (FOUC).
  */
 function pictau_async_style_loader_tag($tag, $handle)
 {
 	if ('pictau-style' !== $handle) {
+		return $tag;
+	}
+
+	if (! get_theme_mod('pictau_critical_css_enabled', true)) {
 		return $tag;
 	}
 

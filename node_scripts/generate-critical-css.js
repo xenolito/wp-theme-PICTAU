@@ -36,6 +36,17 @@ const projectRoot = path.resolve(__dirname, '..')
 const outputDir = path.join(projectRoot, 'theme', 'critical')
 const outputPath = path.join(outputDir, `${profileName}.css`)
 
+// Apagado a nivel de proyecto: si existe este fichero marcador en la raíz del
+// tema, se omite la generación sin fallar (exit 0), para que ni el pre-commit
+// hook ni "npm run bundle" se rompan en proyectos que no quieren critical CSS.
+// Crear/borrar con: touch .critical-css-disabled / rm .critical-css-disabled
+const disabledMarker = path.join(projectRoot, '.critical-css-disabled')
+
+if (fs.existsSync(disabledMarker)) {
+	console.log(`○ critical CSS desactivado para este proyecto (.critical-css-disabled existe) — omitiendo "${profileName}".`)
+	process.exit(0)
+}
+
 fs.mkdirSync(outputDir, { recursive: true })
 
 ;(async () => {

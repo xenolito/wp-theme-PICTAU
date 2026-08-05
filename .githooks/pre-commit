@@ -13,15 +13,6 @@
 changed_source=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '^(tailwind/|javascript/|postcss\.config\.js)')
 
 if [ -n "$changed_source" ]; then
-  # Comprobacion rapida (<1s) del sitio local ANTES de gastar tiempo en el
-  # build: si esta en modo mantenimiento o caido, "npm run critical" fallaria
-  # igualmente mas tarde, pero asi el aviso llega al instante y con un banner
-  # imposible de pasar por alto (ver node_scripts/lib/site-preflight.js).
-  if ! node node_scripts/check-site-reachable.js; then
-    echo "pre-commit: sitio local no accesible. Commit abortado." >&2
-    exit 1
-  fi
-
   echo "pre-commit: CSS/JS fuente modificado, regenerando build de produccion..."
 
   if ! npm run production; then
@@ -29,11 +20,28 @@ if [ -n "$changed_source" ]; then
     exit 1
   fi
 
-  echo "pre-commit: regenerando critical CSS (theme/critical/*.css)..."
+  # Apagado a nivel de proyecto: si existe .critical-css-disabled en la raiz
+  # del tema, este proyecto no usa critical CSS y nos saltamos por completo
+  # la comprobacion del sitio y la generacion (ver generate-critical-css.js,
+  # que respeta el mismo marcador para "npm run bundle").
+  if [ -f .critical-css-disabled ]; then
+    echo "pre-commit: critical CSS desactivado para este proyecto (.critical-css-disabled existe), omitiendo."
+  else
+    # Comprobacion rapida (<1s) del sitio local ANTES de gastar tiempo en
+    # Puppeteer: si esta en modo mantenimiento o caido, "npm run critical"
+    # fallaria igualmente mas tarde, pero asi el aviso llega al instante y
+    # con un banner imposible de pasar por alto (node_scripts/lib/site-preflight.js).
+    if ! node node_scripts/check-site-reachable.js; then
+      echo "pre-commit: sitio local no accesible. Commit abortado." >&2
+      exit 1
+    fi
 
-  if ! npm run critical; then
-    echo "pre-commit: 'npm run critical' fallo. Commit abortado." >&2
-    exit 1
+    echo "pre-commit: regenerando critical CSS (theme/critical/*.css)..."
+
+    if ! npm run critical; then
+      echo "pre-commit: 'npm run critical' fallo. Commit abortado." >&2
+      exit 1
+    fi
   fi
 
   git add theme/

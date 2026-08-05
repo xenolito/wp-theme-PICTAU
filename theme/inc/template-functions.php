@@ -636,6 +636,27 @@ function customize_theme_pictau($wp_customize)
 		));
 	}
 
+	// Add Performance Section — toggle for the critical CSS feature (inline
+	// above-the-fold CSS + async loading of the full style.css). See
+	// pictau_inline_critical_css() and pictau_async_style_loader_tag().
+	$wp_customize->add_section('pictau_performance', array(
+		'title' => __('Rendimiento', 'pictau'),
+		'panel' => 'PICTAU',
+	));
+
+	$wp_customize->add_setting('pictau_critical_css_enabled', array(
+		'default'           => true,
+		'sanitize_callback' => 'rest_sanitize_boolean',
+		'transport'         => 'refresh',
+	));
+
+	$wp_customize->add_control('pictau_critical_css_enabled', array(
+		'type'        => 'checkbox',
+		'section'     => 'pictau_performance',
+		'label'       => __('Activar critical CSS inline', 'pictau'),
+		'description' => __('Inyecta el CSS above-the-fold (theme/critical/*.css) en el <head> y carga el resto de style.css de forma asíncrona. Desactívalo para volver a la carga normal (bloqueante) del stylesheet completo.', 'pictau'),
+	));
+
 	// Add Catalog Section (only if product_category taxonomy exists)
 	if ( taxonomy_exists( 'product_category' ) ) {
 		$wp_customize->add_section( 'pictau_catalog', array(
@@ -1082,9 +1103,15 @@ function favicon_theme()
 // ! Inline el critical CSS (above-the-fold) generado en build time por
 // ! `npm run critical` (node_scripts/generate-critical-css.js) en theme/critical/*.css.
 // ! El resto del style.css se carga de forma asíncrona, ver el filtro
-// ! 'style_loader_tag' en functions.php.
+// ! 'style_loader_tag' en functions.php. Toggle: Personalizar > PICTAU >
+// ! Rendimiento > "Activar critical CSS inline" (theme_mod
+// ! 'pictau_critical_css_enabled', activado por defecto).
 function pictau_inline_critical_css()
 {
+	if (! get_theme_mod('pictau_critical_css_enabled', true)) {
+		return;
+	}
+
 	$profile = is_front_page() ? 'home' : 'default';
 	$critical_css_path = get_template_directory() . '/critical/' . $profile . '.css';
 
