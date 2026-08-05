@@ -1,8 +1,9 @@
 /**
  * Animation any for WP based on GSAP
- * version: 4.17.6
+ * version: 4.18.0
  *
  * ? changelog:
+ * ? v4.18.0 — Lighthouse reportaba "Forced reflow" en la carga inicial: el bucle final instanciaba TODOS los [data-anim_any] de golpe en DOMContentLoaded, y cada instancia hace SplitType (escribe: envuelve texto en spans) + ScrollTrigger.create (lee: mide la posición), intercalado elemento a elemento — el patrón de manual de layout thrashing, multiplicado por cuantos [data-anim_any] tenga la página. Ahora se instancian vía IntersectionObserver: los elementos cerca del viewport inicial se instancian casi de inmediato (sin cambio visible), y el resto se difiere hasta que se acercan al scroll, repartiendo el coste en vez de una sola ráfaga. chainanim/nextanim conectan timelines entre elementos (el "master" debe existir antes que el encadenado), así que se agrupan en un pre-pass (groupOf) y cada grupo se instancia siempre entero y de una vez, nunca por separado. Además, cualquier elemento con autoplay=0 (propio o forzado por chainedTargets) se instancia SIEMPRE de forma síncrona, nunca vía IntersectionObserver: el H1 del hero-slider tiene autoplay=0 y espera un `headerAnimation.play()` externo desde script.js (sliderInit/activateHeroSlide), que corre en su propio DOMContentLoaded — siempre antes de que cualquier callback de IntersectionObserver llegue a dispararse, por rápido que sea. Diferirlo dejaba ese play() como no-op silencioso y el título del hero nunca aparecía (detectado en verificación manual antes de dar el cambio por bueno: opacity:1 en el contenedor pero timeline.progress()===0, hasStarted:false).
  * ? v4.17.6 — Fixed cyclecontent/cyclecontentinline never pausing on scroll-out when triggered via data-anim_any_nextanim (as opposed to chainanim): nextanim targets get autoplay forced to '0' by the pre-pass (chainedTargets) so they wait to be started externally, but that also made them skip the ScrollTrigger entirely (`if (this.autoplay && !this.chainedTo)`), so once nextanim called play() the repeat:-1 timeline kept animating at 60fps forever regardless of viewport position — visible as constant reflow (e.g. <html>'s data-overlayscrollbars-* attribute flickering non-stop) that also starves devtools' Styles panel from refreshing. isCycleContent now gets a ScrollTrigger even when !autoplay, gated by a new this.hasStarted flag (set in play()) so onEnter/onEnterBack never fire play() before the triggering element's nextanim actually starts it, but onLeave/onLeaveBack pause it correctly once it's running.
  * ? v4.17.5 — Fixed cyclecontentinline's typewriter cursor (createCursorElement, shared with the standalone 'typewriter' animation) being visible and blinking from page load even while the whole block sat paused waiting for a chained nextanim: the blink tween was a bare gsap.to(cursor, {opacity:0,...}), whose implicit "from" is whatever the element's live opacity happens to be at first render (1, unset) — now it's forced hidden with gsap.set(cursor, {opacity:0}) before creating the tween, which is flipped to animate toward opacity:1 instead. Also fixed the cursor's resting position with data-anim_any_fixedwords: it was placed right after the fixed prefix (elementsOf(sequence[0])[0] skips the fixed word on purpose, since that array is what the reveal/backspace of the rest of the phrase touches), so it sat visible mid-phrase before typing even started; it now anchors before fixedWordsRevealElements[0] when there's a fixed prefix, so the cursor — and the typewriter effect — starts at the very beginning of the whole sentence.
  * ? v4.17.4 — Fixed cyclecontentinline's fixedwords prefix showing up before its chained animation actually starts: the container's initial reveal (gsap.set opacity:1) ran synchronously at setup regardless of autoplay/pause state, and the fixed prefix was never added to the hidden "from" elements (it was meant to stay untouched forever), so it appeared immediately on page load even when the whole block was paused waiting for another element's nextanim to trigger it. It now starts hidden like the rest and is revealed once, together with the very first phrase's entrance, then stays untouched for the rest of the loop. Also fixed the prefix always being pulled from `.chars` regardless of whattoanim: with whattoanim="words" it now reveals as a single word (fixedItemWords) instead of animating letter by letter, matching the granularity of the rest of the phrase.
@@ -1193,29 +1194,148 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 
-	// Pre-pass: collect chained targets so their autoplay can be overridden before instantiation
+	// Pre-pass: detecta relaciones chainanim/nextanim entre elementos ANTES de
+	// instanciar nada (solo lee atributos, no toca SplitType/ScrollTrigger
+	// todavía). Dos cosas se calculan aquí:
+	//
+	// - chainedTargets (igual que antes): elementos objetivo de un nextanim de
+	//   OTRO elemento, cuyo autoplay se fuerza a '0' al instanciar.
+	// - groupOf: agrupa en un mismo array todos los elementos conectados por
+	//   chainanim y/o nextanim. chainanim fusiona timelines directamente
+	//   (this.chainedTo.masterTimeLine.add(...), ver setupAnimation) y nextanim
+	//   los encadena por .play() diferido — en ambos casos el elemento
+	//   "master"/disparador debe construirse (y, para chainanim, existir ya
+	//   como this.header.headerAnimation) antes que el elemento encadenado. Por
+	//   eso, más abajo, cada grupo se instancia siempre entero y de una vez, en
+	//   su orden original del DOM — nunca por separado ni en momentos distintos.
 	const chainedTargets = new Set()
-	headerToAnim.forEach(header => {
-		const config = getConfigByAtt(header, attributeId)
-		if (!config.nextanim) return
-		const selector = config.nextanim.split(',')[0].trim()
-		const target = document.querySelector(selector)
-		if (target && target.hasAttribute(`data-${attributeId}`)) {
-			chainedTargets.add(target)
-		}
-	})
+	const groupOf = new Map() // header -> array (su grupo; todos los miembros comparten la misma referencia de array)
+
+	const getGroup = header => {
+		if (!groupOf.has(header)) groupOf.set(header, [header])
+		return groupOf.get(header)
+	}
+
+	const mergeGroups = (a, b) => {
+		const groupA = getGroup(a)
+		const groupB = getGroup(b)
+		if (groupA === groupB) return
+		groupB.forEach(el => {
+			groupA.push(el)
+			groupOf.set(el, groupA)
+		})
+	}
 
 	headerToAnim.forEach(header => {
 		const config = getConfigByAtt(header, attributeId)
-		if (chainedTargets.has(header)) {
-			config.autoplay = '0'
-			// Strip the default auto-play delay for chained targets: their timing is
-			// already controlled by the triggering element's nextAnimDelay offset, so
-			// an additional default delay would shift the visual start unexpectedly.
-			// An explicit data-anim_any_delay attribute is preserved as-is.
-			if (config.delay === undefined) config.delay = '0'
+
+		if (config.chainanim) {
+			config.chainanim.split(',').forEach(sel => {
+				const target = header.parentElement?.parentElement?.querySelector(sel.trim())
+				if (target && target.hasAttribute(`data-${attributeId}`)) mergeGroups(header, target)
+			})
 		}
-		const headerAnimation = new HeaderAnimation(header, config)
-		header.headerAnimation = headerAnimation
+
+		if (config.nextanim) {
+			const selector = config.nextanim.split(',')[0].trim()
+			const target = document.querySelector(selector)
+			if (target && target.hasAttribute(`data-${attributeId}`)) {
+				chainedTargets.add(target)
+				mergeGroups(header, target)
+			}
+		}
+	})
+
+	// Cada header sin chainanim/nextanim forma su propio grupo de 1 elemento.
+	headerToAnim.forEach(header => getGroup(header))
+
+	// Instancia un grupo completo, respetando el orden original del DOM dentro
+	// del grupo (chainanim/nextanim asumen que el elemento "master"/disparador
+	// se construye antes que el elemento encadenado, ver comentario de arriba).
+	const instantiateGroup = group => {
+		Array.from(headerToAnim)
+			.filter(header => group.includes(header))
+			.forEach(header => {
+				const config = getConfigByAtt(header, attributeId)
+				if (chainedTargets.has(header)) {
+					config.autoplay = '0'
+					// Strip the default auto-play delay for chained targets: their timing is
+					// already controlled by the triggering element's nextAnimDelay offset, so
+					// an additional default delay would shift the visual start unexpectedly.
+					// An explicit data-anim_any_delay attribute is preserved as-is.
+					if (config.delay === undefined) config.delay = '0'
+				}
+				const headerAnimation = new HeaderAnimation(header, config)
+				header.headerAnimation = headerAnimation
+			})
+	}
+
+	// Elementos con autoplay=0 (propio, vía data-anim_any_autoplay="0"/"false",
+	// o forzado por chainedTargets) pueden estar esperando un play() externo
+	// que llega MUY pronto — no solo desde el propio nextanim/chainanim de este
+	// módulo, sino de otros módulos: script.js llama
+	// `h1[data-anim_any].headerAnimation?.play()` en cuanto el hero slide se
+	// activa (sliderInit / window.load), que corre en su propio
+	// DOMContentLoaded — síncrono y SIEMPRE antes de que cualquier callback de
+	// IntersectionObserver llegue a dispararse, por rápido que sea. Diferir la
+	// instanciación de esos elementos dejaría el "play()" externo como un
+	// no-op silencioso (headerAnimation aún no existe) y la animación nunca
+	// arrancaría. Su grupo entero se instancia siempre de forma síncrona,
+	// igual que antes de este cambio — son baratos de todos modos: con
+	// autoplay=0 nunca crean su propio ScrollTrigger (ver el `!this.chainedTo`
+	// de más arriba), así que no aportan al forced reflow que se quiere evitar.
+	const needsEagerInstantiation = header => {
+		const config = getConfigByAtt(header, attributeId)
+		return config.autoplay === '0' || config.autoplay === 'false' || chainedTargets.has(header)
+	}
+
+	// Diferir SplitType + ScrollTrigger.create() (ambos fuerzan layout: SplitType
+	// necesita medir el line-wrap justo después de envolver el texto en spans;
+	// ScrollTrigger.create mide la posición del trigger) de los grupos que NO
+	// están cerca del viewport inicial NI contienen un elemento de arranque
+	// externo (ver needsEagerInstantiation). Instanciar TODOS los
+	// [data-anim_any] de golpe en DOMContentLoaded — páginas largas pueden
+	// tener decenas — es exactamente el patrón de "layout thrashing" que
+	// Lighthouse reporta como "Forced reflow" en la carga inicial. Con
+	// IntersectionObserver, cada grupo restante se instancia solo cuando se
+	// acerca al viewport (el rootMargin da margen para que el ScrollTrigger ya
+	// esté listo antes de que el usuario llegue a su punto de disparo real),
+	// repartiendo el coste en tareas separadas a lo largo del scroll en vez de
+	// una sola ráfaga al cargar. Los grupos ya visibles en la carga se
+	// instancian igual de inmediato (el primer callback del observer llega ya
+	// en el siguiente frame), así que no cambia cuándo arrancan sus
+	// animaciones — solo cuándo se prepara el resto.
+	const uniqueGroups = new Set(groupOf.values())
+	const deferredGroups = new Set()
+
+	uniqueGroups.forEach(group => {
+		if (group.some(needsEagerInstantiation)) {
+			instantiateGroup(group)
+		} else {
+			deferredGroups.add(group)
+		}
+	})
+
+	if (!deferredGroups.size) return
+
+	const revealObserver = new IntersectionObserver(
+		(entries, observer) => {
+			entries.forEach(entry => {
+				if (!entry.isIntersecting) return
+				const group = entry.target._animAnyGroup
+				if (group._instantiated) return
+				group._instantiated = true
+				instantiateGroup(group)
+				group.forEach(el => observer.unobserve(el))
+			})
+		},
+		{ rootMargin: '0px 0px 600px 0px' }
+	)
+
+	deferredGroups.forEach(group => {
+		group.forEach(el => {
+			el._animAnyGroup = group
+			revealObserver.observe(el)
+		})
 	})
 })
