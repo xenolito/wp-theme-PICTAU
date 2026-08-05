@@ -6,6 +6,7 @@ const RESET = '\x1b[0m'
 const BOLD = '\x1b[1m'
 const RED = '\x1b[31m'
 const YELLOW = '\x1b[33m'
+const GREEN = '\x1b[32m'
 
 // Comprueba que una URL local responde 200. Se usa antes de lanzar Puppeteer
 // (node_scripts/generate-critical-css.js) o cualquier build que dependa del
@@ -51,4 +52,19 @@ function printWarning(url, result) {
 	console.error(RED + BOLD + border + RESET + '\n')
 }
 
-module.exports = { checkUrl, printWarning }
+// Contrapartida en verde del aviso de arriba: mismo lenguaje visual, para que
+// sea igual de evidente cuando SÍ se ha generado critical CSS para este
+// proyecto — recuerda que es una feature que se puede desactivar por sitio
+// (Personalizar > PICTAU > Rendimiento) o por proyecto (.critical-css-disabled),
+// así que conviene notar activamente cuándo está generándose de verdad.
+function printSuccess(profileName, profile, sizeKb) {
+	const border = '✅ '.repeat(14)
+
+	console.log('\n' + GREEN + BOLD + border + RESET)
+	console.log(GREEN + BOLD + `  CRITICAL CSS GENERADO — perfil "${profileName}"` + RESET)
+	console.log(GREEN + `  theme/critical/${profileName}.css (${sizeKb} KB) — ${profile.label}` + RESET)
+	console.log(GREEN + `  ${profile.url}` + RESET)
+	console.log(GREEN + BOLD + border + RESET + '\n')
+}
+
+module.exports = { checkUrl, printWarning, printSuccess }

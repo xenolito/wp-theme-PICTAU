@@ -1473,7 +1473,7 @@ npm run critical:default # solo plantilla genérica
 - **`git commit`** — `.githooks/pre-commit` lo ejecuta (junto con `npm run production`) siempre que el commit incluya cambios en `tailwind/`, `javascript/` o `postcss.config.js`, y añade `theme/critical/*.css` al propio commit. Si el commit no toca esos paths, no se regenera (no hace falta).
 - **`npm run bundle`** — último paso de la secuencia `production → critical → zip`, incondicional, como red de seguridad antes de empaquetar/desplegar.
 
-Antes de generar, se comprueba que el sitio local (`https://balanzia.dev/`) responde 200 (`node_scripts/lib/site-preflight.js`). Si está caído o en modo mantenimiento, falla rápido (<1s) con un aviso imposible de pasar por alto en vez de colgar Puppeteer varios minutos — y en el caso del `pre-commit`, **aborta el commit**.
+Antes de generar, se comprueba que el sitio local (`https://balanzia.dev/`) responde 200 (`node_scripts/lib/site-preflight.js`). Si está caído o en modo mantenimiento, falla rápido (<1s) con un **banner rojo** imposible de pasar por alto en vez de colgar Puppeteer varios minutos — y en el caso del `pre-commit`, **aborta el commit**. Si la generación termina bien, se imprime la contrapartida en **banner verde** (mismo módulo, `printSuccess()`) con el perfil, tamaño y URL usada — para que sea igual de evidente que el critical CSS se está generando activamente en este proyecto (recuerda que es una feature desactivable, ver abajo).
 
 Tras desplegar o regenerar el critical CSS, **purgar la caché de WP Super Cache** (`wp-local cache flush` o desde el admin) para que no se sirva HTML cacheado con una versión antigua del `<style>` inline.
 

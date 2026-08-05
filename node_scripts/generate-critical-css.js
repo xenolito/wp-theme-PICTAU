@@ -3,7 +3,7 @@
 
 const fs = require('fs')
 const path = require('path')
-const { checkUrl, printWarning } = require('./lib/site-preflight')
+const { checkUrl, printWarning, printSuccess } = require('./lib/site-preflight')
 
 // Perfiles de plantilla: URL del sitio local (Local by Flywheel / browser-sync)
 // contra la que se renderiza la página para extraer el CSS above-the-fold.
@@ -81,7 +81,7 @@ fs.mkdirSync(outputDir, { recursive: true })
 		})
 
 		const sizeKb = (fs.statSync(outputPath).size / 1024).toFixed(1)
-		console.log(`✔ theme/critical/${profileName}.css generado (${sizeKb} KB) — ${profile.label} — ${profile.url}`)
+		printSuccess(profileName, profile, sizeKb)
 	} catch (err) {
 		console.error(`✘ Error generando critical CSS para "${profileName}" (${profile.url}):`, err.message)
 		process.exit(1)

@@ -2938,22 +2938,6 @@ body.single-ebook {
 	font-size: 1.2em;
 }
 
-/*
-Probando critical css con este comentario
-*/
-
-/* .above-header:not(:has(figure)) {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	width: fit-content;
-	text-transform: uppercase;
-
-	border: 1px solid white;
-
-	@apply rounded-[999px] px-[1.3rem] py-[6px] border-white text-white mb-2;
-} */
-
 /*! Styles for chatbot plugin AI Engine by Meow */
 
 .mwai-timer {
