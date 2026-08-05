@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.16.0
+- **Versión:** 7.16.1
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1402,6 +1402,17 @@ Revela los chars del target uno a uno **de golpe** (sin fade, como al escribir e
 - El cursor es un único nodo que se reubica junto al char actual (`insertAdjacentElement`) en vez de crearse/destruirse, así nunca cambia el ancho reservado por el texto y no hay layout shift.
 - El parpadeo del cursor está enganchado al propio timeline de la animación (no al timeline global), así se pausa/reanuda igual que el resto de la animación en scroll.
 - En el efecto "backspace" (salida dentro de `cyclecontentinline`), cada char desaparece de golpe (sin fade) y el cursor se reposiciona en ese mismo instante — si desaparecieran con transición, el cursor (que se movía a su posición final antes de que el fade terminase) se veía "adelantarse" a un char que técnicamente aún seguía visible.
+
+### Rendimiento — instanciación diferida (IntersectionObserver + requestIdleCallback)
+
+Instanciar cada `[data-anim_any]` hace `SplitType` (envuelve el texto en spans → escribe DOM) + `ScrollTrigger.create()` (mide la posición → lee layout). Hacerlo con **todos** los elementos de golpe en `DOMContentLoaded` es *layout thrashing*: en páginas con muchos `[data-anim_any]`, Lighthouse lo reporta como **"Forced reflow"** en la carga inicial. Desde **v4.18.0** del módulo, la instanciación se reparte:
+
+- **Grupos.** Los elementos conectados por `data-anim_any_chainanim`/`data-anim_any_nextanim` se agrupan en un pre-pass y **siempre se instancian juntos y en orden del DOM** (el "master"/disparador debe existir antes que el encadenado). Un elemento sin encadenar es un grupo de 1.
+- **Eager (síncrono, en la carga):** grupos cerca del viewport inicial, y **cualquier grupo con un elemento `autoplay=0`** (propio o forzado por ser target de un `nextanim`). Estos últimos deben instanciarse ya porque esperan un `.play()` externo que llega antes que cualquier callback del observer — p.ej. el `<h1>` del hero-slider, que `script.js` arranca vía `headerAnimation.play()` (ver [Reveal del `.slider-cover`](#reveal-del-slider-cover-y-animación-del-header-data-anim_any)). Son baratos: con `autoplay=0` no crean `ScrollTrigger` propio.
+- **Diferido (lazy):** el resto se instancia vía `IntersectionObserver` (`rootMargin: 600px`) cuando se acerca al viewport, repartiendo el coste a lo largo del scroll en vez de una ráfaga al cargar.
+- **Blindaje `requestIdleCallback` (v4.18.1):** el trabajo de layout de cada grupo diferido se ejecuta en tiempo muerto del navegador, fuera de cualquier frame de scroll activo, para que el reflow de crear el `ScrollTrigger` no produzca micro-jank. Se marca el grupo y se deja de observar de forma síncrona; solo la preparación se difiere. `timeout` de 500 ms como cota de seguridad (muy por debajo de lo que tarda el usuario en recorrer los 600 px de `rootMargin`), y fallback a `setTimeout` en Safari < 17.
+
+No hay nada que configurar por atributo: es automático y transparente. El único efecto observable es que un `[data-anim_any]` lejano no tiene su `headerAnimation` creado hasta que te acercas a él (relevante solo si algún código externo intenta llamar a `.play()` sobre un elemento que aún no ha entrado en el `rootMargin` — en ese caso, dale `data-anim_any_autoplay="0"` para forzar su instanciación eager).
 
 ---
 

@@ -1,8 +1,9 @@
 /**
  * Animation any for WP based on GSAP
- * version: 4.18.0
+ * version: 4.18.1
  *
  * ? changelog:
+ * ? v4.18.1 — Blindaje del deferido v4.18.0: la instanciación de los grupos diferidos (SplitType + ScrollTrigger.create, que fuerzan layout) ahora se ejecuta dentro de requestIdleCallback (fallback setTimeout en Safari < 17), no directamente en el callback del IntersectionObserver. Así el reflow puntual que provoca crear un ScrollTrigger nunca cae en medio de un frame de scroll activo (evita micro-jank). Se marca el grupo como instanciado y se deja de observar de forma síncrona; solo el trabajo de layout se difiere. timeout de 500 ms como cota de seguridad, muy por debajo de lo que tarda el usuario en recorrer los 600 px de rootMargin, así que la animación siempre está lista antes de entrar en viewport. Seguro porque los grupos diferidos nunca tienen arranque externo (needsEagerInstantiation ya los excluyó).
  * ? v4.18.0 — Lighthouse reportaba "Forced reflow" en la carga inicial: el bucle final instanciaba TODOS los [data-anim_any] de golpe en DOMContentLoaded, y cada instancia hace SplitType (escribe: envuelve texto en spans) + ScrollTrigger.create (lee: mide la posición), intercalado elemento a elemento — el patrón de manual de layout thrashing, multiplicado por cuantos [data-anim_any] tenga la página. Ahora se instancian vía IntersectionObserver: los elementos cerca del viewport inicial se instancian casi de inmediato (sin cambio visible), y el resto se difiere hasta que se acercan al scroll, repartiendo el coste en vez de una sola ráfaga. chainanim/nextanim conectan timelines entre elementos (el "master" debe existir antes que el encadenado), así que se agrupan en un pre-pass (groupOf) y cada grupo se instancia siempre entero y de una vez, nunca por separado. Además, cualquier elemento con autoplay=0 (propio o forzado por chainedTargets) se instancia SIEMPRE de forma síncrona, nunca vía IntersectionObserver: el H1 del hero-slider tiene autoplay=0 y espera un `headerAnimation.play()` externo desde script.js (sliderInit/activateHeroSlide), que corre en su propio DOMContentLoaded — siempre antes de que cualquier callback de IntersectionObserver llegue a dispararse, por rápido que sea. Diferirlo dejaba ese play() como no-op silencioso y el título del hero nunca aparecía (detectado en verificación manual antes de dar el cambio por bueno: opacity:1 en el contenedor pero timeline.progress()===0, hasStarted:false).
  * ? v4.17.6 — Fixed cyclecontent/cyclecontentinline never pausing on scroll-out when triggered via data-anim_any_nextanim (as opposed to chainanim): nextanim targets get autoplay forced to '0' by the pre-pass (chainedTargets) so they wait to be started externally, but that also made them skip the ScrollTrigger entirely (`if (this.autoplay && !this.chainedTo)`), so once nextanim called play() the repeat:-1 timeline kept animating at 60fps forever regardless of viewport position — visible as constant reflow (e.g. <html>'s data-overlayscrollbars-* attribute flickering non-stop) that also starves devtools' Styles panel from refreshing. isCycleContent now gets a ScrollTrigger even when !autoplay, gated by a new this.hasStarted flag (set in play()) so onEnter/onEnterBack never fire play() before the triggering element's nextanim actually starts it, but onLeave/onLeaveBack pause it correctly once it's running.
  * ? v4.17.5 — Fixed cyclecontentinline's typewriter cursor (createCursorElement, shared with the standalone 'typewriter' animation) being visible and blinking from page load even while the whole block sat paused waiting for a chained nextanim: the blink tween was a bare gsap.to(cursor, {opacity:0,...}), whose implicit "from" is whatever the element's live opacity happens to be at first render (1, unset) — now it's forced hidden with gsap.set(cursor, {opacity:0}) before creating the tween, which is flipped to animate toward opacity:1 instead. Also fixed the cursor's resting position with data-anim_any_fixedwords: it was placed right after the fixed prefix (elementsOf(sequence[0])[0] skips the fixed word on purpose, since that array is what the reveal/backspace of the rest of the phrase touches), so it sat visible mid-phrase before typing even started; it now anchors before fixedWordsRevealElements[0] when there's a fixed prefix, so the cursor — and the typewriter effect — starts at the very beginning of the whole sentence.
@@ -1318,15 +1319,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	if (!deferredGroups.size) return
 
+	// Ejecuta la preparación (SplitType + ScrollTrigger.create, que fuerzan
+	// layout) en tiempo muerto del navegador, fuera de cualquier frame de scroll
+	// activo, para que el reflow que provoca crear un ScrollTrigger nunca caiga
+	// en medio de un gesto de scroll y produzca micro-jank. El `timeout` es una
+	// cota de seguridad: si el hilo principal está ocupado y no hay hueco idle,
+	// se ejecuta igualmente a los 500 ms — muy por debajo de lo que tardaría el
+	// usuario en recorrer los 600 px de rootMargin hasta el elemento, así que su
+	// animación siempre está lista antes de entrar en viewport real. Fallback a
+	// setTimeout en navegadores sin requestIdleCallback (Safari < 17).
+	const scheduleIdle =
+		typeof window.requestIdleCallback === 'function' ? cb => window.requestIdleCallback(cb, { timeout: 500 }) : cb => setTimeout(cb, 1)
+
 	const revealObserver = new IntersectionObserver(
 		(entries, observer) => {
 			entries.forEach(entry => {
 				if (!entry.isIntersecting) return
 				const group = entry.target._animAnyGroup
 				if (group._instantiated) return
+				// Marcar y dejar de observar de forma síncrona (para no re-encolar el
+				// mismo grupo en callbacks siguientes), pero diferir el trabajo real
+				// de layout a tiempo muerto. Es seguro porque los grupos diferidos
+				// nunca contienen elementos con arranque externo (needsEagerInstantiation
+				// ya los excluyó), así que nada espera a que exista su headerAnimation.
 				group._instantiated = true
-				instantiateGroup(group)
 				group.forEach(el => observer.unobserve(el))
+				scheduleIdle(() => instantiateGroup(group))
 			})
 		},
 		{ rootMargin: '0px 0px 600px 0px' }
