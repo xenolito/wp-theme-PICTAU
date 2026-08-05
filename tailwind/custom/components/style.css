@@ -2938,6 +2938,10 @@ body.single-ebook {
 	font-size: 1.2em;
 }
 
+/*
+Probando critical css con este comentario
+*/
+
 /* .above-header:not(:has(figure)) {
 	display: inline-flex;
 	align-items: center;
