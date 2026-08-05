@@ -3,6 +3,7 @@
 
 const fs = require('fs')
 const path = require('path')
+const { checkUrl, printWarning } = require('./lib/site-preflight')
 
 // Perfiles de plantilla: URL del sitio local (Local by Flywheel / browser-sync)
 // contra la que se renderiza la página para extraer el CSS above-the-fold.
@@ -38,6 +39,17 @@ const outputPath = path.join(outputDir, `${profileName}.css`)
 fs.mkdirSync(outputDir, { recursive: true })
 
 ;(async () => {
+	// Comprueba que el sitio local responde 200 antes de lanzar Puppeteer. Sin esto,
+	// si el sitio está en modo mantenimiento (503) o caído, "critical" puede colgarse
+	// varios minutos en lugar de fallar rápido con un aviso claro — inaceptable tanto
+	// en local como dentro del git hook (bloquearía el commit indefinidamente).
+	const preflight = await checkUrl(profile.url)
+
+	if (!preflight.ok) {
+		printWarning(profile.url, preflight)
+		process.exit(1)
+	}
+
 	// El paquete "critical" es ESM-only; el resto del proyecto usa CommonJS,
 	// así que lo cargamos con import() dinámico en lugar de require().
 	const { generate } = await import('critical')
@@ -52,6 +64,9 @@ fs.mkdirSync(outputDir, { recursive: true })
 			// propia que macOS/Chromium confían vía Keychain, pero Node (got) no la
 			// reconoce por defecto. Solo aplica a este fetch de desarrollo local.
 			request: { https: { rejectUnauthorized: false } },
+			// Cota de seguridad adicional (penthouse ya usa 30000ms por defecto) para
+			// que un cuelgue inesperado no bloquee el commit de forma indefinida.
+			penthouse: { timeout: 30000 },
 		})
 
 		const sizeKb = (fs.statSync(outputPath).size / 1024).toFixed(1)

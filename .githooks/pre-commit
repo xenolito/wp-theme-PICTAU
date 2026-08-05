@@ -1,19 +1,38 @@
 #!/bin/sh
 # Antes de cada commit que toque CSS/JS fuente (tailwind/, javascript/,
-# postcss.config.js), regenera el build de produccion (minificado) y lo
-# incluye en el propio commit.
+# postcss.config.js), regenera el build de produccion (minificado) y el
+# critical CSS (above-the-fold inline), y los incluye en el propio commit.
 #
 # Sin esto, es facil quedarte trabajando con "npm run watch" (sin
 # minificar, con sourcemaps) y que el hook post-commit despliegue ese
-# build de desarrollo a produccion sin darte cuenta.
+# build de desarrollo a produccion sin darte cuenta. El critical CSS se
+# regenera aqui mismo porque un cambio visual above-the-fold (hero, header,
+# nav) puede desincronizar theme/critical/*.css del diseno real igual que
+# el propio style.css.
 
 changed_source=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '^(tailwind/|javascript/|postcss\.config\.js)')
 
 if [ -n "$changed_source" ]; then
+  # Comprobacion rapida (<1s) del sitio local ANTES de gastar tiempo en el
+  # build: si esta en modo mantenimiento o caido, "npm run critical" fallaria
+  # igualmente mas tarde, pero asi el aviso llega al instante y con un banner
+  # imposible de pasar por alto (ver node_scripts/lib/site-preflight.js).
+  if ! node node_scripts/check-site-reachable.js; then
+    echo "pre-commit: sitio local no accesible. Commit abortado." >&2
+    exit 1
+  fi
+
   echo "pre-commit: CSS/JS fuente modificado, regenerando build de produccion..."
 
   if ! npm run production; then
     echo "pre-commit: 'npm run production' fallo. Commit abortado." >&2
+    exit 1
+  fi
+
+  echo "pre-commit: regenerando critical CSS (theme/critical/*.css)..."
+
+  if ! npm run critical; then
+    echo "pre-commit: 'npm run critical' fallo. Commit abortado." >&2
     exit 1
   fi
 
