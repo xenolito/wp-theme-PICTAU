@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.15.6
+- **Versión:** 7.16.0
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1449,6 +1449,29 @@ Fuente en `tailwind/` → `theme/style.css`.
 - Dark mode: estrategia `class`
 - Los colores de marca se definen por proyecto en `tailwind/custom/components/all-themes.css` via variables CSS (`--brand-color-rgb`, etc.)
 - **Orden de compilación de `tailwind/custom/components/`**: todos los ficheros de ese directorio se importan automáticamente vía `@import-glob` (orden alfabético), **excepto** `components.css`, `all-themes.css` y `style.css`, que se excluyen de ese glob y se importan explícitamente al final, en ese orden fijo (`components` → `all-themes` → `style`), para que ganen siempre la cascada frente al resto de componentes sin depender de `!important`. Ver `tailwind/tailwind.css`. Cualquier otro fichero nuevo en `components/` entra automáticamente en el glob salvo que se añada también a esa lista de exclusión.
+
+---
+
+## Rendimiento — Critical CSS
+
+`theme/style.css` (Tailwind compilado) se carga de forma **asíncrona** para eliminar el render-blocking que detecta Lighthouse: el contenido above-the-fold se pinta con un CSS crítico inline generado en build time, y el stylesheet completo se activa en cuanto termina de descargarse (patrón *preload + swap*).
+
+**Cómo funciona:**
+- `node_scripts/generate-critical-css.js` usa el paquete [`critical`](https://github.com/addyosmani/critical) (Puppeteer) para extraer el CSS above-the-fold de dos perfiles de plantilla, renderizados contra el dev server local (`https://balanzia.dev/`) en viewport móvil y escritorio:
+  - `home` → portada (con hero slider) → `theme/critical/home.css`
+  - `default` → resto de plantillas (page/single/archive) → `theme/critical/default.css`
+- `pictau_inline_critical_css()` (`theme/inc/template-functions.php`, hook `wp_head` prioridad `1`) imprime el critical CSS correspondiente inline en un `<style id="pictau-critical-css">`, eligiendo perfil con `is_front_page()`. Si el archivo no existe, no hace nada (no rompe el sitio).
+- `pictau_async_style_loader_tag()` (`theme/functions.php`, filtro `style_loader_tag`) reescribe el `<link>` de `pictau-style` a `rel="preload" as="style" onload="this.rel='stylesheet'"`, con fallback `<noscript>` para JS deshabilitado.
+
+**Scripts npm:**
+```bash
+npm run critical         # recompila tailwind (production, minify) + genera ambos perfiles
+npm run critical:home    # solo portada
+npm run critical:default # solo plantilla genérica
+```
+`npm run critical` **no** forma parte de `watch` (Puppeteer es demasiado lento para cada guardado); sí es el último paso de `npm run bundle` (`production` → `critical` → `zip`). **Hay que re-ejecutarlo manualmente** tras cualquier cambio visual above-the-fold (hero, header, nav) aunque no se haga un bundle completo, para que `theme/critical/*.css` no quede desincronizado del diseño real.
+
+Tras desplegar o regenerar el critical CSS, **purgar la caché de WP Super Cache** (`wp-local cache flush` o desde el admin) para que no se sirva HTML cacheado con una versión antigua del `<style>` inline.
 
 ---
 

@@ -242,6 +242,33 @@ function pictau_scripts()
 add_action('wp_enqueue_scripts', 'pictau_scripts');
 
 /**
+ * Carga 'pictau-style' de forma asíncrona (patrón preload + swap) para eliminar
+ * el render-blocking del style.css compilado: el navegador lo descarga con baja
+ * prioridad y lo activa como stylesheet solo al terminar. El critical CSS
+ * inline (ver pictau_inline_critical_css() en inc/template-functions.php)
+ * cubre el contenido above-the-fold mientras tanto. Fallback <noscript> para
+ * navegadores sin JS.
+ */
+function pictau_async_style_loader_tag($tag, $handle)
+{
+	if ('pictau-style' !== $handle) {
+		return $tag;
+	}
+
+	preg_match('/href=[\'"]([^\'"]+)[\'"]/', $tag, $matches);
+
+	if (empty($matches[1])) {
+		return $tag;
+	}
+
+	$href = $matches[1];
+
+	return '<link rel="preload" as="style" href="' . esc_url($href) . '" onload="this.onload=null;this.rel=\'stylesheet\'" />'
+		. '<noscript><link rel="stylesheet" href="' . esc_url($href) . '" /></noscript>';
+}
+add_filter('style_loader_tag', 'pictau_async_style_loader_tag', 10, 2);
+
+/**
  * Enqueue the block editor script.
  */
 function pictau_enqueue_block_editor_script()

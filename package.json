@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "pictau_wordpress_theme",
-  "version": "7.15.6",
+  "version": "7.16.0",
   "description": "An advanced WordPress theme template and framework with advanced utilities and features. Includes tailwindcss, esbuild, and more.",
   "author": "Balanzia",
   "keywords": [
@@ -24,6 +24,7 @@
     "archiver": "^6.0.1",
     "browser-sync": "^3.0.2",
     "chokidar-cli": "^3.0.0",
+    "critical": "^8.0.0",
     "cross-env": "^7.0.3",
     "esbuild": "^0.28.1",
     "eslint": "^8.56.0",
@@ -66,8 +67,11 @@
     "production:esbuild": "cross-env NODE_ENV=production npm run development:esbuild -- --minify",
     "production": "run-p \"production:**\"",
     "prod": "npm run production",
+    "critical:home": "node node_scripts/generate-critical-css.js home",
+    "critical:default": "node node_scripts/generate-critical-css.js default",
+    "critical": "run-s production:tailwind:frontend \"critical:*\"",
     "zip": "node node_scripts/zip.js pictau",
-    "bundle": "run-s production zip",
+    "bundle": "run-s production critical zip",
     "deploy": "git acm \"updated for production\"  && git push"
   },
   "dependencies": {

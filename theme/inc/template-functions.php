@@ -1079,6 +1079,30 @@ function favicon_theme()
 
 // add_action('wp_head','favicon_theme');
 
+// ! Inline el critical CSS (above-the-fold) generado en build time por
+// ! `npm run critical` (node_scripts/generate-critical-css.js) en theme/critical/*.css.
+// ! El resto del style.css se carga de forma asíncrona, ver el filtro
+// ! 'style_loader_tag' en functions.php.
+function pictau_inline_critical_css()
+{
+	$profile = is_front_page() ? 'home' : 'default';
+	$critical_css_path = get_template_directory() . '/critical/' . $profile . '.css';
+
+	if (! file_exists($critical_css_path)) {
+		return;
+	}
+
+	$critical_css = file_get_contents($critical_css_path);
+
+	if (empty($critical_css)) {
+		return;
+	}
+
+	echo '<style id="pictau-critical-css">' . $critical_css . '</style>';
+}
+
+add_action('wp_head', 'pictau_inline_critical_css', 1);
+
 // ! Add head's link rel preload for fonts located at [theme/fonts] dir...
 function preload_fonts()
 {
