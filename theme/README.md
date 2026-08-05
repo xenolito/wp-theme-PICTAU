@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.15.5
+- **Versión:** 7.15.6
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1522,6 +1522,16 @@ Los checkboxes y radio buttons de CF7 se estilizan ocultando el `<input>` real (
 - **`aria-checked`** se mantiene sincronizado tanto al usar teclado como al marcar con el ratón (listener `change` en el input real). En radio buttons, al seleccionar uno se resincroniza `aria-checked` de todo el grupo (los demás pasan a `false`).
 - El checkbox de aceptación legal (`.pct-legal-acceptance`) sigue el mismo mecanismo; su `<label class="checkIcon">` recibe la referencia al input directamente en vez de intentar localizarlo por estructura DOM (antes fallaba: el label se crea como hermano del input, no como envoltorio).
 - **Nombre accesible**: `check-icon-container` tiene `role="checkbox"` pero su propio subárbol solo contiene los SVG de estado (sin texto), así que un lector de pantalla no anunciaba nada al llegar a él (detectado por Lighthouse: "ARIA toggle fields do not have accessible names"). Se captura el texto de `.wpcf7-list-item-label` antes de insertar el icono como hermano, y se aplica como `aria-label` del icono.
+
+---
+
+## Dimensiones explícitas en imágenes del footer (`pictau_add_missing_image_dimensions`)
+
+El contenido del footer viene de un "Pictau Block" editado en wp-admin (`get_theme_mod('pictau_block_footer')`, renderizado en `theme/template-parts/layout/footer-content.php`), así que sus `<img>` no pasan por ningún control del tema — si se insertan sin `width`/`height` explícitos, Lighthouse lo marca ("Image elements do not have explicit width and height") y puede provocar CLS.
+
+En vez de editar el contenido del bloque en la BD, `pictau_add_missing_image_dimensions()` (`theme/inc/template-functions.php`) post-procesa el HTML ya renderizado del footer: para cada `<img>` sin `width`/`height`, resuelve su `src` a la ruta de fichero local (`pictau_url_to_local_path()`) y calcula las dimensiones reales con `getimagesize()`. Las imágenes que ya traen `width`/`height` no se tocan. Coste medido: ~0,04 ms por ejecución sobre el contenido real del footer — irrelevante, y en la práctica solo corre en un *cache miss* si hay page cache activo.
+
+Portado desde `qlik-para-pymes` (2026-08-05), donde resolvió el mismo aviso de Lighthouse para los logos de partners del footer.
 
 ---
 

@@ -1191,6 +1191,76 @@ function get_user_role()
 
 /*------------------------------------------------------------------------------------------------------*\
 
+						//!ADD EXPLICIT WIDTH/HEIGHT TO <IMG> TAGS MISSING THEM (Lighthouse: "Image elements
+						//!do not have explicit width and height" — usado en footer-content.php, cuyo HTML
+						//!viene de un "Pictau Block" editado en wp-admin, no de este repo. En vez de tocar
+						//!el contenido en la BD, post-procesamos el HTML ya renderizado leyendo las
+						//!dimensiones reales del fichero en disco con getimagesize().)
+
+\*------------------------------------------------------------------------------------------------------*/
+
+/**
+ * Convierte una URL (absoluta o protocolo-relativa) del propio sitio en la
+ * ruta de fichero local correspondiente. Devuelve false si no se puede
+ * resolver (p.ej. imagen servida desde otro dominio).
+ */
+function pictau_url_to_local_path($url)
+{
+	$path = wp_parse_url($url, PHP_URL_PATH);
+
+	if (!$path) {
+		return false;
+	}
+
+	return trailingslashit(ABSPATH) . ltrim($path, '/');
+}
+
+/**
+ * Añade width/height a los <img> de $html que no los traigan ya, calculados
+ * a partir del fichero real en disco. No toca los que ya los tienen.
+ */
+function pictau_add_missing_image_dimensions($html)
+{
+	if (!is_string($html) || !str_contains($html, '<img')) {
+		return $html;
+	}
+
+	return preg_replace_callback(
+		'/<img\s[^>]*>/i',
+		function ($match) {
+			$img = $match[0];
+
+			// Ya tiene width y height explícitos: no tocar.
+			if (preg_match('/\swidth\s*=/i', $img) && preg_match('/\sheight\s*=/i', $img)) {
+				return $img;
+			}
+
+			if (!preg_match('/\ssrc\s*=\s*["\']([^"\']+)["\']/i', $img, $src_match)) {
+				return $img;
+			}
+
+			$path = pictau_url_to_local_path($src_match[1]);
+
+			if (!$path || !file_exists($path)) {
+				return $img;
+			}
+
+			$size = @getimagesize($path);
+
+			if (!$size) {
+				return $img;
+			}
+
+			return str_replace('<img', sprintf('<img width="%d" height="%d"', $size[0], $size[1]), $img);
+		},
+		$html
+	);
+}
+
+
+
+/*------------------------------------------------------------------------------------------------------*\
+
 						//!ADD CLASS TO BODY (usr-ga-excluded) TO IDENTIFY USER ROLES (This will be used to exclude logged in admins, editors... anyone except subscriber or customer) TO BE EXCLUDED FROM  GA tracking)
 
 \*------------------------------------------------------------------------------------------------------*/
