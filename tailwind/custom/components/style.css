@@ -2938,10 +2938,6 @@ body.single-ebook {
 	font-size: 1.2em;
 }
 
-body {
-	background-color: red;
-}
-
 /*! Styles for chatbot plugin AI Engine by Meow: Remove if not using */
 .mwai-timer {
 	font-size: 1rem !important;
