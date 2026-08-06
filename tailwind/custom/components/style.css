@@ -20,6 +20,17 @@
 	}
 }
 
+[data-heroslider] {
+	.wp-block-button {
+		--button-bg-color: var(--main-color);
+		--button-bg-color-hover: var(--highlight-color);
+		--button-border-color: var(--main-color);
+		--bg-color-outline: transparent;
+		--button-txt-color: white;
+		--button-txt-color-hover: white;
+	}
+}
+
 .header-tag {
 	background-color: transparent;
 	border: 0;
@@ -321,6 +332,38 @@ body.home .slider,
 			&::before {
 				content: "\f0ac";
 			}
+		}
+	}
+}
+
+.card .precio {
+	container-type: inline-size;
+	container-name: precio-container;
+}
+
+.price-table {
+	.price {
+		display: inline-flex;
+		flex-flow: row;
+		align-items: flex-end;
+		gap: 1ch;
+		> * {
+			flex-shrink: 1;
+			width: fit-content !important;
+			margin-inline: 0;
+			margin-left: 0 !important;
+			margin-right: 0 !important;
+		}
+
+		.price-value {
+			font-size: clamp(2rem, 5vw, 2.75rem);
+			line-height: 0.75;
+			margin-block: 0;
+		}
+		.price-description {
+			font-size: clamp(0.8rem, 2vw, 1rem);
+			margin-block: 0;
+			line-height: 1;
 		}
 	}
 }

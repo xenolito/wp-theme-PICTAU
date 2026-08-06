@@ -148,10 +148,11 @@ figure figcaption {
 	--theme-tag-color: var(--main-color);
 	--theme-figcaption-color: inherit;
 
-	--button-bg-color: var(--main-color);
-	--button-bg-color-hover: var(--highlight-color);
+	--button-bg-color: white;
+	--button-border-color: white;
+	--button-bg-color-hover: var(--main-color);
 	--bg-color-outline: transparent;
-	--button-txt-color: white;
+	--button-txt-color: var(--main-color);
 	--button-txt-color-hover: white;
 
 	--numberedColor: var(--main-color);
@@ -198,62 +199,15 @@ figure figcaption {
 	}
 }
 
-/*! THEME COLOR CUSTOM */
-.theme-color-custom {
-	--border-color: var(--heading-color-theme-custom);
-	--link-color: var(--main-color);
-	--card-background: rgba(255, 255, 255, 1);
-
-	--theme-txt-color: var(--txt-color-theme-custom);
-	--theme-heading-color: var(--heading-color-theme-custom);
-	--theme-tag-color: var(--heading-color-theme-custom);
-	--theme-figcaption-color: inherit;
-
-	--button-bg-color: var(--main-color);
-	--button-bg-color-hover: var(--highlight-color);
-	--bg-color-outline: transparent;
-	--button-txt-color: white;
-	--button-txt-color-hover: white;
-
-	&:is(.pct-card, section, .card) {
-		background: var(--bg-color-theme-custom);
-	}
-
-	.wpcf7 span.wpcf7-not-valid-tip::after,
-	.wpcf7-response-output::after {
-		filter: var(--form-error-validation-icon-filter);
-	}
-
-	.separator {
-		--separator-color: rgb(226, 230, 235);
-		--separator-width: 2px;
-		--separator-color: color-mix(in srgb, var(--heading-color-theme-custom), transparent 70%);
-		--separator-color: color-mix(in srgb, black, transparent 90%);
-		/* background: var(--separator-color); */
-	}
-
-	[id*="arrows-slider"] {
-		color: var(--heading-color-theme-custom);
-	}
-
-	.cta-arrow {
-		--width: 30px;
-		--bg-color: rgba(255, 255, 255, 1);
-		--bg-color: color-mix(in srgb, var(--bg-color-theme-custom), white 43%);
-		--border-color: rgba(255, 255, 255, 1);
-	}
-
-	.header-tag {
-		background: rgb(255 255 255 / 0.33);
-		border-color: rgba(255, 255, 255, 1);
-	}
-}
-
 :is(.bg-light-2) {
 	background: var(--bg-color-theme-light-2) !important;
 }
 
 :is(.bg-dark-2) {
+	--button-bg-color-hover: var(--bg-color-theme-dark);
+	--button-txt-color-hover: white;
+
 	--numberedColor: var(--heading-color-theme-dark);
+
 	background: var(--bg-color-theme-dark-2) !important;
 }

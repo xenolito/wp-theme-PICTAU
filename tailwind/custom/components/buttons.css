@@ -107,7 +107,8 @@ button#submit {
 		box-shadow: none;
 		background-color: var(--bg-color-outline);
 		backdrop-filter: blur(15px);
-		color: var(--button-bg-color) !important;
+		border-color: var(--button-txt-color);
+		/* color: var(--button-bg-color) !important; */
 
 		&:hover {
 			@apply shadow-lg shadow-slate-700/40;
