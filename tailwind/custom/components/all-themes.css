@@ -66,6 +66,7 @@ h4 {
 	@apply text-[var(--theme-heading-color,var(--heading-color))];
 }
 
+p,
 h1,
 h2,
 h3 {
@@ -98,6 +99,9 @@ figure figcaption {
 	--bg-color-outline: transparent;
 	--button-txt-color: white;
 	--button-txt-color-hover: white;
+
+	--numberedColor: var(--theme-heading-color);
+	--numberedColor: var(--main-color);
 
 	/* --testimonials-pagination-color: var(--main-color);
 	--testimonials-pagination-active-color: black; */
@@ -149,6 +153,8 @@ figure figcaption {
 	--bg-color-outline: transparent;
 	--button-txt-color: white;
 	--button-txt-color-hover: white;
+
+	--numberedColor: var(--main-color);
 
 	background-color: var(--bg-color-theme-dark);
 
@@ -248,5 +254,6 @@ figure figcaption {
 }
 
 :is(.bg-dark-2) {
+	--numberedColor: var(--heading-color-theme-dark);
 	background: var(--bg-color-theme-dark-2) !important;
 }

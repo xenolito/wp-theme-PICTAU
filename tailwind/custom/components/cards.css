@@ -747,93 +747,6 @@
 	}
 }
 
-/*! Cards with ordered numbers */
-
-.ordered-counter {
-	--numSize: 1.5rem;
-	/* --numberedColor: var(--heading-color); */
-	--numberedColor: var(--main-color);
-	--numberedBgColor: rgba(39, 178, 148, 0.2);
-	--numberedBorderColor: var(--numberedColor);
-	--numberedBorderSize: 2px;
-	--dim: 2rem;
-	--padding: 1.5em;
-	--border-radius: var(--card-border-radius);
-	counter-reset: xx;
-}
-
-.card-ordered-num {
-	display: flex;
-	flex-flow: column;
-	/* gap: calc(var(--card-padding) * 0.7); */
-	/* border-radius: var(--card-border-radius); */
-
-	border-top: 1px solid black;
-	@apply border-t-[var(--line-color)];
-	overflow: hidden;
-	padding: var(--card-padding);
-	/* container-type: inline-size;
-	container-name: pctcard; */
-
-	h3 {
-		padding-top: 0;
-	}
-
-	&:nth-child(-n + 9) {
-		&::before {
-			content: "0" counter(xx);
-		}
-	}
-
-	&:last-of-type {
-		padding-bottom: 0;
-	}
-
-	p:first-of-type {
-		margin-top: 0;
-	}
-
-	&::before {
-		content: counter(xx);
-		counter-increment: xx;
-		border-radius: var(--border-radius);
-		border: var(--numberedBorderSize) solid var(--numberedBorderColor);
-		background-color: var(--numberedBgColor, red);
-		color: var(--numberedColor, currentColor);
-		width: var(--dim);
-		height: var(--dim);
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		font-weight: bold;
-		font-size: var(--numSize);
-		padding: var(--padding);
-		margin-bottom: calc(var(--card-padding) * 0.85);
-	}
-
-	&.bordered {
-		--icon-size: clamp(2rem, 5vw, 2.6rem);
-		--icon-padding: calc(var(--icon-size) * 0.5);
-
-		&::before {
-			--border-padding: 2rem;
-
-			/* background-color: transparent !important; */
-			padding: var(--border-padding);
-			margin-bottom: 0;
-			background-color: rgb(from var(--card-background) r g b / 25%);
-			backdrop-filter: blur(1.5px);
-
-			border-width: 1px;
-			border-color: var(--card-border-color);
-			color: var(--heading-color-theme-custom);
-
-			background: var(--heading-color);
-			color: white;
-		}
-	}
-}
-
 .icon-card-pinned {
 	--icon-size: clamp(20px, 5vw, 35px);
 	--icon-padding: clamp(0.3rem, 3vw, 1rem);
@@ -1227,5 +1140,13 @@
 		margin-left: calc(var(--card-padding) * -1) !important;
 		margin-right: calc(var(--card-padding) * -1) !important;
 		width: calc(100% + (var(--card-padding) * 2)) !important;
+	}
+}
+
+.card.is-cta {
+	max-width: 860px !important;
+	h2,
+	h3 {
+		text-wrap: initial;
 	}
 }

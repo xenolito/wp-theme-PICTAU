@@ -1,5 +1,5 @@
 :root {
-	--button-font-size: clamp(0.75rem, 3.5vw, 0.88rem);
+	--button-font-size: clamp(0.88rem, 3.5vw, 1rem);
 	/* --button-bg-color: radial-gradient(80% 80% at 50% -15%, #27b294 70%, #1d997e 100%); */
 	--button-bg-color: var(--main-color);
 	/* --button-bg-color: #34f1c7; */
@@ -27,6 +27,14 @@
 
 	.wp-block-button {
 		flex-shrink: 1 !important;
+		&.arrow {
+			svg {
+				* {
+					stroke-width: 22px;
+					/* stroke-linecap: butt; */
+				}
+			}
+		}
 	}
 }
 
