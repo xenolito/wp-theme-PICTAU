@@ -1474,6 +1474,8 @@ Fuente en `tailwind/` → `theme/style.css`.
 - `pictau_inline_critical_css()` (`theme/inc/template-functions.php`, hook `wp_head` prioridad `1`) imprime el critical CSS correspondiente inline en un `<style id="pictau-critical-css">`, eligiendo perfil con `is_front_page()`. Si el archivo no existe, no hace nada (no rompe el sitio).
 - `pictau_async_style_loader_tag()` (`theme/functions.php`, filtro `style_loader_tag`) reescribe el `<link>` de `pictau-style` a `rel="preload" as="style" onload="this.rel='stylesheet'"`, con fallback `<noscript>` para JS deshabilitado.
 
+**`theme/style.css` NO se recorta — el critical CSS es una copia, no una extracción.** `generate-critical-css.js` llama a `critical.generate()` con `inline: false` y **sin** `extract: true` (su valor por defecto). Esto significa que las reglas above-the-fold quedan duplicadas: aparecen tanto en `theme/critical/*.css` (inline en el `<head>`) como dentro del `style.css` completo que se carga después de forma asíncrona — el build de Tailwind es totalmente independiente del critical CSS, no sabe que existe. Es intencional: la propia librería `critical` avisa de que `extract: true` genera un CSS async **único por página** (rompe el cache compartido de `style.css?ver=...` entre páginas) y añade fragilidad de sincronización — con `inline: false` (nuestro caso) sería aún más delicado mantenerlo correcto en cada build. El coste de los pocos KB duplicados del above-the-fold es bajo comparado con esa complejidad.
+
 **Scripts npm:**
 ```bash
 npm run critical         # recompila tailwind (production, minify) + genera ambos perfiles
