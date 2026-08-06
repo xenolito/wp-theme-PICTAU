@@ -9,26 +9,11 @@
   You need the following blocks structure @ WP editor
     --- Group @class: card , @variants: content-x-center, transparent, shadow, media-img, media-left, bg-dark...
         --- Group ( card container)
-            --- Image / svg
+            --- Image / svg (.hero-image - optional)
             --- Group
                 --- Heading + content
 
 */
-:root {
-	--default-card-padding: clamp(2rem, 5vw, 3rem);
-	--card-padding: var(--default-card-padding);
-	--card-border-radius: var(--def-border-radius);
-	--card-border-width: 1px;
-	--card-border-color: rgba(0, 0, 0, 0.1);
-	--card-icon-dim: 20px;
-	--card-icon-padd: 0.75ch;
-}
-
-.pct-3cols:has(> .card) {
-	&:has(.is-card-icon) {
-		padding-left: calc(var(--card-icon-dim) - var(--card-icon-padd));
-	}
-}
 
 /* UITLS BASED ON CARDS VALUES */
 .card-row-gap {
@@ -433,12 +418,6 @@
 						}
 					}
 				}
-			}
-		}
-
-		@container pctcard (max-width: 450px) {
-			h2 {
-				text-align: left !important;
 			}
 		}
 	}

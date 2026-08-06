@@ -8,6 +8,15 @@
 	--scroll-offset: 0px;
 	--def-border-radius: 0px;
 	--min-border-radius: 0px;
+
+	/* CARDS DIMENSIONS*/
+	--default-card-padding: clamp(2rem, 5vw, 3rem);
+	--card-padding: var(--default-card-padding);
+	--card-border-radius: var(--def-border-radius);
+	--card-border-width: 1px;
+	--card-border-color: rgba(0, 0, 0, 0.1);
+	--card-icon-dim: 20px;
+	--card-icon-padd: 0.75ch;
 }
 
 [id] {
@@ -177,16 +186,6 @@ figure {
 	height: calc(100svh - var(--whole-header-height));
 }
 
-/* .sub-header {
-	margin-bottom: 2ch;
-} */
-
-/* .header-tag,
-.above-header {
-	font-size: clamp(0.875rem, 2vw, 1.25rem);
-	text-transform: uppercase;
-} */
-
 .lh-1 {
 	line-height: 1;
 }
@@ -327,6 +326,17 @@ figure {
 	}
 }
 
+.sticky {
+	position: sticky !important;
+	top: calc(var(--whole-header-height) + var(--card-padding));
+	height: fit-content;
+
+	@media only screen and (max-width: 767px) {
+		position: relative !important;
+		top: inherit;
+	}
+}
+
 .mask-radial-grad {
 	/* background: red; */
 	mask-image: radial-gradient(50% 60% at 70% 55%, black 70%, transparent);
@@ -431,6 +441,71 @@ figure {
 	row-gap: var(--column-gap) !important;
 }
 
+[class*="pct-grid-"] {
+	--cols: 2;
+	--col-gap: var(--column-gap, clamp(2rem, 5vw, 3rem));
+	--row-gap: var(--column-gap, clamp(2rem, 5vw, 3rem));
+
+	display: grid;
+	column-gap: var(--col-gap);
+	row-gap: var(--row-gap);
+
+	grid-template-columns: repeat(var(--cols, 2), 1fr);
+
+	&.pct-grid-2cols {
+		--cols: 2;
+		--card-padding: calc(var(--default-card-padding) * 0.75);
+
+		@media only screen and (max-width: 767px) {
+			--cols: 1;
+			--card-padding: var(--default-card-padding);
+			gap: var(--col-gap);
+		}
+	}
+
+	&[class*="pct-grid-3cols"] {
+		--cols: 3;
+		--card-padding: calc(var(--default-card-padding) * 0.66);
+		gap: calc(var(--col-gap) * 0.66);
+
+		@media only screen and (max-width: 767px) {
+			--cols: 1;
+			--card-padding: var(--default-card-padding);
+			gap: var(--col-gap);
+		}
+
+		&.pct-grid-3cols-2-plus-1 {
+			@media only screen and (max-width: 1200px) {
+				--cols: 2;
+				--card-padding: calc(var(--default-card-padding) * 0.75);
+				gap: calc(var(--col-gap) * 0.75);
+
+				& > *:nth-child(3) {
+					grid-column: span 2;
+				}
+			}
+		}
+	}
+
+	&.pct-grid-4cols {
+		--cols: 4;
+		--card-padding: calc(var(--default-card-padding) * 0.5);
+		gap: calc(var(--col-gap) * 0.5);
+
+		@media only screen and (max-width: 1200px) {
+			--cols: 2;
+			--card-padding: calc(var(--default-card-padding) * 0.75);
+			gap: calc(var(--col-gap) * 0.75);
+		}
+
+		@media only screen and (max-width: 767px) {
+			--cols: 1;
+			--card-padding: var(--default-card-padding);
+			gap: var(--col-gap);
+		}
+	}
+}
+
 .pct-2cols {
 	/* @apply !grid grid-cols-1 md:grid-cols-2 gap-[var(--card-padding)] gap-y-[calc(var(--card-padding)*3)]; */
 	@apply !grid grid-cols-1 md:grid-cols-2 gap-[var(--column-gap)];
@@ -472,17 +547,6 @@ figure {
 			height: 100%;
 		}
 	}
-
-	.sticky {
-		position: sticky !important;
-		top: calc(var(--whole-header-height) + var(--card-padding));
-		height: fit-content;
-
-		@media only screen and (max-width: 767px) {
-			position: relative !important;
-			top: inherit;
-		}
-	}
 }
 
 .span-2 {
@@ -515,6 +579,12 @@ figure {
 			}
 		}
 	}
+}
+
+.pct-4cols {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .pct-2cards {

@@ -26,20 +26,15 @@
 	--heading-color-theme-custom: var(--heading-color);
 
 	--bg-color-theme-light: #f7f5f0;
-	--bg-color-theme-dark: hsl(0, 1%, 20%);
+	--bg-color-theme-light-2: hsl(36, 24%, 96%);
+
 	--bg-color-theme-dark: hsl(0deg 0.33% 14.44%);
+	--bg-color-theme-dark-2: var(--main-color);
 
 	--bg-gradient-theme-dark: linear-gradient(174deg, rgba(21, 33, 46, 1) 0%, rgb(17, 32, 48) 100%);
 	--bg-gradient-theme-dark: linear-gradient(174deg, rgba(21, 33, 46, 1) 0%, rgb(30, 65, 103) 100%);
 
 	--bg-color-theme-custom: #e2e6eb;
-
-	--icon-gradient-1: linear-gradient(174deg, rgba(252, 117, 36, 1) 0%, rgba(252, 211, 36, 1) 100%);
-	--icon-gradient-2: linear-gradient(174deg, rgba(255, 0, 54, 1) 0%, rgba(255, 0, 209, 1) 100%);
-	--icon-gradient-3: linear-gradient(174deg, rgba(0, 67, 255, 1) 0%, rgba(0, 191, 255, 1) 100%);
-	--icon-gradient-4: linear-gradient(174deg, rgba(0, 159, 12, 1) 0%, rgba(0, 247, 255, 1) 100%);
-	--icon-gradient-5: linear-gradient(174deg, rgba(1, 251, 255, 1) 0%, rgba(224, 1, 255, 1) 100%);
-	--icon-gradient-6: linear-gradient(174deg, rgba(106, 255, 1, 1) 0%, rgba(255, 233, 1, 1) 100%);
 
 	/* Testimonials pagination dots */
 	--testimonials-pagination-color: hsl(0, 0%, 80%);
@@ -246,4 +241,12 @@ figure figcaption {
 		background: rgb(255 255 255 / 0.33);
 		border-color: rgba(255, 255, 255, 1);
 	}
+}
+
+:is(.bg-light-2) {
+	background: var(--bg-color-theme-light-2) !important;
+}
+
+:is(.bg-dark-2) {
+	background: var(--bg-color-theme-dark-2) !important;
 }
