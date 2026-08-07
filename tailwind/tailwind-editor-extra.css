@@ -265,3 +265,7 @@ h1.screen-reader-text {
 	pointer-events: none;
 	z-index: 11;
 }
+
+.card p:first-of-type {
+	margin-top: inherit;
+}

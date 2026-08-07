@@ -26,6 +26,7 @@
 		--button-bg-color-hover: var(--highlight-color);
 		--button-border-color: var(--main-color);
 		--bg-color-outline: transparent;
+		--button-outline-txt-color: white;
 		--button-txt-color: white;
 		--button-txt-color-hover: white;
 	}
@@ -365,5 +366,16 @@ body.home .slider,
 			margin-block: 0;
 			line-height: 1;
 		}
+	}
+}
+
+.has-tic-icon {
+	--icon-color: var(--tag-icon-color, var(--main-color));
+	&::before {
+		content: "\f00c";
+		font-family: "pictauicons";
+		font-size: 1.1rem;
+		color: var(--icon-color);
+		margin-right: 0.5ch;
 	}
 }

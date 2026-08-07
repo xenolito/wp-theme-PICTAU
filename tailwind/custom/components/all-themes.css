@@ -15,8 +15,6 @@
 	--txt-color-theme-dark: hsl(0, 100%, 100%);
 	--txt-color-theme-custom: var(--txt-color);
 
-	--tag-color: var(--main-color);
-
 	--link-color: var(--main-color);
 	--link-color-content: var(--cta-color, var(--link-color));
 	--heading-color: var(--main-color);
@@ -27,6 +25,7 @@
 
 	--bg-color-theme-light: #f7f5f0;
 	--bg-color-theme-light-2: hsl(36, 24%, 96%);
+	--bg-color-theme-light-3: white;
 
 	--bg-color-theme-dark: hsl(0deg 0.33% 14.44%);
 	--bg-color-theme-dark-2: var(--main-color);
@@ -34,7 +33,21 @@
 	--bg-gradient-theme-dark: linear-gradient(174deg, rgba(21, 33, 46, 1) 0%, rgb(17, 32, 48) 100%);
 	--bg-gradient-theme-dark: linear-gradient(174deg, rgba(21, 33, 46, 1) 0%, rgb(30, 65, 103) 100%);
 
-	--bg-color-theme-custom: #e2e6eb;
+	/* Buttons */
+	--button-bg-color: var(--main-color);
+	--button-border-color: var(--button-bg-color);
+	--button-bg-color-hover: var(--main-color);
+	--button-outline-bg-color: transparent;
+
+	--button-txt-color: var(--main-color);
+	--button-txt-color-hover: white;
+
+	/* Tags */
+	--tag-txt-color: var(--main-color);
+	--tag-icon-color: hsl(120, 100%, 67%);
+	--tag-bg-color: var(--main-color);
+	--tag-bg-opacity: 20%;
+	--header-tag-color: var(--main-color);
 
 	/* Testimonials pagination dots */
 	--testimonials-pagination-color: hsl(0, 0%, 80%);
@@ -76,7 +89,7 @@ h3 {
 }
 
 .header-tag {
-	color: var(--theme-tag-color, inherit);
+	color: var(--header-tag-color, inherit);
 }
 
 figure figcaption {
@@ -91,7 +104,6 @@ figure figcaption {
 
 	--theme-txt-color: var(--txt-color-theme-light);
 	--theme-heading-color: var(--heading-color-theme-light);
-	--theme-tag-color: var(--tag-color, #343434);
 	--theme-figcaption-color: black;
 
 	--button-bg-color: var(--main-color);
@@ -99,12 +111,14 @@ figure figcaption {
 	--bg-color-outline: transparent;
 	--button-txt-color: white;
 	--button-txt-color-hover: white;
+	--button-outline-txt-color: var(--main-color);
 
 	--numberedColor: var(--theme-heading-color);
 	--numberedColor: var(--main-color);
 
 	/* --testimonials-pagination-color: var(--main-color);
 	--testimonials-pagination-active-color: black; */
+	--theme-tag-color: var(--tag-color, #343434);
 
 	--list-icon-tic-color: var(--heading-color);
 
@@ -203,11 +217,16 @@ figure figcaption {
 	background: var(--bg-color-theme-light-2) !important;
 }
 
+:is(.bg-light-3) {
+	background: var(--bg-color-theme-light-3) !important;
+}
+
 :is(.bg-dark-2) {
 	--button-bg-color-hover: var(--bg-color-theme-dark);
 	--button-txt-color-hover: white;
-
 	--numberedColor: var(--heading-color-theme-dark);
+	--tag-txt-color: white;
+	--tag-bg-color: black;
 
 	background: var(--bg-color-theme-dark-2) !important;
 }

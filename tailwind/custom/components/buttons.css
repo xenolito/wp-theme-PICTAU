@@ -1,21 +1,13 @@
 :root {
 	--button-font-size: clamp(0.88rem, 3.5vw, 1rem);
-	/* --button-bg-color: radial-gradient(80% 80% at 50% -15%, #27b294 70%, #1d997e 100%); */
-	--button-bg-color: var(--main-color);
-	/* --button-bg-color: #34f1c7; */
-	--button-bg-color-hover: var(--highlight-color);
-	--bg-color-outline: var(--header-bg-color-transparent, transparent);
+	/* --button-bg-color: var(--main-color); */
+	/* --bg-color-outline: var(--header-bg-color-transparent, transparent); */
 
 	--padding-y: 1.3ch;
 	--padding-x: 2.5ch;
 
-	--button-txt-color: white;
-	/* --txt-color: #293846; */
-	--button-txt-color-hover: white;
-
 	--button-border-radius: 0px;
 	--button-border-width: 2px;
-	--button-border-color: var(--button-bg-color);
 }
 
 .wp-block-buttons {
@@ -105,9 +97,10 @@ button#submit {
 
 	.wp-element-button {
 		box-shadow: none;
-		background-color: var(--bg-color-outline);
+		background-color: var(--button-outline-bg-color, transparent);
 		backdrop-filter: blur(15px);
-		border-color: var(--button-txt-color);
+		color: var(--button-outline-txt-color);
+		border-color: var(--button-outline-txt-color);
 		/* color: var(--button-bg-color) !important; */
 
 		&:hover {
@@ -118,7 +111,7 @@ button#submit {
 		}
 	}
 
-	&.white {
+	/* &.white {
 		.wp-element-button {
 			color: white !important;
 			border-color: white;
@@ -126,29 +119,7 @@ button#submit {
 				border-color: var(--button-bg-color-hover);
 			}
 		}
-	}
-}
-
-.white:not(.outline) {
-	outline-style: none !important;
-
-	.wp-element-button {
-		box-shadow: none;
-		background-color: white;
-		border-color: white;
-		/* color: var(--main-color) !important; */
-		color: black !important;
-
-		mix-blend-mode: lighten;
-
-		&:hover {
-			@apply shadow-lg shadow-slate-700/40;
-			border-color: var(--button-bg-color-hover);
-			background-color: var(--button-bg-color-hover);
-			mix-blend-mode: unset;
-			color: var(--button-txt-color-hover) !important;
-		}
-	}
+	} */
 }
 
 .wp-block-button.big {
