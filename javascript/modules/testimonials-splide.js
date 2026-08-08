@@ -41,6 +41,16 @@ document.addEventListener('DOMContentLoaded', () => {
 				speed = 900,
 				gap = 'clamp(2rem, 5vw, 4.8rem)',
 				padding = 'clamp(5.6rem, 10vw, 9.6rem)',
+				// Breakpoint móvil (≤535px): por defecto sigue calculando en vw
+				// real del viewport (comportamiento histórico, correcto para el
+				// uso full-bleed). Solo se usan valores distintos si el bloque
+				// los indica explícitamente vía data-testimonials_slidewidth_mobile
+				// / data-testimonials_padding_mobile — pensado para instancias
+				// anidadas en un contenedor más estrecho que el viewport, donde
+				// conviene pasar valores en cqw (requiere container-type:inline-size
+				// en un ancestro) en vez de vw.
+				slidewidthmobile = '66vw',
+				paddingmobile = 0,
 			} = config
 
 			// console.log('repeat hardcoded', repeat)
@@ -57,6 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.speed = Number(speed) || 900
 			this.gap = gap
 			this.padding = padding
+			this.slideWidthMobile = slidewidthmobile
+			this.paddingMobile = paddingmobile
 
 			this.log = log === 'true' || log === '1' ? true : false
 
@@ -116,6 +128,12 @@ document.addEventListener('DOMContentLoaded', () => {
 				perMove: 1,
 				gap: this.gap,
 				padding: this.padding,
+				// Mantiene el slide activo siempre centrado en el track, con los
+				// vecinos asomando simétricamente a ambos lados (efecto "peek").
+				// Sin esto, Splide alinea el slide activo al inicio del track en
+				// desktop (solo se aplicaba focus:center en el breakpoint móvil),
+				// dejando un hueco vacío a la derecha en viewports anchos.
+				focus: 'center',
 				easing: 'cubic-bezier(0.2, 1, 0.3, 1)',
 				speed: this.speed,
 				// padding: 'clamp(2.5rem, 10vw, 4rem)',
@@ -125,9 +143,8 @@ document.addEventListener('DOMContentLoaded', () => {
 				// interval: 2500,
 				breakpoints: {
 					535: {
-						focus: 'center',
-						fixedWidth: '66vw',
-						padding: 0,
+						fixedWidth: this.slideWidthMobile,
+						padding: this.paddingMobile,
 						//arrows: !this.customarrows, // if customarrows is set, arrows will be hidden on mobile
 					},
 				},

@@ -38,6 +38,7 @@
 	margin-left: 0 !important;
 	margin-right: 0 !important;
 	padding: 0;
+	text-transform: uppercase;
 }
 
 #masthead {
@@ -397,10 +398,31 @@ body.home .slider,
 	margin-block: var(--card-padding, 2rem);
 
 	&.slide-media {
-		/* background: red; */
+		/* Anula el breakout a pantalla completa del [data-testimonials]
+		   genérico (layout.css: width:100vw !important). Esta variante vive
+		   anidada dentro de contenedores más estrechos que el viewport
+		   (p.ej. una .card con overflow:clip) — sin esto, el slider se
+		   expandía a 100vw y el padre lo recortaba, dejando visible solo un
+		   trozo descentrado y sin espacio real para el peek lateral.
+		   :where(&) deja la especificidad de este selector en 0 (sigue
+		   llevando !important porque hay que ganarle al width:100vw
+		   !important del [data-testimonials] genérico) para que utilidades
+		   como .takes-full-width puedan seguir sobreescribiéndolo sin
+		   necesitar más especificidad que la suya propia. */
+		:where(&) {
+			width: 100% !important;
+			max-width: 100% !important;
+			left: auto !important;
+		}
+
+		container-type: inline-size;
 
 		.splide__list {
 			align-items: flex-start;
+		}
+
+		.splide__track {
+			mask-image: none !important;
 		}
 
 		.splide__slide {

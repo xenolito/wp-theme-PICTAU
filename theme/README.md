@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.16.1
+- **Versión:** 7.17.0
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -420,23 +420,31 @@ Se requieren al menos 2 hijos directos.
 | `data-testimonials_autoplay` | `3000` | Autoplay cada N ms. `pauseOnHover` activo automáticamente |
 | `data-testimonials_arrows` | `1` | Muestra flechas nativas de Splide |
 | `data-testimonials_customarrows` | `#mis-flechas` | Selector CSS de un bloque externo con flechas custom (primer hijo = prev, último hijo = next) |
-| `data-testimonials_slidewidth` | `380px` | Ancho de cada slide (la "cajita"). Acepta cualquier valor CSS (`px`, `clamp(…)`, `vw`…). Splide calcula automáticamente cuántos slides caben por página según el ancho disponible — no se configura un número fijo de slides visibles. Default: `clamp(300px, 24vw, 420px)` |
+| `data-testimonials_slidewidth` | `380px` | Ancho de cada slide (la "cajita") en el breakpoint desktop (>535 px). Acepta cualquier valor CSS (`px`, `clamp(…)`, `vw`, `%`, `cqw`…). Splide calcula automáticamente cuántos slides caben por página según el ancho disponible — no se configura un número fijo de slides visibles. Default: `clamp(300px, 24vw, 420px)` |
+| `data-testimonials_slidewidthmobile` | `clamp(180px, 66cqw, 280px)` | Igual que `data-testimonials_slidewidth` pero para el breakpoint móvil (≤535 px). Default: `66vw` (mismo valor histórico, relativo al viewport real) |
 | `data-testimonials_speed` | `600` | Duración de la transición entre slides en ms. Default: `900` |
 | `data-testimonials_gap` | `3rem` | Espacio entre slides. Acepta cualquier valor CSS (`rem`, `px`, `clamp(…)`). Default: `clamp(2rem, 5vw, 4.8rem)` |
-| `data-testimonials_padding` | `4rem` | Padding del track (efecto "peek": cuánto se asoman los slides adyacentes por los laterales). Acepta cualquier valor CSS. Default: `clamp(5.6rem, 10vw, 9.6rem)`. En móvil (≤535 px) este valor no se usa: el efecto peek se controla con `fixedWidth`, ver tabla de breakpoints |
+| `data-testimonials_padding` | `4rem` | Padding del track (efecto "peek": cuánto se asoman los slides adyacentes por los laterales) en el breakpoint desktop (>535 px). Acepta cualquier valor CSS. Default: `clamp(5.6rem, 10vw, 9.6rem)` |
+| `data-testimonials_paddingmobile` | `clamp(1rem, 6cqw, 2rem)` | Igual que `data-testimonials_padding` pero para el breakpoint móvil (≤535 px). Default: `0` (el peek en móvil lo controla `slidewidthmobile`, no este valor — ver nota) |
 | `data-testimonials_draggable` | `true` | Habilita drag con ratón |
 | `data-testimonials_log` | `1` | Activa logging en consola para debug |
+
+**Límite del parseo de atributos:** `getConfigByAtt()` (`javascript/modules/attributesToConfigObj.js`) obtiene el nombre de cada opción haciendo `key.split('_')[1]` sobre el dataset — por eso el nombre tras `data-testimonials_` debe ser **una sola palabra sin guion bajo** (`slidewidthmobile`, no `slidewidth_mobile`); un guion bajo adicional se interpretaría como otro separador y la opción colisionaría con otra ya existente.
 
 ### Comportamiento por defecto
 
 | Breakpoint | Ancho del slide | Slides visibles | Padding lateral |
 |---|---|---|---|
-| >535 px | `fixedWidth: clamp(300px, 24vw, 420px)` (configurable con `data-testimonials_slidewidth`) | automático — tantos como quepan según el ancho disponible | `clamp(5.6rem, 10vw, 9.6rem)` |
-| ≤535 px | `fixedWidth: 66vw` (fijo) | 1 (centrado, con `focus: center`) | *(no aplica, ver nota)* |
+| >535 px | `fixedWidth: clamp(300px, 24vw, 420px)` (configurable con `data-testimonials_slidewidth`) | automático — tantos como quepan según el ancho disponible | `clamp(5.6rem, 10vw, 9.6rem)` (configurable con `data-testimonials_padding`) |
+| ≤535 px | `fixedWidth: 66vw` (configurable con `data-testimonials_slidewidthmobile`) | 1 (centrado, con `focus: center`) | `0` (configurable con `data-testimonials_paddingmobile`) |
+
+`focus: 'center'` está activo en **todos** los breakpoints (no solo en móvil): el slide activo queda siempre centrado en el track, con los vecinos asomando simétricamente a ambos lados.
 
 **Slide con ancho fijo y nº de slides automático (`fixedWidth` sin `perPage`):** el ancho de cada slide es fijo (`data-testimonials_slidewidth`, un `clamp()` por defecto para que crezca/encoja algo con el viewport pero sin superar un máximo), y en vez de indicarle a Splide un número de slides visibles, se omite `perPage` — Splide entonces calcula solo cuántas "cajitas" caben en el ancho disponible del track (incluido el cálculo de clones para el loop infinito, que usa `ceil(anchoDelTrack / anchoDelSlide)` en vez de basarse en `perPage`). Resultado: en viewports anchos aparecen automáticamente más slides por página, sin tocar configuración.
 
-**Breakpoint móvil (≤535 px) — `fixedWidth` + `focus: center`:** en vez de calcular el ancho del slide a partir de `padding`, se fija explícitamente a `66vw` (`fixedWidth`) y se centra el slide activo dentro del track (`focus: 'center'`). Esto hace que el track sea más ancho que el viewport y asomen simétricamente los slides adyacentes a ambos lados — el efecto "peek" en este breakpoint depende de `fixedWidth`, no de `data-testimonials_padding`. Se usa `vw` (relativo al viewport) en lugar de `%` para evitar una referencia circular contra el ancho de `.splide__list`, que depende a su vez de sus hijos. **Importante:** este breakpoint fuerza `padding: 0` explícitamente — Splide solo sobrescribe en cada breakpoint las claves que se le indican, así que si no se anula, el `padding` clamp() del desktop (`data-testimonials_padding`) sigue activo y compite con `fixedWidth` por el mismo espacio, causando un layout inconsistente según el ancho exacto del viewport.
+**Breakpoint móvil (≤535 px) — `fixedWidth` + `padding` configurables por separado:** el ancho/padding del breakpoint móvil son independientes de `data-testimonials_slidewidth`/`data-testimonials_padding` (Splide solo sobrescribe en cada breakpoint las claves que se le indican; sin esta separación, el valor del desktop seguiría activo en móvil y competiría por el mismo espacio). Por defecto siguen usando los valores históricos relativos al **viewport real** (`66vw` / `padding: 0`), correctos para el uso full-bleed habitual del `[data-testimonials]` genérico.
+
+**Instancias anidadas en un contenedor más estrecho que el viewport** (p.ej. un slider dentro de una card, no full-bleed): tanto `vw` como `%` fallan aquí — `vw` mide contra el viewport real, no contra el contenedor; y `%` puede colapsar por referencia circular con el ancho de `.splide__list` (que depende de sus propios hijos) o quedar distorsionado si el `padding` del track (también configurable) se come buena parte del espacio disponible antes de que el `%` se calcule. La solución es usar **Container Queries**: establecer `container-type: inline-size` en un ancestro del slider (por CSS, en `style.css`) y usar `cqw` en `data-testimonials_slidewidth`/`_padding`/`_slidewidthmobile`/`_paddingmobile` — así el cálculo siempre es relativo al ancho real del contenedor, sea cual sea el viewport o cuánto padding intermedio haya. Ejemplo real: `.auto-slide.slide-media` en `tailwind/custom/components/style.css` (slider de capturas dentro de una card en la home).
 
 - **Gap entre slides:** `clamp(2rem, 5vw, 4.8rem)` — configurable con `data-testimonials_gap`
 - **Tipo de loop:** `loop` si hay más de 2 slides; `slide` si hay ≤2

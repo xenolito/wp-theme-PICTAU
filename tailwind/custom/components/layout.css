@@ -134,6 +134,17 @@ button.lightbox-trigger {
 	}
 }
 
+.takes-full-width {
+	.card > & {
+		margin-left: calc(var(--card-padding) * -1) !important;
+		margin-right: calc(var(--card-padding) * -1) !important;
+		width: calc(100% + var(--card-padding) * 2) !important;
+	}
+
+	/* .pct-section > & {
+	} */
+}
+
 .edge-width {
 	margin-left: calc(var(--def-layout-x-padding) * -1) !important;
 	margin-right: calc(var(--def-layout-x-padding) * -1) !important;
@@ -580,7 +591,7 @@ figure {
 	}
 
 	@container pct-2cols-nested (max-width: 380px) {
-		> * {
+		> *:not(.pct-cols-fixed) {
 			grid-template-columns: 1fr !important;
 			> * {
 				width: 100% !important;
