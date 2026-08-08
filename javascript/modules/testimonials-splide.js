@@ -51,6 +51,14 @@ document.addEventListener('DOMContentLoaded', () => {
 				// en un ancestro) en vez de vw.
 				slidewidthmobile = '66vw',
 				paddingmobile = 0,
+				// Cuántas "páginas" (perPage, con default 1) de slides se
+				// precargan por delante/detrás del activo cuando lazyload está
+				// activo. Con fixedWidth sin perPage no hay páginas visuales
+				// reales, pero Splide igual usa este valor como nº de slides
+				// de margen. Default 2 (más generoso que el 1 de Splide) para
+				// cubrir con margen el slide que está a punto de entrar con
+				// autoplay/drag rápidos. Súbelo si aun así lo ves sin cargar.
+				preloadpages = 2,
 			} = config
 
 			// console.log('repeat hardcoded', repeat)
@@ -69,6 +77,17 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.padding = padding
 			this.slideWidthMobile = slidewidthmobile
 			this.paddingMobile = paddingmobile
+			// Flag booleano puro por presencia del atributo, NO a través de
+			// `config`: getConfigByAtt() (attributesToConfigObj.js, compartida
+			// por ~25 módulos) convierte cualquier atributo con valor vacío a
+			// `false` (datasets[key] === '' ? false : ...), así que
+			// data-testimonials_lazyload="" llegaría ya como `false` en
+			// `config`, indistinguible de "atributo ausente". Comprobamos el
+			// dataset del elemento directamente para que la presencia del
+			// atributo baste, sea cual sea su valor (o ninguno). Único modo
+			// soportado: 'nearby' — 'sequential' no tiene caso de uso aquí.
+			this.lazyload = 'testimonials_lazyload' in testimonialsContainer.dataset ? 'nearby' : false
+			this.preloadPages = Number(preloadpages) || 2
 
 			this.log = log === 'true' || log === '1' ? true : false
 
@@ -79,6 +98,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		init = () => {
 			this.setupDOM()
+		}
+
+		// Convierte src/srcset -> data-splide-lazy/data-splide-lazy-srcset,
+		// el mecanismo que espera el componente LazyLoad nativo de Splide
+		// (ver LazyLoad en splide.esm.js: busca [data-splide-lazy] al montar,
+		// no [src]). Quita también loading="lazy": ese atributo dispara el
+		// lazy-load NATIVO del navegador, que decide cuándo pedir la imagen
+		// según su proximidad al viewport del DOCUMENTO — nada que ver con
+		// "es el slide activo (o casi) del carrusel". Con los dos sistemas
+		// activos a la vez, Splide puede "activar" un slide y aun así el
+		// navegador seguir sin pedir la imagen, produciendo el FOUC/imagen
+		// en blanco que se ve sobre todo en móvil con autoplay rápido.
+		convertImagesToLazy = slide => {
+			slide.querySelectorAll('img[src]').forEach(img => {
+				img.setAttribute('data-splide-lazy', img.getAttribute('src'))
+				if (img.hasAttribute('srcset')) {
+					img.setAttribute('data-splide-lazy-srcset', img.getAttribute('srcset'))
+					img.removeAttribute('srcset')
+				}
+				img.removeAttribute('src')
+				img.removeAttribute('loading')
+			})
 		}
 
 		setupDOM = () => {
@@ -109,6 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			this.slides.forEach(slide => {
 				slide.classList.add('splide__slide')
+				if (this.lazyload) this.convertImagesToLazy(slide)
 				trackList.append(slide)
 			})
 
@@ -154,6 +196,11 @@ document.addEventListener('DOMContentLoaded', () => {
 				config.autoplay = true
 				config.interval = this.autoplay
 				config.pauseOnHover = true
+			}
+
+			if (this.lazyload) {
+				config.lazyLoad = this.lazyload
+				config.preloadPages = this.preloadPages
 			}
 
 			try {

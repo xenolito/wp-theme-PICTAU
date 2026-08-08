@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.17.0
+- **Versión:** 7.18.1
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -427,7 +427,21 @@ Se requieren al menos 2 hijos directos.
 | `data-testimonials_padding` | `4rem` | Padding del track (efecto "peek": cuánto se asoman los slides adyacentes por los laterales) en el breakpoint desktop (>535 px). Acepta cualquier valor CSS. Default: `clamp(5.6rem, 10vw, 9.6rem)` |
 | `data-testimonials_paddingmobile` | `clamp(1rem, 6cqw, 2rem)` | Igual que `data-testimonials_padding` pero para el breakpoint móvil (≤535 px). Default: `0` (el peek en móvil lo controla `slidewidthmobile`, no este valor — ver nota) |
 | `data-testimonials_draggable` | `true` | Habilita drag con ratón |
+| `data-testimonials_lazyload` | *(vacío)* | **Activa** el componente `LazyLoad` nativo de Splide para las `<img>` de cada slide (siempre en modo `'nearby'`: carga solo las cercanas al slide activo). Es un flag booleano por **presencia** del atributo — el valor no importa (`data-testimonials_lazyload=""`, `="true"`, `="1"`... todo activa igual). Default: ausente = desactivado (sin tocar las imágenes, comportamiento histórico) |
+| `data-testimonials_preloadpages` | `3` | Nº de "páginas" (`perPage`, con default `1` en Splide) de slides a precargar por delante/detrás del activo. Solo aplica con `lazyload` presente. Default: `2` (ya más generoso que el `1` de Splide). Súbelo si con autoplay rápido sigues viendo el slide entrante sin cargar |
 | `data-testimonials_log` | `1` | Activa logging en consola para debug |
+
+### `lazyload` — evitar el FOUC de imágenes con autoplay/drag rápido
+
+Cuando los slides son `<img>` (p.ej. la variante `.slide-media`), WordPress marca automáticamente algunas de ellas con `loading="lazy"` nativo del navegador (todas menos las primeras). Ese lazy-load nativo decide cuándo pedir la imagen según su proximidad al **viewport del documento** — no tiene ni idea de que un elemento está dentro de un carrusel ni de cuál es el "slide activo". Con autoplay o drag rápidos, el slide que acaba de entrar por el lateral puede llevar varios segundos sin haber empezado siquiera a descargarse, produciendo un FOUC/imagen en blanco hasta que carga.
+
+Con `data-testimonials_lazyload` presente en el bloque (cualquier valor, incluido vacío), el módulo (antes de montar Splide, en `setupDOM()`) convierte cada `<img src="..." loading="lazy">` de los slides a `<img data-splide-lazy="...">` (y `srcset` → `data-splide-lazy-srcset`), quitando el atributo `loading` para que el navegador no decida nada por su cuenta. Splide pasa entonces a controlar la carga con su propio componente `LazyLoad` en modo `'nearby'`: en cuanto un slide entra en la ventana `data-testimonials_preloadpages` (medida en distancia al índice activo, no en scroll de página), le asigna el `src` real. Mientras carga, añade la clase `is-loading` al `.splide__slide` y un spinner (`.splide__spinner`, ya estilado en `splide.min.css`) dentro del contenedor de la imagen.
+
+**Por qué el valor del atributo no importa:** `getConfigByAtt()` (`javascript/modules/attributesToConfigObj.js`, compartida por ~25 módulos del tema) convierte cualquier atributo con valor vacío a `false` — así que un `data-testimonials_lazyload=""` (equivalente a `data-testimonials=""` para activar el slider) llegaría ya como `false` a través de `config`, indistinguible de "atributo ausente". Por eso `lazyload` es la única opción del módulo que se lee directamente del `dataset` del elemento en vez de a través de `config`: lo único que importa es que la clave exista.
+
+**No soporta `'sequential'`** (carga todas en orden, una a una) — solo tenía sentido como alternativa a `'nearby'` y no hay caso de uso real para ello aquí; si en el futuro hiciera falta, habría que reintroducir un valor explícito distinto de vacío para elegir el modo.
+
+**Nota:** con pocos slides (p.ej. 5) y un `preloadpages` generoso, la ventana de precarga puede cubrir el carrusel entero desde el primer instante — en ese caso no hay diferido visible, todo carga de inmediato, lo cual es correcto (no un fallo del mecanismo, simplemente no hace falta diferir nada con tan pocos slides).
 
 **Límite del parseo de atributos:** `getConfigByAtt()` (`javascript/modules/attributesToConfigObj.js`) obtiene el nombre de cada opción haciendo `key.split('_')[1]` sobre el dataset — por eso el nombre tras `data-testimonials_` debe ser **una sola palabra sin guion bajo** (`slidewidthmobile`, no `slidewidth_mobile`); un guion bajo adicional se interpretaría como otro separador y la opción colisionaría con otra ya existente.
 
