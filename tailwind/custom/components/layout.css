@@ -2890,13 +2890,14 @@ nav.dot-navigation {
 	}
 
 	&:has(.splide__pagination) {
-		margin-bottom: var(--default-section-vert-padding);
+		.splide__track {
+			padding-bottom: var(--card-padding);
+		}
 	}
 
 	.splide__track {
 		max-width: unset !important;
 		mask-image: var(--mask-testimonials-gradient);
-		padding-bottom: var(--card-padding);
 		cursor: grab;
 
 		.splide__list {

@@ -392,3 +392,27 @@ body.home .slider,
 	}
 	margin-bottom: 1rem !important;
 }
+
+[data-testimonials].auto-slide {
+	margin-block: var(--card-padding, 2rem);
+
+	&.slide-media {
+		/* background: red; */
+
+		.splide__list {
+			align-items: flex-start;
+		}
+
+		.splide__slide {
+			padding: 0;
+			height: auto;
+			align-items: flex-start;
+
+			img {
+				width: 100%;
+				height: auto;
+				object-fit: cover;
+			}
+		}
+	}
+}
