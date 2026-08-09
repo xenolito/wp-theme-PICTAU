@@ -195,9 +195,15 @@ const setScrollBars = () => {
 			// scrollHeight real de la página. Si en el futuro se añade una animación
 			// que sí afecte al layout (p.ej. un reveal por height), esa mutación
 			// también se ignoraría aquí y habría que excluirla explícitamente.
+			// Mismo caso con [data-testimonials]: Splide (testimonials-splide.js)
+			// escribe transform inline sobre .splide__track/.splide__list en cada
+			// transición, y con autoplay (.auto-slide) eso se repite indefinidamente
+			// mientras el carrusel esté en viewport. fixedWidth + slides horizontales
+			// → nunca afecta al scrollHeight de la página, así que también es seguro
+			// ignorarlo aquí.
 			ignoreMutation: mutation => {
 				const target = mutation.target.nodeType === Node.ELEMENT_NODE ? mutation.target : mutation.target.parentElement
-				return !!target?.closest('[data-anim_any]')
+				return !!target?.closest('[data-anim_any], [data-testimonials]')
 			},
 		},
 		scrollbars: {

@@ -342,7 +342,11 @@ figure {
 
 .sticky {
 	position: sticky !important;
-	top: calc(var(--whole-header-height) + var(--card-padding));
+	/* --whole-header-height-current (no --whole-header-height): este top debe
+	   seguir la altura REAL/visible del header en cada momento, incluida cuando
+	   el above-header se oculta al hacer scroll — si no, el elemento se queda
+	   pegado más abajo de donde debería, dejando un hueco bajo el header. */
+	top: calc(var(--whole-header-height-current) + var(--card-padding));
 	height: fit-content;
 
 	@media only screen and (max-width: 767px) {
@@ -905,8 +909,7 @@ body .is-layout-constrained:not(.alignfull) > * {
 #main > article {
 	header.entry-header {
 		/* --paddV: calc(var(--def-layout-x-padding) * 2); */
-		/* @apply flex justify-center min-h-[var(--page-header-min-height)]; */
-		@apply flex justify-center;
+		@apply flex justify-center min-h-[var(--page-header-min-height)];
 		padding-bottom: 1rem;
 		position: relative;
 		width: 100vw;
@@ -3932,6 +3935,6 @@ section.category-grid-section {
 	.footer {
 		border-top: 1px solid color-mix(in srgb, var(--border-color) 33%, transparent);
 		padding-top: 1rem;
-		margin-top: 1rem;
+		margin-top: 2rem;
 	}
 }

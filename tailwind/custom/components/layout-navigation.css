@@ -941,14 +941,35 @@ body.header-width-centered {
 	--desktop-header-height: 60px;
 	--desktop-above-header-height: 0px;
 
-	&:has(.above-header-wrap):not(:has(#masthead.scrolledHeader)) {
+	&:has(.above-header-wrap) {
 		--desktop-above-header-height: 50px;
+	}
+
+	/*
+	 * --whole-header-height es un valor ESTATICO: no cambia cuando el above-header
+	 * se oculta al hacer scroll (#masthead.scrolledHeader), a propósito. Lo usan
+	 * elementos como .entry-header/.slider para reservar espacio bajo el header
+	 * fijo (padding-top/margin-top); si variara con el scroll, el contenido
+	 * reflow-earía y saltaría hacia arriba/abajo en el instante en que se
+	 * activa/desactiva scrolledHeader (ver commit del fix del salto de contenido).
+	 *
+	 * --whole-header-height-current es la contrapartida DINAMICA: sí refleja la
+	 * altura real y visible del header en cada momento (se reduce cuando el
+	 * above-header está oculto). Úsala solo para elementos que se posicionan en
+	 * relación al header tal y como se ve ahora mismo en pantalla (p.ej. `top` de
+	 * .sticky) — nunca para reservar espacio de layout, o reintroduces el salto.
+	 */
+	--desktop-above-header-height-current: var(--desktop-above-header-height);
+	&:has(#masthead.scrolledHeader) {
+		--desktop-above-header-height-current: 0px;
 	}
 
 	--mobile-above-header-height: 0px;
 	--whole-header-height: calc(var(--desktop-header-height) + var(--desktop-above-header-height) + var(--desktop-space-top));
+	--whole-header-height-current: calc(var(--desktop-header-height) + var(--desktop-above-header-height-current) + var(--desktop-space-top));
 	@media only screen and (max-width: 1024px) {
 		--whole-header-height: calc(var(--mobile-header-height) + var(--mobile-above-header-height));
+		--whole-header-height-current: var(--whole-header-height);
 	}
 	--header-x-padding-min: 2.5rem;
 
