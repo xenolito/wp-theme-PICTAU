@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.18.1
+- **Versión:** 7.18.2
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1539,8 +1539,21 @@ Entry: `javascript/script.js` → `theme/js/script.min.js`
 | `ModalWP.js` | Clase genérica de modal (OverlayScrollbars). Construye la estructura DOM del modal a partir de cualquier elemento pasado por constructor. No conoce `data-modalform`; solo lee `data-modal` como fallback de ID. Ver [Modales con formulario (Contact Form 7)](#modales-con-formulario-contact-form-7--modalwpjs--modalcontactform7js). |
 | `modalContactForm7.js` | Consumidor de `ModalWP.js` para modales con formulario CF7 disparados por click. Atributos: `data-modalform`, `data-modalform_target`, `data-modalform_input_name`, `data-modalform_input_data`. |
 | `contactForm7.js` | Eventos de formularios CF7 (validación, envío, checkboxes/radios custom). También usa `ModalWP.js` (sin formulario) para mostrar el mensaje de éxito tras el envío. |
+| `fluentbooking_lenis_fix.js` | Añade `data-lenis-prevent` al widget del plugin FluentBooking (`[fluent_booking]`) para que Lenis no capture el scroll de la lista de horas ni del desplegable de zona horaria. Ver [Compatibilidad de scroll con widgets de terceros (Lenis)](#compatibilidad-de-scroll-con-widgets-de-terceros-lenis--fluentbooking_lenis_fixjs). |
 
 Librerías: GSAP + ScrollTrigger, Splide, OverlayScrollbars, Split Type, CountUp.js
+
+---
+
+## Compatibilidad de scroll con widgets de terceros (Lenis) — `fluentbooking_lenis_fix.js`
+
+Lenis (`javascript/modules/smooth_scroll.js`) intercepta la rueda del ratón/touch de toda la página para su scroll suavizado. Cualquier widget de terceros con su propio scroll interno (dropdowns, listas largas, modales) necesita el atributo `data-lenis-prevent` en un contenedor ancestro, o Lenis se queda con el evento y el scroll interno del widget no funciona (mismo mecanismo que usan las modales, ver [`ModalWP.js`](#modales-con-formulario-contact-form-7--modalwpjs--modalcontactform7js)).
+
+**Caso detectado:** el widget del plugin [FluentBooking](https://wordpress.org/plugins/fluent-booking/) (shortcode `[fluent_booking id="..."]`) — la lista de horas y, sobre todo, el desplegable de zona horaria (una lista larga renderizada con Svelte) quedaban bloqueados: la rueda del ratón no hacía scroll ni dentro del widget ni en la página.
+
+**Fix:** `fluentbooking_lenis_fix.js` añade `data-lenis-prevent` a `.fluent_booking_app` en `DOMContentLoaded`. No hace falta `MutationObserver` ni esperar a que el widget termine de montarse: el shortcode ya renderiza `.fluent_booking_app` como placeholder vacío en el HTML del servidor (el plugin lo hidrata después con Svelte), y Lenis evalúa `data-lenis-prevent` recorriendo el `composedPath()` completo del evento — cualquier hijo añadido más tarde dentro de ese contenedor queda cubierto igualmente.
+
+Si se integra otro plugin/widget de terceros con scroll interno propio y el mismo síntoma (rueda bloqueada), aplicar el mismo patrón: localizar el contenedor raíz que ya exista en el HTML servidor (o, si se genera 100% por JS, usar un `MutationObserver` como en `fix_chatbot_meow_lenis.js`) y añadirle `data-lenis-prevent`.
 
 ---
 
