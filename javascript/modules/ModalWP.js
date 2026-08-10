@@ -50,11 +50,18 @@ const ModalWP = class {
 		this.setupModal()
 	}
 
+	// No hace falta [data-lenis-prevent] en .modal/.popup: show() llama a lenis.stop()
+	// (más abajo), y con Lenis parado + `allowNestedScroll: true` en smooth_scroll.js,
+	// Lenis ya deja pasar el wheel/touch nativo hacia el contenedor con overflow real
+	// (el viewport que crea OverlayScrollbars dentro de .content, ver setOverlayScrollbars)
+	// sin necesidad de marcarlo a mano, y bloquea el resto del modal (backdrop, icono de
+	// cerrar) con preventDefault por estar isStopped — así que la página no puede
+	// scrollear detrás del modal fijo. Verificado con Playwright: scroll interno OK,
+	// window.scrollY no se mueve ni sobre el backdrop ni sobre el contenido.
 	setupModal = () => {
 		this.modal = document.createElement('div')
 		this.modal.setAttribute('id', `${this.modalID}-${window.crypto.randomUUID()}`)
 		this.modal.setAttribute('data-modal', this.modalID)
-		this.modal.setAttribute('data-lenis-prevent', '')
 		this.modal.style.setProperty('--modal-height', window.outerHeight + 'px')
 
 		if (this.modalContent.classList.length) this.modal.setAttribute('class', this.modalContent.classList)
@@ -75,7 +82,6 @@ const ModalWP = class {
 		this.popup.classList.add('content-wrapper')
 		this.popup.classList.add('popup')
 		if (this.nested) this.popup.classList.add('nested')
-		this.popup.setAttribute('data-lenis-prevent', '')
 		this.modal.append(this.popup)
 
 		this.popupContent = document.createElement('div')

@@ -22,8 +22,7 @@ import './modules/modalContactForm7'
 import './modules/desktopMenuNavAnchor'
 import './modules/mobileMenuNav'
 // import './modules/darkMode-default-dark'
-import './modules/smooth_scroll' // lenis
-import './modules/fluentbooking_lenis_fix' // !Only if using fluentbooking, to fix the scroll with Lenis
+import './modules/smooth_scroll'
 // import './modules/scrollTrigger_rive'
 // import './modules/scrollTrigger_css-class'
 import './modules/scrollTriggerHorizontal'

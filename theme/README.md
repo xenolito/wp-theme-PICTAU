@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.18.2
+- **Versión:** 7.18.5
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1539,21 +1539,31 @@ Entry: `javascript/script.js` → `theme/js/script.min.js`
 | `ModalWP.js` | Clase genérica de modal (OverlayScrollbars). Construye la estructura DOM del modal a partir de cualquier elemento pasado por constructor. No conoce `data-modalform`; solo lee `data-modal` como fallback de ID. Ver [Modales con formulario (Contact Form 7)](#modales-con-formulario-contact-form-7--modalwpjs--modalcontactform7js). |
 | `modalContactForm7.js` | Consumidor de `ModalWP.js` para modales con formulario CF7 disparados por click. Atributos: `data-modalform`, `data-modalform_target`, `data-modalform_input_name`, `data-modalform_input_data`. |
 | `contactForm7.js` | Eventos de formularios CF7 (validación, envío, checkboxes/radios custom). También usa `ModalWP.js` (sin formulario) para mostrar el mensaje de éxito tras el envío. |
-| `fluentbooking_lenis_fix.js` | Añade `data-lenis-prevent` al widget del plugin FluentBooking (`[fluent_booking]`) para que Lenis no capture el scroll de la lista de horas ni del desplegable de zona horaria. Ver [Compatibilidad de scroll con widgets de terceros (Lenis)](#compatibilidad-de-scroll-con-widgets-de-terceros-lenis--fluentbooking_lenis_fixjs). |
 
 Librerías: GSAP + ScrollTrigger, Splide, OverlayScrollbars, Split Type, CountUp.js
 
 ---
 
-## Compatibilidad de scroll con widgets de terceros (Lenis) — `fluentbooking_lenis_fix.js`
+## Compatibilidad de scroll con widgets de terceros (Lenis) — `prevent` + `NESTED_SCROLL_SELECTOR`
 
-Lenis (`javascript/modules/smooth_scroll.js`) intercepta la rueda del ratón/touch de toda la página para su scroll suavizado. Cualquier widget de terceros con su propio scroll interno (dropdowns, listas largas, modales) necesita el atributo `data-lenis-prevent` en un contenedor ancestro, o Lenis se queda con el evento y el scroll interno del widget no funciona (mismo mecanismo que usan las modales, ver [`ModalWP.js`](#modales-con-formulario-contact-form-7--modalwpjs--modalcontactform7js)).
+Lenis (`javascript/modules/smooth_scroll.js`) intercepta la rueda del ratón/touch de toda la página para su scroll suavizado. Cualquier widget de terceros con su propio scroll interno (dropdowns, listas largas, modales) necesita que Lenis le ceda el control del evento, o Lenis se queda con él y el scroll interno del widget no funciona.
 
-**Caso detectado:** el widget del plugin [FluentBooking](https://wordpress.org/plugins/fluent-booking/) (shortcode `[fluent_booking id="..."]`) — la lista de horas y, sobre todo, el desplegable de zona horaria (una lista larga renderizada con Svelte) quedaban bloqueados: la rueda del ratón no hacía scroll ni dentro del widget ni en la página.
+**Caso detectado:** el widget del plugin [FluentBooking](https://wordpress.org/plugins/fluent-booking/) (shortcode `[fluent_booking id="..."]`) — la lista de horas (`.fcal_slot_picker`, renderizada con Svelte) quedaba bloqueada: la rueda del ratón no hacía scroll dentro del widget.
 
-**Fix:** `fluentbooking_lenis_fix.js` añade `data-lenis-prevent` a `.fluent_booking_app` en `DOMContentLoaded`. No hace falta `MutationObserver` ni esperar a que el widget termine de montarse: el shortcode ya renderiza `.fluent_booking_app` como placeholder vacío en el HTML del servidor (el plugin lo hidrata después con Svelte), y Lenis evalúa `data-lenis-prevent` recorriendo el `composedPath()` completo del evento — cualquier hijo añadido más tarde dentro de ese contenedor queda cubierto igualmente.
+**Intento 1 (retirado): `data-lenis-prevent` en todo el wrapper.** Un módulo `fluentbooking_lenis_fix.js` añadía `data-lenis-prevent` a `.fluent_booking_app` (el contenedor exterior del widget) en `DOMContentLoaded`. Arreglaba el scroll interno, pero causaba **saltos de scroll en toda la página** al pasar la rueda por el widget — reportado como "saltos raros" al cruzar el punto donde se oculta el above-header, aunque no tenía relación con el header: coincidía porque el widget caía en esa misma zona de scroll. Causa: `.fluent_booking_app` es mucho más grande que la única zona con overflow real (`.fcal_slot_picker`) — al pasar el ratón por las partes del wrapper *sin* overflow, Lenis soltaba igualmente el control del wheel (`data-lenis-prevent` no distingue si el nodo puede scrollear o no), pero al no haber ningún contenedor que absorbiera ese scroll nativo, el evento sin `preventDefault()` acababa moviendo `window.scrollY` por detrás de Lenis. Su loop en RAF seguía animando hacia el `targetScroll` ya desincronizado y, al recuperar el control, saltaba de golpe a esa posición obsoleta.
 
-Si se integra otro plugin/widget de terceros con scroll interno propio y el mismo síntoma (rueda bloqueada), aplicar el mismo patrón: localizar el contenedor raíz que ya exista en el HTML servidor (o, si se genera 100% por JS, usar un `MutationObserver` como en `fix_chatbot_meow_lenis.js`) y añadirle `data-lenis-prevent`.
+**Intento 2 (retirado): `allowNestedScroll: true`.** Opción nativa de Lenis: en cada wheel/touch comprueba, nodo a nodo por el `composedPath()` completo del evento, si tiene overflow real (`computedStyle.overflowY` + `scrollHeight > clientHeight`, cacheado 2s por nodo) antes de cederle el control. Soluciona el bug de arriba (solo cede cuando el nodo puede absorber el scroll de verdad) y no requiere marcar nada a mano. Pero la propia documentación de Lenis avisa: *"Can create performance issues since it checks the DOM tree on every scroll event"* — y aquí no es un caso teórico: el markup de bloques de Gutenberg anida bastante (un `<h1>` normal dentro de un `header.entry-header` está a ~12 niveles de `<body>`), así que cada wheel event de un scroll normal de página, en cualquier parte, paga ese coste por nodo (`getComputedStyle` + lectura de `scrollHeight`/`clientHeight`, que fuerza layout si el cache de 2s ha expirado) — no solo cerca de un widget con scroll propio.
+
+**Fix actual: `prevent` con selector explícito.** `prevent: node => node.matches?.(NESTED_SCROLL_SELECTOR) && node.scrollHeight > node.clientHeight` en la config de Lenis. Usa la misma señal que `allowNestedScroll` (se llama nodo a nodo por el mismo `composedPath()`) pero mucho más barata: primero un `.matches()` contra `NESTED_SCROLL_SELECTOR` (comparación de selector, no fuerza layout) que descarta al instante la inmensa mayoría de nodos del árbol, y solo mide overflow real en los contenedores que sí están en la lista — misma seguridad que `allowNestedScroll` (nunca cede el control si el contenedor no tiene overflow en ese momento, evitando la fuga hacia `window.scrollY` del intento 1) sin pagar el coste en el resto de la página.
+
+`NESTED_SCROLL_SELECTOR` (constante al principio de `smooth_scroll.js`) mantiene la lista de contenedores conocidos con scroll propio — **siempre el contenedor real con overflow, nunca un wrapper más grande** (esa fue la causa del intento 1):
+- `[data-overlayscrollbars-viewport]` → viewport interno que crea OverlayScrollbars al inicializarse sobre un `<div>` normal (`ModalWP.js`, `setOverlayScrollbars`). **No** aplica al `OverlayScrollbars(document.body, ...)` de `setScrollBars()` en `script.js`: ese usa el modo especial para `<html>`/`<body>` que preserva el scroll nativo del documento sin crear un viewport propio (verificado con Playwright: solo existen 2 nodos con este atributo en toda la página, ambos dentro de modales).
+- `.fcal_slot_picker` → lista de horas de FluentBooking.
+- `.main-modal-content` → panel del modal de cookies del plugin GDPR Cookie Compliance.
+
+**`data-lenis-prevent` ya no se usa en ningún sitio del tema.** Tanto `ModalWP.js` como el modal de cookies GDPR (`smooth_scroll.js`) llaman a `lenis.stop()` mientras están abiertos, así que Lenis no anima nada de por sí; su fallback nativo cuando está `isStopped` es `event.preventDefault()` salvo que el `prevent` de arriba diga lo contrario — exactamente lo que hacía falta: el contenido interno sigue scrolleando, y el resto del overlay (backdrop, icono de cerrar) queda bloqueado sin que la página se mueva detrás. Verificado con Playwright: scroll interno intacto en los tres casos (FluentBooking, modal, y el scroll normal de página a través del punto donde se oculta el above-header), `window.scrollY` no se mueve nunca por detrás de ninguno de los tres.
+
+**Añadir un widget nuevo con scroll interno:** localizar el contenedor real con `overflow: auto/scroll` (no el wrapper que lo envuelve) y añadirlo a `NESTED_SCROLL_SELECTOR`. Si el contenido se genera 100% por JS y tarda en montar su overflow, comprobar primero que el selector ya existe en el DOM a tiempo del primer wheel event; si no, usar un `MutationObserver` como en `fix_chatbot_meow_lenis.js`.
 
 ---
 
