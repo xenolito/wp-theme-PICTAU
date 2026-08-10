@@ -31,6 +31,7 @@ const lenis = new Lenis({
 	infinite: false,
 	autoResize: true,
 	// normalizeWheel: true,
+
 	// `prevent` en vez de `allowNestedScroll`: la propia doc de Lenis avisa de que
 	// allowNestedScroll comprueba computedStyle + scrollHeight/clientHeight de CADA
 	// nodo del composedPath() del evento (cacheado 2s, pero el primer barrido y cada
