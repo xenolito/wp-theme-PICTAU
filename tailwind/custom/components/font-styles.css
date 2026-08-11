@@ -42,15 +42,16 @@ h4 {
 	}
 }
 
-h1 {
+/* h1 {
 	@apply !mt-0 pb-[0.5ch];
 	font-size: clamp(2.2rem, 5vw, 3.5rem);
 	&.smaller,
 	span.smaller {
 		font-size: clamp(1.4rem, 5vw, 2rem);
 	}
-}
+} */
 
+h1,
 h2 {
 	margin-top: 0;
 	padding-bottom: 0.5ch;

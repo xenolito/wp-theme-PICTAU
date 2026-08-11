@@ -35,7 +35,7 @@
 			.main-header-wrap {
 				background-color: var(--header-bg-color-transparent);
 				color: var(--nav-text-color-transparent);
-				@apply border-b-[var(--header-border-color-transparent)];
+				@apply border-b-[var(--header-border-color-transparent)] border-t-[var(--header-border-color-transparent)];
 			}
 
 			.main-nav-desktop .menu-item {

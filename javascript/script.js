@@ -23,6 +23,7 @@ import './modules/desktopMenuNavAnchor'
 import './modules/mobileMenuNav'
 // import './modules/darkMode-default-dark'
 import './modules/smooth_scroll'
+// import './modules/fluentbooking_timezone_dropdown_upward' // ! Only for fluentbooking plugin, to fix the timezone dropdown that opens upward and is cut off by the modal's overflow:hidden
 // import './modules/scrollTrigger_rive'
 // import './modules/scrollTrigger_css-class'
 import './modules/scrollTriggerHorizontal'

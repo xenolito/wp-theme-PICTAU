@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.18.5
+- **Versión:** 7.18.6
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1539,8 +1539,21 @@ Entry: `javascript/script.js` → `theme/js/script.min.js`
 | `ModalWP.js` | Clase genérica de modal (OverlayScrollbars). Construye la estructura DOM del modal a partir de cualquier elemento pasado por constructor. No conoce `data-modalform`; solo lee `data-modal` como fallback de ID. Ver [Modales con formulario (Contact Form 7)](#modales-con-formulario-contact-form-7--modalwpjs--modalcontactform7js). |
 | `modalContactForm7.js` | Consumidor de `ModalWP.js` para modales con formulario CF7 disparados por click. Atributos: `data-modalform`, `data-modalform_target`, `data-modalform_input_name`, `data-modalform_input_data`. |
 | `contactForm7.js` | Eventos de formularios CF7 (validación, envío, checkboxes/radios custom). También usa `ModalWP.js` (sin formulario) para mostrar el mensaje de éxito tras el envío. |
+| `fluentbooking_timezone_dropdown_upward.js` | Fuerza que el desplegable de zona horaria de FluentBooking se abra siempre hacia arriba del trigger. Ver [Desplegable de zona horaria de FluentBooking — forzado hacia arriba](#desplegable-de-zona-horaria-de-fluentbooking--forzado-hacia-arriba). |
 
 Librerías: GSAP + ScrollTrigger, Splide, OverlayScrollbars, Split Type, CountUp.js
+
+---
+
+## Desplegable de zona horaria de FluentBooking — forzado hacia arriba
+
+El desplegable de zona horaria del widget FluentBooking (`.svelte-select-list`, componente Svelte Select, `position: fixed`) se abre por defecto hacia abajo del trigger. Cuando se abre hacia abajo, en ciertas posiciones de scroll queda **recortado visualmente** por el contenido siguiente de la página (se ve el bloque de Gutenberg de detrás en vez del resto del propio desplegable). Cuando se abre hacia arriba se mantiene contenido dentro del propio widget y se ve correcto siempre.
+
+**Investigado a fondo y descartado como arreglable vía CSS:** ni forzar `overflow: visible` en los ancestros del plugin con `overflow-y: hidden` (`.fcal_date_wrapper`, `.fcal_calendar_inner`) ni neutralizar los `position: relative; z-index: 1` anidados que usa el tema (`#page`, `.pct-section`, `#primary`, `body`) cambia el resultado, ni con recarga real ni forzando repaint en runtime. La librería tampoco expone ninguna opción de configuración para fijar la dirección de apertura, ni añade una clase que distinga arriba/abajo.
+
+**Fix:** `fluentbooking_timezone_dropdown_upward.js` observa la aparición de `.svelte-select-list` en el DOM (se crea/destruye en cada apertura/cierre, no es un nodo persistente) y, en cuanto aparece, observa sus propias mutaciones de `style` — las mismas que dispara la librería al abrir y en cada scroll, para reposicionarse y seguir al trigger — y sobreescribe el `top` inmediatamente después con la fórmula "hacia arriba" (`triggerTop - listHeight - 6px`), en vez de dejar la fórmula "hacia abajo" (`triggerBottom + 6px`) que usa la librería por defecto. Un guard (`if (list.style.top !== top)`) evita bucle infinito con el propio observer.
+
+Verificado con Playwright: se abre hacia arriba y queda contenido dentro del widget sin recorte, el scroll con rueda dentro del desplegable sigue funcionando en toda su altura, y la selección de un item por click persiste correctamente tras cerrar.
 
 ---
 
@@ -1559,6 +1572,7 @@ Lenis (`javascript/modules/smooth_scroll.js`) intercepta la rueda del ratón/tou
 `NESTED_SCROLL_SELECTOR` (constante al principio de `smooth_scroll.js`) mantiene la lista de contenedores conocidos con scroll propio — **siempre el contenedor real con overflow, nunca un wrapper más grande** (esa fue la causa del intento 1):
 - `[data-overlayscrollbars-viewport]` → viewport interno que crea OverlayScrollbars al inicializarse sobre un `<div>` normal (`ModalWP.js`, `setOverlayScrollbars`). **No** aplica al `OverlayScrollbars(document.body, ...)` de `setScrollBars()` en `script.js`: ese usa el modo especial para `<html>`/`<body>` que preserva el scroll nativo del documento sin crear un viewport propio (verificado con Playwright: solo existen 2 nodos con este atributo en toda la página, ambos dentro de modales).
 - `.fcal_slot_picker` → lista de horas de FluentBooking.
+- `.svelte-select-list` → lista del desplegable de zona horaria de FluentBooking (componente Svelte Select). Vive en un subárbol del DOM distinto a `.fcal_slot_picker` (cuelga de `.fcal_timezone_select`, no de `.fcal_calendar_slot_wrap`), así que hace falta como entrada aparte. Es la clase estable que asigna la librería; el sufijo hash tipo `svelte-82qwg8` que la acompaña en el DOM sí puede cambiar entre builds del plugin, por eso no forma parte del selector.
 - `.main-modal-content` → panel del modal de cookies del plugin GDPR Cookie Compliance.
 
 **`data-lenis-prevent` ya no se usa en ningún sitio del tema.** Tanto `ModalWP.js` como el modal de cookies GDPR (`smooth_scroll.js`) llaman a `lenis.stop()` mientras están abiertos, así que Lenis no anima nada de por sí; su fallback nativo cuando está `isStopped` es `event.preventDefault()` salvo que el `prevent` de arriba diga lo contrario — exactamente lo que hacía falta: el contenido interno sigue scrolleando, y el resto del overlay (backdrop, icono de cerrar) queda bloqueado sin que la página se mueva detrás. Verificado con Playwright: scroll interno intacto en los tres casos (FluentBooking, modal, y el scroll normal de página a través del punto donde se oculta el above-header), `window.scrollY` no se mueve nunca por detrás de ninguno de los tres.

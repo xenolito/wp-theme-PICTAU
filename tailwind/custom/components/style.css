@@ -368,6 +368,10 @@ body.home .slider,
 			line-height: 1;
 		}
 	}
+
+	.wp-block-button {
+		width: 100%;
+	}
 }
 
 .has-tic-icon {
@@ -435,6 +439,88 @@ body.home .slider,
 				height: auto;
 				object-fit: cover;
 			}
+		}
+	}
+}
+
+/*! DEFAULT PAGE HEADER WITH HERO SLIDER (TEMPLATE "No page header"  */
+header.slider {
+	&:has(> .is-bg) {
+		> .entry-header-content {
+			/* margin-block: var(--def-layout-x-padding); */
+			min-height: min(calc(100vw * 0.25), 400px);
+			padding-block: 2rem;
+
+			h1,
+			h2,
+			p {
+				text-align: left !important;
+				max-width: 40ch;
+			}
+
+			h1,
+			h2,
+			p {
+				max-width: min(66vw, 40rem) !important;
+				margin-inline: 0 !important;
+				text-wrap: balance;
+			}
+		}
+	}
+}
+
+/*! UL UNORDERED LIST WITH ICON TICS AND CARD/STRIPES BACKGROUND */
+.stripe-list {
+	padding-left: 0 !important;
+	li {
+		padding: 1.33ch 1.66ch;
+	}
+}
+
+/*! FLUENTBOOKING PLUGIN STYLES */
+.fcal_cal_wrap {
+	--fcal_primary_color: var(--bg-color-theme-dark);
+	--today-mark-dim: 8px;
+	/* --fcal_enable_day_bg: var(--bg-color-theme-dark); */
+
+	/* --fcal_dark: var(--bg-color-theme-dark); */
+	/* &.fcal-light-mode {} */
+
+	.fcal_calendar_inner {
+		border-radius: var(--def-border-radius) !important;
+	}
+
+	.day-enabled {
+		&:hover {
+			span {
+				border-radius: var(--fcal_date_radius) !important;
+				background-color: var(--main-color) !important;
+			}
+		}
+	}
+	.is-today {
+		&::before {
+			width: var(--today-mark-dim) !important;
+			height: var(--today-mark-dim) !important;
+			background: var(--main-color) !important;
+		}
+	}
+
+	.fcal_spot_confirm,
+	.fcal_btn_submit {
+		background-color: var(--main-color) !important;
+		border-color: var(--main-color) !important;
+
+		&:hover {
+			background: var(--bg-color-theme-dark) !important;
+			opacity: 1 !important;
+			border-color: var(--bg-color-theme-dark) !important;
+		}
+	}
+
+	.fcal_svg {
+		svg {
+			margin-bottom: 0 !important;
 		}
 	}
 }

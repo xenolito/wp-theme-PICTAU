@@ -352,6 +352,16 @@ document.addEventListener('DOMContentLoaded', () => {
 					delay: this.delay,
 					stagger: this.stagger,
 					ease: 'power4.out',
+					// GSAP deja "transform: translate(0px, 0px)" en el style inline al
+					// terminar, aunque sea la identidad. Un transform inline (incluso
+					// identidad) en un ancestro crea un containing block para sus
+					// descendientes position:fixed — cualquier dropdown/tooltip fixed
+					// de un widget de terceros (p.ej. el selector de zona horaria de
+					// FluentBooking) queda "atrapado" dentro de esta sección en vez de
+					// posicionarse respecto al viewport, y aparece recortado o por
+					// debajo del contenido siguiente. clearProps lo quita al acabar sin
+					// cambiar nada visualmente (ya está en su posición final).
+					clearProps: 'transform',
 				}
 			)
 		}
@@ -581,6 +591,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					duration: this.duration,
 					delay: this.delay,
 					ease: 'power3.out',
+					clearProps: 'transform', // ver comentario en setSlideTo: evita atrapar hijos position:fixed
 				}
 			)
 		}
@@ -596,6 +607,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					duration: this.duration,
 					delay: this.delay,
 					ease: 'power3.out',
+					clearProps: 'transform', // ver comentario en setSlideTo: evita atrapar hijos position:fixed
 				}
 			)
 		}

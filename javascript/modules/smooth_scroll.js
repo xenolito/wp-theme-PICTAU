@@ -15,8 +15,16 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 //     (verificado con Playwright: solo existen 2 nodos con este atributo en toda
 //     la página, ambos dentro de modales, ninguno envolviendo el contenido real).
 //   - .fcal_slot_picker → lista de horas del widget FluentBooking ([fluent_booking]).
+//   - .svelte-select-list → lista del desplegable de zona horaria del mismo widget
+//     FluentBooking. Vive en un subárbol del DOM distinto a .fcal_slot_picker (cuelga
+//     de .fcal_timezone_select, no de .fcal_calendar_slot_wrap), así que hace falta
+//     como entrada aparte — añadir solo .fcal_slot_picker no lo cubre. Es la clase
+//     "svelte-select-list" del componente Svelte Select que usa el plugin (estable,
+//     asignada por la librería); el sufijo hash tipo "svelte-82qwg8" que la acompaña
+//     en el DOM SÍ puede cambiar entre builds del plugin, por eso no forma parte del
+//     selector.
 //   - .main-modal-content → panel del modal de cookies del plugin GDPR Cookie Compliance.
-const NESTED_SCROLL_SELECTOR = '[data-overlayscrollbars-viewport], .fcal_slot_picker, .main-modal-content'
+const NESTED_SCROLL_SELECTOR = '[data-overlayscrollbars-viewport], .fcal_slot_picker, .svelte-select-list, .main-modal-content'
 
 // smooth scroll
 const lenis = new Lenis({
