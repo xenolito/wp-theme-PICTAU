@@ -1,0 +1,183 @@
+/*! FLUENTBOOKING PLUGIN STYLES */
+.fcal_cal_wrap {
+	--fcal_primary_color: var(--bg-color-theme-dark);
+	--today-mark-dim: 8px;
+	/* --fcal_enable_day_bg: var(--bg-color-theme-dark); */
+
+	/* --fcal_dark: var(--bg-color-theme-dark); */
+	/* &.fcal-light-mode {} */
+
+	/* .calendar-container {
+		width: 100% !important;
+		& > [class*="svelte-"] {
+			grid-template-columns: repeat(7, minmax(0, 4rem)) !important;
+		}
+	} */
+
+	.fcal_calendar_inner {
+		border-radius: var(--def-border-radius) !important;
+		&.fcal_mobile {
+			.fcal_side {
+				border-bottom: 1px solid var(--line-color) !important;
+				/* padding: 0; */
+
+				.fcal_slot_wrapper {
+					display: grid;
+					grid-template-columns: min-content 1fr;
+					column-gap: 2rem;
+				}
+				.fcal_slot_info > * {
+					margin-bottom: 0.25ch !important;
+				}
+				h1 {
+				}
+				.fcal_slot_description {
+					display: none !important;
+				}
+			}
+		}
+
+		.fcal_calendar_slot_wrap {
+			justify-content: center;
+		}
+	}
+
+	.day-enabled {
+		&:hover {
+			span {
+				border-radius: var(--fcal_date_radius) !important;
+				background-color: var(--main-color) !important;
+			}
+		}
+	}
+	.is-today {
+		&::before {
+			width: var(--today-mark-dim) !important;
+			height: var(--today-mark-dim) !important;
+			background: var(--main-color) !important;
+		}
+	}
+
+	.fcal_spot_confirm,
+	.fcal_btn_submit {
+		background-color: var(--main-color) !important;
+		border-color: var(--main-color) !important;
+
+		&:hover {
+			background: var(--bg-color-theme-dark) !important;
+			opacity: 1 !important;
+			border-color: var(--bg-color-theme-dark) !important;
+		}
+	}
+
+	.fcal_svg {
+		svg {
+			margin-bottom: 0 !important;
+		}
+	}
+}
+
+/* Login del dashboard frontend de FluentBooking (fluent-booking-pro), sin
+   sesión iniciada (front-app.php > FrontendRenderer::getAuthContent()).
+   A diferencia del dashboard ya autenticado (AdminMenuHandler::enqueueAssets(),
+   "modo sin conflictos") o de la página de confirmación/cancelación
+   (fluent_booking/booking_confirmation_page_vars, ver theme/inc/fluentbooking-compat.php),
+   esta vista SÍ carga el CSS del tema tal cual (verificado con Playwright: no
+   se desencola nada aquí, solo se activa dentro de la rama "usuario con
+   permiso" del renderizado) — es wp_login_form() nativo de WordPress, sin
+   ningún estilo propio del plugin ni del core (login.css de wp-login.php no
+   se enqueua en esta URL). El logo se añade vía el filtro PHP
+   'fluent_boards/login_header' (ver fluentbooking-compat.php), no por CSS.
+*/
+
+body.fluentboards_page_fluent_booking #wpbody:has(.fbs_login_form) {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 100vh;
+}
+
+.fbs_login_form {
+	max-width: 400px;
+	padding: 0;
+	background: white;
+	border-radius: var(--def-border-radius);
+	box-shadow: 0 1px 8px 0 rgb(0 0 0 / 0.08);
+
+	.fbs_login_form_heading {
+		display: flex;
+		flex-flow: column;
+		align-items: center;
+		row-gap: 1rem;
+		font-size: 1.15rem;
+		font-weight: 600;
+		text-align: center;
+		margin-bottom: 1.5rem;
+
+		.fbs_login_logo {
+			max-width: var(--logo-brand-width, 160px);
+			margin-block: 2rem !important;
+		}
+	}
+
+	.fbs_login_wrap,
+	.fbs_login_form_heading {
+		padding: 2rem;
+	}
+
+	#loginform {
+		display: flex;
+		flex-flow: column;
+		row-gap: 1rem;
+
+		label {
+			display: block;
+			font-size: 0.875rem;
+			font-weight: 500;
+			margin-bottom: 0.35ch;
+		}
+
+		.input {
+			width: 100%;
+			padding: 0.65rem 0.9rem;
+			/* --border-color solo se define dentro de .theme-color-light/.theme-color-dark
+			   (ver all-themes.css), clases que el tema añade normalmente al <body> — esta
+			   página del plugin usa su propio <body class="fluentboards_page_fluent_booking">
+			   sin ellas, así que la variable queda indefinida y sin fallback invalida el
+			   border entero (a diferencia de --main-color, que sí está definida en :root sin
+			   scoping — por eso el botón "Acceder" se ve bien pero el borde no aparecía). */
+			border: 1px solid var(--border-color, #d1d5db);
+			border-radius: var(--def-border-radius);
+			font-size: 1rem;
+		}
+
+		.login-remember label {
+			display: flex;
+			align-items: center;
+			column-gap: 0.5ch;
+			font-weight: 400;
+			margin-bottom: 0;
+		}
+
+		.login-submit {
+			margin-top: 0.5rem;
+
+			#wp-submit {
+				width: 100%;
+				padding: 0.75rem;
+				background-color: var(--main-color);
+				border: 1px solid var(--main-color);
+				border-radius: var(--def-border-radius);
+				color: white;
+				font-size: 1rem;
+				font-weight: 500;
+				cursor: pointer;
+				transition: opacity 0.2s ease;
+
+				&:hover {
+					opacity: 0.85;
+				}
+			}
+		}
+	}
+}
