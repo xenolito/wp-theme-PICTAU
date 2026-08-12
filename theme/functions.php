@@ -368,6 +368,13 @@ require get_template_directory() . '/inc/clone-post.php';
 require get_template_directory() . '/inc/default-media.php';
 
 /**
+ * Compatibilidad con el dashboard frontend de FluentBooking (fluent-booking-pro):
+ * evita que su "modo sin conflictos" desencole el CSS del plugin GDPR Cookie
+ * Compliance, dejando el banner de consentimiento sin estilos en esa página.
+ */
+require get_template_directory() . '/inc/fluentbooking-compat.php';
+
+/**
  * Pictau Blocks — CPT, widget, shortcode y página de ajustes (reemplaza el plugin wordpress-pictau-blocks-plugin).
  * Si el plugin sigue activo, se omite el require para evitar colisión de funciones y se muestra un aviso de admin.
  */

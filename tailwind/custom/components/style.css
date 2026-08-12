@@ -486,8 +486,39 @@ header.slider {
 	/* --fcal_dark: var(--bg-color-theme-dark); */
 	/* &.fcal-light-mode {} */
 
+	/* .calendar-container {
+		width: 100% !important;
+		& > [class*="svelte-"] {
+			grid-template-columns: repeat(7, minmax(0, 4rem)) !important;
+		}
+	} */
+
 	.fcal_calendar_inner {
 		border-radius: var(--def-border-radius) !important;
+		&.fcal_mobile {
+			.fcal_side {
+				border-bottom: 1px solid var(--line-color) !important;
+				/* padding: 0; */
+
+				.fcal_slot_wrapper {
+					display: grid;
+					grid-template-columns: min-content 1fr;
+					column-gap: 2rem;
+				}
+				.fcal_slot_info > * {
+					margin-bottom: 0.25ch !important;
+				}
+				h1 {
+				}
+				.fcal_slot_description {
+					display: none !important;
+				}
+			}
+		}
+
+		.fcal_calendar_slot_wrap {
+			justify-content: center;
+		}
 	}
 
 	.day-enabled {

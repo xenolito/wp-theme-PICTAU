@@ -15,12 +15,27 @@ document.addEventListener('DOMContentLoaded', () => {
 	if (!aNames.length) return
 	let activeLenisTween = null
 
+	// El hash de la URL (o el href de un <a>) no siempre es un ancla nuestra: apps
+	// con rutas tipo SPA (p.ej. el dashboard de reservas de FluentBooking,
+	// `/bookings#/`) usan el hash para su propio enrutado del lado del cliente, y
+	// valores como "#/" o "#/alguna-ruta" no son selectores CSS válidos —
+	// querySelector lanza SyntaxError en vez de simplemente no encontrar nada.
+	// Try/catch para tratarlo igual que "no existe el ancla" en vez de romper la
+	// carga de la página.
+	const safeQuerySelector = selector => {
+		try {
+			return document.querySelector(selector)
+		} catch {
+			return null
+		}
+	}
+
 	const getTargetScrollY = ({ target, offset = 0 }) => {
 		if (typeof target === 'number') {
 			return Math.max(0, target)
 		}
 
-		const targetElement = typeof target === 'string' ? document.querySelector(target) : target
+		const targetElement = typeof target === 'string' ? safeQuerySelector(target) : target
 		if (!targetElement) return null
 
 		const absoluteTop = targetElement.getBoundingClientRect().top + window.scrollY
@@ -89,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	const doScrollToAnchor = (target) => {
 		const filteredTarget = target === 'top' ? false : target
-		if (document.querySelector(`#${target}`) || !filteredTarget) {
+		if (safeQuerySelector(`#${target}`) || !filteredTarget) {
 			scrollWithEngine({
 				target: filteredTarget ? `#${filteredTarget}` : 0,
 				offset: 0,
@@ -103,14 +118,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		if (!hashPart?.length) return
 
-		if (linkToSamePage(a)) {
+		// "misma página" no basta para asumir que es un ancla nuestra: apps con
+		// rutas tipo SPA en la misma página (p.ej. el dashboard de FluentBooking,
+		// `/bookings#/calendars`) tienen el mismo origin+pathname y un hash, pero
+		// ese hash es una ruta de su propio router, no un id de esta página. Antes
+		// de interceptar el click (preventDefault bloquea el cambio nativo de
+		// location.hash del navegador, que es justo lo que ese router necesita) hay
+		// que comprobar que el destino existe de verdad — mismo criterio que ya se
+		// usa un poco más abajo para el otro caso ("link a otra URL").
+		if (linkToSamePage(a) && (hashPart === 'top' || safeQuerySelector(`#${hashPart}`))) {
 			a.addEventListener('click', e => {
 				e.preventDefault()
 				const href = e.currentTarget.getAttribute('href')
 				if (!href || !href.includes('#')) return
 				doScrollToAnchor(href.split('#')[1])
 			})
-		} else if (document.querySelector(`#${hashPart}`)) {
+		} else if (safeQuerySelector(`#${hashPart}`)) {
 			// Link apunta a otra URL pero el elemento destino existe en esta página
 			a.addEventListener('click', e => {
 				e.preventDefault()

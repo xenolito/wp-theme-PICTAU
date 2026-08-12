@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.18.6
+- **Versión:** 7.18.7
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1540,6 +1540,7 @@ Entry: `javascript/script.js` → `theme/js/script.min.js`
 | `modalContactForm7.js` | Consumidor de `ModalWP.js` para modales con formulario CF7 disparados por click. Atributos: `data-modalform`, `data-modalform_target`, `data-modalform_input_name`, `data-modalform_input_data`. |
 | `contactForm7.js` | Eventos de formularios CF7 (validación, envío, checkboxes/radios custom). También usa `ModalWP.js` (sin formulario) para mostrar el mensaje de éxito tras el envío. |
 | `fluentbooking_timezone_dropdown_upward.js` | Fuerza que el desplegable de zona horaria de FluentBooking se abra siempre hacia arriba del trigger. Ver [Desplegable de zona horaria de FluentBooking — forzado hacia arriba](#desplegable-de-zona-horaria-de-fluentbooking--forzado-hacia-arriba). |
+| `scrollToAName.js` | Scroll suave (Lenis/GSAP) al hacer click en enlaces `<a href="#ancla">` de la propia página, y al cargar con un hash en la URL. Ver [Dashboard de reservas de FluentBooking (frontend) — compatibilidad](#dashboard-de-reservas-de-fluentbooking-frontend--compatibilidad) para el caso de apps con rutas tipo SPA en la misma página. |
 
 Librerías: GSAP + ScrollTrigger, Splide, OverlayScrollbars, Split Type, CountUp.js
 
@@ -1554,6 +1555,38 @@ El desplegable de zona horaria del widget FluentBooking (`.svelte-select-list`, 
 **Fix:** `fluentbooking_timezone_dropdown_upward.js` observa la aparición de `.svelte-select-list` en el DOM (se crea/destruye en cada apertura/cierre, no es un nodo persistente) y, en cuanto aparece, observa sus propias mutaciones de `style` — las mismas que dispara la librería al abrir y en cada scroll, para reposicionarse y seguir al trigger — y sobreescribe el `top` inmediatamente después con la fórmula "hacia arriba" (`triggerTop - listHeight - 6px`), en vez de dejar la fórmula "hacia abajo" (`triggerBottom + 6px`) que usa la librería por defecto. Un guard (`if (list.style.top !== top)`) evita bucle infinito con el propio observer.
 
 Verificado con Playwright: se abre hacia arriba y queda contenido dentro del widget sin recorte, el scroll con rueda dentro del desplegable sigue funcionando en toda su altura, y la selección de un item por click persiste correctamente tras cerrar.
+
+---
+
+## Dashboard de reservas de FluentBooking (frontend) — compatibilidad
+
+FluentBooking Pro puede generar una página en el frontend (slug configurable en sus ajustes, p.ej. `/bookings`) con un dashboard tipo SPA (rutas con hash: `/bookings#/`, `/bookings#/calendars`...) donde cada usuario dado de alta ve sus propias reservas. Dos problemas de compatibilidad detectados y arreglados:
+
+### 1. `scrollToAName.js` rompía la navegación por click del dashboard
+
+**Síntoma:** clickar en las pestañas del dashboard (Calendarios, Reservas, Disponibilidad...) no navegaba — la URL no cambiaba y no había ningún error nuevo en consola. Cambiar el hash a mano con JS (`window.location.hash = '#/calendars'`) sí funcionaba, confirmando que el router de la SPA estaba bien.
+
+**Causa:** `scrollToAName.js` trataba cualquier `<a href="...#algo">` que apuntara al mismo origin+pathname como "ancla nuestra", y le hacía `preventDefault()` **incondicionalmente** antes de comprobar si el destino existía. Los enlaces de navegación internos del dashboard (`https://sitio.com/bookings#/calendars`) tienen el mismo origin+pathname que la página actual (`/bookings`), así que encajaban como "misma página" — el `preventDefault()` bloqueaba el cambio nativo de `location.hash` del navegador, que es justo lo que el router de la SPA necesita (no hace falta ni JS propio para eso: cambiar solo el hash de la URL es un comportamiento nativo del navegador si no se previene el click).
+
+**Fix:** antes de interceptar un click "a la misma página", ahora se comprueba primero que el destino sea `top` o un elemento que exista de verdad en la página — mismo criterio que ya usaba el otro caso del módulo ("enlace a otra URL"). Si no hay coincidencia, no se adjunta ningún listener y el click sigue su comportamiento nativo.
+
+De paso, esto también evitó un segundo bug relacionado: al cargar `/bookings#/`, el módulo intentaba `document.querySelector('#/')` para hacer scroll al hash de la URL — `#/` no es un selector CSS válido, lanzaba `SyntaxError`. Ahora `document.querySelector()` va envuelto en un `safeQuerySelector()` con try/catch en los 3 sitios del módulo donde se usa, tratando cualquier hash no válido como selector igual que "no existe el ancla" en vez de romper la carga de la página. Esto es una corrección general, no específica de FluentBooking — cualquier URL con enrutado tipo SPA basado en hash (React Router, Vue Router, etc.) habría roto lo mismo.
+
+Verificado con Playwright: las 4 pestañas del dashboard navegan correctamente por click, cada una cambiando la URL como corresponde.
+
+### 2. Banner de cookies (GDPR Cookie Compliance) sin estilos en el dashboard
+
+**Síntoma:** el banner de consentimiento de cookies aparecía al final de la página del dashboard, con los checkboxes/botones nativos del navegador, sin ningún estilo aplicado.
+
+**Causa:** FluentBooking Pro renderiza este dashboard con una plantilla propia (`app/Views/front-app.php`) que sí llama a `wp_head()`/`wp_footer()`, pero en un **"modo sin conflictos"** deliberado: en `wp_print_styles` (prioridad 999999) recorre todos los estilos ya encolados y desencola cualquiera cuyo origen sea un plugin o el tema activo, salvo que coincida con una lista blanca de slugs (por defecto solo `fluent-crm`/`fluent-booking`/`fluent-booking-pro`) — ver `FluentBooking\App\Hooks\Handlers\AdminMenuHandler::enqueueAssets()`. Es intencional por su parte, para que el CSS del sitio no rompa el diseño de su propio dashboard admin-style. El CSS del tema queda correctamente excluido (no se toca), pero el CSS del plugin GDPR Cookie Compliance también caía — y su banner sí se imprime (vía `wp_footer`, un hook distinto al que hace el barrido), así que aparecía sin estilos.
+
+**Fix:** [theme/inc/fluentbooking-compat.php](theme/inc/fluentbooking-compat.php) engancha el filtro que el propio plugin expone para esto (`fluent_booking/asset_listed_slugs`) y añade el plugin GDPR a la lista blanca — sin tocar código de terceros ni afectar al resto de la exclusión.
+
+Verificado con Playwright (cookies borradas para forzar que el banner aparezca): el banner sale con sus estilos normales, igual que en el resto del sitio.
+
+### 3. `global_admin.js` — bug de FluentBooking, no arreglable desde el tema
+
+El bundle de administración del plugin lanza `Cannot read properties of null (reading 'getAttribute')` en todas las páginas del dashboard: busca `document.getElementById('fcal_server_timestamp')`, un elemento que su plantilla de wp-admin real inyecta en el pie de página (`AdminMenuHandler::changeFooter()`, vía los filtros `admin_footer_text`/`update_footer`) para mostrar un reloj de "hora del servidor" — pero ese elemento nunca se renderiza en `front-app.php`, la plantilla que usa este dashboard de frontend. No bloquea nada funcional (script aparte, con su propio IIFE, no relacionado con el router de la app), solo ensucia la consola. Reportado como pendiente de arreglar por FluentBooking, no parcheable de forma robusta desde el tema (JS minificado de terceros).
 
 ---
 
