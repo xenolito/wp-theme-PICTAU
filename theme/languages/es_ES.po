@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: BALANZIA\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-27 11:35+0000\n"
-"PO-Revision-Date: 2026-04-27 09:06+0000\n"
+"PO-Revision-Date: 2026-08-13 10:48+0000\n"
 "Last-Translator: \n"
 "Language-Team: Español\n"
 "Language: es_ES\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.8.3; wp-6.9.4; php-8.4.18\n"
+"X-Loco-Version: 2.8.8; wp-7.0.4; php-8.4.18\n"
 "X-Domain: pictau"
 
 #. 1: Comment date, 2: Comment time.
@@ -279,9 +279,11 @@ msgstr ""
 msgid "Medidas y cotas"
 msgstr ""
 
-#: inc/template-functions.php:2022
-msgid "minutes"
-msgstr ""
+#: inc/template-functions.php:2456
+msgid "minuto"
+msgid_plural "minutos"
+msgstr[0] ""
+msgstr[1] ""
 
 #: functions.php:103
 msgid "Mobile"

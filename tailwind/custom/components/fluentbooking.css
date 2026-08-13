@@ -42,6 +42,10 @@
 		}
 	}
 
+	.fcal_author_name {
+		display: none !important;
+	}
+
 	.day-enabled {
 		&:hover {
 			span {

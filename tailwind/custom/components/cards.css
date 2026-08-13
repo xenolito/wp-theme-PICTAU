@@ -1150,3 +1150,13 @@
 		text-wrap: initial;
 	}
 }
+
+.card {
+	h2,
+	h3,
+	h4 {
+		&:first-child {
+			padding-top: 0 !important;
+		}
+	}
+}

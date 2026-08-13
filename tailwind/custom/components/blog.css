@@ -11,6 +11,7 @@ body.single-post {
 	ol {
 		list-style-type: decimal;
 		padding: revert;
+		padding-bottom: 3ch;
 		li {
 			padding-bottom: 1ch;
 		}
@@ -111,7 +112,7 @@ body.home {
 	}
 
 	.category-entries {
-		padding-top: var(--def-layout-x-padding) !important;
+		padding-top: var(--card-padding) !important;
 		> h2 {
 			/* margin-bottom: calc(var(--gap-default) * 0.5) !important; */
 			margin-bottom: clamp(3rem, 8vw, 4rem) !important;
@@ -200,7 +201,6 @@ body.home {
 				img {
 					width: 100%;
 					/* aspect-ratio: 16 / 9; */
-					aspect-ratio: 18 / 9; /* Este cliente usa featured images con aspect ratio particulares ???  */
 					object-fit: cover;
 					object-position: left center;
 					scale: 1;
@@ -248,7 +248,6 @@ body.home {
 
 				.entry-title {
 					font-size: clamp(1.3rem, 3.5cqw, 3.5rem);
-					line-height: 1.75ch;
 					text-transform: unset;
 					text-wrap: unset;
 				}
@@ -260,7 +259,7 @@ body.home {
 					border-radius: unset;
 					padding: 0 !important;
 					margin-bottom: 0;
-					color: color-mix(in srgb, var(--heading-color), transparent 66%);
+					color: color-mix(in srgb, var(--theme-heading-color), transparent 66%);
 					/* color: color-mix(in srgb, black, transparent 66%); */
 				}
 
@@ -306,6 +305,7 @@ body.single-post {
 			@apply pt-[var(--gap-default)] lg:pt-0 !important;
 
 			.post-content {
+				width: 100%;
 				max-width: calc(var(--max-w) + (2 * var(--def-layout-x-padding)));
 				header {
 					width: 100%;
@@ -366,7 +366,6 @@ body.single-post {
 		flex-flow: row;
 		gap: 1rem;
 		align-items: center;
-		@apply text-white/50;
 
 		.date {
 			display: flex;
@@ -392,8 +391,8 @@ body.single-post {
 /*! SINGLE POSTS STYLES */
 
 body.single-post {
-	.post.type-post {
-		.entry-header {
+	#primary #main > .post.type-post {
+		> .entry-header {
 			padding-top: var(--whole-header-height) !important;
 		}
 		.entry-content .entry-header {

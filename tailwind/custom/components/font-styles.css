@@ -257,3 +257,13 @@ p.quote {
 	padding-block: 1rem;
 	padding-right: 1rem;
 }
+
+p:has(+ ul, + ol) {
+	margin-bottom: 0;
+}
+
+p + ul,
+p + ol {
+	padding-top: 1.5ch !important;
+	padding-bottom: 3ch;
+}

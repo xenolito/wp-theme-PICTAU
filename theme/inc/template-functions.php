@@ -2452,7 +2452,8 @@ function reading_time($content)
 	$word_count = str_word_count(strip_tags($content ?? ''));
 	$time_to_read = ceil($word_count / 200);
 	$icon = '<svg width="26" height="26" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"/><circle cx="128" cy="128" r="88" opacity="0.15" fill="currentColor"/><polyline points="128 80 128 128 168 152" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="8"/><polyline points="184 104 224 104 224 64" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="8"/><path d="M188.4,192a88,88,0,1,1,1.83-126.23C202,77.69,211.72,88.93,224,104" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="8"/></svg>';
-	return '<div class="reading-time">' . $icon . $time_to_read . ' ' . __('minutes', 'pictau') . '</div>';
+	$unit = esc_html( _n( 'minuto', 'minutos', $time_to_read, 'pictau' ) );
+	return '<div class="reading-time">' . $icon . $time_to_read . ' ' . $unit . '</div>';
 }
 
 

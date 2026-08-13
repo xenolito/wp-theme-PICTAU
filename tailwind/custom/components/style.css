@@ -469,6 +469,14 @@ header.slider {
 	}
 }
 
+/*! BLOG HOME PAGE HEADER*/
+body.blog,
+body.single-post {
+	#main > article header.entry-header {
+		min-height: 120px;
+	}
+}
+
 /*! UL UNORDERED LIST WITH ICON TICS AND CARD/STRIPES BACKGROUND */
 .stripe-list {
 	padding-left: 0 !important;

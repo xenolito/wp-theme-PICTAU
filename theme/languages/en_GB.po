@@ -279,9 +279,11 @@ msgstr ""
 msgid "Medidas y cotas"
 msgstr ""
 
-#: inc/template-functions.php:2022
-msgid "minutes"
-msgstr ""
+#: inc/template-functions.php:2456
+msgid "minuto"
+msgid_plural "minutos"
+msgstr[0] "minute"
+msgstr[1] "minutes"
 
 #: functions.php:103
 msgid "Mobile"
