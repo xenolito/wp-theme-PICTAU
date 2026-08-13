@@ -17,9 +17,11 @@
 
 	--link-color: var(--main-color);
 	--link-color-content: var(--cta-color, var(--link-color));
+
 	--heading-color: var(--main-color);
 	--heading-color-theme-light: var(--txt-color);
 	--heading-color-theme-dark: hsl(0, 100%, 100%);
+	--heading-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
 
 	--bg-color-theme-light: #f7f5f0;
 	--bg-color-theme-light-2: hsl(36, 24%, 96%);
