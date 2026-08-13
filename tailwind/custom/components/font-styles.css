@@ -60,11 +60,11 @@ h2 {
 	font-size: clamp(2.1rem, 6vw, 4.5rem);
 
 	&.smaller {
-		font-size: clamp(2rem, 3vw, 2.75rem);
+		font-size: clamp(1.6rem, 2vw, 2.75rem) !important;
 	}
 
 	&.smaller-2 {
-		font-size: clamp(2rem, 5vw, 3.3rem);
+		font-size: clamp(1.3rem, 1.8vw, 3.3rem) !important;
 	}
 }
 

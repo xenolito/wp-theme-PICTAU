@@ -474,6 +474,9 @@ body.blog,
 body.single-post {
 	#main > article header.entry-header {
 		min-height: 120px;
+		@media only screen and (max-width: 1023px) {
+			min-height: 20px;
+		}
 	}
 }
 
