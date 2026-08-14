@@ -43,13 +43,17 @@
 	margin-right: 0 !important;
 	padding: 0;
 	text-transform: uppercase;
+	margin-bottom: 2ch !important;
 }
 
 #masthead {
 	.main-nav-desktop {
 		.menu-item {
+			--menu-bt-min-width: 100px;
 			@media only screen and (max-width: 1198px) {
-				font-size: clamp(0.3rem, 1vw, 0.85rem);
+				--nav-text-size: clamp(0.3rem, 1vw, 0.85rem);
+				--menu-bt-min-width: 100px;
+				/* font-size: clamp(0.3rem, 1vw, 0.85rem); */
 			}
 		}
 	}
@@ -489,5 +493,22 @@ body.single-post {
 	padding-left: 0 !important;
 	li {
 		padding: 1.33ch 1.66ch;
+	}
+}
+
+.header-canvas,
+.header-canvas * {
+	height: 100%;
+}
+
+.bt-icon-login {
+	a {
+		&::before {
+			content: "\f2bd";
+			content: "\f2be";
+			font-family: "pictauicons";
+			font-size: 1.1rem;
+			margin-right: 0.5ch;
+		}
 	}
 }

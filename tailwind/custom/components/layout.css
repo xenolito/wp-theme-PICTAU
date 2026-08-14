@@ -1462,17 +1462,6 @@ body.single-evento {
 
 	counter-reset: pct-counter;
 
-	/*
-		.card usa container-type: inline-size (container queries), lo que implica
-		contención de estilo (contain: style). Eso crea un scope de contadores CSS
-		aislado por cada .card, así que un .ordered-item dentro de un .card siempre
-		"ve" el contador reiniciado y pinta 1. Se anula aquí para que el contador
-		del grupo pueda atravesar esa frontera.
-	*/
-	.card {
-		container-type: normal;
-	}
-
 	&.zero-prefix {
 		.ordered-item {
 			&::before {

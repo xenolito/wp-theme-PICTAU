@@ -39,9 +39,6 @@
 		padding: calc(var(--card-padding) * 0.44);
 	}
 
-	container-type: inline-size;
-	container-name: pctcard;
-
 	&:last-child {
 		margin-bottom: 0 !important;
 	}

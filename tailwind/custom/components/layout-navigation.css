@@ -460,19 +460,9 @@ body.header-width-centered {
 				a {
 					position: relative;
 					margin-top: 1rem;
-					margin-left: 1.5rem;
-
-					&::before {
-						content: "";
-						position: absolute;
-						inset: var(--inset-y) var(--inset-x);
-						z-index: -1;
-						border-radius: var(--def-border-radius);
-						background-color: transparent;
-						transition: background-color 0.3s ease;
-						display: flex;
-						align-items: center;
-					}
+					margin-inline: 1.5rem;
+					width: 100%;
+					justify-content: center;
 				}
 			}
 

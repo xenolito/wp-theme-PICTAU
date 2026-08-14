@@ -1,4 +1,9 @@
 /*! FLUENTBOOKING PLUGIN STYLES */
+
+.pct-section:has(.fluent_booking_app) .card {
+	z-index: -1;
+}
+
 .fcal_cal_wrap {
 	--fcal_primary_color: var(--bg-color-theme-dark);
 	--today-mark-dim: 8px;

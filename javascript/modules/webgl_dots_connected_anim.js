@@ -11,8 +11,8 @@
  * @author: Oscar Rey Tajes, oscar.rey.tajes@gmail.com
  *
  * @param data-webgldots_target=".xxx", optional. If present, will set the target element to apply the effect, value in css selector format, default first child of the container element
- * @param data-webgldots_colorlines="255,255,255", optional. If present, will set the color of the lines, value in rgb format
- * @param data-webgldots_colordots="255,255,255", optional. If present, will set the color of the dots, value in rgb format
+ * @param data-webgldots_color="#ff6f00", optional. If present, will set the color of the dots, value in hex ("#rrggbb"/"#rgb") or rgb ("255,255,255") format
+ * @param data-webgldots_linecolor="#ff6f00", optional. If present, will set the color of the lines, value in hex ("#rrggbb"/"#rgb") or rgb ("255,255,255") format
  * @param data-webgldots_maskspread="1", optional. If present, will set the mask spread value, value in float format  0-1, default 1
  * @param data-webgldots_density="3", optional. If present, will set the density of the points, value in integer format, default 3
  * @param data-webgldots_triggerstart="top bottom", optional. If present, will set the start position of the scroll trigger, value in string format, default "top bottom"
@@ -36,6 +36,31 @@ const getRandom = (min, max) => {
 	return Math.random() * (max - min) + min
 }
 
+const DEFAULT_COLOR = { r: 156, g: 217, b: 249 }
+
+// Accepts either a hex string ("#ff6f00", "#f60") or a comma-separated rgb
+// string ("255,111,0"), returning the fallback color if the value is missing
+// or malformed.
+const parseColor = (value, fallback = DEFAULT_COLOR) => {
+	if (!value) return fallback
+
+	const hexMatch = value.trim().match(/^#?([a-f\d]{3}|[a-f\d]{6})$/i)
+
+	if (hexMatch) {
+		let hex = hexMatch[1]
+		if (hex.length === 3) hex = hex.split('').map(c => c + c).join('')
+		const num = parseInt(hex, 16)
+		return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 }
+	}
+
+	const rgb = value.split(',').map(n => Number(n.trim()))
+	if (rgb.length === 3 && rgb.every(n => !Number.isNaN(n))) {
+		return { r: rgb[0], g: rgb[1], b: rgb[2] }
+	}
+
+	return fallback
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 	const attributeId = 'webgldots'
 	const backgroundContainer = document.querySelectorAll(`[data-${attributeId}]`)
@@ -51,8 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
 				density = 3,
 				dotsize = 2,
 				maxdisplacement = 50,
-				colorlines = '156,217,249',
-				colordots = '156,217,249',
+				color = false,
+				linecolor = false,
 				maskspread = 1,
 				markers = false,
 			} = config
@@ -64,16 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.triggerstart = !triggerstart ? `top bottom` : `top ${triggerstart}`
 			this.dotSize = Number(dotsize)
 			this.maxdisplacement = Number(maxdisplacement)
-			this.colorlines = {
-				r: Number(colorlines.split(',')[0]),
-				g: Number(colorlines.split(',')[1]),
-				b: Number(colorlines.split(',')[2]),
-			}
-			this.colordots = {
-				r: Number(colordots.split(',')[0]),
-				g: Number(colordots.split(',')[1]),
-				b: Number(colordots.split(',')[2]),
-			}
+			this.colordots = parseColor(color)
+			this.colorlines = parseColor(linecolor)
 
 			this.markers = markers
 			this.maskspread = Number(maskspread)

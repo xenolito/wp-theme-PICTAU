@@ -34,7 +34,7 @@ if (function_exists('pods')) {
 
 	<header class="entry-header has-bg no-bg-img">
 		<div class="header-default-bg">
-			<div class="header-canvas" data-webgldots_density="6" data-webgldots data-webgldots_target=".webgldots-container" data-webgldots_color="#ffffff" data-webgldots_speed="0.5" data-webgldots_size="1.5">
+			<div class="header-canvas" data-webgldots_density="4" data-webgldots data-webgldots_target=".webgldots-container" data-webgldots_color="#ff6f00" data-webgldots_linecolor="#ff6f00" data-webgldots_speed="0.5" data-webgldots_size="1.5">
 				<div class="webgldots-container"></div>
 			</div>
 		</div>
