@@ -60,6 +60,7 @@ final class Pictau_CF7_GA_Tracking {
 		$lead_event       = get_post_meta( $id, '_pct_ga_lead_event', true );
 		$value            = get_post_meta( $id, '_pct_ga_value', true );
 		$currency         = get_post_meta( $id, '_pct_ga_currency', true );
+		$ads_send_to      = get_post_meta( $id, '_pct_ga_ads_send_to', true );
 		$default_source   = get_post_meta( $id, '_pct_ga_default_source', true );
 		$default_medium   = get_post_meta( $id, '_pct_ga_default_medium', true );
 		$default_campaign = get_post_meta( $id, '_pct_ga_default_campaign', true );
@@ -111,6 +112,13 @@ final class Pictau_CF7_GA_Tracking {
 					</td>
 				</tr>
 				<tr>
+					<th scope="row"><label for="pct_ga_ads_send_to"><?php esc_html_e( 'ID de conversión Google Ads (opcional)', 'pictau' ); ?></label></th>
+					<td>
+						<input type="text" id="pct_ga_ads_send_to" name="pct_ga_ads_send_to" class="regular-text" value="<?php echo esc_attr( $ads_send_to ); ?>" placeholder="AW-XXXXXXXXX/XXXXXXXXXXXXXXXXXXXX" />
+						<p class="description"><?php esc_html_e( 'Valor "send_to" de la etiqueta de evento que proporciona Google Ads (ID de conversión + etiqueta). Si se rellena, al enviarse el formulario con éxito se dispara además un evento gtag("event", "conversion", ...) independiente del evento de conversión GA4 de arriba, con el mismo valor/moneda si están informados. Requiere que la etiqueta de Google Ads (comando "config" con el AW-XXXXXXXXX) esté ya cargada en la página por el gestor de cookies — el tema nunca la carga.', 'pictau' ); ?></p>
+					</td>
+				</tr>
+				<tr>
 					<th scope="row"><?php esc_html_e( 'Fuente / Medio / Campaña por defecto', 'pictau' ); ?></th>
 					<td>
 						<input type="text" name="pct_ga_default_source" class="regular-text" value="<?php echo esc_attr( $default_source ); ?>" placeholder="<?php esc_attr_e( 'ej. website', 'pictau' ); ?>" style="margin-bottom:4px;" /><br />
@@ -140,6 +148,7 @@ final class Pictau_CF7_GA_Tracking {
 		$this->save_text( $id, '_pct_ga_lead_event', $_POST['pct_ga_lead_event'] ?? '' );
 		$this->save_number( $id, '_pct_ga_value', $_POST['pct_ga_value'] ?? '' );
 		$this->save_currency( $id, '_pct_ga_currency', $_POST['pct_ga_currency'] ?? '' );
+		$this->save_text( $id, '_pct_ga_ads_send_to', $_POST['pct_ga_ads_send_to'] ?? '' );
 		$this->save_text( $id, '_pct_ga_default_source', $_POST['pct_ga_default_source'] ?? '' );
 		$this->save_text( $id, '_pct_ga_default_medium', $_POST['pct_ga_default_medium'] ?? '' );
 		$this->save_text( $id, '_pct_ga_default_campaign', $_POST['pct_ga_default_campaign'] ?? '' );
@@ -196,6 +205,7 @@ final class Pictau_CF7_GA_Tracking {
 		$hidden['pct_ga_lead_event']        = get_post_meta( $id, '_pct_ga_lead_event', true ) ?: 'generate_lead';
 		$hidden['pct_ga_value']             = get_post_meta( $id, '_pct_ga_value', true );
 		$hidden['pct_ga_currency']          = get_post_meta( $id, '_pct_ga_currency', true ) ?: 'EUR';
+		$hidden['pct_ga_ads_send_to']       = get_post_meta( $id, '_pct_ga_ads_send_to', true );
 		$hidden['pct_ga_default_source']    = get_post_meta( $id, '_pct_ga_default_source', true );
 		$hidden['pct_ga_default_medium']    = get_post_meta( $id, '_pct_ga_default_medium', true );
 		$hidden['pct_ga_default_campaign']  = get_post_meta( $id, '_pct_ga_default_campaign', true );

@@ -46,6 +46,15 @@ const pushGtagEvent = (eventName, params) => {
 	}
 }
 
+//! gtag() es una única función global compartida: si dos categorías de cookies distintas cargan gtag.js
+//! (p.ej. Analítica para GA4 y Marketing para Google Ads), un evento con "send_to" explícito se entrega
+//! al destino indicado aunque esa categoría en concreto no se haya aceptado (el "send_to" no depende del
+//! "config" previo). Por eso el evento de conversión de Ads comprueba además el flag de consentimiento de
+//! "Marketing" que expone GDPR Cookie Compliance (window.gdpr_consent__advanced, ver su pestaña de ayuda).
+//! Si el sitio usa otro gestor de cookies que no define ese flag, no se bloquea nada (mismo comportamiento
+//! genérico de siempre: se envía si gtag existe), para no romper el resto de clientes de este tema.
+const hasMarketingConsent = () => typeof window.gdpr_consent__advanced === 'undefined' || window.gdpr_consent__advanced === 'true'
+
 //! Construye los parámetros de campaña (UTM/click-ids) a partir de los hidden fields ya presentes
 //! en el formulario (rellenados desde la URL, ver theme/inc/cf7_html_email_templates.php), con fallback
 //! a los valores por defecto de la pestaña "Seguimiento GA4 / GTM" cuando no llega valor real por URL.
@@ -142,6 +151,7 @@ window.addEventListener('load', () => {
 				leadEvent: data.pct_ga_lead_event || 'generate_lead',
 				value: data.pct_ga_value || '',
 				currency: data.pct_ga_currency || 'EUR',
+				adsSendTo: data.pct_ga_ads_send_to || '',
 			}
 			form.campaignData = buildCampaignData(data)
 		})
@@ -197,6 +207,18 @@ window.addEventListener('load', () => {
 
 				pushDataLayer({ event: form.trackingConfig.leadEvent, ...payload })
 				pushGtagEvent(form.trackingConfig.leadEvent, { ...payload })
+
+				//! Evento de conversión de Google Ads (independiente del de GA4 de arriba). Requiere que la
+				//! etiqueta de Google Ads (comando "config" con el AW-XXXXXXXXX) ya esté cargada en la página
+				//! por el gestor de cookies — pushGtagEvent no hace nada si window.gtag no existe todavía.
+				if (form.trackingConfig.adsSendTo && hasMarketingConsent()) {
+					const adsPayload = { send_to: form.trackingConfig.adsSendTo }
+					if (payload.value !== undefined) {
+						adsPayload.value = payload.value
+						adsPayload.currency = payload.currency
+					}
+					pushGtagEvent('conversion', adsPayload)
+				}
 			}
 
 			if (btsubmit) {

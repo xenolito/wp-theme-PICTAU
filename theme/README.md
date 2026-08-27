@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.18.7
+- **Versión:** 7.18.8
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1539,10 +1539,22 @@ Entry: `javascript/script.js` → `theme/js/script.min.js`
 | `ModalWP.js` | Clase genérica de modal (OverlayScrollbars). Construye la estructura DOM del modal a partir de cualquier elemento pasado por constructor. No conoce `data-modalform`; solo lee `data-modal` como fallback de ID. Ver [Modales con formulario (Contact Form 7)](#modales-con-formulario-contact-form-7--modalwpjs--modalcontactform7js). |
 | `modalContactForm7.js` | Consumidor de `ModalWP.js` para modales con formulario CF7 disparados por click. Atributos: `data-modalform`, `data-modalform_target`, `data-modalform_input_name`, `data-modalform_input_data`. |
 | `contactForm7.js` | Eventos de formularios CF7 (validación, envío, checkboxes/radios custom). También usa `ModalWP.js` (sin formulario) para mostrar el mensaje de éxito tras el envío. |
-| `fluentbooking_timezone_dropdown_upward.js` | Posiciona el desplegable de zona horaria de FluentBooking (arriba o abajo del trigger según el espacio disponible). |
+| `fluentbooking_timezone_dropdown_upward.js` | Fuerza que el desplegable de zona horaria de FluentBooking se abra siempre hacia arriba del trigger. Ver [Desplegable de zona horaria de FluentBooking — forzado hacia arriba](#desplegable-de-zona-horaria-de-fluentbooking--forzado-hacia-arriba). |
 | `scrollToAName.js` | Scroll suave (Lenis/GSAP) al hacer click en enlaces `<a href="#ancla">` de la propia página, y al cargar con un hash en la URL. Ver [Dashboard de reservas de FluentBooking (frontend) — compatibilidad](#dashboard-de-reservas-de-fluentbooking-frontend--compatibilidad) para el caso de apps con rutas tipo SPA en la misma página. |
 
 Librerías: GSAP + ScrollTrigger, Splide, OverlayScrollbars, Split Type, CountUp.js
+
+---
+
+## Desplegable de zona horaria de FluentBooking — forzado hacia arriba
+
+El desplegable de zona horaria del widget FluentBooking (`.svelte-select-list`, componente Svelte Select, `position: fixed`) se abre por defecto hacia abajo del trigger. Cuando se abre hacia abajo, en ciertas posiciones de scroll queda **recortado visualmente** por el contenido siguiente de la página (se ve el bloque de Gutenberg de detrás en vez del resto del propio desplegable). Cuando se abre hacia arriba se mantiene contenido dentro del propio widget y se ve correcto siempre.
+
+**Investigado a fondo y descartado como arreglable vía CSS:** ni forzar `overflow: visible` en los ancestros del plugin con `overflow-y: hidden` (`.fcal_date_wrapper`, `.fcal_calendar_inner`) ni neutralizar los `position: relative; z-index: 1` anidados que usa el tema (`#page`, `.pct-section`, `#primary`, `body`) cambia el resultado, ni con recarga real ni forzando repaint en runtime. La librería tampoco expone ninguna opción de configuración para fijar la dirección de apertura, ni añade una clase que distinga arriba/abajo.
+
+**Fix:** `fluentbooking_timezone_dropdown_upward.js` observa la aparición de `.svelte-select-list` en el DOM (se crea/destruye en cada apertura/cierre, no es un nodo persistente) y, en cuanto aparece, observa sus propias mutaciones de `style` — las mismas que dispara la librería al abrir y en cada scroll, para reposicionarse y seguir al trigger — y sobreescribe el `top` inmediatamente después con la fórmula "hacia arriba" (`triggerTop - listHeight - 6px`), en vez de dejar la fórmula "hacia abajo" (`triggerBottom + 6px`) que usa la librería por defecto. Un guard (`if (list.style.top !== top)`) evita bucle infinito con el propio observer.
+
+Verificado con Playwright: se abre hacia arriba y queda contenido dentro del widget sin recorte, el scroll con rueda dentro del desplegable sigue funcionando en toda su altura, y la selección de un item por click persiste correctamente tras cerrar.
 
 ---
 
@@ -1705,7 +1717,7 @@ Permite activar y editar la cabecera `Content-Security-Policy` (y cabeceras de s
 
 **Funcionamiento:**
 - **Opt-in explícito**: la casilla "Activar gestión de cabeceras CSP" solo revela el editor; no escribe nada por sí sola.
-- Al abrir el editor, si ya existen directivas CSP del tema en el `.htaccess` se muestran para editar; si no existen, se muestra la plantilla por defecto del tema (dominios confirmados en el código: YouTube/Vimeo para embeds de vídeo, Google Tag Manager (en `script-src` para el script, y también en `img-src` para su beacon de imagen `/td`, fallback de Measurement Protocol/GA4 — sin esto el navegador bloquea esa petición aunque `script-src` ya permita cargar el script); más GA4 — `analytics.google.com` y `*.google-analytics.com` (con wildcard, porque GA4 reparte la medición entre subdominios regionales como `region1.google-analytics.com` según la localización del visitante) — incluido por defecto en `connect-src` aunque no esté hardcodeado en el tema, porque GTM suele cargarlo en runtime) — pero **no se guarda nada hasta pulsar "Aplicar cambios"**.
+- Al abrir el editor, si ya existen directivas CSP del tema en el `.htaccess` se muestran para editar; si no existen, se muestra la plantilla por defecto del tema (dominios confirmados en el código: YouTube/Vimeo para embeds de vídeo, Google Tag Manager (en `script-src` para el script, y también en `img-src` para su beacon de imagen `/td`, fallback de Measurement Protocol/GA4 — sin esto el navegador bloquea esa petición aunque `script-src` ya permita cargar el script); más GA4 — `analytics.google.com` y `*.google-analytics.com` (con wildcard, porque GA4 reparte la medición entre subdominios regionales como `region1.google-analytics.com` según la localización del visitante) — incluido por defecto en `connect-src` aunque no esté hardcodeado en el tema, porque GTM suele cargarlo en runtime; más Google Ads — `https://www.google.com` y `https://*.doubleclick.net` en `connect-src`/`img-src`, porque el gtag de conversión (`AW-XXXXXXXXX`) envía sus beacons de medición/consent mode a `google.com/ccm/collect` y a `*.doubleclick.net` (`ad.doubleclick.net`, `googleads.g.doubleclick.net`), con fallback a imagen si fetch/XHR está bloqueado) — pero **no se guarda nada hasta pulsar "Aplicar cambios"**.
 - La plantilla por defecto añade también, en `img-src`/`style-src`/`script-src`/`font-src`, las variantes con y sin `www.` del dominio propio del sitio (calculadas en runtime a partir de `home_url()`, nunca hardcodeadas). Esto cubre páginas que puedan servirse en cualquiera de los dos hosts sin pasar por el bootstrap/redirección canónica normal de WordPress (p. ej. una página de mantenimiento estática) — sin esto, `'self'` no cubre el host "equivocado" y se bloquean imágenes/CSS/JS/fuentes del propio sitio. Esta plantilla **no** implementa ninguna redirección canónica apex↔www por su cuenta — es responsabilidad de cada instalación, vía `.htaccess`, si así lo requiere (no todos los clientes usan `www.` o el mismo esquema).
 - Botón **"Usar valores por defecto del tema"** repone la plantilla en el textarea.
 - Botón **"Aplicar cambios"**: valida el contenido contra una whitelist estricta de directivas (`Header`, `<IfModule mod_headers.c>`, `SetEnvIf`, comentarios y líneas vacías — cualquier otra directiva, como `RewriteRule` o `php_value`, se rechaza), comprueba que no haya directivas de cabecera ya existentes en el `.htaccess` fuera del bloque del tema (si las hay, rechaza aplicar hasta que se resuelvan a mano, para evitar cabeceras duplicadas/en conflicto), crea una copia de seguridad (opción en BD + fichero físico `.htaccess.pictau-bak`), escribe el bloque (marcador `# BEGIN/END Pictau CSP`, vía `insert_with_markers()` de WordPress), hace una **auto-verificación** (petición HTTP interna a la home) y, si tiene éxito, dispara automáticamente el botón "Publicar" del Customizer para que no queden cambios sin guardar. Si el sitio deja de responder correctamente (error 500 real de Apache), se **revierte automáticamente** al contenido anterior.
@@ -1913,6 +1925,8 @@ Añade una pestaña **Seguimiento GA4 / GTM** en el editor de CF7 para activar, 
 
 **Esta pestaña nunca carga GTM ni GA4.** El tema es de uso "marca blanca": cada cliente puede tener GTM, GA4 directo, ambos o ninguno cargado por su propio gestor de cookies (banner de consentimiento), y no se sabe de antemano cuál. `javascript/modules/contactForm7.js` detecta en tiempo de ejecución si `window.dataLayer`/`window.gtag` existen antes de enviar nada; si no existen, no se envía ni se produce ningún error.
 
+Los formularios CF7 de este tema se envían por AJAX y muestran un modal de éxito sin recargar ni navegar a otra URL (ver `ModalWP`/`contactForm7.js`), por lo que no existe una "página de conversión" con su propio `<head>` donde pegar un fragmento de evento estático (patrón habitual de Google Ads/Analytics). El evento de conversión (GA4 y/o Google Ads) se dispara siempre por JavaScript en el momento del éxito (`wpcf7mailsent`), nunca en el `<head>` de una página.
+
 ### Campos del panel (por formulario)
 
 - **Activar seguimiento GA4/GTM para este formulario** — checkbox, desactivado por defecto (opt-in).
@@ -1920,6 +1934,9 @@ Añade una pestaña **Seguimiento GA4 / GTM** en el editor de CF7 para activar, 
 - **Evento de envío** (`pct_ga_submit_event`, default `form_submit`) — se dispara en cualquier intento de envío procesado por el servidor (éxito, fallo de correo, spam) vía el evento nativo `wpcf7submit`, salvo que el checkbox anterior esté desmarcado (ver arriba).
 - **Evento de conversión** (`pct_ga_lead_event`, default `generate_lead`, nombre recomendado por GA4 para leads) — se dispara solo si el envío tiene éxito, vía `wpcf7mailsent`.
 - **Valor de conversión** (opcional) + **moneda** (default `EUR`) — útil para pujas por valor en Google Ads. Solo se incluyen en el evento de conversión si hay valor informado.
+- **ID de conversión Google Ads** (`pct_ga_ads_send_to`, opcional, formato `AW-XXXXXXXXX/XXXXXXXXXXXXXXXXXXXX`) — si se rellena, al enviarse el formulario con éxito se dispara un evento `gtag('event', 'conversion', { send_to, value, currency })` **independiente** del evento GA4 de arriba (mismo valor/moneda si están informados). Requiere que la etiqueta de Google Ads (comando `gtag('config', 'AW-XXXXXXXXX')`) ya esté cargada en la página por el gestor de cookies — el tema nunca la carga, igual que con GTM/GA4.
+
+**Separación de propósitos Analítica vs. Marketing:** el evento de conversión de Ads comprueba además `window.gdpr_consent__advanced` (flag de consentimiento de la categoría "Marketing" que expone el plugin GDPR Cookie Compliance/Moove) antes de enviarse — necesario porque `gtag()` es una única función global compartida entre categorías: un evento con `send_to` explícito se entregaría al destino indicado aunque solo se hubiera aceptado la categoría de Analítica (que también carga `gtag.js`, para GA4), sin este guard. Si el sitio usa otro gestor de cookies que no define ese flag, no se bloquea nada (se mantiene el comportamiento genérico de siempre).
 - **Fuente / Medio / Campaña por defecto** — usados como fallback de `utm_source`/`utm_medium`/`utm_campaign` únicamente cuando no llega el parámetro real por la URL (tráfico sin campaña activa: orgánico, directo, referral). Si llega el parámetro real por URL, ese valor siempre tiene prioridad. Mapean directo a las dimensiones nativas Source/Medium/Campaign de GA4.
 
 ### Cómo se guarda y se expone al frontend
