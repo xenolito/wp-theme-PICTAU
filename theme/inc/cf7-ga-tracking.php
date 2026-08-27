@@ -69,6 +69,14 @@ final class Pictau_CF7_GA_Tracking {
 
 			<h2 style="margin-top: 0;"><?php esc_html_e( 'Seguimiento GA4 / GTM', 'pictau' ); ?></h2>
 
+			<?php if ( ! defined( 'MOOVE_GDPR_VERSION' ) ) : ?>
+				<div class="notice notice-warning inline" style="margin: 0 0 1em;">
+					<p>
+						<?php esc_html_e( 'No se detecta el plugin GDPR Cookie Compliance activo en este sitio. Sin un gestor de cookies que cargue Google Tag Manager / GA4, ningún evento configurado aquí se enviará (el formulario seguirá funcionando con normalidad).', 'pictau' ); ?>
+					</p>
+				</div>
+			<?php endif; ?>
+
 			<p class="description">
 				<?php esc_html_e( 'Esta pestaña nunca carga Google Tag Manager ni Google Analytics — eso lo gestiona siempre el plugin/módulo de cookies del sitio. Aquí solo se configura qué eventos enviar a window.dataLayer / window.gtag cuando ya están presentes en la página; si no lo están, no se envía nada y no se produce ningún error.', 'pictau' ); ?>
 			</p>
