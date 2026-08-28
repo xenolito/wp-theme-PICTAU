@@ -42,7 +42,10 @@ if (!empty($categories)) {
 
 
 		?>
-			<h2 class="wp-block-heading"><?php echo __('More posts about', 'pictau') . ' ' . $cat->name ?></h2>
+			<h2 class="wp-block-heading"><?php
+			// echo __('More posts about', 'pictau') . ' ' . $cat->name;
+			echo __('You might also like', 'pictau');
+			?></h2>
 
 			<section class="category-entries">
 				<div class="entries-grid">

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: BALANZIA\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-27 11:35+0000\n"
-"PO-Revision-Date: 2026-04-27 08:55+0000\n"
+"PO-Revision-Date: 2026-08-27 17:20+0000\n"
 "Last-Translator: \n"
 "Language-Team: English (UK)\n"
 "Language: en_GB\n"
@@ -16,20 +16,27 @@ msgstr ""
 "X-Domain: pictau"
 
 #. 1: Comment date, 2: Comment time.
-#: inc/template-functions.php:297
+#: inc/template-functions.php:310
 #, php-format
 msgid "%1$s at %2$s"
 msgstr ""
 
+#. %d: número de strings huérfanas
+#: inc/cf7-polylang.php:775
+msgid "%d string huérfana detectada:"
+msgid_plural "%d strings huérfanas detectadas:"
+msgstr[0] ""
+msgstr[1] ""
+
 #. %s: Comment author link.
-#: inc/template-functions.php:282
+#: inc/template-functions.php:295
 #, php-format
 msgid "%s <span class=\"says\">says:</span>"
 msgstr ""
 
 #. %s: Post type singular name
 #. %s: Taxonomy singular name
-#: inc/template-functions.php:180 inc/template-functions.php:187
+#: inc/template-functions.php:193 inc/template-functions.php:200
 #, php-format
 msgid "%s Archives"
 msgstr ""
@@ -44,8 +51,32 @@ msgstr ""
 msgid "404: Oh, oh..."
 msgstr ""
 
-#: inc/template-functions.php:550
+#: inc/template-functions.php:610
 msgid "]"
+msgstr ""
+
+#: inc/template-functions.php:656
+msgid "Activar critical CSS inline"
+msgstr ""
+
+#: inc/customizer-csp.php:175
+msgid "Activar gestión de cabeceras CSP para este sitio"
+msgstr ""
+
+#: inc/cf7-ga-tracking.php:87
+msgid "Activar seguimiento GA4/GTM para este formulario"
+msgstr ""
+
+#: inc/slide-cpt.php:73
+msgid "Actualizar categoría"
+msgstr ""
+
+#: inc/pictau-blocks-gutenberg.php:31
+msgid "Actualizar Pictau Block"
+msgstr ""
+
+#: inc/slide-cpt.php:26
+msgid "Actualizar slide"
 msgstr ""
 
 #. 1: link to WP admin new post page.
@@ -53,27 +84,105 @@ msgstr ""
 msgid "Add or publish posts"
 msgstr ""
 
-#: template-parts/content/related_posts.php:59
+#: inc/pictau-blocks-gutenberg.php:172
+msgid "Ajustes"
+msgstr ""
+
+#: inc/pictau-blocks-gutenberg.php:187
+msgid "Ajustes de Pictau Blocks:"
+msgstr ""
+
+#: inc/customizer-csp.php:176
+msgid ""
+"Al marcarla se muestra el editor de la política. No se escribe nada en el ."
+"htaccess hasta pulsar \"Aplicar cambios\"."
+msgstr ""
+
+#: template-parts/content/related_posts.php:62
 msgid "All about"
 msgstr ""
 
-#: inc/template-functions.php:191
+#: archive-ambiente.php:27
+msgid "Ambientes"
+msgstr ""
+
+#: inc/customizer-csp.php:219
+msgid "Aplicando y verificando…"
+msgstr ""
+
+#: inc/customizer-csp-control.php:44
+msgid "Aplicar cambios"
+msgstr ""
+
+#: inc/template-functions.php:204
 msgid "Archives:"
 msgstr ""
 
-#: inc/template-functions.php:169
+#: inc/cf7-email-branding-control.php:61
+msgid "Así se verán la cabecera y el pie del email de Contact Form 7."
+msgstr ""
+
+#: inc/template-functions.php:182
 msgid "Author Archives: "
 msgstr ""
 
-#: functions.php:181
+#: inc/slide-cpt.php:74
+msgid "Añadir nueva categoría"
+msgstr ""
+
+#: inc/slide-cpt.php:24 inc/pictau-blocks-gutenberg.php:29
+msgid "Añadir nuevo"
+msgstr ""
+
+#: inc/pictau-blocks-gutenberg.php:28
+msgid "Añadir nuevo Pictau Block"
+msgstr ""
+
+#: inc/slide-cpt.php:23
+msgid "Añadir nuevo slide"
+msgstr ""
+
+#: functions.php:230
 msgid "back"
 msgstr ""
 
-#: template-parts/content/content-single-producto.php:116
+#: inc/pictau-blocks-gutenberg.php:208
+msgid "Banner de Anuncios personalizados"
+msgstr ""
+
+#: inc/pictau-blocks-gutenberg.php:39
+msgid "Bloques estáticos reutilizables"
+msgstr ""
+
+#: template-parts/content/content-single-producto.php:115
 msgid "Breadcrumb"
 msgstr ""
 
-#: template-parts/content/content-single-producto.php:139
+#: inc/slide-cpt.php:68
+msgid "Buscar categorías"
+msgstr ""
+
+#: inc/pictau-blocks-gutenberg.php:32
+msgid "Buscar Pictau Block"
+msgstr ""
+
+#: inc/slide-cpt.php:27
+msgid "Buscar slide"
+msgstr ""
+
+#: inc/customizer-csp.php:325
+msgid "Cabeceras CSP aplicadas y verificadas correctamente."
+msgstr ""
+
+#: inc/slide-cpt.php:143 inc/utilities.php:2627
+msgid "Caducidad"
+msgstr ""
+
+#: inc/slide-cpt.php:137
+msgid "Callback JS"
+msgstr ""
+
+#: template-parts/content/content-single-producto.php:136
 msgid "Características técnicas"
 msgstr ""
 
@@ -81,21 +190,60 @@ msgstr ""
 msgid "Casos de éxito EQM"
 msgstr ""
 
-#: inc/catalog.php:296
+#: inc/catalog.php:296 inc/utilities.php:2625
 msgid "Categoría"
 msgstr ""
 
-#: inc/template-functions.php:582
-#: template-parts/content/content-single-producto.php:164
+#: inc/slide-cpt.php:70
+msgid "Categoría padre"
+msgstr ""
+
+#: inc/slide-cpt.php:71
+msgid "Categoría padre:"
+msgstr ""
+
+#: inc/slide-cpt.php:76
+msgid "Categorías de slide"
+msgstr ""
+
+#: inc/template-functions.php:663
+#: template-parts/content/content-single-producto.php:161
 msgid "Catálogo"
 msgstr ""
 
-#: inc/template-functions.php:519
+#: inc/template-functions.php:579
 msgid "Centered"
 msgstr ""
 
-#: template-parts/content/content-single-producto.php:182
+#: template-parts/content/content-single-producto.php:179
 msgid "Certificaciones"
+msgstr ""
+
+#: inc/catalog.php:1202
+msgid "Certificación AENOR"
+msgstr ""
+
+#: inc/cf7-email-branding.php:54
+msgid "CF7 emails"
+msgstr ""
+
+#: inc/template-functions.php:502
+msgid "Client name (wp_mail_from_name)"
+msgstr ""
+
+#: inc/clone-post.php:177 inc/clone-post.php:193
+msgid "Clonar"
+msgstr ""
+
+#: inc/cf7-email-branding.php:67
+msgid "Color de fondo (cabecera y pie)"
+msgstr ""
+
+#: inc/cf7-email-branding.php:56
+msgid ""
+"Color de fondo y logo del email HTML de Contact Form 7 (cabecera y pie). Si "
+"no se configura nada aquí, se usa un color por defecto y el logo general del "
+"sitio."
 msgstr ""
 
 #: theme.json:1
@@ -123,10 +271,6 @@ msgctxt "Color name"
 msgid "Tertiary"
 msgstr ""
 
-#: inc/template-functions.php:649
-msgid "Color Section Title"
-msgstr ""
-
 #: comments.php:72
 msgid "Comments are closed."
 msgstr ""
@@ -140,12 +284,20 @@ msgid_plural "%1$s comments on &ldquo;%2$s&rdquo;"
 msgstr[0] ""
 msgstr[1] ""
 
+#: inc/template-functions.php:515
+msgid "Contact email (wp_mail_from)"
+msgstr ""
+
+#: inc/template-functions.php:528
+msgid "Contact phone"
+msgstr ""
+
 #: inc/utilities.php:615
 msgid "contacta"
 msgstr "Contact"
 
 #. %s: Name of current post.
-#: inc/template-functions.php:224
+#: inc/template-functions.php:237
 #, php-format
 msgid "Continue reading %s"
 msgstr ""
@@ -162,8 +314,40 @@ msgstr ""
 msgid "Continue reading<span class=\"sr-only\"> \"%s\"</span>"
 msgstr ""
 
-#: inc/template-functions.php:175
+#: inc/customizer-csp.php:355
+msgid "Copia de seguridad restaurada correctamente."
+msgstr ""
+
+#: template-parts/layout/footer-content.php:42
+msgid ""
+"Crea un \"Pictau Block\" para el footer y asígnalo en Personalizar → PICTAU "
+"Theme Customizer → Footer"
+msgstr ""
+
+#: inc/pictau-blocks-gutenberg.php:149
+msgid ""
+"Crea un post de tipo \"Pictau Block\" y usa el shortcode que aparece en la "
+"columna del listado para insertarlo en cualquier página o widget."
+msgstr ""
+
+#: inc/pictau-blocks-gutenberg.php:148
+msgid "Cómo usar Pictau Blocks"
+msgstr ""
+
+#: inc/template-functions.php:188
 msgid "Daily Archives: "
+msgstr ""
+
+#: inc/slide-cpt.php:110
+msgid "Datos del slide"
+msgstr ""
+
+#: inc/catalog.php:1166
+msgid "Declaración Ambiental de Producto (DAP/EPD)"
+msgstr ""
+
+#: functions.php:397
+msgid "Desactivar el plugin ahora"
 msgstr ""
 
 #: archive-ebook.php:41
@@ -180,7 +364,7 @@ msgstr ""
 msgid "e-books"
 msgstr ""
 
-#: inc/template-functions.php:304
+#: inc/template-functions.php:317
 msgid "Edit"
 msgstr ""
 
@@ -190,8 +374,158 @@ msgstr ""
 msgid "Edit <span class=\"sr-only\">%s</span>"
 msgstr ""
 
-#: inc/utilities.php:772
+#: inc/slide-cpt.php:72
+msgid "Editar categoría"
+msgstr ""
+
+#: inc/pictau-blocks-gutenberg.php:30
+msgid "Editar Pictau Block"
+msgstr ""
+
+#: inc/utilities.php:2501
+msgid "Editar página"
+msgstr ""
+
+#: inc/slide-cpt.php:25
+msgid "Editar slide"
+msgstr ""
+
+#: inc/cf7-ga-tracking.php:134
+msgid "ej. nombre del formulario"
+msgstr ""
+
+#: inc/cf7-ga-tracking.php:133
+msgid "ej. organico"
+msgstr ""
+
+#: inc/cf7-ga-tracking.php:132
+msgid "ej. website"
+msgstr ""
+
+#: inc/customizer-csp.php:676
+msgid "El contenido debe incluir al menos una directiva Header."
+msgstr ""
+
+#: inc/pictau-blocks-gutenberg.php:151
+msgid ""
+"El contenido del block puede incluir bloques Gutenberg y shortcodes. Los "
+"bloques sin shortcodes se cachean automáticamente durante 12 horas."
+msgstr ""
+
+#: inc/customizer-csp.php:283
+msgid ""
+"El contenido no es válido. Corrige las líneas indicadas y vuelve a "
+"intentarlo."
+msgstr ""
+
+#: inc/customizer-csp.php:620
+msgid "El contenido no puede estar vacío."
+msgstr ""
+
+#: inc/clone-post.php:121
+msgid "El contenido original no existe."
+msgstr ""
+
+#. %d: número máximo de caracteres
+#: inc/customizer-csp.php:613
+msgid "El contenido supera el límite de %d caracteres."
+msgstr ""
+
+#: inc/customizer-csp.php:271
+msgid "El fichero .htaccess no existe o no tiene permisos de escritura."
+msgstr ""
+
+#: inc/cf7_html_email_templates.php:529
+msgid ""
+"El logo del sitio está en formato SVG y este servidor no puede generar "
+"automáticamente la versión PNG para los emails de Contact Form 7 (Outlook no "
+"renderiza SVG). Sube manualmente un PNG junto al SVG del logo, con el mismo "
+"nombre y el sufijo \"-email.png\"."
+msgstr ""
+
+#: functions.php:395
+msgid ""
+"El plugin \"PICTAU BLOCKS GUTENBERG\" está activo pero esta funcionalidad ya "
+"está integrada en el tema. Mantenerlo activo puede causar un error fatal por "
+"duplicidad de funciones."
+msgstr ""
+
+#: inc/customizer-csp.php:313
+msgid ""
+"El sitio dejó de responder correctamente tras aplicar los cambios. Se ha "
+"restaurado automáticamente la configuración anterior. Revisa la política CSP "
+"e inténtalo de nuevo."
+msgstr ""
+
+#: inc/customizer-csp.php:349
+msgid ""
+"El sitio no responde correctamente tras restaurar. Revisa el .htaccess "
+"manualmente."
+msgstr ""
+
+#: inc/utilities.php:982
+msgid "Entrada destacada"
+msgstr ""
+
+#: inc/cf7-polylang.php:609 inc/cf7-polylang.php:876
+msgid "Error al importar."
+msgstr ""
+
+#: inc/cf7-polylang.php:606
+msgid "Error al limpiar."
+msgstr ""
+
+#: inc/cf7-polylang.php:607 inc/cf7-polylang.php:610 inc/cf7-polylang.php:877
+msgid "Error de conexión."
+msgstr ""
+
+#: inc/cf7-ga-tracking.php:81
+msgid ""
+"Esta pestaña nunca carga Google Tag Manager ni Google Analytics — eso lo "
+"gestiona siempre el plugin/módulo de cookies del sitio. Aquí solo se "
+"configura qué eventos enviar a window.dataLayer / window.gtag cuando ya "
+"están presentes en la página; si no lo están, no se envía nada y no se "
+"produce ningún error."
+msgstr ""
+
+#: inc/cf7-polylang.php:744
+msgid ""
+"Este formulario no tiene tokens traducibles. Envuelve los textos con {llaves}"
+" para marcarlos como traducibles."
+msgstr ""
+
+#. %d: número de tokens
+#: inc/cf7-polylang.php:751
+msgid "Este formulario tiene %d token traducible:"
+msgid_plural "Este formulario tiene %d tokens traducibles:"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/utilities.php:792
 msgid "Este post no tiene categorías asignadas."
+msgstr ""
+
+#: inc/clone-post.php:125
+msgid "Este tipo de contenido no admite clonación."
+msgstr ""
+
+#: inc/cf7-form-template.php:147
+msgid ""
+"Esto sobrescribirá el contenido actual de las pestañas Formulario, Correo y "
+"Correo (2) con la plantilla base. ¿Continuar?"
+msgstr ""
+
+#: inc/cf7-polylang.php:785
+msgid ""
+"Están en el registro de seguimiento pero ya no aparecen en ningún formulario."
+msgstr ""
+
+#: inc/cf7-ga-tracking.php:108
+msgid "Evento de conversión"
+msgstr ""
+
+#: inc/cf7-ga-tracking.php:101
+msgid "Evento de envío"
 msgstr ""
 
 #: inc/catalog.php:169
@@ -199,23 +533,51 @@ msgstr ""
 msgid "Expandir %s"
 msgstr ""
 
-#: template-parts/content/content-single-producto.php:232
+#: inc/utilities.php:2676
+msgid "Expirado"
+msgstr ""
+
+#. %s: norma UNE, e.g. "UNE-EN 1341".
+#: inc/catalog.php:1154
+#, php-format
+msgid "Fabricado conforme a la norma %s"
+msgstr ""
+
+#: template-parts/content/content-single-producto.php:229
 msgid "Fabricados conforme a la norma "
 msgstr ""
 
-#: inc/template-functions.php:664
+#: inc/customizer-csp.php:672
+msgid "Falta cerrar un bloque <IfModule mod_headers.c> con </IfModule>."
+msgstr ""
+
+#: inc/template-functions.php:704
+msgid "Favicon modo claro (icono negro)"
+msgstr ""
+
+#: inc/template-functions.php:715
+msgid "Favicon modo oscuro (icono blanco)"
+msgstr ""
+
+#: inc/template-functions.php:692
 msgid "Favicon SVG ⚠️"
 msgstr ""
 
-#: template-parts/content/content-single-producto.php:161
+#: inc/slide-cpt.php:146
+msgid ""
+"Fecha y hora en que el slide se despublicará automáticamente. Dejar vacío si "
+"no caduca."
+msgstr ""
+
+#: template-parts/content/content-single-producto.php:158
 msgid "Ficha técnica"
 msgstr ""
 
-#: inc/template-functions.php:492
+#: inc/template-functions.php:552
 msgid "fixed"
 msgstr ""
 
-#: inc/template-functions.php:493
+#: inc/template-functions.php:553
 msgid "fixed autohide"
 msgstr ""
 
@@ -223,28 +585,98 @@ msgstr ""
 msgid "Footer Menu"
 msgstr ""
 
-#: inc/template-functions.php:518
+#: inc/cf7-email-branding.php:127 inc/cf7_html_email_templates.php:385
+msgid ""
+"Formato de imagen no recomendado para email (Outlook y otros clientes pueden "
+"no mostrarlo correctamente). Usa JPG, PNG o WEBP."
+msgstr ""
+
+#: inc/cf7-ga-tracking.php:130
+msgid "Fuente / Medio / Campaña por defecto"
+msgstr ""
+
+#: inc/template-functions.php:578
 msgid "Full width"
 msgstr ""
 
-#: template-parts/content/content-single-producto.php:260
+#: template-parts/content/content-single-producto.php:257
 msgid "Galería"
 msgstr ""
 
-#: inc/template-functions.php:613
-msgid "GTM ID"
+#: inc/customizer-csp.php:134
+msgid ""
+"Gestiona la cabecera Content-Security-Policy y cabeceras de seguridad "
+"adicionales, escritas directamente en el .htaccess del sitio. Los cambios "
+"del editor no se aplican hasta pulsar \"Aplicar cambios\"."
 msgstr ""
 
-#: inc/template-functions.php:487
+#: inc/customizer-csp.php:221
+msgid "Ha ocurrido un error inesperado."
+msgstr ""
+
+#: inc/customizer-csp.php:295
+msgid ""
+"Hay directivas de cabecera ya existentes en el .htaccess, fuera del bloque "
+"gestionado por el tema. Elimínalas manualmente antes de aplicar, para evitar "
+"cabeceras duplicadas o en conflicto:"
+msgstr ""
+
+#: inc/template-functions.php:547
 msgid "Header Behavior"
 msgstr ""
 
-#: inc/template-functions.php:512
+#: inc/template-functions.php:572
 msgid "Header Width"
+msgstr ""
+
+#: inc/cf7-ga-tracking.php:123
+msgid "ID de conversión Google Ads (opcional)"
+msgstr ""
+
+#: inc/cf7-form-template.php:89
+msgid ""
+"Igual que la anterior, pero con los textos envueltos en {llaves} para que "
+"sean traducibles con Polylang (ver pestaña Polylang)."
+msgstr ""
+
+#: inc/cf7-polylang.php:878
+msgid "Importación completada"
+msgstr ""
+
+#: inc/cf7-polylang.php:612 inc/cf7-polylang.php:880
+msgid "importadas"
+msgstr ""
+
+#: inc/cf7-polylang.php:608 inc/cf7-polylang.php:875
+msgid "Importando…"
+msgstr ""
+
+#: inc/cf7-polylang.php:811 inc/cf7-polylang.php:850
+msgid "Importar mensajes de error desde CF7"
+msgstr ""
+
+#: inc/cf7-polylang.php:844
+msgid "Importar traducciones desde CF7"
 msgstr ""
 
 #: inc/events.php:712
 msgid "Inscríbete ahora"
+msgstr ""
+
+#: inc/template-functions.php:657
+msgid ""
+"Inyecta el CSS above-the-fold (theme/critical/*.css) en el <head> y carga el "
+"resto de style.css de forma asíncrona. Desactívalo para volver a la carga "
+"normal (bloqueante) del stylesheet completo."
+msgstr ""
+
+#: inc/customizer-csp.php:109
+msgid ""
+"La gestión de cabeceras CSP está marcada como activa, pero este servidor no "
+"tiene ninguna directiva escrita en su .htaccess (habitual tras restaurar "
+"solo la base de datos en una migración). Ve a Apariencia → Personalizar → "
+"THEME CUSTOMIZER → Seguridad (CSP) y pulsa \"Aplicar cambios\" para "
+"escribirla en este servidor."
 msgstr ""
 
 #. Name of the template
@@ -252,7 +684,7 @@ msgstr ""
 msgid "LANDING"
 msgstr ""
 
-#: inc/template-functions.php:517
+#: inc/template-functions.php:577
 msgid "Layout constrained"
 msgstr ""
 
@@ -260,6 +692,46 @@ msgstr ""
 #: inc/template-tags.php:62
 #, php-format
 msgid "Leave a comment<span class=\"sr-only\"> on %s</span>"
+msgstr ""
+
+#: inc/cf7-polylang.php:794
+msgid "Limpiar strings huérfanas"
+msgstr ""
+
+#: inc/cf7-email-branding.php:81
+msgid "Logo del email"
+msgstr ""
+
+#: inc/cf7-email-branding.php:126 inc/cf7_html_email_templates.php:379
+msgid ""
+"Logo en SVG y este servidor no puede convertirlo automáticamente a PNG (sin "
+"Imagick ni binarios de conversión disponibles). Outlook no lo mostrará — "
+"sube manualmente una versión en JPG, PNG o WEBP."
+msgstr ""
+
+#: inc/cf7-email-branding.php:125 inc/cf7_html_email_templates.php:374
+msgid ""
+"Logo en SVG: se genera automáticamente una versión PNG para Outlook y el "
+"resto de clientes de correo. Conversión disponible en este servidor."
+msgstr ""
+
+#: inc/cf7-form-template.php:71
+msgid ""
+"Los campos de \"Correo (2)\" se rellenan aunque no esté activada su casilla "
+"\"Usar correo electrónico (2)\", por si se activa más adelante. El campo "
+"\"De\" de Correo (2) no se toca: se deja el valor automático de CF7. Si esas "
+"pestañas ya tienen contenido, se pedirá confirmación antes de sobrescribirlo."
+msgstr ""
+
+#. 1: número de línea, 2: contenido de la línea
+#: inc/customizer-csp.php:646
+#, php-format
+msgid "Línea %1$d no permitida: \"%2$s\""
+msgstr ""
+
+#. %d: número de línea
+#: inc/customizer-csp.php:661
+msgid "Línea %d: etiqueta </IfModule> sin apertura correspondiente."
 msgstr ""
 
 #: functions.php:158
@@ -271,15 +743,19 @@ msgstr ""
 msgid "MAINTENANCE MODE"
 msgstr ""
 
-#: template-parts/content/content-single-producto.php:167
+#: template-parts/content/content-single-producto.php:164
 msgid "Manual técnico de colocación"
 msgstr ""
 
-#: template-parts/content/content-single-producto.php:247
+#: inc/utilities.php:994
+msgid "Marcar como destacada"
+msgstr ""
+
+#: template-parts/content/content-single-producto.php:244
 msgid "Medidas y cotas"
 msgstr ""
 
-#: inc/template-functions.php:2456
+#: inc/template-functions.php:2455
 msgid "minuto"
 msgid_plural "minutos"
 msgstr[0] "minute"
@@ -289,24 +765,20 @@ msgstr[1] "minutes"
 msgid "Mobile"
 msgstr ""
 
-#: inc/template-functions.php:173
+#: inc/template-functions.php:186
 msgctxt "monthly archives date format"
 msgid "F Y"
 msgstr ""
 
-#: inc/template-functions.php:173
+#: inc/template-functions.php:186
 msgid "Monthly Archives: "
 msgstr ""
 
-#: home.php:184
+#: home.php:209
 msgid "More about"
 msgstr ""
 
-#: template-parts/content/related_posts.php:45
-msgid "More posts about"
-msgstr ""
-
-#: inc/template-functions.php:592
+#: inc/template-functions.php:673
 msgid "Máximo de swatches por card de producto"
 msgstr ""
 
@@ -335,11 +807,27 @@ msgstr ""
 msgid "Next post:"
 msgstr ""
 
+#: inc/utilities.php:2498
+msgid "ningún slide disponible para"
+msgstr ""
+
 #: template-parts/content/content-none.php:67
 msgid "No content matched your request."
 msgstr ""
 
-#: taxonomy-product_category.php:303
+#: inc/slide-cpt.php:28 inc/pictau-blocks-gutenberg.php:33
+msgid "No encontrado"
+msgstr ""
+
+#: inc/slide-cpt.php:29 inc/pictau-blocks-gutenberg.php:34
+msgid "No encontrado en papelera"
+msgstr ""
+
+#: inc/customizer-csp.php:341
+msgid "No hay ninguna copia de seguridad disponible."
+msgstr ""
+
+#: taxonomy-product_category.php:308
 msgid "No hay productos en esta categoría todavía."
 msgstr ""
 
@@ -347,12 +835,68 @@ msgstr ""
 msgid "No hemos encontrado eso ¯\\_(ツ)_/¯"
 msgstr ""
 
+#: inc/template-functions.php:2035
+msgid "No multilanguage detected Polylang"
+msgstr ""
+
 #. Name of the template
 #: page-no-header.php:2
 msgid "NO page header"
 msgstr ""
 
-#: inc/template-functions.php:494
+#: inc/cf7-ga-tracking.php:75
+msgid ""
+"No se detecta el plugin GDPR Cookie Compliance activo en este sitio. Sin un "
+"gestor de cookies que cargue Google Tag Manager / GA4, ningún evento "
+"configurado aquí se enviará (el formulario seguirá funcionando con "
+"normalidad)."
+msgstr ""
+
+#: inc/cf7-polylang.php:967
+msgid "No se encontraron mensajes de CF7."
+msgstr ""
+
+#: inc/customizer-csp.php:306
+msgid "No se ha podido escribir en el .htaccess."
+msgstr ""
+
+#: inc/customizer-csp.php:345
+msgid "No se ha podido restaurar la copia de seguridad."
+msgstr ""
+
+#: inc/pictau-blocks-gutenberg.php:226
+msgid "No se ha seleccionado ningún block."
+msgstr ""
+
+#: inc/customizer-csp.php:429
+msgid ""
+"No se han encontrado directivas CSP del tema en el .htaccess. Se muestra la "
+"plantilla por defecto; no se guardará nada hasta pulsar \"Aplicar cambios\"."
+msgstr ""
+
+#: inc/customizer-csp.php:625
+msgid "No se permiten etiquetas PHP en el contenido."
+msgstr ""
+
+#: inc/clone-post.php:116
+msgid "No tienes permisos para clonar este contenido."
+msgstr ""
+
+#: inc/slide-cpt.php:140
+msgid ""
+"Nombre de función JS global (window[fn]) a llamar cuando este slide queda "
+"activo. Misma firma que el callback global: fn(newIndex, splide)."
+msgstr ""
+
+#: inc/slide-cpt.php:75
+msgid "Nombre de nueva categoría"
+msgstr ""
+
+#: inc/catalog.php:1150
+msgid "Norma de fabricación"
+msgstr ""
+
+#: inc/template-functions.php:554
 msgid "normal"
 msgstr ""
 
@@ -364,13 +908,17 @@ msgstr ""
 msgid "Older posts"
 msgstr ""
 
+#: inc/cf7-polylang.php:881
+msgid "omitidas"
+msgstr ""
+
 #. 1: title.
 #: comments.php:34
 #, php-format
 msgid "One comment on &ldquo;%1$s&rdquo;"
 msgstr ""
 
-#: inc/catalog.php:17
+#: inc/catalog.php:17 inc/slide-cpt.php:131 inc/utilities.php:2626
 msgid "Orden"
 msgstr ""
 
@@ -378,10 +926,13 @@ msgstr ""
 msgid "Orden catálogo"
 msgstr ""
 
+#: inc/slide-cpt.php:134
+msgid "Orden de aparición (menor = primero, prioridad LCP). Vacío = último."
+msgstr ""
+
 #: template-parts/content/content-single-necesidad.php:79
 #: template-parts/content/content-single-evento.php:41
 #: template-parts/content/content-single-servicio-no-header.php:42
-#: template-parts/content/content-page.php:83
 #: template-parts/content/content.php:36
 #: template-parts/content/content-single-solucion.php:83
 #: template-parts/content/content-page-noheader.php:20
@@ -391,17 +942,95 @@ msgstr ""
 msgid "Pages:"
 msgstr ""
 
-#: inc/template-functions.php:569
+#: inc/template-functions.php:629
 msgid "Pictau Block shortcode Footer"
+msgstr ""
+
+#: inc/pictau-blocks-gutenberg.php:24 inc/pictau-blocks-gutenberg.php:210
+msgid "Pictau Blocks"
+msgstr ""
+
+#: inc/pictau-blocks-gutenberg.php:146
+msgid "PICTAU BLOCKS MANAGER"
+msgstr ""
+
+#: functions.php:394
+msgid "Pictau Blocks — acción requerida"
+msgstr ""
+
+#: inc/pictau-blocks-gutenberg.php:154
+msgid "Pictau Blocks — funcionalidad nativa del tema Pictau."
+msgstr ""
+
+#: inc/customizer-csp.php:107
+msgid "Pictau — Seguridad (CSP)"
+msgstr ""
+
+#: inc/pictau-blocks-gutenberg.php:107
+msgid "PICTAU-BLOCKS Settings"
+msgstr ""
+
+#: inc/pictau-blocks-gutenberg.php:106
+msgid "PICTAU-BLOCKS Settings ADMIN"
 msgstr ""
 
 #. Name of the theme
 msgid "pictau/pictau/theme"
 msgstr ""
 
+#: inc/pictau-blocks-gutenberg.php:38
+msgid "pictau_blocks"
+msgstr ""
+
+#: inc/cf7-form-template.php:148
+msgid ""
+"Plantilla aplicada. Revisa las pestañas Formulario, Correo y Correo (2), y "
+"recuerda guardar."
+msgstr ""
+
+#: inc/cf7-form-template.php:50
+msgid "Plantilla Base"
+msgstr ""
+
+#: inc/cf7-form-template.php:65
+msgid "Plantilla base"
+msgstr ""
+
+#: inc/cf7-polylang.php:710
+msgid "Polylang"
+msgstr ""
+
+#: inc/cf7-polylang.php:947
+msgid "Polylang no está disponible."
+msgstr ""
+
 #: template-parts/content/content.php:18
 msgctxt "post"
 msgid "Featured"
+msgstr ""
+
+#: inc/clone-post.php:50
+msgid "Post no válido."
+msgstr ""
+
+#: inc/pictau-blocks-gutenberg.php:22
+msgctxt "Post Type General Name"
+msgid "Pictau Blocks"
+msgstr ""
+
+#: inc/slide-cpt.php:17
+msgctxt "Post Type General Name"
+msgid "Slides"
+msgstr ""
+
+#: inc/pictau-blocks-gutenberg.php:23
+msgctxt "Post Type Singular Name"
+msgid "Pictau Block"
+msgstr ""
+
+#: inc/slide-cpt.php:18
+msgctxt "Post Type Singular Name"
+msgid "Slide"
 msgstr ""
 
 #. 1: posted by label, only visible to screen readers. 2: author link. 3: post author.
@@ -412,6 +1041,14 @@ msgstr ""
 #. 1: posted in label, only visible to screen readers. 2: list of categories.
 #: inc/template-tags.php:90 inc/template-tags.php:152
 msgid "Posted in"
+msgstr ""
+
+#: taxonomy-product_category.php:316
+msgid "Preguntas frecuentes"
+msgstr ""
+
+#: taxonomy-product_category.php:315
+msgid "Preguntas frecuentes sobre "
 msgstr ""
 
 #: single-necesidad.php:30 single-necesidad-no-header.php:28
@@ -442,7 +1079,7 @@ msgstr ""
 msgid "Productos"
 msgstr ""
 
-#: template-parts/content/content-single-producto.php:277
+#: template-parts/content/content-single-producto.php:274
 msgid "Productos relacionados"
 msgstr ""
 
@@ -450,8 +1087,80 @@ msgstr ""
 msgid "Prueba otro contenido por favor."
 msgstr ""
 
+#: inc/utilities.php:2678
+msgid "Próximo a caducar"
+msgstr ""
+
+#: inc/pictau-blocks-gutenberg.php:25
+msgid "Página padre"
+msgstr ""
+
+#: inc/cf7-polylang.php:879
+msgid "Recarga la página para ver las traducciones actualizadas."
+msgstr ""
+
+#: inc/cf7-ga-tracking.php:94
+msgid "Registrar evento de envío en cualquier intento (incluso sin éxito)"
+msgstr ""
+
+#: inc/cf7-form-template.php:68
+msgid ""
+"Rellena automáticamente el contenido de las pestañas \"Formulario\", "
+"\"Correo\" y \"Correo (2)\" con la plantilla base de contacto del tema."
+msgstr ""
+
+#: inc/cf7-form-template.php:76
+msgid "Rellenar con plantilla base"
+msgstr ""
+
+#: inc/cf7-form-template.php:84
+msgid "Rellenar con plantilla base Multiidioma"
+msgstr ""
+
+#: inc/template-functions.php:643
+msgid "Rendimiento"
+msgstr ""
+
+#: inc/customizer-csp.php:220
+msgid "Restaurando…"
+msgstr ""
+
+#: inc/customizer-csp.php:222 inc/customizer-csp-control.php:48
+msgid "Restaurar backup anterior"
+msgstr ""
+
 #: archive.php:53
 msgid "Return to Blog"
+msgstr ""
+
+#: inc/cf7-ga-tracking.php:104
+msgid ""
+"Se dispara en cualquier intento de envío procesado por el servidor (éxito, "
+"fallo de correo, spam), salvo que desmarques la casilla de arriba."
+msgstr ""
+
+#: inc/cf7-ga-tracking.php:111
+msgid ""
+"Se dispara solo si el envío tiene éxito. \"generate_lead\" es el nombre "
+"recomendado por GA4 para leads."
+msgstr ""
+
+#: inc/clone-post.php:251
+msgid "Se ha creado 1 borrador clonado correctamente."
+msgstr ""
+
+#. %d: número de borradores creados
+#: inc/clone-post.php:254
+msgid "Se han creado %d borradores clonados correctamente."
+msgstr ""
+
+#: inc/customizer-csp.php:112
+msgid ""
+"Se han detectado directivas de cabecera (CSP u otras) en el .htaccess fuera "
+"del bloque gestionado por el tema — posiblemente añadidas a mano o por otro "
+"plugin. El editor de Seguridad (CSP) no las modifica ni las elimina; "
+"revísalas manualmente, ya que podrían entrar en conflicto con la política "
+"gestionada por el tema:"
 msgstr ""
 
 #. 1: search result title. 2: search term.
@@ -464,11 +1173,19 @@ msgstr ""
 msgid "Sector no header"
 msgstr ""
 
-#: inc/template-functions.php:678
-msgid "Selecciona tu imagen"
+#: inc/cf7-ga-tracking.php:47 inc/cf7-ga-tracking.php:70
+msgid "Seguimiento GA4 / GTM"
 msgstr ""
 
-#: inc/utilities.php:776
+#: inc/customizer-csp.php:153
+msgid "Seguridad (CSP)"
+msgstr ""
+
+#: inc/pictau-blocks-gutenberg.php:257
+msgid "Selecciona el block:"
+msgstr ""
+
+#: inc/utilities.php:796
 msgid "Selecciona una categoría principal:"
 msgstr ""
 
@@ -477,13 +1194,74 @@ msgstr ""
 msgid "Servicio no header"
 msgstr ""
 
-#: inc/template-functions.php:593
+#: inc/pictau-blocks-gutenberg.php:75
+msgid "Shortcode"
+msgstr ""
+
+#: inc/template-functions.php:529
+msgid ""
+"Shown in the footer. Available via get_theme_mod('pictau_contact_phone')."
+msgstr ""
+
+#: inc/template-functions.php:674
 msgid ""
 "Si hay más variantes de color, se muestra un indicador \"+N\". Mínimo 1."
 msgstr ""
 
+#: inc/cf7-ga-tracking.php:96
+msgid ""
+"Si lo desmarcas, el evento de envío solo se disparará junto con el de "
+"conversión, nunca en fallos o spam."
+msgstr ""
+
+#: inc/cf7-email-branding.php:82
+msgid ""
+"Si no se selecciona ninguno, se usa el logo general del sitio (Identidad del "
+"sitio)."
+msgstr ""
+
+#: inc/cf7-polylang.php:611
+msgid "sin .mo"
+msgstr ""
+
+#: inc/cf7-polylang.php:882
+msgid "Sin archivo .mo disponible para este idioma."
+msgstr ""
+
+#: inc/customizer-csp.php:267 inc/customizer-csp.php:337
+#: inc/cf7-polylang.php:689 inc/cf7-polylang.php:943
+msgid "Sin permisos suficientes."
+msgstr ""
+
+#: inc/template-functions.php:490
+msgid "Site Information"
+msgstr ""
+
+#: inc/utilities.php:2702
+msgid "Slide order"
+msgstr ""
+
+#: inc/slide-cpt.php:20
+msgid "Slide padre"
+msgstr ""
+
+#: inc/slide-cpt.php:19 inc/slide-cpt.php:33
+msgid "Slides"
+msgstr ""
+
+#: inc/slide-cpt.php:34
+msgid "Slides del hero slider ([hero-slider])"
+msgstr ""
+
 #: inc/catalog.php:423
-msgid "Solicitar presupuesto"
+msgid "Solicita información"
+msgstr ""
+
+#: inc/cf7-ga-tracking.php:135
+msgid ""
+"Solo se usan cuando no llegan utm_source/utm_medium/utm_campaign reales por "
+"la URL (tráfico sin campaña activa). Si llegan por URL, esos valores siempre "
+"tienen prioridad."
 msgstr ""
 
 #. Name of the template
@@ -491,11 +1269,26 @@ msgstr ""
 msgid "Solucion no header"
 msgstr ""
 
-#: template-parts/content/content-single-producto.php:226
+#: inc/cf7-polylang.php:695
+msgid "Strings huérfanas eliminadas del registro."
+msgstr ""
+
+#: inc/template-functions.php:695
+msgid ""
+"Sube el icono en modo claro (icono negro) y su equivalente en modo oscuro "
+"(icono blanco). El navegador elegirá automáticamente uno u otro según el "
+"tema del sistema operativo del visitante.<br><hr>⚠️ <strong>Beware!</strong> "
+"Algunos navegadores no soportan SVG como favicon. Sube también un .png "
+"(32x32) con el mismo nombre de archivo para cada variante.<br><br>Check "
+"support at <a href=\"https://caniuse.com/link-icon-svg\" target=\"_blank\">"
+"https://caniuse.com/link-icon-svg</a>"
+msgstr ""
+
+#: template-parts/content/content-single-producto.php:223
 msgid "Tabla de especificaciones"
 msgstr ""
 
-#: inc/template-functions.php:167
+#: inc/template-functions.php:180
 msgid "Tag Archives: "
 msgstr ""
 
@@ -504,61 +1297,146 @@ msgstr ""
 msgid "Tags:"
 msgstr ""
 
-#: inc/template-functions.php:470
+#: inc/slide-cpt.php:66
+msgctxt "taxonomy general name"
+msgid "Categorías de slide"
+msgstr ""
+
+#: inc/slide-cpt.php:67
+msgctxt "taxonomy singular name"
+msgid "Categoría de slide"
+msgstr ""
+
+#: inc/template-functions.php:483
 msgid "THEME CUSTOMIZER"
 msgstr ""
 
-#: inc/template-functions.php:630
-msgid ""
-"This color will be used for the mobile \"theme-color\" meta tag<br><strong>"
-"Note:</strong> This will only affect mobile browsers that support this "
-"feature.<br><br>If you're using Contact Form 7, this color will be used for "
-"the html email templates on the header and footer sections. 🙌"
-msgstr ""
-
-#: inc/template-functions.php:667
-msgid ""
-"This image will be used as favicon. It will be nice if you use \"@media "
-"(prefers-color-scheme: dark)\" to adjust the svg colors for dark mode.<br>"
-"<hr>⚠️ <strong>Beware!</strong> Safari does not support SVG favicons. I you "
-"use this feature, make sure to upload a .png version with the same filename "
-"for Safari Browsers.<br><br>It is also a good practice to use a \"favicon."
-"ico\" (32bit, transparent background) on the root of your WP folder for "
-"admin pages. <br><br>Check support at <a href=\"https://caniuse.com/link-"
-"icon-svg\" target=\"_blank\">https://caniuse.com/link-icon-svg</a>"
-msgstr ""
-
-#: inc/catalog.php:213
+#: inc/catalog.php:213 inc/slide-cpt.php:69 inc/utilities.php:2784
 msgid "Todas las categorías"
+msgstr ""
+
+#: inc/pictau-blocks-gutenberg.php:26
+msgid "Todos los Pictau Blocks"
+msgstr ""
+
+#: inc/slide-cpt.php:21
+msgid "Todos los slides"
 msgstr ""
 
 #: functions.php:104
 msgid "Top Menu"
 msgstr ""
 
-#: inc/utilities.php:1271
+#: inc/cf7-polylang.php:740
+msgid "Traducciones con Polylang"
+msgstr ""
+
+#: inc/cf7-polylang.php:803
+msgid "Traducir campos del formulario"
+msgstr ""
+
+#: inc/cf7-polylang.php:807
+msgid "Traducir mensajes de error"
+msgstr ""
+
+#: inc/pictau-blocks-gutenberg.php:239
+msgid "Título:"
+msgstr ""
+
+#: inc/customizer-csp-control.php:41
+msgid "Usar valores por defecto del tema"
+msgstr ""
+
+#: inc/template-functions.php:516
+msgid ""
+"Used as the sender address in WordPress emails and shown in the footer. "
+"Available via get_theme_mod('pictau_contact_email')."
+msgstr ""
+
+#: inc/template-functions.php:503
+msgid ""
+"Used as the sender name in WordPress emails. Available via "
+"get_theme_mod('pictau_site_name')."
+msgstr ""
+
+#: inc/cf7-ga-tracking.php:126
+msgid ""
+"Valor \"send_to\" de la etiqueta de evento que proporciona Google Ads (ID de "
+"conversión + etiqueta). Si se rellena, al enviarse el formulario con éxito "
+"se dispara además un evento gtag(\"event\", \"conversion\", ...) "
+"independiente del evento de conversión GA4 de arriba, con el mismo "
+"valor/moneda si están informados. Requiere que la etiqueta de Google Ads "
+"(comando \"config\" con el AW-XXXXXXXXX) esté ya cargada en la página por el "
+"gestor de cookies — el tema nunca la carga."
+msgstr ""
+
+#: inc/cf7-ga-tracking.php:115
+msgid "Valor de conversión (opcional)"
+msgstr ""
+
+#: inc/utilities.php:1324
 #| msgid "Ver Casos de Éxito"
 msgid "Ver Caso de Éxito"
 msgstr "See Success Story"
+
+#: inc/pictau-blocks-gutenberg.php:27
+msgid "Ver Pictau Block"
+msgstr ""
+
+#: inc/slide-cpt.php:22
+msgid "Ver slide"
+msgstr ""
+
+#: inc/utilities.php:2491
+msgid "ver slides"
+msgstr ""
+
+#: inc/utilities.php:2293
+msgid "Ver slides en el administrador →"
+msgstr ""
+
+#: inc/cf7-email-branding-control.php:45
+msgid "Vista previa"
+msgstr ""
+
+#: archive-ambiente.php:29
+msgid ""
+"Visualiza cómo quedarían nuestros productos en distintos ambientes "
+"exteriores y encuentra la combinación perfecta para tu proyecto"
+msgstr ""
+
+#: archive-ambiente.php:26
+msgid "Visualizadores interactivos"
+msgstr ""
 
 #: 404.php:97
 msgid "Vover a Inicio"
 msgstr ""
 
-#: inc/template-functions.php:171
+#: inc/customizer-csp.php:422
+msgid ""
+"Ya existen directivas CSP gestionadas por el tema en el .htaccess. Puedes "
+"editarlas abajo."
+msgstr ""
+
+#: inc/template-functions.php:184
 msgctxt "yearly archives date format"
 msgid "Y"
 msgstr ""
 
-#: inc/template-functions.php:171
+#: inc/template-functions.php:184
 msgid "Yearly Archives: "
 msgstr ""
 
-#: inc/template-functions.php:259
+#: template-parts/content/related_posts.php:47
+msgid "You might also like"
+msgstr ""
+
+#: inc/template-functions.php:272
 msgid "Your comment is awaiting moderation."
 msgstr ""
 
-#: inc/template-functions.php:261
+#: inc/template-functions.php:274
 msgid ""
 "Your comment is awaiting moderation. This is a preview; your comment will be "
 "visible after it has been approved."
@@ -572,4 +1450,53 @@ msgstr ""
 msgid ""
 "Your site is set to show the most recent posts on your homepage, but you "
 "haven&rsquo;t published any posts."
+msgstr ""
+
+#: inc/customizer-csp.php:218
+msgid "¿Restaurar la copia de seguridad anterior?"
+msgstr ""
+
+#: inc/customizer-csp.php:217
+msgid ""
+"¿Seguro que quieres aplicar estas directivas al .htaccess del sitio? Se "
+"creará una copia de seguridad automática y se verificará que el sitio sigue "
+"respondiendo."
+msgstr ""
+
+#: inc/cf7-ga-tracking.php:119
+msgid ""
+"Útil para pujas por valor en Google Ads. Deja el valor en blanco si no "
+"aplica."
+msgstr ""
+
+#: inc/cf7-polylang.php:845
+msgid ""
+"— Rellena las traducciones vacías con las del archivo .mo del plugin Contact "
+"Form 7. No sobreescribe las que ya existen."
+msgstr ""
+
+#: inc/utilities.php:2506
+msgid "⚠ Hero Slider: sin slides disponibles"
+msgstr ""
+
+#. %s: shortcode example
+#: inc/utilities.php:2289
+#, php-format
+msgid "⚠ No hay slides disponibles para %s. Comprueba el CPT Slides."
+msgstr ""
+
+#: inc/customizer-csp.php:414
+msgid ""
+"⚠️ Marcada como activa en la base de datos, pero este servidor no tiene "
+"ninguna directiva en su .htaccess (típico tras restaurar solo la BD en una "
+"migración). El contenido de abajo es el que estaba activo antes de migrar — "
+"revísalo y pulsa \"Aplicar cambios\" para escribirlo aquí."
+msgstr ""
+
+#: inc/customizer-csp.php:140
+msgid ""
+"⚠️ Se han detectado directivas de cabecera ya existentes en el .htaccess, "
+"fuera de este bloque (añadidas a mano o por otro plugin). Este editor no las "
+"modifica ni las elimina — revísalas y elimínalas manualmente si entran en "
+"conflicto, o \"Aplicar cambios\" se rechazará hasta entonces:"
 msgstr ""

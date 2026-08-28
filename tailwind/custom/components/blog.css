@@ -354,6 +354,9 @@ body.single-post {
 
 				> figure {
 					@apply py-[4ch];
+					img {
+						aspect-ratio: unset;
+					}
 				}
 			}
 		}

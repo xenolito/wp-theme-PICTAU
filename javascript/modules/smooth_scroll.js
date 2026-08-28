@@ -23,8 +23,14 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 //     asignada por la librería); el sufijo hash tipo "svelte-82qwg8" que la acompaña
 //     en el DOM SÍ puede cambiar entre builds del plugin, por eso no forma parte del
 //     selector.
+//   - .fcal_date_event_details → panel del paso final "Introduce los detalles" del
+//     mismo widget FluentBooking (formulario con nombre/email/teléfono...). Trae su
+//     propio overflow-y:auto de fábrica; cuando los errores de validación añaden
+//     texto y el contenido supera la altura del panel, la rueda del ratón no lo
+//     desplazaba sin esta entrada — mismo caso que .fcal_slot_picker, pero para el
+//     paso del formulario en vez del paso de selección de hora.
 //   - .main-modal-content → panel del modal de cookies del plugin GDPR Cookie Compliance.
-const NESTED_SCROLL_SELECTOR = '[data-overlayscrollbars-viewport], .fcal_slot_picker, .svelte-select-list, .main-modal-content'
+const NESTED_SCROLL_SELECTOR = '[data-overlayscrollbars-viewport], .fcal_slot_picker, .svelte-select-list, .fcal_date_event_details, .main-modal-content'
 
 // smooth scroll
 const lenis = new Lenis({

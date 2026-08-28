@@ -188,3 +188,9 @@ body.fluentboards_page_fluent_booking #wpbody:has(.fbs_login_form) {
 		}
 	}
 }
+
+.fcal_custom_checkbox {
+	input:checked ~ .checkbox_mark::before {
+		width: 0.3em !important;
+	}
+}
