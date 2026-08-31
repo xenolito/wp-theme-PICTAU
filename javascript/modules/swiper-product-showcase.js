@@ -16,7 +16,11 @@ const getRandom = (min, max) => {
 	return Math.random() * (max - min) + min
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+// Se espera a window.load (no DOMContentLoaded) para que ScrollTrigger mida la posición del
+// elemento [data-swiper] contra el layout final de la página, ya con todas las imágenes de
+// otras secciones cargadas (si se crea antes, con la página aún más corta de lo que será,
+// puede calcular mal si el elemento ya está o no dentro del viewport).
+window.addEventListener('load', () => {
 	const attributeId = 'swiper'
 	const swiperContainer = document.querySelectorAll(`[data-${attributeId}]`)
 
@@ -91,6 +95,19 @@ document.addEventListener('DOMContentLoaded', () => {
 				preventClicks: true,
 				allowTouchMove: true,
 				autoplay: {
+					// enabled: false es imprescindible: si se omite, Swiper normaliza autoplay.enabled
+					// a true automáticamente (por pasar un objeto) y arranca su propio autoplay al
+					// inicializarse, ANTES de que este módulo llegue a llamar a autoplay.stop() más
+					// abajo. Con delay 0, ese primer arranque interno programa su siguiente slide vía
+					// requestAnimationFrame sin guardar el id en ningún sitio (swiper autoplay.mjs),
+					// así que autoplay.stop() no puede cancelarlo: ese slideNext "huérfano" se ejecuta
+					// igualmente un frame después, sin que el propio autoplay lo registre (running ya
+					// es false cuando dispara beforeTransitionStart), y compite con el play() real
+					// disparado por el ScrollTrigger si este entra en el viewport casi al momento
+					// (recarga con el swiper ya visible), rompiendo la cadena de auto-reinicio tras la
+					// primera transición. Con enabled:false, Swiper nunca arranca por su cuenta y nuestro
+					// propio play()/pause() (ver ScrollTrigger más abajo) es la única fuente que lo hace.
+					enabled: false,
 					delay: 0,
 					pauseOnMouseEnter: false,
 					disableOnInteraction: false,
@@ -110,24 +127,31 @@ document.addEventListener('DOMContentLoaded', () => {
 				// },
 			})
 
-			this.swiper.autoplay.stop()
-
-			this.st = ScrollTrigger.create({
-				trigger: swiperContainer,
-				start: this.triggerstart,
-				end: 'bottom top',
-				// animation: this.timeLine,
-				onEnter: () => this.play(),
-				onLeave: () => this.pause(),
-				onEnterBack: () => this.play(),
-				onLeaveBack: () => this.pause(),
-				scrub: 0.5,
-				// pin: this.targetToAnim,
-				// pinSpacer: false,
-				invalidateOnRefresh: true,
-				// markers: true,
-				markers: this.markers,
-				// pinReparent: true,
+			// Margen de seguridad adicional: si el elemento ya está dentro del viewport al crear
+			// el ScrollTrigger, su onEnter se dispara en el mismo tick, sin que el navegador haya
+			// pintado aún la posición de reposo del swiper. El doble rAF garantiza que ya hubo un
+			// pintado real antes de evaluar el estado inicial del ScrollTrigger y, si procede,
+			// arrancar el autoplay.
+			requestAnimationFrame(() => {
+				requestAnimationFrame(() => {
+					this.st = ScrollTrigger.create({
+						trigger: this.swiperContainer,
+						start: this.triggerstart,
+						end: 'bottom top',
+						// animation: this.timeLine,
+						onEnter: () => this.play(),
+						onLeave: () => this.pause(),
+						onEnterBack: () => this.play(),
+						onLeaveBack: () => this.pause(),
+						scrub: 0.5,
+						// pin: this.targetToAnim,
+						// pinSpacer: false,
+						invalidateOnRefresh: true,
+						// markers: true,
+						markers: this.markers,
+						// pinReparent: true,
+					})
+				})
 			})
 		}
 	}
