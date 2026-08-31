@@ -84,6 +84,7 @@
     "lodash": "^4.17.21",
     "overlayscrollbars": "2.3.2",
     "split-type": "^0.3.4",
+    "swiper": "^11.1.4",
     "throttleit": "^2.1.0"
   },
   "prettier": {
