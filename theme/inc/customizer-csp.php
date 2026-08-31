@@ -523,6 +523,7 @@ final class Pictau_CSP_Manager {
 	public function get_default_template(): string {
 		$own_domains = implode( ' ', $this->get_own_domain_variants() );
 		$own_domains_suffix = '' !== $own_domains ? ' ' . $own_domains : '';
+		$media_path_regex = $this->get_media_upload_path_regex();
 
 		return <<<CSP
 # CSP por defecto del tema pictau — dominios confirmados en el código: YouTube y Vimeo
@@ -556,9 +557,18 @@ final class Pictau_CSP_Manager {
 # (google.de, google.fr...) desde el editor del Customizer.
 # Opcional (descomenta si se usa el shortcode rive-player): WASM de Rive — añade
 # https://cdn.jsdelivr.net https://unpkg.com a script-src/connect-src.
+# El directorio de subida de medios (wp_upload_dir(), calculado en runtime porque puede
+# ser el "xen_media" de este tema, el "wp-content/uploads" por defecto de WP, o cualquier
+# otro configurado en Ajustes > Multimedia) necesita Cross-Origin-Resource-Policy
+# "cross-origin" en vez de "same-origin": ahí vive el logo generado para los emails de CF7,
+# y "same-origin" hace que el navegador/webview del cliente de correo (Outlook Web, Spark
+# en macOS...) bloquee la imagen con el icono de "no cargada" al embeberla desde un origen
+# distinto (el propio webmail), aunque el fichero se sirva perfectamente por HTTP
+# (detectado en producción de qlikparapymes, 2026-08-31).
 <IfModule mod_headers.c>
 SetEnvIf Request_URI "^/wp-admin" csp_admin
 SetEnvIf Request_URI "^/wp-login\\.php" csp_admin
+SetEnvIf Request_URI "^{$media_path_regex}" pct_public_media
 
 # Publico
 Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com{$own_domains_suffix}; style-src 'self' 'unsafe-inline'{$own_domains_suffix}; img-src 'self' data: https://i.ytimg.com https://www.googletagmanager.com https://www.google.com https://*.doubleclick.net{$own_domains_suffix}; font-src 'self' data:{$own_domains_suffix}; connect-src 'self' https://*.google-analytics.com https://analytics.google.com https://www.google.com https://*.doubleclick.net https://www.googleadservices.com https://www.google.es; frame-src 'self' https://www.youtube.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';" env=!csp_admin
@@ -569,7 +579,8 @@ Header set Content-Security-Policy "default-src 'self' https: data: blob:; scrip
 # Cabeceras de seguridad adicionales
 Header always set X-Content-Type-Options "nosniff"
 Header always set Cross-Origin-Opener-Policy "same-origin"
-Header always set Cross-Origin-Resource-Policy "same-origin"
+Header always set Cross-Origin-Resource-Policy "same-origin" env=!pct_public_media
+Header always set Cross-Origin-Resource-Policy "cross-origin" env=pct_public_media
 Header always set Permissions-Policy "geolocation=(), camera=(), microphone=()"
 Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
 </IfModule>
@@ -595,6 +606,28 @@ CSP;
 		$alt = ( 0 === stripos( $host, 'www.' ) ) ? substr( $host, 4 ) : 'www.' . $host;
 
 		return array( 'https://' . $host, 'https://' . $alt );
+	}
+
+	/**
+	 * Ruta (relativa al dominio) del directorio de subida de medios, lista para usar
+	 * dentro de un patrón SetEnvIf de Apache. Se calcula con wp_upload_dir() en vez
+	 * de asumir "/xen_media/": ese es el nombre configurado en ESTE proyecto (Ajustes >
+	 * Multimedia > upload_path), pero cualquier otro sitio que use este tema puede tener
+	 * el "wp-content/uploads" por defecto de WordPress, u otro nombre distinto.
+	 */
+	private function get_media_upload_path_regex(): string {
+		$upload_dir = wp_upload_dir();
+		$path       = ! empty( $upload_dir['baseurl'] ) ? wp_parse_url( $upload_dir['baseurl'], PHP_URL_PATH ) : '';
+
+		if ( ! $path ) {
+			$path = '/wp-content/uploads/';
+		}
+
+		$path = trailingslashit( $path );
+
+		// Escapamos los metacaracteres de regex de Apache (ap_regcomp, sintaxis POSIX
+		// extendida): la ruta es texto literal, no un patrón.
+		return preg_replace( '/([.^$*+?()\[\]{}|\\\\])/', '\\\\$1', $path );
 	}
 
 	// =========================================================================
