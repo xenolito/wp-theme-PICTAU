@@ -16,11 +16,7 @@ const getRandom = (min, max) => {
 	return Math.random() * (max - min) + min
 }
 
-// Se espera a window.load (no DOMContentLoaded) para que ScrollTrigger mida la posición del
-// elemento [data-swiper] contra el layout final de la página, ya con todas las imágenes de
-// otras secciones cargadas (si se crea antes, con la página aún más corta de lo que será,
-// puede calcular mal si el elemento ya está o no dentro del viewport).
-window.addEventListener('load', () => {
+document.addEventListener('DOMContentLoaded', () => {
 	const attributeId = 'swiper'
 	const swiperContainer = document.querySelectorAll(`[data-${attributeId}]`)
 
