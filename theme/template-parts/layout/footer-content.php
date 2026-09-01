@@ -10,7 +10,7 @@
 
 ?>
 
-<section id="footer" class="theme-color-dark" data-webgldots_density="1.75" data-webgldots data-webgldots_target=".webgldots-footer" data-webgldots_color="#ffffff" data-webgldots_linecolor="#ffffff" data-webgldots_speed="0.5" data-webgldots_dotsize="1">
+<section id="footer" class="theme-color-dark" data-webgldots_density="2.75" data-webgldots data-webgldots_target=".webgldots-footer" data-webgldots_color="#ffffff" data-webgldots_linecolor="#ffffff" data-webgldots_speed="0.5" data-webgldots_dotsize="1" data-webgldots_opacity="0.33">
 	<p class="bg-pattern-footer"></p>
 	<div>
 

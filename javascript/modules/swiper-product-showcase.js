@@ -24,10 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	const SwiperShowcase = class {
 		constructor(targetDOMElement, config = {}) {
-			const { delay = 1000, triggerstart = null, slidesperview = 1.1, markers = false } = config
+			const { delay = 1000, triggerstart = null, slidesperview = 2, scale = 1, markers = false } = config
 
 			this.swiperContainer = targetDOMElement
 			this.slidesperview = slidesperview
+			this.scale = scale
 			this.markers = markers === 'true' || markers === '1' ? true : false
 			this.delay = delay
 			this.triggerstart = !triggerstart ? `top bottom` : `top ${triggerstart}`
@@ -74,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					stretch: 0,
 					depth: 50,
 					modifier: 1,
+					scale: this.scale,
 					slideShadows: true,
 				},
 				// on: {

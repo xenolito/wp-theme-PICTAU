@@ -73,7 +73,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	const BackgroundGL = class {
 		constructor(bgContainer, config = {}) {
-			const { triggerstart = false, log = false, target = false, density = 3, dotsize = 2, maxdisplacement = 50, color = false, linecolor = false, maskspread = 1, markers = false } = config
+			const {
+				triggerstart = false,
+				log = false,
+				target = false,
+				density = 3,
+				dotsize = 2,
+				maxdisplacement = 50,
+				color = false,
+				linecolor = false,
+				opacity = 1,
+				maskspread = 1,
+				markers = false,
+			} = config
 
 			this.bgContainer = bgContainer
 			this.target = document.querySelector(target) ?? this.bgContainer
@@ -84,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.maxdisplacement = Number(maxdisplacement)
 			this.colordots = parseColor(color)
 			this.colorlines = parseColor(linecolor)
+			this.opacity = Number(opacity)
 
 			this.markers = markers
 			this.maskspread = Number(maskspread)
@@ -120,8 +133,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			this.canvas.style.position = 'absolute'
 			this.canvas.style.inset = '0'
-			this.canvas.style.zIndex = '0' // Ensure canvas is behind other content
+			this.canvas.style.zIndex = '-1' // Ensure canvas is behind other content
 			this.canvas.style.pointerEvents = 'none'
+			this.canvas.style.marginLeft = 'initial !important'
+			this.canvas.style.marginRight = 'initial !important'
+			this.canvas.style.maxWidth = 'unset !important'
+			this.canvas.style.opacity = this.opacity
 
 			this.target.appendChild(this.canvas)
 
