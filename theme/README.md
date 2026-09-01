@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.18.11
+- **Versión:** 7.19.0
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1265,6 +1265,8 @@ data-anim_any_nextanim="<selector>[, <tiempo>]"
 
 **Encadenamiento infinito A → B → C → N:** cada elemento puede tener su propio `nextanim`, creando cadenas de cualquier longitud.
 
+**Repetición en cadena:** si el elemento que dispara el `nextanim` tiene `data-anim_any_repeat` activo (por defecto) y sale del viewport por abajo, se resetea a su estado inicial listo para repetirse. Todo el resto de la cadena (`B`, `C`, `N`...) se resetea con él, así que solo vuelven a animarse cuando el disparador complete de nuevo su timeline tras reentrar en el viewport — nunca se quedan "congelados" en su estado final tras la primera vuelta.
+
 ```html
 <h2 data-anim_any data-anim_any_nextanim=".subtitulo, -0.5">
   Título principal
@@ -1429,7 +1431,7 @@ Revela los chars del target uno a uno **de golpe** (sin fade, como al escribir e
 
 Instanciar cada `[data-anim_any]` hace `SplitType` (envuelve el texto en spans → escribe DOM) + `ScrollTrigger.create()` (mide la posición → lee layout). Hacerlo con **todos** los elementos de golpe en `DOMContentLoaded` es *layout thrashing*: en páginas con muchos `[data-anim_any]`, Lighthouse lo reporta como **"Forced reflow"** en la carga inicial. Desde **v4.18.0** del módulo, la instanciación se reparte:
 
-- **Grupos.** Los elementos conectados por `data-anim_any_chainanim`/`data-anim_any_nextanim` se agrupan en un pre-pass y **siempre se instancian juntos y en orden del DOM** (el "master"/disparador debe existir antes que el encadenado). Un elemento sin encadenar es un grupo de 1.
+- **Grupos.** Los elementos conectados por `data-anim_any_nextanim` se agrupan en un pre-pass y **siempre se instancian juntos y en orden del DOM** (el "master"/disparador debe existir antes que el encadenado). Un elemento sin encadenar es un grupo de 1.
 - **Eager (síncrono, en la carga):** grupos cerca del viewport inicial, y **cualquier grupo con un elemento `autoplay=0`** (propio o forzado por ser target de un `nextanim`). Estos últimos deben instanciarse ya porque esperan un `.play()` externo que llega antes que cualquier callback del observer — p.ej. el `<h1>` del hero-slider, que `script.js` arranca vía `headerAnimation.play()` (ver [Reveal del `.slider-cover`](#reveal-del-slider-cover-y-animación-del-header-data-anim_any)). Son baratos: con `autoplay=0` no crean `ScrollTrigger` propio.
 - **Diferido (lazy):** el resto se instancia vía `IntersectionObserver` (`rootMargin: 600px`) cuando se acerca al viewport, repartiendo el coste a lo largo del scroll en vez de una ráfaga al cargar.
 - **Blindaje `requestIdleCallback` (v4.18.1):** el trabajo de layout de cada grupo diferido se ejecuta en tiempo muerto del navegador, fuera de cualquier frame de scroll activo, para que el reflow de crear el `ScrollTrigger` no produzca micro-jank. Se marca el grupo y se deja de observar de forma síncrona; solo la preparación se difiere. `timeout` de 500 ms como cota de seguridad (muy por debajo de lo que tarda el usuario en recorrer los 600 px de `rootMargin`), y fallback a `setTimeout` en Safari < 17.

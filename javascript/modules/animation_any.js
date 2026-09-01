@@ -1,8 +1,9 @@
 /**
  * Animation any for WP based on GSAP
- * version: 4.18.1
+ * version: 4.19.0
  *
  * ? changelog:
+ * ? v4.19.0 — Encadenamiento nextanim + repeat: hasta ahora, cuando el elemento disparador (el "encadenador") se reseteaba en su propio onLeaveBack (repeat=true, al salir del viewport por abajo), el elemento objetivo de su nextanim quedaba congelado en su estado final — un timeline no-repetitivo ya en progress(1) ignora un segundo play(), así que tras la primera vuelta el encadenado no volvía a animarse nunca más. Nuevo método resetChainedTarget() (llamado desde el onLeaveBack del disparador, tanto la rama normal como la de cyclecontent) resetea el timeline del nextanim a progress(0) + pause y limpia hasStarted, propagándose en cadena si ese target tiene a su vez otro nextanim (A → B → C → N). Así toda la cadena se resetea junto con el disparador y solo vuelve a animarse cuando este complete su timeline de nuevo al reentrar en el viewport. Verificado en balanzia.dev con `.header-tag` → `.na-01`, esto destapó un segundo bug latente: la `.call()` del nextanim es una tween de duración cero, y GSAP la dispara al cruzar ese punto en cualquier dirección — el propio `progress(0.7)+reverse()` del reset la cruzaba "hacia atrás" justo después de resetChainedTarget(), re-disparando el `.play()` del encadenado y deshaciendo el reset. Antes de este cambio era invisible porque el encadenado ya estaba en progress(1) (un `.play()` ahí no hacía nada); al empezar a resetearlo, el cruce espurio pasó a tener efecto. Fix: el callback del nextanim comprueba `this.timeLine.reversed()` y no hace nada si el timeline está en modo reversa.
  * ? v4.18.1 — Blindaje del deferido v4.18.0: la instanciación de los grupos diferidos (SplitType + ScrollTrigger.create, que fuerzan layout) ahora se ejecuta dentro de requestIdleCallback (fallback setTimeout en Safari < 17), no directamente en el callback del IntersectionObserver. Así el reflow puntual que provoca crear un ScrollTrigger nunca cae en medio de un frame de scroll activo (evita micro-jank). Se marca el grupo como instanciado y se deja de observar de forma síncrona; solo el trabajo de layout se difiere. timeout de 500 ms como cota de seguridad, muy por debajo de lo que tarda el usuario en recorrer los 600 px de rootMargin, así que la animación siempre está lista antes de entrar en viewport. Seguro porque los grupos diferidos nunca tienen arranque externo (needsEagerInstantiation ya los excluyó).
  * ? v4.18.0 — Lighthouse reportaba "Forced reflow" en la carga inicial: el bucle final instanciaba TODOS los [data-anim_any] de golpe en DOMContentLoaded, y cada instancia hace SplitType (escribe: envuelve texto en spans) + ScrollTrigger.create (lee: mide la posición), intercalado elemento a elemento — el patrón de manual de layout thrashing, multiplicado por cuantos [data-anim_any] tenga la página. Ahora se instancian vía IntersectionObserver: los elementos cerca del viewport inicial se instancian casi de inmediato (sin cambio visible), y el resto se difiere hasta que se acercan al scroll, repartiendo el coste en vez de una sola ráfaga. chainanim/nextanim conectan timelines entre elementos (el "master" debe existir antes que el encadenado), así que se agrupan en un pre-pass (groupOf) y cada grupo se instancia siempre entero y de una vez, nunca por separado. Además, cualquier elemento con autoplay=0 (propio o forzado por chainedTargets) se instancia SIEMPRE de forma síncrona, nunca vía IntersectionObserver: el H1 del hero-slider tiene autoplay=0 y espera un `headerAnimation.play()` externo desde script.js (sliderInit/activateHeroSlide), que corre en su propio DOMContentLoaded — siempre antes de que cualquier callback de IntersectionObserver llegue a dispararse, por rápido que sea. Diferirlo dejaba ese play() como no-op silencioso y el título del hero nunca aparecía (detectado en verificación manual antes de dar el cambio por bueno: opacity:1 en el contenedor pero timeline.progress()===0, hasStarted:false).
  * ? v4.17.6 — Fixed cyclecontent/cyclecontentinline never pausing on scroll-out when triggered via data-anim_any_nextanim (as opposed to chainanim): nextanim targets get autoplay forced to '0' by the pre-pass (chainedTargets) so they wait to be started externally, but that also made them skip the ScrollTrigger entirely (`if (this.autoplay && !this.chainedTo)`), so once nextanim called play() the repeat:-1 timeline kept animating at 60fps forever regardless of viewport position — visible as constant reflow (e.g. <html>'s data-overlayscrollbars-* attribute flickering non-stop) that also starves devtools' Styles panel from refreshing. isCycleContent now gets a ScrollTrigger even when !autoplay, gated by a new this.hasStarted flag (set in play()) so onEnter/onEnterBack never fire play() before the triggering element's nextanim actually starts it, but onLeave/onLeaveBack pause it correctly once it's running.
@@ -85,7 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
 				autoplay = true,
 				triggerstart = null,
 				markers = false,
-				chainanim = false,
 				nextanim = false, // next animation to play after this one: '.selector' or '.selector, 1.5' where 1.5 is seconds to wait after completion
 				callback = false, // callback function to call after animation complete
 				slideamount = 100,
@@ -136,7 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.blankPause = Number(blankpause)
 			this.eraseSpeedRatio = 0.7 // typewriter: el borrado va este ratio más rápido que la escritura (sin atributo propio, es una regla fija del efecto)
 			this.fixedWords = Number(fixedwords)
-			this.chainanim = chainanim
 			this.matchmedia = matchmedia ?? false
 
 			if (this.matchmedia) this.mquery = window.matchMedia(`(${this.matchmedia})`)
@@ -159,6 +158,39 @@ document.addEventListener('DOMContentLoaded', () => {
 				this.hasStarted = true
 				this.timeLine.play()
 			} else return
+		}
+
+		// Cuando este elemento (el "encadenador") se resetea en su propio
+		// onLeaveBack (repeat=true, ver el ScrollTrigger de setupAnimation), el
+		// elemento que dispara vía nextanim debe resetearse igual: si se dejara
+		// en su estado final, el próximo play() que le llegue al completar el
+		// encadenador de nuevo (su llamada nextanim, más abajo) no produciría
+		// ningún cambio visible, porque un timeline no-repetitivo ya en
+		// progress(1) ignora un segundo play(). hasStarted se limpia también
+		// para que su propio ScrollTrigger de cyclecontent (si lo tiene, ver
+		// isCycleContent) no lo reanude solo por un onEnter/onEnterBack antes de
+		// que este encadenador lo vuelva a disparar. Se propaga en cadena si el
+		// propio target tiene a su vez otro nextanim.
+		//
+		// cyclecontent/cyclecontentinline no tienen una salida "en reversa"
+		// sensata (repeat:-1 anidado, ver comentario de isCycleContent más
+		// abajo), así que se quedan con el pause(0) instantáneo, igual que su
+		// propio reset en onLeaveBack. El resto de animaciones sí deben
+		// deshacerse visualmente con su misma animación, igual que hace el
+		// propio encadenador consigo mismo un poco más abajo (progress(0.7) +
+		// reverse()), en vez de desaparecer de golpe.
+		resetChainedTarget = () => {
+			const nextAnimation = this.nextToAnimate?.headerAnimation
+			if (!nextAnimation) return
+			const nextIsCycleContent = nextAnimation.animation === 'cyclecontent' || nextAnimation.animation === 'cyclecontentinline'
+			nextAnimation.hasStarted = false
+			if (nextIsCycleContent) {
+				nextAnimation.timeLine.pause(0)
+			} else {
+				nextAnimation.timeLine.progress(0.7)
+				nextAnimation.timeLine.reverse()
+			}
+			nextAnimation.resetChainedTarget()
 		}
 
 		setupAnimation = () => {
@@ -189,16 +221,6 @@ document.addEventListener('DOMContentLoaded', () => {
 				})
 			}
 
-			if (this.chainanim) {
-				this.setupChainedAnimations()
-			}
-
-			// if this element animation is chained to a previous one via chainanim
-			if (this.header.animChainedTo) {
-				this.chainedTo = this.header.animChainedTo.headerAnimation
-				this.chainedTo.masterTimeLine.add(this.timeLine, '>-70%')
-			}
-
 			if (this.markers) console.log(this.triggerstart)
 
 			// cyclecontent es un timeline infinito (repeat:-1 anidado): el truco
@@ -211,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			// siempre aunque el usuario haya hecho scroll mucho más abajo.
 			const isCycleContent = this.animation === 'cyclecontent' || this.animation === 'cyclecontentinline'
 
-			// Los elementos objetivo de nextanim (no chainanim) llegan aquí con
+			// Los elementos objetivo de nextanim llegan aquí con
 			// autoplay forzado a '0' (ver el pre-pass más abajo, chainedTargets):
 			// no deben arrancar solos al entrar en viewport, solo cuando el
 			// elemento que los dispara llame a play(). Antes esto hacía que se
@@ -226,12 +248,12 @@ document.addEventListener('DOMContentLoaded', () => {
 			// igualmente aunque !this.autoplay, pero con onEnter/onEnterBack
 			// condicionados a this.hasStarted para no adelantar el play() que le
 			// corresponde al nextanim de otro elemento.
-			if ((this.autoplay || isCycleContent) && !this.chainedTo) {
+			if (this.autoplay || isCycleContent) {
 				this.trigger = ScrollTrigger.create({
 					trigger: this.header,
 					start: this.triggerstart,
 					end: 'top top',
-					animation: this.autoplay ? this.masterTimeLine ? this.masterTimeLine : this.timeLine : undefined,
+					animation: this.autoplay ? this.timeLine : undefined,
 					onEnter: isCycleContent && !this.autoplay ? () => this.hasStarted && this.timeLine.play() : undefined,
 					onLeave: isCycleContent ? () => this.timeLine.pause() : undefined,
 					onEnterBack: isCycleContent ? () => (this.autoplay || this.hasStarted) && this.timeLine.play() : undefined,
@@ -241,11 +263,13 @@ document.addEventListener('DOMContentLoaded', () => {
 							// repetirse si se vuelve a entrar. repeat=false: se queda
 							// congelada donde esté, igual que el resto de animaciones.
 							this.repeat ? this.timeLine.pause(0) : this.timeLine.pause()
+							if (this.repeat) this.resetChainedTarget()
 							return
 						}
 						if (this.repeat) {
 							st.animation.progress(0.7) //! Check and test this...
 							st.animation.reverse()
+							this.resetChainedTarget()
 						}
 					},
 					markers: this.markers,
@@ -279,30 +303,23 @@ document.addEventListener('DOMContentLoaded', () => {
 				const absolutePos = Math.max(0.001, rawPos)
 				this.timeLine.call(
 					() => {
+						// .call() es una tween de duración cero: GSAP la dispara al cruzar
+						// ese punto en CUALQUIER dirección, no solo avanzando. El reset por
+						// repeat (onLeaveBack más arriba) hace un progress(0.7)+reverse()
+						// sobre este mismo timeline, y si ese punto de reversa pasa de
+						// nuevo por absolutePos, este callback se re-disparaba "hacia
+						// atrás" justo después de resetChainedTarget() haber dejado al
+						// encadenado en progress(0) — un .play() ahí lo volvía a reproducir
+						// entero, deshaciendo el reset. this.timeLine.reversed() sigue
+						// siendo true durante todo ese tramo en reversa, así que sirve para
+						// ignorar el cruce espurio y disparar el encadenado solo avanzando.
+						if (this.timeLine.reversed()) return
 						this.nextToAnimate.headerAnimation?.play()
 					},
 					[],
 					absolutePos
 				)
 			}
-		}
-
-		setupChainedAnimations = () => {
-			const chainedAnimations = Array.from(this.chainanim.split(','))
-
-			chainedAnimations.forEach(targetEl => {
-				let elementAnimToChain = this.header.parentElement.parentElement.querySelector(targetEl)
-				if (elementAnimToChain) this.chainElementAnimation(elementAnimToChain)
-			})
-
-			this.masterTimeLine = gsap.timeline({
-				paused: true,
-			})
-			this.masterTimeLine.add(this.timeLine)
-		}
-
-		chainElementAnimation = elementWithAnimation => {
-			elementWithAnimation.animChainedTo = this.header
 		}
 
 		setSlideTo = dir => {
@@ -1207,20 +1224,18 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 
-	// Pre-pass: detecta relaciones chainanim/nextanim entre elementos ANTES de
-	// instanciar nada (solo lee atributos, no toca SplitType/ScrollTrigger
-	// todavía). Dos cosas se calculan aquí:
+	// Pre-pass: detecta relaciones nextanim entre elementos ANTES de instanciar
+	// nada (solo lee atributos, no toca SplitType/ScrollTrigger todavía). Dos
+	// cosas se calculan aquí:
 	//
-	// - chainedTargets (igual que antes): elementos objetivo de un nextanim de
-	//   OTRO elemento, cuyo autoplay se fuerza a '0' al instanciar.
+	// - chainedTargets: elementos objetivo de un nextanim de OTRO elemento,
+	//   cuyo autoplay se fuerza a '0' al instanciar.
 	// - groupOf: agrupa en un mismo array todos los elementos conectados por
-	//   chainanim y/o nextanim. chainanim fusiona timelines directamente
-	//   (this.chainedTo.masterTimeLine.add(...), ver setupAnimation) y nextanim
-	//   los encadena por .play() diferido — en ambos casos el elemento
-	//   "master"/disparador debe construirse (y, para chainanim, existir ya
-	//   como this.header.headerAnimation) antes que el elemento encadenado. Por
-	//   eso, más abajo, cada grupo se instancia siempre entero y de una vez, en
-	//   su orden original del DOM — nunca por separado ni en momentos distintos.
+	//   nextanim (encadenados por .play() diferido) — el elemento
+	//   "master"/disparador debe construirse (y existir ya como
+	//   this.header.headerAnimation) antes que el elemento encadenado. Por eso,
+	//   más abajo, cada grupo se instancia siempre entero y de una vez, en su
+	//   orden original del DOM — nunca por separado ni en momentos distintos.
 	const chainedTargets = new Set()
 	const groupOf = new Map() // header -> array (su grupo; todos los miembros comparten la misma referencia de array)
 
@@ -1242,13 +1257,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	headerToAnim.forEach(header => {
 		const config = getConfigByAtt(header, attributeId)
 
-		if (config.chainanim) {
-			config.chainanim.split(',').forEach(sel => {
-				const target = header.parentElement?.parentElement?.querySelector(sel.trim())
-				if (target && target.hasAttribute(`data-${attributeId}`)) mergeGroups(header, target)
-			})
-		}
-
 		if (config.nextanim) {
 			const selector = config.nextanim.split(',')[0].trim()
 			const target = document.querySelector(selector)
@@ -1259,12 +1267,12 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	})
 
-	// Cada header sin chainanim/nextanim forma su propio grupo de 1 elemento.
+	// Cada header sin nextanim forma su propio grupo de 1 elemento.
 	headerToAnim.forEach(header => getGroup(header))
 
 	// Instancia un grupo completo, respetando el orden original del DOM dentro
-	// del grupo (chainanim/nextanim asumen que el elemento "master"/disparador
-	// se construye antes que el elemento encadenado, ver comentario de arriba).
+	// del grupo (nextanim asume que el elemento "master"/disparador se
+	// construye antes que el elemento encadenado, ver comentario de arriba).
 	const instantiateGroup = group => {
 		Array.from(headerToAnim)
 			.filter(header => group.includes(header))
@@ -1285,8 +1293,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// Elementos con autoplay=0 (propio, vía data-anim_any_autoplay="0"/"false",
 	// o forzado por chainedTargets) pueden estar esperando un play() externo
-	// que llega MUY pronto — no solo desde el propio nextanim/chainanim de este
-	// módulo, sino de otros módulos: script.js llama
+	// que llega MUY pronto — no solo desde el propio nextanim de este módulo,
+	// sino de otros módulos: script.js llama
 	// `h1[data-anim_any].headerAnimation?.play()` en cuanto el hero slide se
 	// activa (sliderInit / window.load), que corre en su propio
 	// DOMContentLoaded — síncrono y SIEMPRE antes de que cualquier callback de
@@ -1295,8 +1303,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	// no-op silencioso (headerAnimation aún no existe) y la animación nunca
 	// arrancaría. Su grupo entero se instancia siempre de forma síncrona,
 	// igual que antes de este cambio — son baratos de todos modos: con
-	// autoplay=0 nunca crean su propio ScrollTrigger (ver el `!this.chainedTo`
-	// de más arriba), así que no aportan al forced reflow que se quiere evitar.
+	// autoplay=0 nunca crean su propio ScrollTrigger, así que no aportan al
+	// forced reflow que se quiere evitar.
 	const needsEagerInstantiation = header => {
 		const config = getConfigByAtt(header, attributeId)
 		return config.autoplay === '0' || config.autoplay === 'false' || chainedTargets.has(header)
@@ -1340,8 +1348,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	// usuario en recorrer los 600 px de rootMargin hasta el elemento, así que su
 	// animación siempre está lista antes de entrar en viewport real. Fallback a
 	// setTimeout en navegadores sin requestIdleCallback (Safari < 17).
-	const scheduleIdle =
-		typeof window.requestIdleCallback === 'function' ? cb => window.requestIdleCallback(cb, { timeout: 500 }) : cb => setTimeout(cb, 1)
+	const scheduleIdle = typeof window.requestIdleCallback === 'function' ? cb => window.requestIdleCallback(cb, { timeout: 500 }) : cb => setTimeout(cb, 1)
 
 	const revealObserver = new IntersectionObserver(
 		(entries, observer) => {
