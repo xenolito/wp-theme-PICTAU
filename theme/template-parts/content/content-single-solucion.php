@@ -41,7 +41,7 @@ $pods = pods($post_type, get_the_id());
 			?>
 			<div class="header-subtitle">
 				<div class="left-border"></div>
-				<p data-anim_any data-anim_any_animation="clippedFromLeft" data-anim_any_whattoanim="lines" data-anim_any_duration="1.6" data-anim_any_whattoanim="lines" data-anim_any_delay="0.9" data-anim_any_stagger="0.15" data-anim_any_chainanim=".cta">
+				<p data-anim_any data-anim_any_animation="clippedFromLeft" data-anim_any_whattoanim="lines" data-anim_any_duration="1.6" data-anim_any_whattoanim="lines" data-anim_any_delay="0.9" data-anim_any_stagger="0.15">
 					Subheading ¿?
 					<?php //echo $pods->field('subheading');
 					?>
