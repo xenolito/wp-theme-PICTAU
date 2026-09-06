@@ -6,6 +6,10 @@
 	--def-heading-line-height: 1.6ch;
 	--def-heading-tracking: -0.02em;
 	--def-heading-font-weight: 700;
+
+	--formal-heading-font-size-h2: clamp(1.1rem, 8vw, 2rem);
+	--formal-heading-font-size-h3: clamp(1rem, 8vw, 1.4rem);
+	--formal-heading-top-padding: 1.5ch;
 }
 
 body {

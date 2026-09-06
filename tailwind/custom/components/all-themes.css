@@ -60,7 +60,12 @@
 
 .bg-lighter {
 	--lighter-color: white;
-	background-color: hsl(0deg 0% 100% / 0.03) !important;
+	background-color: hsl(0deg 0% 100% / 0.09) !important;
+}
+
+.bg-darker {
+	--darker-color: black;
+	background-color: hsl(0deg 0% 0% / 0.2) !important;
 }
 
 body {
@@ -227,6 +232,8 @@ figure figcaption {
 	--numberedColor: var(--heading-color-theme-dark);
 	--tag-txt-color: white;
 	--tag-bg-color: black;
+	--header-tag-color: white;
+	--button-outline-txt-color: white;
 
 	background: var(--bg-color-theme-dark-2) !important;
 }

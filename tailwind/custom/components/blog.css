@@ -339,8 +339,8 @@ body.single-post {
 				}
 
 				h2 {
-					font-size: clamp(1.1rem, 8vw, 2rem);
-					padding-top: 1.5ch;
+					font-size: var(--formal-heading-font-size-h2);
+					padding-top: var(--formal-heading-top-padding);
 					b,
 					strong {
 						font-weight: inherit !important;
@@ -348,8 +348,8 @@ body.single-post {
 				}
 
 				h3 {
-					font-size: clamp(1rem, 8vw, 1.4rem);
-					padding-top: 1.5ch;
+					font-size: var(--formal-heading-font-size-h3);
+					padding-top: var(--formal-heading-top-padding);
 				}
 
 				> figure {

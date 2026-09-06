@@ -371,22 +371,27 @@ body.home .slider,
 			margin-left: 0 !important;
 			margin-right: 0 !important;
 		}
-
-		.price-value {
-			font-size: clamp(2rem, 5vw, 2.75rem);
-			line-height: 0.75;
-			margin-block: 0;
-		}
-		.price-description {
-			font-size: clamp(0.8rem, 2vw, 1rem);
-			margin-block: 0;
-			line-height: 1;
-		}
 	}
 
 	.wp-block-button {
 		width: 100%;
 	}
+}
+
+.price-value {
+	font-size: clamp(2rem, 5vw, 2.75rem);
+	line-height: 0.75;
+	margin-block: 0;
+
+	&.bigger {
+		font-size: clamp(2rem, 5vw, 3.75rem);
+		line-height: 1;
+	}
+}
+.price-description {
+	font-size: clamp(0.8rem, 2vw, 1rem);
+	margin-block: 0;
+	line-height: 1;
 }
 
 .has-tic-icon {
@@ -507,6 +512,12 @@ header.entry-header .header-canvas {
 	li {
 		padding: 1.33ch 1.66ch;
 	}
+
+	&.numbered {
+		li::before {
+			font-weight: bold;
+		}
+	}
 }
 
 .header-canvas,
@@ -544,6 +555,22 @@ header.entry-header .header-canvas {
 			object-position: top left;
 			border-radius: calc(var(--def-border-radius) * 2);
 			overflow: clip;
+		}
+	}
+}
+
+.counter-item {
+	h2 {
+		font-size: clamp(2.8rem, 8vw, 4.5rem) !important;
+	}
+
+	p {
+		margin-block: 0;
+
+		&.description {
+			padding-top: 0.5ch;
+			font-size: clamp(1rem, 2vw, 1.2rem);
+			opacity: 0.6;
 		}
 	}
 }

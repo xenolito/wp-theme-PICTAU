@@ -142,10 +142,20 @@ document.addEventListener('DOMContentLoaded', () => {
 			}
 		}
 
+		// this.timeLine.reversed() true significa que el timeline viene de un
+		// onLeaveBack (propio o de un resetChainedTarget) que lo dejó revirtiendo
+		// o ya revertido a progress(0) — sea cual sea el punto exacto en que se
+		// quedó, un play() normal solo reanudaría hacia delante DESDE ahí, sin
+		// pasar de nuevo por los puntos anteriores del timeline (p.ej. la
+		// llamada .call() de un nextanim propio, ver setupAnimation). play(0)
+		// fuerza un reinicio real desde el principio, garantizando que esos
+		// puntos se vuelven a cruzar. Si no está revirtiendo (primera vez, o ya
+		// en su estado final con repeat=false), un play() normal es un no-op o
+		// el arranque normal, así que no cambia nada.
 		play = () => {
 			if (!this.matchmedia || (this.mquery && this.mquery.matches)) {
 				this.hasStarted = true
-				this.timeLine.play()
+				this.timeLine.reversed() ? this.timeLine.play(0) : this.timeLine.play()
 			} else return
 		}
 
@@ -170,7 +180,15 @@ document.addEventListener('DOMContentLoaded', () => {
 		// reverse()), en vez de desaparecer de golpe.
 		resetChainedTarget = () => {
 			const nextAnimation = this.nextToAnimate?.headerAnimation
-			if (!nextAnimation) return
+			// hasStarted false significa que el nextanim de este encadenador nunca
+			// llegó a disparar a nextAnimation (p.ej. se interrumpió/revirtió antes
+			// de que su propia .call() la alcanzase). No hay nada que resetear: si
+			// se forzase igualmente el progress(0.7)+reverse() de más abajo, un
+			// elemento que seguía en su estado inicial (oculto, progress 0)
+			// saltaría un instante a progress 0.7 (casi visible del todo) para
+			// inmediatamente revertir — un "flash" fantasma de algo que nunca llegó
+			// a animarse hacia delante.
+			if (!nextAnimation || !nextAnimation.hasStarted) return
 			const nextIsCycleContent = nextAnimation.animation === 'cyclecontent' || nextAnimation.animation === 'cyclecontentinline'
 			nextAnimation.hasStarted = false
 			if (nextIsCycleContent) {
@@ -243,9 +261,24 @@ document.addEventListener('DOMContentLoaded', () => {
 					start: this.triggerstart,
 					end: 'top top',
 					animation: this.autoplay ? this.timeLine : undefined,
-					onEnter: isCycleContent && !this.autoplay ? () => this.hasStarted && this.timeLine.play() : undefined,
-					onLeave: isCycleContent ? () => this.timeLine.pause() : undefined,
-					onEnterBack: isCycleContent ? () => (this.autoplay || this.hasStarted) && this.timeLine.play() : undefined,
+					// toggleActions 'none' en las 4 fases: cuando se pasa "animation",
+					// ScrollTrigger aplica su propio play/pause/resume/reverse por
+					// defecto ADEMÁS de los onEnter/onLeave/onEnterBack/onLeaveBack de
+					// aquí abajo — ambos a la vez sobre el mismo timeline, sin que este
+					// código lo sepa. Eso es lo que rompía el encadenado: el reverse()
+					// automático (toggleActions) y el reset explícito de onLeaveBack
+					// (progress(0.7)+reverse(), más abajo) competían por el mismo
+					// timeline, y un reingreso en viewport a medio revertir quedaba
+					// gestionado por el "play" automático (resume desde donde esté) en
+					// vez de por this.play() (que si detecta reversed() reinicia desde
+					// 0, ver más arriba) — el timeline nunca volvía a cruzar el punto
+					// interno de su propia llamada .call() de nextanim, así que el
+					// encadenado no se volvía a disparar. Desactivado aquí para que las
+					// 4 fases dependan solo de lo que este código decide explícitamente.
+					toggleActions: 'none none none none',
+					onEnter: isCycleContent && !this.autoplay ? () => this.hasStarted && this.timeLine.play() : () => this.play(),
+					onLeave: () => this.timeLine.pause(),
+					onEnterBack: isCycleContent ? () => (this.autoplay || this.hasStarted) && this.timeLine.play() : () => this.timeLine.resume(),
 					onLeaveBack: st => {
 						if (isCycleContent) {
 							// repeat=true: vuelve al estado inicial (oculto), lista para
