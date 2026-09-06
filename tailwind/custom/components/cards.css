@@ -35,9 +35,9 @@
 	background: var(--card-background, white);
 	border: var(--card-border-width) solid var(--card-border-color);
 
-	.card {
+	/* .card {
 		padding: calc(var(--card-padding) * 0.44);
-	}
+	} */
 
 	&:last-child {
 		margin-bottom: 0 !important;

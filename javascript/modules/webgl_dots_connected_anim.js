@@ -118,6 +118,18 @@ document.addEventListener('DOMContentLoaded', () => {
 		setupDOM = () => {
 			this.target.classList.add('has-webgl')
 			this.target.style.position = 'relative' // Ensure target has relative positioning for absolute canvas
+			// position:relative por sí solo NO crea stacking context (hace falta
+			// además un z-index numérico o isolation). Sin esto, el z-index:-1 del
+			// canvas de más abajo se escapa hacia el ancestro real más cercano que
+			// SÍ tiene uno (p.ej. #page, con su z-index:1 del layout del tema), y
+			// ahí queda detrás de TODO el contenido normal de ese ancestro —
+			// incluido el propio fondo del target, si el target tiene uno opaco
+			// (visto en el footer: su background-color quedaba pintado por encima
+			// del canvas, ocultándolo del todo, aunque seguía dibujando bien). Con
+			// isolation:isolate el target crea su propio stacking context, así el
+			// z-index:-1 queda confinado dentro de él: detrás de su contenido pero
+			// delante de su propio fondo, que es la intención original.
+			this.target.style.isolation = 'isolate'
 
 			this.targetRect = this.target.getBoundingClientRect()
 			this.targetOrigin = this.getTargetCenter()

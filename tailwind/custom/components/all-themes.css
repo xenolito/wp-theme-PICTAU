@@ -102,6 +102,10 @@ figure figcaption {
 	color: var(--theme-figcaption-color, inherit);
 }
 
+.underline {
+	--line-color: var(--theme-heading-color);
+}
+
 /*! THEME COLOR LIGHT */
 .theme-color-light {
 	--border-color: var(--heading-color-theme-light);

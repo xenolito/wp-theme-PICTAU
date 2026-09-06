@@ -181,11 +181,6 @@ figure {
 	filter: grayscale(1);
 }
 
-[data-rive] {
-	width: 100%;
-	aspect-ratio: 1;
-}
-
 .wp-block-columns.alignfull {
 	width: 100vw !important;
 	max-width: unset !important;
@@ -457,6 +452,44 @@ figure {
 	display: flex !important;
 	flex-direction: column !important;
 	row-gap: var(--column-gap) !important;
+}
+
+.pct-flex-row {
+	display: flex !important;
+	flex-direction: row !important;
+	* {
+		width: fit-content !important;
+		margin-inline: 0 !important;
+	}
+}
+
+.justify-between {
+	justify-content: space-between !important;
+}
+
+.underline {
+	--line-height: 1px;
+	--line-width: 100%;
+
+	--margin-bottom: 0.5rem;
+
+	align-items: flex-end;
+	margin-bottom: calc(var(--margin-bottom) * 2);
+
+	&::after {
+		content: "";
+		display: block;
+		height: var(--line-height);
+		width: var(--line-width);
+		background-color: var(--line-color);
+		position: absolute;
+		bottom: 0;
+		left: 0;
+	}
+
+	> * {
+		margin-bottom: var(--margin-bottom) !important;
+	}
 }
 
 [class*="pct-grid-"] {
@@ -924,6 +957,12 @@ body .is-layout-constrained:not(.alignfull) > * {
 			h1.entry-title {
 				font-size: clamp(2rem, 8vw, 3rem);
 				text-align: center;
+			}
+		}
+
+		&.no-bg-img {
+			.entry-header-content {
+				padding-block: var(--def-layout-x-padding);
 			}
 		}
 
