@@ -378,6 +378,31 @@ body.home .slider,
 	}
 }
 
+.price-table.add-on {
+	--numberedLabel: "Add-on ";
+
+	.ordered-item {
+		margin-bottom: 0;
+
+		&::before {
+			font-size: clamp(0.8rem, 5vw, 1rem);
+			padding-bottom: 0.5ch !important;
+		}
+	}
+
+	.description {
+		.nota p,
+		p:nth-child(2),
+		li {
+			font-size: 0.88rem;
+		}
+		h4 {
+			font-weight: bold;
+			text-transform: initial;
+		}
+	}
+}
+
 .price-value {
 	font-size: clamp(2rem, 5vw, 2.75rem);
 	line-height: 0.75;

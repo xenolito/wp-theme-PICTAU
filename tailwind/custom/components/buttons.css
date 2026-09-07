@@ -10,6 +10,10 @@
 	--button-border-width: 2px;
 }
 
+.wp-block-button {
+	max-width: 380px;
+}
+
 .wp-block-buttons {
 	/* gap: 2rem; */
 	/* margin-top: 2rem; */

@@ -201,7 +201,8 @@ h4 {
 /* Highlight header */
 h1,
 h2,
-h3 {
+h3,
+h4 {
 	em {
 		font-style: normal;
 		.word {

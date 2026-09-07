@@ -1524,6 +1524,7 @@ body.single-evento {
 	--numberedBgColor: #008dff;
 	--dim: 2em;
 	--padding: 1.2em;
+	--numberedLabel: "";
 	/* --connectLineColor: var(--connectedcolor, var(--numberedBgColor)); */
 
 	counter-reset: pct-counter;
@@ -1531,7 +1532,7 @@ body.single-evento {
 	&.zero-prefix {
 		.ordered-item {
 			&::before {
-				content: counter(pct-counter, decimal-leading-zero);
+				content: var(--numberedLabel) counter(pct-counter, decimal-leading-zero);
 			}
 		}
 	}
@@ -1544,7 +1545,7 @@ body.single-evento {
 
 		&::before {
 			counter-increment: pct-counter;
-			content: counter(pct-counter);
+			content: var(--numberedLabel) counter(pct-counter);
 			border-radius: 50%;
 			background-color: var(--numberedBgColor, red);
 			color: var(--numberedColor, currentColor);

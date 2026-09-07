@@ -87,7 +87,8 @@ h4 {
 p,
 h1,
 h2,
-h3 {
+h3,
+h4 {
 	em {
 		color: var(--main-color);
 	}
@@ -162,7 +163,8 @@ figure figcaption {
 /*! THEME COLOR DARK */
 .theme-color-dark {
 	--border-color: var(--heading-color-theme-dark);
-	--link-color: var(--main-color);
+	--link-color-content: var(--main-color);
+
 	--card-background: rgba(255, 255, 255, 0.0005);
 	--card-border-color: rgba(255, 255, 255, 0.1);
 
