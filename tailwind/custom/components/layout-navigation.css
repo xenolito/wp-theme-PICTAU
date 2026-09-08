@@ -378,6 +378,7 @@ body.header-width-centered {
 			@apply max-w-[unset] w-[var(--logo-brand-width)];
 			display: flex;
 			padding-block: 1px;
+			min-height: 20px;
 		}
 		h1,
 		h2,
