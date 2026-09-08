@@ -147,9 +147,9 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.canvas.style.inset = '0'
 			this.canvas.style.zIndex = '-1' // Ensure canvas is behind other content
 			this.canvas.style.pointerEvents = 'none'
-			this.canvas.style.marginLeft = 'initial !important'
-			this.canvas.style.marginRight = 'initial !important'
-			this.canvas.style.maxWidth = 'unset !important'
+			this.canvas.style.setProperty('margin-left', 'initial', 'important')
+			this.canvas.style.setProperty('margin-right', 'initial', 'important')
+			this.canvas.style.setProperty('max-width', 'unset', 'important')
 			this.canvas.style.opacity = this.opacity
 
 			this.target.appendChild(this.canvas)
