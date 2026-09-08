@@ -961,7 +961,7 @@ body .is-layout-constrained:not(.alignfull) > * {
 		}
 
 		&.no-bg-img {
-			.entry-header-content {
+			.entry-header-content:not(:has(.sr-only)) {
 				padding-block: var(--def-layout-x-padding);
 			}
 		}
