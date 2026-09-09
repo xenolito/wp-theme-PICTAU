@@ -177,10 +177,9 @@ body.home .slider,
 					}
 				}
 
-				&:first-of-type {
+				/* &:first-of-type {
 					grid-row: 1 / span 2;
-					/* background: yellow; */
-				}
+				} */
 			}
 
 			.oficinas {

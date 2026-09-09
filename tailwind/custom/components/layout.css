@@ -848,7 +848,7 @@ a:has(> .hide-mobile) {
 
 #content,
 #footer {
-	a:not(.menu-item):not(.bt-link):not(.wp-element-button):not(.pictau-logo):not(.nav-item):not(.no-decoration):not(.group-link-wrapper):not(.gallery-item-link) {
+	a:not(.menu-item):not(.bt-link):not(.wp-element-button):not(.pictau-logo):not(.nav-item):not(.no-decoration):not(.group-link-wrapper):not(.gallery-item-link):not(:has(> svg, > img)) {
 		padding-bottom: 3px;
 
 		@apply text-[var(--link-color)] dark:text-[var(--link-color-dark)];
