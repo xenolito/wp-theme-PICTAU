@@ -1873,6 +1873,10 @@ Two different sets of styles for the FAQs, one for the collapsable version and a
 
 				ul {
 					margin-top: 1rem;
+					padding-block: 0 !important;
+					&:has(+ p) {
+						padding-bottom: 2ch !important;
+					}
 				}
 				/* p {
 					&:first-of-type {

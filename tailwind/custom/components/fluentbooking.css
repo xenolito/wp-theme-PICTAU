@@ -69,12 +69,16 @@
 		}
 	}
 
-	/* Ubicación "Personalizado" con un enlace de Google Meet fijo: se
-	   sustituye el icono genérico y el texto de la URL por el icono oficial
-	   y el texto "Google Meet", igual que con la integración nativa, sin
-	   depender de ninguna cuenta de Google conectada. El texto real de la
-	   URL se mantiene con font-size:0 (accesible para lectores de pantalla,
-	   invisible visualmente) en vez de display:none. */
+	/* DESACTIVADO (2026-09-09): el equipo Round Robin volvió a la ubicación
+	   nativa "Google Meet" (cada anfitrión conecta su propia cuenta), así
+	   que el icono/texto ya son correctos sin necesidad de sustituirlos.
+	   Se deja comentado por si se vuelve a usar una ubicación "Personalizado"
+	   con un enlace de Google Meet fijo en el futuro — sustituía el icono
+	   genérico y el texto de la URL por el icono oficial y el texto
+	   "Google Meet", sin depender de ninguna cuenta de Google conectada. El
+	   texto real de la URL se mantenía con font-size:0 (accesible para
+	   lectores de pantalla, invisible visualmente) en vez de display:none.
+
 	.fcal_loc_google_meet {
 		.fcal_loc_icon {
 			content: url('https://balanzia.dev/wp-content/plugins/fluent-booking/assets/images/g-meet.svg') !important;
@@ -89,6 +93,7 @@
 			}
 		}
 	}
+	*/
 
 	.day-enabled {
 		&:hover {
