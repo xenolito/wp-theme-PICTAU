@@ -649,8 +649,7 @@ header.entry-header .header-canvas {
 	}
 }
 
-.pct-faqs.collapsable {
-	/* Left aligned */
+/* .pct-faqs.collapsable {
 	--faqs-max-width: min(100%, 750px);
 	margin-inline: initial !important;
-}
+} */

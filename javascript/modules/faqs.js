@@ -9,8 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	if (!faqs.length) return
 
-	console.log('FAQS encontradas para collapsable')
-
 	const Faq = class {
 		constructor(faqGroup, behaviour = 'all') {
 			this.faqGroup = faqGroup
