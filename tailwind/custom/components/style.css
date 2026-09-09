@@ -648,3 +648,9 @@ header.entry-header .header-canvas {
 		align-items: center;
 	}
 }
+
+.pct-faqs.collapsable {
+	/* Left aligned */
+	--faqs-max-width: min(100%, 750px);
+	margin-inline: initial !important;
+}

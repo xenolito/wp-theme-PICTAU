@@ -49,6 +49,47 @@
 		display: none !important;
 	}
 
+	/* Equipos (Round Robin/Colectivo): oculta los avatares individuales de
+	   cada anfitrión y su tooltip con el nombre (.fcal_author_list), y
+	   muestra en su lugar un único logo corporativo fijo, para no revelar
+	   quiénes son los anfitriones disponibles. */
+	.fcal_author_wrapper {
+		.fcal_author_list {
+			display: none !important;
+		}
+
+		&::before {
+			content: '';
+			display: inline-block;
+			width: 32px;
+			height: 32px;
+			border-radius: 50%;
+			background: url('https://balanzia.dev/xen_media/favivon.png') center / cover no-repeat;
+			vertical-align: middle;
+		}
+	}
+
+	/* Ubicación "Personalizado" con un enlace de Google Meet fijo: se
+	   sustituye el icono genérico y el texto de la URL por el icono oficial
+	   y el texto "Google Meet", igual que con la integración nativa, sin
+	   depender de ninguna cuenta de Google conectada. El texto real de la
+	   URL se mantiene con font-size:0 (accesible para lectores de pantalla,
+	   invisible visualmente) en vez de display:none. */
+	.fcal_loc_google_meet {
+		.fcal_loc_icon {
+			content: url('https://balanzia.dev/wp-content/plugins/fluent-booking/assets/images/g-meet.svg') !important;
+		}
+
+		.fcal_loc_text {
+			font-size: 0;
+
+			&::before {
+				content: 'Google Meet';
+				font-size: 14px;
+			}
+		}
+	}
+
 	.day-enabled {
 		&:hover {
 			span {

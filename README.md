@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.20.1
+- **Versión:** 7.20.2
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -1609,6 +1609,7 @@ Lenis (`javascript/modules/smooth_scroll.js`) intercepta la rueda del ratón/tou
 - `.fcal_slot_picker` → lista de horas de FluentBooking.
 - `.svelte-select-list` → lista del desplegable de zona horaria de FluentBooking (componente Svelte Select). Vive en un subárbol del DOM distinto a `.fcal_slot_picker` (cuelga de `.fcal_timezone_select`, no de `.fcal_calendar_slot_wrap`), así que hace falta como entrada aparte. Es la clase estable que asigna la librería; el sufijo hash tipo `svelte-82qwg8` que la acompaña en el DOM sí puede cambiar entre builds del plugin, por eso no forma parte del selector.
 - `.main-modal-content` → panel del modal de cookies del plugin GDPR Cookie Compliance.
+- `.fframe_app` → contenedor raíz del dashboard frontend de FluentBooking Pro ([Dashboard de reservas de FluentBooking (frontend) — compatibilidad](#dashboard-de-reservas-de-fluentbooking-frontend--compatibilidad)), `position: fixed` a pantalla completa con su propio `overflow: auto` — el documento/`window` no tiene scroll propio en esa vista, todo el contenido (Calendarios, Reservas, Disponibilidad...) vive dentro de este único contenedor. Sin esta entrada, la rueda del ratón no desplazaba nada dentro del dashboard.
 
 **`data-lenis-prevent` ya no se usa en ningún sitio del tema.** Tanto `ModalWP.js` como el modal de cookies GDPR (`smooth_scroll.js`) llaman a `lenis.stop()` mientras están abiertos, así que Lenis no anima nada de por sí; su fallback nativo cuando está `isStopped` es `event.preventDefault()` salvo que el `prevent` de arriba diga lo contrario — exactamente lo que hacía falta: el contenido interno sigue scrolleando, y el resto del overlay (backdrop, icono de cerrar) queda bloqueado sin que la página se mueva detrás. Verificado con Playwright: scroll interno intacto en los tres casos (FluentBooking, modal, y el scroll normal de página a través del punto donde se oculta el above-header), `window.scrollY` no se mueve nunca por detrás de ninguno de los tres.
 

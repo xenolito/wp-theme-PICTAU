@@ -2,35 +2,7 @@ import { gsap } from 'gsap'
 import Lenis from 'lenis'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-// Selectores de contenedores con scroll interno propio conocidos en el sitio, para
-// el `prevent` de Lenis de abajo. Añadir aquí cualquier widget nuevo con su propio
-// scroll (el contenedor real con overflow, NUNCA un wrapper más grande — ver el
-// caso de FluentBooking en el README, sección "Compatibilidad de scroll con
-// widgets de terceros"):
-//   - [data-overlayscrollbars-viewport] → viewport interno que crea OverlayScrollbars
-//     al inicializarse sobre un <div> normal (ModalWP.js). OJO: NO aplica al
-//     OverlayScrollbars de <body> en este mismo archivo (setScrollBars en script.js):
-//     ese usa el modo especial para html/body que preserva el scroll nativo del
-//     documento sin crear un viewport propio, así que nunca hace match aquí
-//     (verificado con Playwright: solo existen 2 nodos con este atributo en toda
-//     la página, ambos dentro de modales, ninguno envolviendo el contenido real).
-//   - .fcal_slot_picker → lista de horas del widget FluentBooking ([fluent_booking]).
-//   - .svelte-select-list → lista del desplegable de zona horaria del mismo widget
-//     FluentBooking. Vive en un subárbol del DOM distinto a .fcal_slot_picker (cuelga
-//     de .fcal_timezone_select, no de .fcal_calendar_slot_wrap), así que hace falta
-//     como entrada aparte — añadir solo .fcal_slot_picker no lo cubre. Es la clase
-//     "svelte-select-list" del componente Svelte Select que usa el plugin (estable,
-//     asignada por la librería); el sufijo hash tipo "svelte-82qwg8" que la acompaña
-//     en el DOM SÍ puede cambiar entre builds del plugin, por eso no forma parte del
-//     selector.
-//   - .fcal_date_event_details → panel del paso final "Introduce los detalles" del
-//     mismo widget FluentBooking (formulario con nombre/email/teléfono...). Trae su
-//     propio overflow-y:auto de fábrica; cuando los errores de validación añaden
-//     texto y el contenido supera la altura del panel, la rueda del ratón no lo
-//     desplazaba sin esta entrada — mismo caso que .fcal_slot_picker, pero para el
-//     paso del formulario en vez del paso de selección de hora.
-//   - .main-modal-content → panel del modal de cookies del plugin GDPR Cookie Compliance.
-const NESTED_SCROLL_SELECTOR = '[data-overlayscrollbars-viewport], .fcal_slot_picker, .svelte-select-list, .fcal_date_event_details, .main-modal-content'
+const NESTED_SCROLL_SELECTOR = '[data-overlayscrollbars-viewport], .fcal_slot_picker, .svelte-select-list, .fcal_date_event_details, .main-modal-content, .fframe_app'
 
 // smooth scroll
 const lenis = new Lenis({
@@ -44,23 +16,7 @@ const lenis = new Lenis({
 	smoothWheel: true,
 	infinite: false,
 	autoResize: true,
-	// normalizeWheel: true,
 
-	// `prevent` en vez de `allowNestedScroll`: la propia doc de Lenis avisa de que
-	// allowNestedScroll comprueba computedStyle + scrollHeight/clientHeight de CADA
-	// nodo del composedPath() del evento (cacheado 2s, pero el primer barrido y cada
-	// refresco del cache fuerza layout por nodo) — con el markup de Gutenberg de este
-	// tema un wheel event normal recorre ~12+ niveles de wrappers .wp-block-group, así
-	// que ese coste se paga en casi cualquier scroll de la página, no solo cerca de un
-	// widget. `prevent` usa la misma señal (se llama nodo a nodo por el mismo
-	// composedPath) pero con una comprobación mucho más barata: primero un
-	// `.matches()` contra NESTED_SCROLL_SELECTOR (comparación de selector, no fuerza
-	// layout) que descarta la inmensa mayoría de nodos al instante, y solo mide
-	// overflow real (scrollHeight > clientHeight) para los 2-3 contenedores conocidos
-	// que sí lo necesitan — igual de seguro que allowNestedScroll (no cede el control
-	// si el contenedor no tiene overflow en ese momento, evitando la fuga hacia
-	// window.scrollY que causó el bug original de FluentBooking) pero sin pagar el
-	// coste en el resto del árbol.
 	prevent: node => node.matches?.(NESTED_SCROLL_SELECTOR) && node.scrollHeight > node.clientHeight,
 })
 
