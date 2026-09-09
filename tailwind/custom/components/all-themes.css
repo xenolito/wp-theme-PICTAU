@@ -52,6 +52,10 @@
 	/* Testimonials pagination dots */
 	--testimonials-pagination-color: hsl(0, 0%, 80%);
 	--testimonials-pagination-active-color: white;
+
+	/* Video player play button */
+	--play-button-color: var(--main-color);
+	--play-button-icon-color: white;
 }
 
 .bg-transparent {
@@ -132,6 +136,11 @@ figure figcaption {
 
 	--list-icon-tic-color: var(--heading-color);
 
+	--tag-txt-color: var(--main-color);
+	--tag-icon-color: hsl(120, 100%, 67%);
+	--tag-bg-color: white;
+	--tag-bg-opacity: 100%;
+
 	&:is(.pct-card, section, .card, li) {
 		background: var(--bg-color-theme-light);
 	}
@@ -158,6 +167,11 @@ figure figcaption {
 			background: white;
 		}
 	}
+
+	/* Video player */
+	.has-pulsing-dot {
+		--color: blue;
+	}
 }
 
 /*! THEME COLOR DARK */
@@ -181,6 +195,9 @@ figure figcaption {
 	--button-txt-color-hover: white;
 
 	--numberedColor: var(--main-color);
+
+	--play-button-color: white;
+	--play-button-icon-color: #343434;
 
 	background-color: var(--bg-color-theme-dark);
 

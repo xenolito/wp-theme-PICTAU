@@ -3755,7 +3755,6 @@ body.home {
 	.has-pulsing-dot {
 		--dim: 80px;
 		--padd: calc(var(--dim) * 0.3);
-		--color: var(--main-color);
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -3773,7 +3772,7 @@ body.home {
 			width: var(--dim);
 			height: var(--dim);
 			border-radius: 50%;
-			background-color: var(--color);
+			background-color: var(--play-button-color, red);
 		}
 
 		&::before {
@@ -3798,21 +3797,16 @@ body.home {
 			display: flex;
 			width: var(--dim) !important;
 			height: var(--dim) !important;
-			background-color: var(--color);
+			background-color: var(--play-button-color, red);
 			padding: var(--padd) !important;
 			border-radius: 50%;
 			justify-content: center;
 			align-items: center;
 
 			svg {
-				color: white;
+				color: var(--play-button-icon-color, white);
 				justify-self: center;
 				align-self: center;
-				/* width: calc(var(--dim) * 1);
-				height: calc(var(--dim) * 1); */
-
-				/* background-color: var(--main-color);
- */
 			}
 		}
 
