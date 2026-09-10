@@ -446,17 +446,6 @@ body.home .slider,
 	margin-block: var(--card-padding, 2rem);
 
 	&.slide-media {
-		/* Anula el breakout a pantalla completa del [data-testimonials]
-		   genérico (layout.css: width:100vw !important). Esta variante vive
-		   anidada dentro de contenedores más estrechos que el viewport
-		   (p.ej. una .card con overflow:clip) — sin esto, el slider se
-		   expandía a 100vw y el padre lo recortaba, dejando visible solo un
-		   trozo descentrado y sin espacio real para el peek lateral.
-		   :where(&) deja la especificidad de este selector en 0 (sigue
-		   llevando !important porque hay que ganarle al width:100vw
-		   !important del [data-testimonials] genérico) para que utilidades
-		   como .takes-full-width puedan seguir sobreescribiéndolo sin
-		   necesitar más especificidad que la suya propia. */
 		:where(&) {
 			width: 100% !important;
 			max-width: 100% !important;
@@ -652,3 +641,35 @@ header.entry-header .header-canvas {
 	--faqs-max-width: min(100%, 750px);
 	margin-inline: initial !important;
 } */
+
+[data-testimonials] {
+	.splide__slide {
+		p {
+			font-size: clamp(0.8rem, 2vw, 1rem);
+			letter-spacing: 0.15ch;
+		}
+	}
+
+	.company {
+		margin-top: 1.5rem;
+		h3,
+		h4 {
+			font-size: clamp(1rem, 2vw, 1.2rem);
+			font-weight: 500;
+			margin-bottom: 0;
+			& + p {
+				font-size: clamp(0.9rem, 1.5vw, 1rem);
+				opacity: 0.6;
+			}
+		}
+	}
+
+	.logo-testimonial {
+		/* filter: invert(1); */
+		color: white;
+		max-width: 150px !important;
+		margin-top: 1rem !important;
+		margin-left: 0 !important;
+		margin-right: 0 !important;
+	}
+}

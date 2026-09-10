@@ -3013,18 +3013,18 @@ nav.dot-navigation {
 	}
 
 	.splide__slide {
-		--bg-color: 255, 255, 255;
+		--bg-color: white;
 		display: flex;
 		justify-content: center;
 		height: fit-content;
 
 		padding: var(--card-padding);
 
-		border: 1px solid rgba(var(--bg-color), 1);
+		border: 1px solid color-mix(in srgb, var(--bg-color) 33%, transparent);
 
 		box-shadow:
-			5px 5px 20px rgba(var(--bg-color), 0.05),
-			5px 5px 20px rgba(var(--bg-color), 0.2);
+			5px 5px 20px color-mix(in srgb, var(--bg-color) 5%, transparent),
+			5px 5px 20px color-mix(in srgb, var(--bg-color) 20%, transparent);
 	}
 
 	.splide__pagination {

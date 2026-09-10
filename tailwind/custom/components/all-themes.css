@@ -245,6 +245,10 @@ figure figcaption {
 			}
 		}
 	}
+
+	[data-testimonials] .splide__slide {
+		--bg-color: rgb(127, 127, 127);
+	}
 }
 
 :is(.bg-light-2) {
