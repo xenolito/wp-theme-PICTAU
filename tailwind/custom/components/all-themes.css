@@ -47,6 +47,7 @@
 	--tag-icon-color: hsl(120, 100%, 67%);
 	--tag-bg-color: var(--main-color);
 	--tag-bg-opacity: 20%;
+
 	--header-tag-color: var(--main-color);
 
 	/* Testimonials pagination dots */
@@ -198,6 +199,11 @@ figure figcaption {
 
 	--play-button-color: white;
 	--play-button-icon-color: #343434;
+
+	--tag-txt-color: var(--main-color);
+	--tag-icon-color: hsl(120, 100%, 67%);
+	--tag-bg-color: var(--main-color);
+	--tag-bg-opacity: 20%;
 
 	background-color: var(--bg-color-theme-dark);
 
