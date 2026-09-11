@@ -122,6 +122,7 @@ figure figcaption {
 	--theme-figcaption-color: black;
 
 	--button-bg-color: var(--main-color);
+	--button-border-color: var(--button-bg-color);
 	--button-bg-color-hover: var(--highlight-color);
 	--bg-color-outline: transparent;
 	--button-txt-color: white;
