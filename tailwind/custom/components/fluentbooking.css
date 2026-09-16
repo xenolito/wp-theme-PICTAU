@@ -51,22 +51,15 @@
 
 	/* Equipos (Round Robin/Colectivo): oculta los avatares individuales de
 	   cada anfitrión y su tooltip con el nombre (.fcal_author_list), y
-	   muestra en su lugar un único logo corporativo fijo, para no revelar
-	   quiénes son los anfitriones disponibles. */
-	.fcal_author_wrapper {
-		.fcal_author_list {
-			display: none !important;
-		}
-
-		&::before {
-			content: '';
-			display: inline-block;
-			width: 32px;
-			height: 32px;
-			border-radius: 50%;
-			background: url('https://balanzia.dev/xen_media/favivon.png') center / cover no-repeat;
-			vertical-align: middle;
-		}
+	   muestra en su lugar el icono del sitio, para no revelar quiénes son
+	   los anfitriones disponibles.
+	   La regla ::before con la URL del icono se inyecta por PHP (ver
+	   theme/inc/fluentbooking-compat.php), no aquí: necesita
+	   get_site_icon_url(), que no está disponible en este CSS estático
+	   compilado y que además hardcodearía el dominio del entorno donde se
+	   compila (local vs producción). */
+	.fcal_author_wrapper .fcal_author_list {
+		display: none !important;
 	}
 
 	/* DESACTIVADO (2026-09-09): el equipo Round Robin volvió a la ubicación
@@ -81,7 +74,7 @@
 
 	.fcal_loc_google_meet {
 		.fcal_loc_icon {
-			content: url('https://balanzia.dev/wp-content/plugins/fluent-booking/assets/images/g-meet.svg') !important;
+			content: url('/wp-content/plugins/fluent-booking/assets/images/g-meet.svg') !important;
 		}
 
 		.fcal_loc_text {

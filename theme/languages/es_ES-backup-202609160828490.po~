@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: BALANZIA\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-27 11:35+0000\n"
-"PO-Revision-Date: 2026-09-16 08:28+0000\n"
+"PO-Revision-Date: 2026-08-27 17:20+0000\n"
 "Last-Translator: \n"
 "Language-Team: Español\n"
 "Language: es_ES\n"
@@ -144,13 +144,6 @@ msgstr ""
 
 #: functions.php:230
 msgid "back"
-msgstr ""
-
-#: inc/template-functions.php:2685
-msgid ""
-"BALANZIA convierte la información financiera de una empresa en un informe "
-"ejecutivo claro, visual y profesional para entenderla y presentarla con "
-"criterio."
 msgstr ""
 
 #: inc/pictau-blocks-gutenberg.php:208
@@ -409,7 +402,7 @@ msgstr ""
 msgid "ej. website"
 msgstr ""
 
-#: inc/customizer-csp.php:709
+#: inc/customizer-csp.php:676
 msgid "El contenido debe incluir al menos una directiva Header."
 msgstr ""
 
@@ -425,7 +418,7 @@ msgid ""
 "intentarlo."
 msgstr ""
 
-#: inc/customizer-csp.php:653
+#: inc/customizer-csp.php:620
 msgid "El contenido no puede estar vacío."
 msgstr ""
 
@@ -434,7 +427,7 @@ msgid "El contenido original no existe."
 msgstr ""
 
 #. %d: número máximo de caracteres
-#: inc/customizer-csp.php:646
+#: inc/customizer-csp.php:613
 msgid "El contenido supera el límite de %d caracteres."
 msgstr ""
 
@@ -554,7 +547,7 @@ msgstr ""
 msgid "Fabricados conforme a la norma "
 msgstr ""
 
-#: inc/customizer-csp.php:705
+#: inc/customizer-csp.php:672
 msgid "Falta cerrar un bloque <IfModule mod_headers.c> con </IfModule>."
 msgstr ""
 
@@ -608,10 +601,6 @@ msgstr ""
 
 #: template-parts/content/content-single-producto.php:257
 msgid "Galería"
-msgstr ""
-
-#: inc/template-functions.php:2684
-msgid "Generación de informes financieros"
 msgstr ""
 
 #: inc/customizer-csp.php:134
@@ -668,10 +657,6 @@ msgstr ""
 
 #: inc/cf7-polylang.php:844
 msgid "Importar traducciones desde CF7"
-msgstr ""
-
-#: inc/template-functions.php:2683
-msgid "Informe Ejecutivo BALANZIA"
 msgstr ""
 
 #: inc/events.php:712
@@ -739,13 +724,13 @@ msgid ""
 msgstr ""
 
 #. 1: número de línea, 2: contenido de la línea
-#: inc/customizer-csp.php:679
+#: inc/customizer-csp.php:646
 #, php-format
 msgid "Línea %1$d no permitida: \"%2$s\""
 msgstr ""
 
 #. %d: número de línea
-#: inc/customizer-csp.php:694
+#: inc/customizer-csp.php:661
 msgid "Línea %d: etiqueta </IfModule> sin apertura correspondiente."
 msgstr ""
 
@@ -889,7 +874,7 @@ msgid ""
 "plantilla por defecto; no se guardará nada hasta pulsar \"Aplicar cambios\"."
 msgstr ""
 
-#: inc/customizer-csp.php:658
+#: inc/customizer-csp.php:625
 msgid "No se permiten etiquetas PHP en el contenido."
 msgstr ""
 

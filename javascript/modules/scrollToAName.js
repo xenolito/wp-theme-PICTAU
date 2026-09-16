@@ -147,6 +147,14 @@ document.addEventListener('DOMContentLoaded', () => {
 		scrollWithEngine({
 			target: `#${target}`,
 			offset: 0,
+			// Al llegar desde otra página (navegación real, no interceptada por el
+			// click handler de arriba), el navegador escribe el hash en la URL antes
+			// de que este script pueda hacer nada. Lo quitamos al terminar el scroll
+			// para que el resultado sea el mismo que al navegar dentro de la misma
+			// página: la URL no se queda con el hash.
+			onComplete: () => {
+				history.replaceState(null, '', window.location.pathname + window.location.search)
+			},
 		})
 	}
 

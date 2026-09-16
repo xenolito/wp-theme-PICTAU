@@ -123,3 +123,47 @@ add_filter(
 	}
 );
 
+/**
+ * Icono del equipo (Round Robin/Colectivo) en el calendario público
+ * ([fluent_booking id="..."] embebido en páginas normales del tema, p.ej.
+ * /demo/) — sustituye el avatar individual del anfitrión que atiende
+ * (oculto vía .fcal_author_wrapper .fcal_author_list en fluentbooking.css)
+ * por el icono del sitio (Personalizar → Identidad del sitio → Icono del
+ * sitio), para no revelar quién en concreto atenderá la reserva.
+ *
+ * A diferencia de la página de confirmación o el login del dashboard, esta
+ * vista sí es una página normal del tema (wp_head()/wp_footer() propios),
+ * así que se inyecta como <style> en wp_head en vez de vía un filtro del
+ * plugin. Se resuelve aquí y no en el CSS estático del tema porque
+ * get_site_icon_url() no está disponible en un fichero .css, y una URL
+ * hardcodeada en el CSS compilado arrastraría el dominio del entorno donde
+ * se compiló (local vs producción).
+ */
+add_action(
+	'wp_head',
+	function () {
+		if ( ! is_singular() || ! has_shortcode( get_post()->post_content, 'fluent_booking' ) ) {
+			return;
+		}
+
+		$icon_url = get_site_icon_url();
+
+		if ( ! $icon_url ) {
+			return;
+		}
+		?>
+		<style>
+			.fcal_cal_wrap .fcal_author_wrapper::before {
+				content: '';
+				display: inline-block;
+				width: 32px;
+				height: 32px;
+				border-radius: 50%;
+				background: url('<?php echo esc_url( $icon_url ); ?>') center / cover no-repeat;
+				vertical-align: middle;
+			}
+		</style>
+		<?php
+	}
+);
+

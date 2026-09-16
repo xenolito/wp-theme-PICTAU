@@ -2645,6 +2645,68 @@ add_filter('wpseo_sitemap_entries_per_page', function ($n, $post_type = null) {
 }, 10, 2);
 
 
+// =============================================================================
+//! SCHEMA.ORG: Nodo Service para el Informe Ejecutivo BALANZIA (home)
+// Inyectado en el grafo JSON-LD de Yoast via wpseo_schema_graph_pieces, enlazado
+// al nodo Organization (ya generado nativamente por Yoast) via "provider".
+// =============================================================================
+
+if (
+	class_exists('Yoast\WP\SEO\Generators\Schema\Abstract_Schema_Piece')
+	&& ! class_exists('Pictau_Balanzia_Service_Schema_Piece')
+) {
+
+	class Pictau_Balanzia_Service_Schema_Piece
+		extends \Yoast\WP\SEO\Generators\Schema\Abstract_Schema_Piece {
+
+		/** @var string */
+		public $identifier = 'pictau-balanzia-service';
+
+		/**
+		 * Solo se necesita en portada.
+		 *
+		 * @return bool
+		 */
+		public function is_needed() {
+			return is_front_page();
+		}
+
+		/**
+		 * Construye y devuelve el nodo Service.
+		 *
+		 * @return array|false
+		 */
+		public function generate() {
+			$data = array(
+				'@type'            => 'Service',
+				'@id'              => home_url('/') . '#service',
+				'name'             => esc_html__('Informe Ejecutivo BALANZIA', 'pictau'),
+				'serviceType'      => esc_html__('Generación de informes financieros', 'pictau'),
+				'description'      => esc_html__('BALANZIA convierte la información financiera de una empresa en un informe ejecutivo claro, visual y profesional para entenderla y presentarla con criterio.', 'pictau'),
+				'areaServed'       => 'ES',
+				'mainEntityOfPage' => array('@id' => $this->context->main_schema_id),
+			);
+
+			if ($this->context->site_represents_reference) {
+				$data['provider'] = $this->context->site_represents_reference;
+			}
+
+			return $data;
+		}
+	}
+}
+
+add_filter(
+	'wpseo_schema_graph_pieces',
+	function ($pieces, $context) {
+		if (class_exists('Pictau_Balanzia_Service_Schema_Piece')) {
+			$pieces[] = new Pictau_Balanzia_Service_Schema_Piece();
+		}
+		return $pieces;
+	},
+	10,
+	2
+);
 
 
 

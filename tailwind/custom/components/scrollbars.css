@@ -615,16 +615,6 @@ body::-webkit-scrollbar {
 	}
 }
 
-@supports (hanging-punctuation: first) and (font: -apple-system-body) and (-webkit-appearance: none) {
-	@media (hover: none) {
-		.os-scrollbar {
-			.os-scrollbar-handle {
-				opacity: 0 !important;
-			}
-		}
-	}
-}
-
 /*!! TESTING OLD WAY SETTING SCROLLBARS STYLES */
 /*
 html,

@@ -2,7 +2,7 @@
 
 Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida con soporte para catálogos de productos, CPTs via Pods, animaciones GSAP y un sistema de bloques Gutenberg extendido.
 
-- **Versión:** 7.20.2
+- **Versión:** 7.21.0
 - **Text domain:** `pictau`
 - **Stack:** PHP 8+, WordPress 6+, TailwindCSS 3, esbuild, PostCSS
 
@@ -282,6 +282,22 @@ El filtro respeta el **término primario de Yoast** si está definido (`WPSEO_Pr
 - [Google Rich Results Test](https://search.google.com/test/rich-results) → debe aparecer resultado tipo **Product**.
 - [Schema Markup Validator](https://validator.schema.org/) → sin errores de tipo.
 - DevTools (Sources): un único `<script type="application/ld+json">` con `@graph` que contiene `WebPage`, `ImageObject`, `BreadcrumbList`, `WebSite`, `Organization` y `Product`.
+
+### Datos estructurados — Schema.org Service (Yoast SEO)
+
+La portada emite un nodo `schema.org/Service` en el grafo JSON-LD de Yoast para el Informe Ejecutivo BALANZIA, enlazado al nodo `Organization` mediante `provider`.
+
+**Implementación:** `theme/inc/template-functions.php` — clase `Pictau_Balanzia_Service_Schema_Piece`.
+
+| Propiedad | Valor |
+|---|---|
+| `name` | Informe Ejecutivo BALANZIA |
+| `serviceType` | Generación de informes financieros |
+| `provider` | Referencia `@id` al nodo `Organization` de Yoast |
+| `areaServed` | `ES` |
+| `mainEntityOfPage` | Referencia al nodo `WebPage` de Yoast |
+
+Requiere la misma configuración de **Representación del sitio → Organización** que el nodo `Product` (ver sección anterior).
 
 ### Títulos SEO — Jerarquía de categorías (Yoast)
 
@@ -1614,6 +1630,15 @@ Lenis (`javascript/modules/smooth_scroll.js`) intercepta la rueda del ratón/tou
 **`data-lenis-prevent` ya no se usa en ningún sitio del tema.** Tanto `ModalWP.js` como el modal de cookies GDPR (`smooth_scroll.js`) llaman a `lenis.stop()` mientras están abiertos, así que Lenis no anima nada de por sí; su fallback nativo cuando está `isStopped` es `event.preventDefault()` salvo que el `prevent` de arriba diga lo contrario — exactamente lo que hacía falta: el contenido interno sigue scrolleando, y el resto del overlay (backdrop, icono de cerrar) queda bloqueado sin que la página se mueva detrás. Verificado con Playwright: scroll interno intacto en los tres casos (FluentBooking, modal, y el scroll normal de página a través del punto donde se oculta el above-header), `window.scrollY` no se mueve nunca por detrás de ninguno de los tres.
 
 **Añadir un widget nuevo con scroll interno:** localizar el contenedor real con `overflow: auto/scroll` (no el wrapper que lo envuelve) y añadirlo a `NESTED_SCROLL_SELECTOR`. Si el contenido se genera 100% por JS y tarda en montar su overflow, comprobar primero que el selector ya existe en el DOM a tiempo del primer wheel event; si no, usar un `MutationObserver` como en `fix_chatbot_meow_lenis.js`.
+
+---
+
+## FluentBooking — Icono de equipo en calendarios Round Robin
+
+En calendarios de tipo Equipo/Round Robin embebidos con el shortcode `[fluent_booking id="..."]` en páginas normales del tema (p.ej. `/demo/`), el avatar individual y el nombre del anfitrión concreto que atenderá la reserva se ocultan y se sustituyen por el icono del sitio, para no revelar qué anfitrión en concreto está disponible.
+
+- `.fcal_author_wrapper .fcal_author_list { display: none !important; }` en `tailwind/custom/components/fluentbooking.css` oculta el avatar real y su tooltip con el nombre.
+- [theme/inc/fluentbooking-compat.php](theme/inc/fluentbooking-compat.php) inyecta un `<style>` en `wp_head` (solo en páginas con el shortcode `[fluent_booking]`) con la regla `.fcal_author_wrapper::before`, cuyo `background` usa el icono del sitio (Personalizar → Identidad del sitio → Icono del sitio) resuelto vía `get_site_icon_url()` en cada request — funciona igual en cualquier entorno y se actualiza solo si cambia el icono del sitio desde el Customizer.
 
 ---
 
