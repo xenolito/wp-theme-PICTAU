@@ -27,7 +27,7 @@ Tema WordPress personalizado (marca blanca). Diseñado para proyectos a medida c
 - [PCT Gallery](https://github.com/xenolito/WordPress-Plugin-Image-Gallery)
 - [Pods](https://es.wordpress.org/plugins/pods/)
 - [WP Hide Login](https://es.wordpress.org/plugins/wps-hide-login/) (Optional)
-- [WP Mail SMTP](https://es.wordpress.org/plugins/wp-mail-smtp/)
+- [fluentSMTP](https://wordpress.org/plugins/fluent-smtp/)
 - [Updraft Plus – Backup and Restore](https://es.wordpress.org/plugins/updraftplus/)
 - [WP Super Cache](https://es.wordpress.org/plugins/wp-super-cache/)
 
