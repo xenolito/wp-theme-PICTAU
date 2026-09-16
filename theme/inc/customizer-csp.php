@@ -555,6 +555,12 @@ final class Pictau_CSP_Manager {
 # JS pero nunca llega a registrarse en Google Ads (mismo caso detectado en qlikparapymes,
 # 2026-08-27). Para tráfico de otros países, añade el TLD de Google correspondiente
 # (google.de, google.fr...) desde el editor del Customizer.
+# En img-src se incluye también https://secure.gravatar.com: get_avatar(), usado por el
+# propio WordPress (comentarios, barra de admin, perfiles de usuario) y por plugins como
+# FluentBooking para el avatar del anfitrión, sirve por defecto la imagen de Gravatar si el
+# usuario no tiene un avatar propio — sin este dominio esa imagen por defecto queda bloqueada
+# (detectado en producción de balanzia, 2026-09-16, en el selector de avatar del calendario
+# de FluentBooking).
 # Opcional (descomenta si se usa el shortcode rive-player): WASM de Rive — añade
 # https://cdn.jsdelivr.net https://unpkg.com a script-src/connect-src.
 # El directorio de subida de medios (wp_upload_dir(), calculado en runtime porque puede
@@ -571,7 +577,7 @@ SetEnvIf Request_URI "^/wp-login\\.php" csp_admin
 SetEnvIf Request_URI "^{$media_path_regex}" pct_public_media
 
 # Publico
-Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com{$own_domains_suffix}; style-src 'self' 'unsafe-inline'{$own_domains_suffix}; img-src 'self' data: https://i.ytimg.com https://www.googletagmanager.com https://www.google.com https://*.doubleclick.net{$own_domains_suffix}; font-src 'self' data:{$own_domains_suffix}; connect-src 'self' https://*.google-analytics.com https://analytics.google.com https://www.google.com https://*.doubleclick.net https://www.googleadservices.com https://www.google.es; frame-src 'self' https://www.youtube.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';" env=!csp_admin
+Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com{$own_domains_suffix}; style-src 'self' 'unsafe-inline'{$own_domains_suffix}; img-src 'self' data: https://i.ytimg.com https://secure.gravatar.com https://www.googletagmanager.com https://www.google.com https://*.doubleclick.net{$own_domains_suffix}; font-src 'self' data:{$own_domains_suffix}; connect-src 'self' https://*.google-analytics.com https://analytics.google.com https://www.google.com https://*.doubleclick.net https://www.googleadservices.com https://www.google.es; frame-src 'self' https://www.youtube.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';" env=!csp_admin
 
 # wp-admin / wp-login: mas permisiva, area autenticada
 Header set Content-Security-Policy "default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; connect-src 'self' https: wss:; frame-src 'self' https: blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';" env=csp_admin
