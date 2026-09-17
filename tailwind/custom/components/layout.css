@@ -2599,7 +2599,7 @@ a:has(.shine) {
 		width: calc(100vw - 2 * var(--def-layout-x-padding)) !important;
 		max-width: 600px !important;
 		/* height: 100%; */
-		max-height: 75dvh;
+		/* max-height: 75dvh; */
 
 		border-radius: var(--def-border-radius);
 		padding: var(--padding) 0;
@@ -2612,7 +2612,7 @@ a:has(.shine) {
 
 		.content {
 			overflow-y: auto;
-			max-height: calc(75dvh - 2 * var(--padding));
+			max-height: calc(100dvh - (4 * var(--padding)));
 			/* height: 100%; */
 			padding: 0 var(--padding);
 			color: var(--heading-color-theme-B);
