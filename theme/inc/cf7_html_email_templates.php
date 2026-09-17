@@ -515,6 +515,9 @@ function pct_cf7_generate_email_logo_png($svg_path, $png_path, $width = 400)
 
 function pct_cf7_shell_binary_exists($binary)
 {
+	if (!function_exists('shell_exec')) {
+		return false;
+	}
 	$path = @shell_exec('command -v ' . escapeshellarg($binary) . ' 2>/dev/null');
 	return !empty(trim((string) $path));
 }
