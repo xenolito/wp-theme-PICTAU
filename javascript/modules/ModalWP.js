@@ -62,7 +62,6 @@ const ModalWP = class {
 		this.modal = document.createElement('div')
 		this.modal.setAttribute('id', `${this.modalID}-${window.crypto.randomUUID()}`)
 		this.modal.setAttribute('data-modal', this.modalID)
-		this.modal.style.setProperty('--modal-height', window.outerHeight + 'px')
 
 		if (this.modalContent.classList.length) this.modal.setAttribute('class', this.modalContent.classList)
 		this.modal.modalOBJ = this
@@ -230,6 +229,16 @@ const ModalWP = class {
 		}
 
 		if (this.overlayscrollbars) this.overlayscrollbars.update()
+
+		// El fondo queda congelado (lenis.stop() justo abajo) mientras la modal
+		// está abierta, así que esta posición no cambia hasta que se cierre —
+		// se usa para anclar [data-modal] con position:absolute en vez de fixed
+		// (ver comentario en layout-navigation.css o layout.css junto a
+		// [data-modal]): Safari iOS recorta los elementos position:fixed a su
+		// capa de composición, ceñida al viewport visible en cada momento, sin
+		// importar el height que se le dé por CSS — con absolute pasa a ser
+		// contenido normal del documento y Safari lo pinta completo.
+		this.modal.style.setProperty('--modal-scroll-top', `${window.lenis ? window.lenis.actualScroll : window.scrollY}px`)
 
 		if (window.lenis) window.lenis.stop()
 

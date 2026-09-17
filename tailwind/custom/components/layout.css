@@ -31,13 +31,19 @@ body {
 	margin-top: 0 !important;
 	scroll-behavior: smooth;
 	overflow-x: clip !important;
-	background-color: var(--bg-color-theme-light);
+	/* TEST TEMPORAL — quitar tras la comprobación en dispositivo real: si la
+	   franja bajo la barra de Safari se pone roja, es el fondo de html/body;
+	   si sigue blanca, es chrome nativo de Safari, ajeno al CSS. */
 
 	/* transition: background 0.7s ease; */
 
 	/* &.stop-scrolling {
 		overflow: hidden !important;
-	} */
+		} */
+}
+
+body {
+	background-color: var(--bg-color-theme-light);
 }
 
 /*! config for programatically change/add a style rule to the body when is child of .temp-body-bg (@html tag / :root) and a --temp-body-bg exists */
@@ -2491,10 +2497,26 @@ a:has(.shine) {
 
 	width: 100vw !important;
 	max-width: unset !important;
-	height: 100vh;
 	overflow: hidden;
 	inset: 0;
-	position: fixed;
+	/* position:absolute, no fixed — Safari iOS recorta los elementos fixed a
+	   su capa de composición, ceñida al viewport visible en cada momento, sin
+	   importar el height que se le dé por CSS: con la modal abierta, el fondo
+	   se oscurece salvo una franja inferior (justo donde Safari reserva
+	   espacio para su barra de navegación) que sigue mostrando el contenido
+	   de la página sin oscurecer. Con absolute pasa a ser contenido normal
+	   del documento y Safari lo pinta completo.
+	   Al ser absolute (no fixed), su posición es relativa al documento, no al
+	   viewport — se compensa fijando `top` a la posición de scroll congelada
+	   en el momento de abrir la modal (--modal-scroll-top, en ModalWP.js), en
+	   vez de a 0 (heredado de `inset:0`, sobrescrito aquí). Como el fondo no
+	   puede scrollear mientras la modal está abierta (lenis.stop()), el
+	   resultado visual es idéntico a un fixed real, pero sin el recorte de
+	   Safari. */
+	position: absolute;
+	top: var(--modal-scroll-top, 0px);
+	height: 100vh;
+	height: 100dvh;
 	/* pointer-events: none; */
 	z-index: 999999;
 	transition: opacity 0.3s ease 0.3s;
@@ -2515,7 +2537,11 @@ a:has(.shine) {
 		backdrop-filter: blur(3px);
 		width: 100vw !important;
 		max-width: unset !important;
-		height: 100vh;
+		/* 100%, no 100vh — debe coincidir exactamente con el alto real de
+		   [data-modal] (100vh/100dvh, ver comentario ahí), no recalcularlo por
+		   su cuenta con una unidad distinta que podría no coincidir en según
+		   qué estado del chrome de Safari. */
+		height: 100%;
 		z-index: 1;
 	}
 
