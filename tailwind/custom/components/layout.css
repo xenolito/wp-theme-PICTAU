@@ -31,9 +31,13 @@ body {
 	margin-top: 0 !important;
 	scroll-behavior: smooth;
 	overflow-x: clip !important;
-	/* TEST TEMPORAL — quitar tras la comprobación en dispositivo real: si la
-	   franja bajo la barra de Safari se pone roja, es el fondo de html/body;
-	   si sigue blanca, es chrome nativo de Safari, ajeno al CSS. */
+	/* --bg-color-theme-dark, no light: es lo que Safari iOS usa de respaldo
+	   para teñir su propio chrome (barra de direcciones/toolbar) cuando no
+	   puede muestrear contenido real bajo su UI — confirmado con una prueba
+	   real en dispositivo (background-color:red tiñó ambas barras de Safari).
+	   El footer (presente en todas las páginas) siempre es theme-color-dark,
+	   así que este es el valor que debe coincidir por defecto. */
+	background-color: var(--bg-color-theme-dark);
 
 	/* transition: background 0.7s ease; */
 
@@ -2494,6 +2498,21 @@ a:has(.shine) {
 	display: grid;
 	opacity: 0;
 	pointer-events: none;
+	/* visibility:hidden, no solo opacity:0 — este nodo nunca se desmonta del
+	   DOM (a diferencia del modal de Radix en el proyecto Astro hermano, que
+	   sí lo quita del árbol al cerrar), así que sin esto queda flotando a
+	   pantalla completa con z-index:999999 en TODA posición de scroll,
+	   invisible al ojo pero seguramente compuesto/pintado igualmente.
+	   Sospecha: el muestreador de color de Safari iOS para teñir su propio
+	   chrome (barra de direcciones/toolbar) lee esta capa transparente en
+	   vez de "ver a través" de ella hasta el contenido real de la página
+	   debajo — produciendo una franja de color equivocado bajo la barra de
+	   Safari en cualquier sección, no solo con la modal abierta.
+	   visibility:hidden sí saca el elemento del árbol de pintado (a
+	   diferencia de opacity:0, que sigue generando una capa de composición).
+	   El retraso en la transición (ver más abajo) evita que desaparezca del
+	   pintado antes de que termine el fade de cierre. */
+	visibility: hidden;
 
 	width: 100vw !important;
 	max-width: unset !important;
@@ -2519,7 +2538,9 @@ a:has(.shine) {
 	height: 100dvh;
 	/* pointer-events: none; */
 	z-index: 999999;
-	transition: opacity 0.3s ease 0.3s;
+	transition:
+		opacity 0.3s ease 0.3s,
+		visibility 0s 0.6s;
 	/* place-content: center; */
 	/* max-inline-size: min(90vw, var(--size-content-3));
 	max-block-size: min(80vh, 100%); */
@@ -2619,7 +2640,10 @@ a:has(.shine) {
 		/* display: grid; */
 		pointer-events: all;
 		opacity: 1;
-		transition: opacity 0.3s ease;
+		visibility: visible;
+		transition:
+			opacity 0.3s ease,
+			visibility 0s;
 		.content-wrapper {
 			opacity: 1;
 
