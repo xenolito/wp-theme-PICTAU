@@ -667,9 +667,14 @@ header.entry-header .header-canvas {
 	.logo-testimonial {
 		/* filter: invert(1); */
 		color: white;
-		max-width: 150px !important;
+		/* max-width: 150px !important; */
 		margin-top: 1rem !important;
 		margin-left: 0 !important;
 		margin-right: 0 !important;
+		img,
+		svg {
+			width: auto !important;
+			max-height: 44px;
+		}
 	}
 }

@@ -31,32 +31,7 @@ body {
 	margin-top: 0 !important;
 	scroll-behavior: smooth;
 	overflow-x: clip !important;
-	/* --bg-color-theme-dark, no light: es lo que Safari iOS usa de respaldo
-	   para teñir su propio chrome (barra de direcciones/toolbar) cuando no
-	   puede muestrear contenido real bajo su UI — confirmado con una prueba
-	   real en dispositivo (background-color:red tiñó ambas barras de Safari).
-	   El footer (presente en todas las páginas) siempre es theme-color-dark,
-	   así que este es el valor que debe coincidir por defecto. */
-	background-color: var(--bg-color-theme-dark);
-
-	/* transition: background 0.7s ease; */
-
-	/* &.stop-scrolling {
-		overflow: hidden !important;
-		} */
-}
-
-body {
 	background-color: var(--bg-color-theme-light);
-}
-
-/*! config for programatically change/add a style rule to the body when is child of .temp-body-bg (@html tag / :root) and a --temp-body-bg exists */
-:is(:where(.temp-body-bg) body) {
-	background: var(--temp-body-bg);
-	[data-bgcolor] {
-		transition: color 0.7s ease;
-		color: var(--temp-body-txt-color);
-	}
 }
 
 body .is-layout-constrained > :where(.alignleft, .has-text-align-left, .is-content-justification-left) {
