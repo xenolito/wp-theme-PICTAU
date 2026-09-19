@@ -257,24 +257,24 @@ figure {
 }
 
 .margin-y {
-	margin-block: var(--def-layout-x-padding) !important;
+	margin-block: var(--def-layout-x-padding);
 }
 
 .margin-y-small {
-	margin-block: var(--card-padding) !important;
+	margin-block: var(--card-padding);
 }
 
 .margin-y-xsmall {
-	margin-block: 1.5ch !important;
+	margin-block: 1.5ch;
 }
 
 .margin-t-xsmall {
-	margin-top: 1.5ch !important;
+	margin-top: 1.5ch;
 }
 
 .margin-t-small {
-	margin-top: calc(var(--def-layout-x-padding) * 0.7) !important;
-	margin-top: var(--card-padding) !important;
+	margin-top: calc(var(--def-layout-x-padding) * 0.7);
+	margin-top: var(--card-padding);
 }
 
 .padding-b {
