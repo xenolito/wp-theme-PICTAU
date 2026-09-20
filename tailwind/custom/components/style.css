@@ -10,6 +10,10 @@
 	--heading-shadow: none;
 }
 
+body {
+	background-color: red;
+}
+
 /*! CUSTOM THEMES  */
 
 @media only screen and (max-width: 1070px) {
