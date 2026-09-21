@@ -408,7 +408,7 @@ h6 {
 }
 
 figure {
-	@apply !my-0;
+	@apply my-0;
 	height: auto !important;
 }
 
