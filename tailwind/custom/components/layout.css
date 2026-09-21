@@ -1756,7 +1756,6 @@ Two different sets of styles for the FAQs, one for the collapsable version and a
 	/* --border-radius: var(--def-border-radius); */
 	--border-radius: 4px;
 	--faqs-sep: 1px;
-	--answers-bg: rgba(0, 0, 0, 0.03);
 	--answers-bg-dark: rgba(255, 255, 255, 0.1);
 	--question-padding: 1rem;
 	--question-bg: rgba(255, 255, 255, 0.7);
@@ -1770,7 +1769,8 @@ Two different sets of styles for the FAQs, one for the collapsable version and a
 		0px 6px 12px rgba(0, 0, 0, 0.08);
 	max-width: var(--faqs-max-width) !important;
 
-	@apply bg-[var(--answers-bg)] dark:bg-[var(--answers-bg-dark)];
+	/* background-color: var(--faq-answer-darken-perc); */
+	background-color: color-mix(in srgb, black var(--faq-answer-darken-perc, 50%), var(--faq-question-bg-color, white));
 
 	.faq {
 		display: grid;
@@ -1789,8 +1789,8 @@ Two different sets of styles for the FAQs, one for the collapsable version and a
 			padding-right: var(--def-layout-x-padding);
 			font-size: 1.1em;
 			padding: var(--question-padding) calc(var(--question-padding) * 1.2);
-			@apply bg-white dark:bg-white/20;
-			/* @apply p-[var(--question-padding)]; */
+			background-color: var(--faq-question-bg-color, white);
+			background-color: color-mix(in srgb, var(--faq-question-bg-color, white) var(--faq-question-bg-opacity, 100%), transparent);
 
 			.faq-status {
 				display: grid;

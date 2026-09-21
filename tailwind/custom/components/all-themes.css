@@ -57,6 +57,11 @@
 	/* Video player play button */
 	--play-button-color: var(--main-color);
 	--play-button-icon-color: white;
+
+	/* FAQs*/
+	--faq-question-bg-color: var(--bg-color-theme-light);
+	--faq-question-bg-opacity: 100%;
+	--faq-answer-darken-perc: 5%;
 }
 
 .bg-transparent {
