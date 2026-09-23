@@ -44,9 +44,7 @@ Comprobación rápida y concluyente: intentar iniciar sesión con esa cuenta en 
 Algunos tenants corporativos de Microsoft 365 restringen el **consentimiento de usuario** a apps de terceros (política de Entra ID "Users can consent to apps..."). Si está restringido, al conectar aparecerá un aviso tipo *"Need admin approval"*, y el administrador de esa empresa tendría que:
 
 - dar consentimiento a nivel de organización (admin consent) para la app, o
-- añadirla explícitamente a la lista de apps permitidas,
-
-identificándola por su App ID: `db98d3d0-c944-41f8-bb01-555c913a903b`, solicitando los scopes `Calendars.ReadWrite` + `offline_access` + `openid`/`email`/`User.Read`.
+- añadirla explícitamente a la lista de apps permitidas, identificándola por su App ID: `db98d3d0-c944-41f8-bb01-555c913a903b`, solicitando los scopes `Calendars.ReadWrite` + `offline_access` + `openid`/`email`/`User.Read`.
 
 No hace falta compartir ningún secreto ni credencial nuestra — solo ese App ID, si el admin necesita autorizarlo explícitamente.
 

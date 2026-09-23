@@ -1,3 +1,57 @@
+// Livid embeds implement the player.js protocol (https://github.com/embedly/player.js) over postMessage
+const LIVID_ORIGIN = 'https://livid.com'
+const PLAYERJS_CONTEXT = 'player.js'
+const PLAYERJS_VERSION = '2.0'
+
+const createLividPlayer = iframe => {
+	let isReady = false
+	let pendingMethod = null
+
+	const send = (method, value) => {
+		const message = { context: PLAYERJS_CONTEXT, version: PLAYERJS_VERSION, method }
+		if (value !== undefined) message.value = value
+		iframe.contentWindow?.postMessage(JSON.stringify(message), LIVID_ORIGIN)
+	}
+
+	window.addEventListener('message', e => {
+		if (e.origin !== LIVID_ORIGIN || e.source !== iframe.contentWindow) return
+
+		let data = e.data
+		if (typeof data === 'string') {
+			try {
+				data = JSON.parse(data)
+			} catch {
+				return
+			}
+		}
+
+		if (data?.context !== PLAYERJS_CONTEXT || data.event !== 'ready') return
+
+		isReady = true
+		if (pendingMethod) {
+			send(pendingMethod)
+			pendingMethod = null
+		}
+	})
+
+	// Asks the receiver to (re)emit "ready" in case it fired before this listener was attached
+	iframe.addEventListener('load', () => send('addEventListener', 'ready'))
+
+	const call = method => {
+		if (isReady) {
+			send(method)
+			return
+		}
+		pendingMethod = method
+		send('addEventListener', 'ready')
+	}
+
+	return {
+		play: () => call('play'),
+		pause: () => call('pause')
+	}
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 	const videoTriggers = document.querySelectorAll('.video-trigger')
 
@@ -17,6 +71,11 @@ document.addEventListener('DOMContentLoaded', () => {
 		} else if (video_source === 'vimeo') {
 			const vimeoIframe = videoTrigger.querySelector('iframe')
 
+			if (!vimeoIframe) {
+				console.log('⛔️ No Vimeo iframe found for video trigger', videoTrigger)
+				return
+			}
+
 			if (!window.Vimeo) {
 				var sc = document.createElement('script')
 				sc.src = 'https://player.vimeo.com/api/player.js'
@@ -30,6 +89,15 @@ document.addEventListener('DOMContentLoaded', () => {
 			})
 
 			// document.getElementsByTagName('head')[0].appendChild(tag)
+		} else if (video_source === 'livid') {
+			const lividIframe = videoTrigger.querySelector('iframe[src*="livid.com/embed"]')
+
+			if (!lividIframe) {
+				console.log('⛔️ No Livid iframe found for video trigger', videoTrigger)
+				return
+			}
+
+			videoTrigger.player = createLividPlayer(lividIframe)
 		}
 
 		// const youtubeId = videoTrigger.dataset.youtube_id
@@ -50,6 +118,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			} else if (video_source === 'vimeo') {
 				videoTrigger.player.play()
 				console.log('play vimeo', videoTrigger.player)
+			} else if (video_source === 'livid') {
+				videoTrigger.player.play()
 			}
 		})
 	})

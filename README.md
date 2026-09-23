@@ -1098,6 +1098,44 @@ El skill verifica primero que el tema activo tiene `block-attributes.php`. La op
 
 ---
 
+## Bloques Gutenberg — Vídeo con trigger de play propio (`video-trigger.js`)
+
+Convierte un bloque en un vídeo con UI de play propia: al hacer clic en cualquier punto del elemento se añade la clase `is-active` (que oculta `.is-bg` y `.has-play-ui`) y se reproduce el vídeo.
+
+**Archivo:** `javascript/modules/video-trigger.js`
+
+### Estructura en el editor
+
+Un bloque **Grupo** con la clase `video-trigger` y el atributo `data-video_source`, que contiene:
+
+- El vídeo (según el proveedor, ver tabla).
+- Una **Imagen** con la clase `is-bg` (imagen de portada que tapa el vídeo hasta hacer play).
+- Un **Grupo** con la clase `has-play-ui` con el icono de play.
+
+### Proveedores soportados
+
+| `data-video_source` | Qué va dentro del grupo | Cómo se reproduce |
+| --- | --- | --- |
+| `youtube` | Nada. Requiere además `data-video_id="<id de youtube>"` | Al hacer clic se inyecta el iframe con `autoplay=1` |
+| `vimeo` | Bloque **Insertar → Vimeo** (debe generar un `<iframe>`) | Vimeo Player API (`player.js` de Vimeo, cargado bajo demanda) |
+| `livid` | Bloque **HTML personalizado** con el código de embed que proporciona Livid | Envía la orden `play` al iframe por `postMessage` (protocolo [player.js](https://github.com/embedly/player.js)) |
+
+### Livid
+
+WordPress no tiene soporte oEmbed para Livid, así que el vídeo se inserta con un bloque **HTML personalizado** dentro del grupo `video-trigger`, pegando tal cual el código de embed que da Livid:
+
+```html
+<div style="padding:56.25% 0 0 0;position:relative;width:100%;"><iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture; web-share" allowfullscreen frameborder="0" referrerpolicy="strict-origin-when-cross-origin" src="https://livid.com/embed/XXXXXXXXXXXX" title="Título del vídeo"></iframe></div>
+```
+
+- El atributo `data-video_source="livid"` va en el **Grupo** contenedor, no en el HTML personalizado.
+- El iframe debe conservar `allow="autoplay; ..."`, porque sin él el navegador bloquea el play lanzado desde fuera del iframe.
+- El módulo localiza el iframe por su `src` (`livid.com/embed`). Si no lo encuentra, muestra un aviso en consola y no monta el trigger.
+- Si se hace clic antes de que el player de Livid haya cargado, el play queda en espera y se lanza en cuanto el player emite `ready`.
+- Solo se aceptan mensajes del origen definido en `LIVID_ORIGIN` (`https://livid.com`) en `video-trigger.js`. Si Livid sirve el embed desde otro dominio, hay que actualizar esa constante; si no, el clic oculta la portada pero el vídeo no arranca.
+
+---
+
 ## Image Mask Animated (`image_mask_animated.js`)
 
 Aplica una máscara blob orgánica animada sobre imágenes, con dos rings de stroke concéntricos y paralelos que se animan de forma continua.
@@ -1558,6 +1596,7 @@ Entry: `javascript/script.js` → `theme/js/script.min.js`
 | `modalContactForm7.js` | Consumidor de `ModalWP.js` para modales con formulario CF7 disparados por click. Atributos: `data-modalform`, `data-modalform_target`, `data-modalform_input_name`, `data-modalform_input_data`. |
 | `contactForm7.js` | Eventos de formularios CF7 (validación, envío, checkboxes/radios custom). También usa `ModalWP.js` (sin formulario) para mostrar el mensaje de éxito tras el envío. |
 | `fluentbooking_timezone_dropdown_upward.js` | Fuerza que el desplegable de zona horaria de FluentBooking se abra siempre hacia arriba del trigger. Ver [Desplegable de zona horaria de FluentBooking — forzado hacia arriba](#desplegable-de-zona-horaria-de-fluentbooking--forzado-hacia-arriba). |
+| `video-trigger.js` | Vídeo con UI de play propia (YouTube, Vimeo, Livid). Atributo: `data-video_source`. Ver [Bloques Gutenberg — Vídeo con trigger de play propio](#bloques-gutenberg--vídeo-con-trigger-de-play-propio-video-triggerjs). |
 | `scrollToAName.js` | Scroll suave (Lenis/GSAP) al hacer click en enlaces `<a href="#ancla">` de la propia página, y al cargar con un hash en la URL. Ver [Dashboard de reservas de FluentBooking (frontend) — compatibilidad](#dashboard-de-reservas-de-fluentbooking-frontend--compatibilidad) para el caso de apps con rutas tipo SPA en la misma página. |
 
 Librerías: GSAP + ScrollTrigger, Splide, OverlayScrollbars, Split Type, CountUp.js
