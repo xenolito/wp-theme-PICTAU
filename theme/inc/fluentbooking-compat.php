@@ -28,6 +28,40 @@
  * para no romper el diseño de su propio dashboard).
  */
 
+/**
+ * Detecta si la request actual es el dashboard standalone en frontend
+ * (front-app.php, /bookings#/ — mismo slug configurable en Ajustes de
+ * FluentBooking que usa FrontendRenderer::getFronendSlug(), replicado aquí
+ * porque ese método es protected y no hay filtro público que exponga el
+ * resultado). Se usa para que otros hooks del tema (p.ej. preload_fonts() en
+ * template-functions.php) puedan saltarse a sí mismos en esta vista, ya que
+ * el CSS del tema nunca llega aquí (ver el comentario de arriba) y cualquier
+ * <link rel="preload"> de fuentes del tema queda sin usar (aviso en consola
+ * "was preloaded... but not used").
+ */
+function pictau_is_fluent_booking_standalone_frontend(): bool {
+	if ( ! class_exists( '\FluentBooking\App\Services\Helper' ) ) {
+		return false;
+	}
+
+	$settings = \FluentBooking\App\Services\Helper::getPrefSettins();
+
+	if ( empty( $settings['frontend']['enabled'] ) || 'yes' !== $settings['frontend']['enabled'] ) {
+		return false;
+	}
+
+	$render_type = empty( $settings['frontend']['render_type'] ) ? 'standalone' : $settings['frontend']['render_type'];
+
+	if ( 'standalone' !== $render_type || empty( $settings['frontend']['slug'] ) ) {
+		return false;
+	}
+
+	global $wp;
+	$uri_parts = array_values( array_filter( explode( '/', trim( $wp->request ?? '', '/' ) ) ) );
+
+	return isset( $uri_parts[0] ) && $uri_parts[0] === $settings['frontend']['slug'];
+}
+
 add_filter(
 	'fluent_booking/asset_listed_slugs',
 	function ( $slugs ) {
@@ -101,13 +135,25 @@ add_filter(
 );
 
 /**
- * Logo en la pantalla de login del dashboard frontend de FluentBooking
- * (fluent-booking-pro) cuando se visita sin sesión iniciada — a diferencia
- * del dashboard ya autenticado o de la página de confirmación/cancelación,
- * esta vista SÍ carga el CSS del tema (ver la regla .fbs_login_form en
- * tailwind/custom/components/style.css), así que el logo se resuelve más
- * simple inyectándolo aquí, vía el único filtro que expone el plugin para
- * esta pantalla (FrontendRenderer::getAuthContent()), en vez de por CSS.
+ * Logo en la pantalla de login SIN sesión iniciada — el mismo filtro
+ * ('fluent_booking/login_header', con alias deprecado 'fluent_boards/login_header'
+ * que es el que se sigue usando aquí) se dispara en DOS pantallas distintas de
+ * FluentBooking, y ambas comparten esta única función:
+ *
+ * 1. Dashboard embebido en wp-admin sin sesión (body.fluentboards_page_fluent_booking,
+ *    AdminMenuHandler): SÍ carga el CSS del tema, por eso el resto del look
+ *    (tarjeta, inputs, botón) se completa con la regla .fbs_login_form en
+ *    tailwind/custom/components/fluentbooking.css.
+ * 2. Dashboard standalone en frontend (body.fluent_booking_page, /bookings#/,
+ *    FrontendRenderer::getAuthContent() en fluent-booking-pro): el CSS del
+ *    tema NUNCA llega aquí — enqueueAssets() desencola en wp_print_styles
+ *    (prioridad 999999) cualquier estilo cuyo src sea del tema o de otro
+ *    plugin, y se llama incluso en la pantalla de login (renderFullApp()).
+ *    Verificado con Playwright: solo se cargan fluent-booking/admin.css y el
+ *    CSS de gdpr-cookie-compliance (whitelisted vía 'fluent_booking/asset_listed_slugs'
+ *    más abajo). El resto del look de esta pantalla se completa más abajo con
+ *    un <style> inline en el hook 'fluent_booking/front_head', que al no ser
+ *    un <link> encolado no pasa por esa desencolación.
  */
 add_filter(
 	'fluent_boards/login_header',
@@ -120,6 +166,45 @@ add_filter(
 		}
 
 		return '<img class="fbs_login_logo" src="' . esc_url( $logo_url ) . '" alt="' . esc_attr( get_bloginfo( 'name' ) ) . '" />' . $heading;
+	}
+);
+
+/**
+ * Estilo de marca en la pantalla de login/landing del dashboard standalone en
+ * frontend (body.fluent_booking_page, /bookings#/ — ver el comentario del
+ * filtro 'fluent_boards/login_header' justo arriba para el porqué de este
+ * hook en vez de CSS del tema). 'fluent_booking/front_head' se dispara dentro
+ * de <head> en app/Views/front-app.php tanto con sesión iniciada como sin
+ * ella, así que cualquier regla aquí aplica a toda la vista, no solo al login.
+ */
+add_action(
+	'fluent_booking/front_head',
+	function () {
+		$brand_color = 'hsl(26, 100%, 50%)'; // mismo valor que --main-color (all-themes.css)
+		?>
+		<style>
+			.fcal_login_form_heading {
+				display: flex;
+				flex-flow: column;
+				align-items: center;
+				row-gap: 1rem;
+				line-height: 1.4;
+				color: white;
+				background: <?php echo esc_html( $brand_color ); ?> !important;
+				font-weight: 400 !important;
+			}
+
+			.fcal_login_form .fbs_login_logo {
+				max-width: 250px;
+				margin-bottom: 1.5rem;
+				filter: invert(1);
+				/* filter: invert(61%) sepia(88%) saturate(1650%) hue-rotate(350deg) brightness(82%) contrast(227%); */
+			}
+			.button-primary {
+				background: <?php echo esc_html( $brand_color ); ?> !important;
+			}
+		</style>
+		<?php
 	}
 );
 

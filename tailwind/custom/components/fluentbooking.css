@@ -233,3 +233,8 @@ body.fluentboards_page_fluent_booking #wpbody:has(.fbs_login_form) {
 		width: 0.3em !important;
 	}
 }
+
+/* La vista standalone en frontend (body.fluent_booking_page, /bookings#/) NO
+   carga este CSS del tema (ver el comentario del hook 'fluent_booking/front_head'
+   en theme/inc/fluentbooking-compat.php) — su estilo de marca se inyecta ahí,
+   no aquí. */

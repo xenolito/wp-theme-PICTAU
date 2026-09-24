@@ -853,7 +853,8 @@ function pictau_copyright($atts)
 
 	$output = '<div class="pct-copyright">
 								<div class="company-logo">'
-									. $logo_html .
+									. $logo_html
+									. do_shortcode('[pct-cpt-block title="Copyright add-on"]') .
 								'</div>
 								<div class="copy">
 									<ul class="copy-contact">
@@ -1133,6 +1134,13 @@ add_action('wp_head', 'pictau_inline_critical_css', 1);
 // ! Add head's link rel preload for fonts located at [theme/fonts] dir...
 function preload_fonts()
 {
+	// El dashboard standalone de FluentBooking (/bookings#/) llama a wp_head() pero
+	// nunca carga el CSS del tema (ver fluentbooking-compat.php), así que estas
+	// fuentes no se usan ahí — solo generan avisos de "preloaded but not used".
+	if (function_exists('pictau_is_fluent_booking_standalone_frontend') && pictau_is_fluent_booking_standalone_frontend()) {
+		return;
+	}
+
 	$fontsDir = get_template_directory_uri() . '/fonts';
 
 	foreach (glob(get_template_directory() . '/fonts/*') as $file) {
